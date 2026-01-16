@@ -1,0 +1,253 @@
+make[1]: se entra en el directorio '/home/rebelpilot89/manaus-kernel/out'
+  GEN     Makefile
+  CALL    ../scripts/atomic/check-atomics.sh
+  CALL    ../scripts/checksyscalls.sh
+  CHK     include/generated/compile.h
+  CHK     kernel/kheaders_data.tar.xz
+  GEN     kernel/kheaders_data.tar.xz
+../drivers/clk/mediatek/Makefile:56: go this for clk CONFIG_COMMON_CLK_MT6765=""
+../drivers/clk/mediatek/Makefile:57: go this for clk CONFIG_MTK_HANG_DETECT=""
+../drivers/clk/mediatek/Makefile:76: go this for clk CONFIG_COMMON_CLK_MT6768=""
+../drivers/clk/mediatek/Makefile:77: go this for clk CONFIG_MTK_HANG_DETECT=""
+*GPU BM QoS 2.0 QOS Framework defined
+  CC      drivers/misc/mediatek/cmdq/mailbox/mtk-cmdq-mailbox-ext.o
+  CC      drivers/misc/mediatek/cmdq/mailbox/mtk-cmdq-helper-ext.o
+  CC      drivers/misc/mediatek/cmdq/mailbox/cmdq-util.o
+  CC      drivers/misc/mediatek/dcm/mt6879_dcm_internal.o
+  CC      drivers/gpu/drm/mediatek/mediatek_v2/mtk_drm_crtc.o
+  CC      drivers/scsi/ufs/ufs-mediatek-dbg.o
+  CC      drivers/misc/mediatek/cmdq/mailbox/cmdq-test.o
+  AR      drivers/misc/mediatek/dcm/built-in.a
+  CC      drivers/misc/mediatek/cpufreq_v2/src/mtk_cpufreq_main.o
+  AR      drivers/scsi/ufs/built-in.a
+  AR      drivers/scsi/built-in.a
+  CC      drivers/misc/mediatek/mcdi/mcdi_v1/mtk_mcdi_main.o
+  CC      drivers/misc/mediatek/mcdi/mcdi_v1/mtk_mcdi_util.o
+  CC      drivers/misc/mediatek/mcdi/mcdi_v1/mtk_mcdi_profile.o
+  CC      drivers/gpu/drm/mediatek/mediatek_v2/mtk_debug.o
+  AR      drivers/misc/mediatek/cmdq/mailbox/built-in.a
+  AR      drivers/misc/mediatek/cmdq/built-in.a
+  CC      drivers/misc/mediatek/cpufreq_v2/src/mtk_cpufreq_interface.o
+../drivers/misc/mediatek/mcdi/mcdi_v1/mtk_mcdi_profile.c:460:29: error: implicit declaration of function 'PROF_OFF_CNT_REG' [-Werror,-Wimplicit-function-declaration]
+  460 |                 cnt[0].sec[i] = mcdi_read(PROF_OFF_CNT_REG(i));
+      |                                           ^
+../drivers/misc/mediatek/mcdi/mcdi_v1/mtk_mcdi_profile.c:460:19: error: cast to 'void *' from smaller integer type 'int' [-Werror,-Wint-to-void-pointer-cast]
+  460 |                 cnt[0].sec[i] = mcdi_read(PROF_OFF_CNT_REG(i));
+      |                                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../drivers/misc/mediatek/mcdi/include/mcdi_v1/mtk_mcdi_util.h:11:48: note: expanded from macro 'mcdi_read'
+   11 | #define mcdi_read(addr)            __raw_readl((void __force __iomem *)(addr))
+      |                                                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../drivers/misc/mediatek/mcdi/mcdi_v1/mtk_mcdi_profile.c:461:29: error: implicit declaration of function 'PROF_ON_CNT_REG' [-Werror,-Wimplicit-function-declaration]
+  461 |                 cnt[1].sec[i] = mcdi_read(PROF_ON_CNT_REG(i));
+      |                                           ^
+../drivers/misc/mediatek/mcdi/mcdi_v1/mtk_mcdi_profile.c:461:19: error: cast to 'void *' from smaller integer type 'int' [-Werror,-Wint-to-void-pointer-cast]
+  461 |                 cnt[1].sec[i] = mcdi_read(PROF_ON_CNT_REG(i));
+      |                                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../drivers/misc/mediatek/mcdi/include/mcdi_v1/mtk_mcdi_util.h:11:48: note: expanded from macro 'mcdi_read'
+   11 | #define mcdi_read(addr)            __raw_readl((void __force __iomem *)(addr))
+      |                                                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../drivers/misc/mediatek/mcdi/mcdi_v1/mtk_mcdi_profile.c:481:24: error: use of undeclared identifier 'SYSRAM_PROF_RARIO_DUR'
+  481 |         ratio_dur = mcdi_read(SYSRAM_PROF_RARIO_DUR);
+      |                               ^~~~~~~~~~~~~~~~~~~~~
+../drivers/misc/mediatek/mcdi/mcdi_v1/mtk_mcdi_profile.c:489:30: error: implicit declaration of function 'PROF_CPU_RATIO_REG' [-Werror,-Wimplicit-function-declaration]
+  489 |                 data_raw = 100 * mcdi_read(PROF_CPU_RATIO_REG(i));
+      |                                            ^
+../drivers/misc/mediatek/mcdi/mcdi_v1/mtk_mcdi_profile.c:489:20: error: cast to 'void *' from smaller integer type 'int' [-Werror,-Wint-to-void-pointer-cast]
+  489 |                 data_raw = 100 * mcdi_read(PROF_CPU_RATIO_REG(i));
+      |                                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../drivers/misc/mediatek/mcdi/include/mcdi_v1/mtk_mcdi_util.h:11:48: note: expanded from macro 'mcdi_read'
+   11 | #define mcdi_read(addr)            __raw_readl((void __force __iomem *)(addr))
+      |                                                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../drivers/misc/mediatek/mcdi/mcdi_v1/mtk_mcdi_profile.c:500:31: error: implicit declaration of function 'PROF_CLUSTER_RATIO_REG' [-Werror,-Wimplicit-function-declaration]
+  500 |                 data_raw  = 100 * mcdi_read(PROF_CLUSTER_RATIO_REG(i));
+      |                                             ^
+../drivers/misc/mediatek/mcdi/mcdi_v1/mtk_mcdi_profile.c:500:21: error: cast to 'void *' from smaller integer type 'int' [-Werror,-Wint-to-void-pointer-cast]
+  500 |                 data_raw  = 100 * mcdi_read(PROF_CLUSTER_RATIO_REG(i));
+      |                                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../drivers/misc/mediatek/mcdi/include/mcdi_v1/mtk_mcdi_util.h:11:48: note: expanded from macro 'mcdi_read'
+   11 | #define mcdi_read(addr)            __raw_readl((void __force __iomem *)(addr))
+      |                                                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../drivers/misc/mediatek/mcdi/mcdi_v1/mtk_mcdi_profile.c:511:20: error: use of undeclared identifier 'MCDI_MBOX_PROF_CMD'
+  511 |                                 mcdi_mbox_read(MCDI_MBOX_PROF_CMD),
+      |                                                ^~~~~~~~~~~~~~~~~~
+In file included from ../drivers/misc/mediatek/cpufreq_v2/src/mtk_cpufreq_main.c:18:
+In file included from ../drivers/misc/mediatek/cpufreq_v2/src/../inc/mtk_cpufreq_internal.h:34:
+../include/mt-plat/mtk_io.h:8:9: error: 'ioremap_wc' macro redefined [-Werror,-Wmacro-redefined]
+    8 | #define ioremap_wc ioremap
+      |         ^
+../arch/arm64/include/asm/io.h:187:9: note: previous definition is here
+  187 | #define ioremap_wc(addr, size)          __ioremap((addr), (size), __pgprot(PROT_NORMAL_NC))
+      |         ^
+In file included from ../drivers/misc/mediatek/cpufreq_v2/src/mtk_cpufreq_main.c:18:
+../drivers/misc/mediatek/cpufreq_v2/src/../inc/mtk_cpufreq_internal.h:35:10: fatal error: 'mt-plat/aee.h' file not found
+   35 | #include <mt-plat/aee.h>
+      |          ^~~~~~~~~~~~~~~
+../drivers/misc/mediatek/mcdi/mcdi_v1/mtk_mcdi_profile.c:605:16: error: use of undeclared identifier 'MCDI_SYSRAM_SIZE'
+  605 |                                 && param < MCDI_SYSRAM_SIZE
+      |                                            ^~~~~~~~~~~~~~~~
+../drivers/misc/mediatek/mcdi/mcdi_v1/mtk_mcdi_profile.c:610:21: error: use of undeclared identifier 'mcdi_sysram_base'
+  610 |                         param, mcdi_read(mcdi_sysram_base + param),
+      |                                          ^~~~~~~~~~~~~~~~
+../drivers/misc/mediatek/mcdi/mcdi_v1/mtk_mcdi_profile.c:611:14: error: use of undeclared identifier 'mcdi_sysram_base'
+  611 |                         mcdi_read(mcdi_sysram_base + param));
+      |                                   ^~~~~~~~~~~~~~~~
+2 errors generated.
+../drivers/misc/mediatek/mcdi/mcdi_v1/mtk_mcdi_profile.c:620:20: error: use of undeclared identifier 'MCDI_MBOX_PROF_CMD'
+  620 |                         mcdi_mbox_write(MCDI_MBOX_PROF_CMD, param);
+      |                                         ^~~~~~~~~~~~~~~~~~
+make[6]: *** [../scripts/Makefile.build:273: drivers/misc/mediatek/cpufreq_v2/src/mtk_cpufreq_main.o] Error 1
+make[6]: *** Se espera a que terminen otras tareas....
+  CC      drivers/misc/mediatek/mcdi/mcdi_v1/mtk_mcdi_cpc.o
+../drivers/misc/mediatek/mcdi/mcdi_v1/mtk_mcdi_profile.c:625:19: error: use of undeclared identifier 'MCDI_MBOX_PROF_CLUSTER'
+  625 |                 mcdi_mbox_write(MCDI_MBOX_PROF_CLUSTER, param);
+      |                                 ^~~~~~~~~~~~~~~~~~~~~~
+15 errors generated.
+make[5]: *** [../scripts/Makefile.build:273: drivers/misc/mediatek/mcdi/mcdi_v1/mtk_mcdi_profile.o] Error 1
+make[5]: *** Se espera a que terminen otras tareas....
+../drivers/misc/mediatek/mcdi/mcdi_v1/mtk_mcdi_util.c:66:13: error: incompatible integer to pointer conversion passing 'uintptr_t' (aka 'unsigned long') to parameter of type 'void *' [-Wint-conversion]
+   66 |         mcdi_write((uintptr_t)id, val);
+      |                    ^~~~~~~~~~~~~
+../drivers/misc/mediatek/mcdi/include/mcdi_v1/mtk_mcdi_util.h:12:60: note: expanded from macro 'mcdi_write'
+   12 | #define mcdi_write(addr, val)      mt_reg_sync_writel(val, addr)
+      |                                                            ^~~~
+../include/linux/mtk_sync_write.h:12:62: note: passing argument to parameter 'addr' here
+   12 | static inline void mt_reg_sync_writel(u32 val, void __iomem *addr)
+      |                                                              ^
+1 error generated.
+make[5]: *** [../scripts/Makefile.build:273: drivers/misc/mediatek/mcdi/mcdi_v1/mtk_mcdi_util.o] Error 1
+../drivers/misc/mediatek/mcdi/mcdi_v1/mtk_mcdi_main.c:33:10: error: '../../../include/mtk_mcdi_state.h' file not found, did you mean 'include/mtk_mcdi_state.h'?
+   33 | #include "../../../include/mtk_mcdi_state.h"
+      |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      |          "include/mtk_mcdi_state.h"
+../drivers/misc/mediatek/mcdi/mcdi_v1/mtk_mcdi_main.c:36:10: fatal error: 'mtk_idle_profile.h' file not found
+   36 | #include <mtk_idle_profile.h>
+      |          ^~~~~~~~~~~~~~~~~~~~
+2 errors generated.
+make[5]: *** [../scripts/Makefile.build:273: drivers/misc/mediatek/mcdi/mcdi_v1/mtk_mcdi_main.o] Error 1
+  CC      drivers/misc/mediatek/thermal/common/mtk_thermal_platform.o
+../drivers/misc/mediatek/mcdi/mcdi_v1/mtk_mcdi_cpc.c:43:32: error: use of undeclared identifier 'CPC_DORMANT_COUNTER'
+   43 |         cpc.mp_off_cnt[0] = mcdi_read(CPC_DORMANT_COUNTER);
+      |                                       ^~~~~~~~~~~~~~~~~~~
+../drivers/misc/mediatek/mcdi/mcdi_v1/mtk_mcdi_cpc.c:52:18: error: use of undeclared identifier 'MCDI_MBOX_PROF_CMD'
+   52 |         mcdi_mbox_write(MCDI_MBOX_PROF_CMD, 0x1);
+      |                         ^~~~~~~~~~~~~~~~~~
+../drivers/misc/mediatek/mcdi/mcdi_v1/mtk_mcdi_cpc.c:65:18: error: use of undeclared identifier 'MCDI_MBOX_PROF_CMD'
+   65 |         mcdi_mbox_write(MCDI_MBOX_PROF_CMD, 0x0);
+      |                         ^~~~~~~~~~~~~~~~~~
+../drivers/misc/mediatek/mcdi/mcdi_v1/mtk_mcdi_cpc.c:93:18: error: implicit declaration of function 'CPC_CPU_LATENCY' [-Werror,-Wimplicit-function-declaration]
+   93 |         lat = mcdi_read(CPC_CPU_LATENCY(cpu));
+      |                         ^
+../drivers/misc/mediatek/mcdi/mcdi_v1/mtk_mcdi_cpc.c:93:8: error: cast to 'void *' from smaller integer type 'int' [-Werror,-Wint-to-void-pointer-cast]
+   93 |         lat = mcdi_read(CPC_CPU_LATENCY(cpu));
+      |               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../drivers/misc/mediatek/mcdi/include/mcdi_v1/mtk_mcdi_util.h:11:48: note: expanded from macro 'mcdi_read'
+   11 | #define mcdi_read(addr)            __raw_readl((void __force __iomem *)(addr))
+      |                                                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../drivers/misc/mediatek/mcdi/mcdi_v1/mtk_mcdi_cpc.c:105:21: error: use of undeclared identifier 'CPC_CLUSTER_ON_LATENCY'
+  105 |         lat_on = mcdi_read(CPC_CLUSTER_ON_LATENCY);
+      |                            ^~~~~~~~~~~~~~~~~~~~~~
+../drivers/misc/mediatek/mcdi/mcdi_v1/mtk_mcdi_cpc.c:106:22: error: use of undeclared identifier 'CPC_CLUSTER_OFF_LATENCY'
+  106 |         lat_off = mcdi_read(CPC_CLUSTER_OFF_LATENCY);
+      |                             ^~~~~~~~~~~~~~~~~~~~~~~
+../drivers/misc/mediatek/mcdi/mcdi_v1/mtk_mcdi_cpc.c:116:18: error: use of undeclared identifier 'CPC_MCUSYS_LATENCY'
+  116 |         lat = mcdi_read(CPC_MCUSYS_LATENCY);
+      |                         ^~~~~~~~~~~~~~~~~~
+../drivers/misc/mediatek/mcdi/mcdi_v1/mtk_mcdi_cpc.c:157:18: error: use of undeclared identifier 'CPC_DORMANT_COUNTER'
+  157 |         cnt = mcdi_read(CPC_DORMANT_COUNTER);
+      |                         ^~~~~~~~~~~~~~~~~~~
+../drivers/misc/mediatek/mcdi/mcdi_v1/mtk_mcdi_cpc.c:288:13: error: use of undeclared identifier 'CPC_CPU_ON_SW_HINT_CLR'
+  288 |         mcdi_write(CPC_CPU_ON_SW_HINT_CLR, 1 << cpu);
+      |                    ^~~~~~~~~~~~~~~~~~~~~~
+10 errors generated.
+make[5]: *** [../scripts/Makefile.build:273: drivers/misc/mediatek/mcdi/mcdi_v1/mtk_mcdi_cpc.o] Error 1
+make[4]: *** [../scripts/Makefile.build:516: drivers/misc/mediatek/mcdi] Error 2
+make[4]: *** Se espera a que terminen otras tareas....
+  CC      drivers/misc/mediatek/thermal/common/ap_thermal_limit.o
+  CC      drivers/misc/mediatek/thermal/common/mtk_thermal_timer.o
+In file included from ../drivers/misc/mediatek/cpufreq_v2/src/mtk_cpufreq_interface.c:11:
+In file included from ../drivers/misc/mediatek/cpufreq_v2/src/../inc/mtk_cpufreq_internal.h:34:
+../include/mt-plat/mtk_io.h:8:9: error: 'ioremap_wc' macro redefined [-Werror,-Wmacro-redefined]
+    8 | #define ioremap_wc ioremap
+      |         ^
+../arch/arm64/include/asm/io.h:187:9: note: previous definition is here
+  187 | #define ioremap_wc(addr, size)          __ioremap((addr), (size), __pgprot(PROT_NORMAL_NC))
+      |         ^
+In file included from ../drivers/misc/mediatek/cpufreq_v2/src/mtk_cpufreq_interface.c:11:
+../drivers/misc/mediatek/cpufreq_v2/src/../inc/mtk_cpufreq_internal.h:35:10: fatal error: 'mt-plat/aee.h' file not found
+   35 | #include <mt-plat/aee.h>
+      |          ^~~~~~~~~~~~~~~
+"imgsys, subdir-ccflags-y = -DWPE_TF_DUMP_71_2 -DONEPIXEL_MODE"
+2 errors generated.
+"imgsys, subdir-ccflags-y = -DTF_DUMP_71_2"
+make[6]: *** [../scripts/Makefile.build:273: drivers/misc/mediatek/cpufreq_v2/src/mtk_cpufreq_interface.o] Error 1
+make[5]: *** [../scripts/Makefile.build:516: drivers/misc/mediatek/cpufreq_v2/src] Error 2
+make[4]: *** [../scripts/Makefile.build:516: drivers/misc/mediatek/cpufreq_v2] Error 2
+  CC      drivers/misc/mediatek/thermal/mtk_cooler_shutdown.o
+../drivers/misc/mediatek/thermal/common/mtk_thermal_platform.c:100:43: error: use of undeclared identifier 'TZCPU_NO_CPU_CORES'
+  100 | static struct cpu_index_st cpu_index_list[NO_CPU_CORES];
+      |                                           ^~~~~~~~~~~~
+../drivers/misc/mediatek/thermal/common/mtk_thermal_platform.c:98:23: note: expanded from macro 'NO_CPU_CORES'
+   98 | #define NO_CPU_CORES (TZCPU_NO_CPU_CORES)
+      |                       ^~~~~~~~~~~~~~~~~~
+../drivers/misc/mediatek/thermal/common/mtk_thermal_platform.c:101:21: error: use of undeclared identifier 'TZCPU_NO_CPU_CORES'
+  101 | static int cpufreqs[NO_CPU_CORES];
+      |                     ^~~~~~~~~~~~
+../drivers/misc/mediatek/thermal/common/mtk_thermal_platform.c:98:23: note: expanded from macro 'NO_CPU_CORES'
+   98 | #define NO_CPU_CORES (TZCPU_NO_CPU_CORES)
+      |                       ^~~~~~~~~~~~~~~~~~
+../drivers/misc/mediatek/thermal/common/mtk_thermal_platform.c:102:24: error: use of undeclared identifier 'TZCPU_NO_CPU_CORES'
+  102 | static int cpuloadings[NO_CPU_CORES];
+      |                        ^~~~~~~~~~~~
+../drivers/misc/mediatek/thermal/common/mtk_thermal_platform.c:98:23: note: expanded from macro 'NO_CPU_CORES'
+   98 | #define NO_CPU_CORES (TZCPU_NO_CPU_CORES)
+      |                       ^~~~~~~~~~~~~~~~~~
+../drivers/misc/mediatek/thermal/common/mtk_thermal_platform.c:185:18: error: use of undeclared identifier 'TZCPU_NO_CPU_CORES'
+  185 |         for (i = 0; i < NO_CPU_CORES; i++)
+      |                         ^~~~~~~~~~~~
+../drivers/misc/mediatek/thermal/common/mtk_thermal_platform.c:98:23: note: expanded from macro 'NO_CPU_CORES'
+   98 | #define NO_CPU_CORES (TZCPU_NO_CPU_CORES)
+      |                       ^~~~~~~~~~~~~~~~~~
+../drivers/misc/mediatek/thermal/common/mtk_thermal_platform.c:193:21: error: use of undeclared identifier 'TZCPU_NO_CPU_CORES'
+  193 |                 if (nCoreIndex >= NO_CPU_CORES) {
+      |                                   ^~~~~~~~~~~~
+../drivers/misc/mediatek/thermal/common/mtk_thermal_platform.c:98:23: note: expanded from macro 'NO_CPU_CORES'
+   98 | #define NO_CPU_CORES (TZCPU_NO_CPU_CORES)
+      |                       ^~~~~~~~~~~~~~~~~~
+../drivers/misc/mediatek/thermal/common/mtk_thermal_platform.c:321:18: error: use of undeclared identifier 'TZCPU_NO_CPU_CORES'
+  321 |         for (i = 0; i < NO_CPU_CORES; i++) {
+      |                         ^~~~~~~~~~~~
+../drivers/misc/mediatek/thermal/common/mtk_thermal_platform.c:98:23: note: expanded from macro 'NO_CPU_CORES'
+   98 | #define NO_CPU_CORES (TZCPU_NO_CPU_CORES)
+      |                       ^~~~~~~~~~~~~~~~~~
+../drivers/misc/mediatek/thermal/common/mtk_thermal_platform.c:434:14: error: use of undeclared identifier 'TZCPU_NO_CPU_CORES'
+  434 |                 *nocores = NO_CPU_CORES;
+      |                            ^~~~~~~~~~~~
+../drivers/misc/mediatek/thermal/common/mtk_thermal_platform.c:98:23: note: expanded from macro 'NO_CPU_CORES'
+   98 | #define NO_CPU_CORES (TZCPU_NO_CPU_CORES)
+      |                       ^~~~~~~~~~~~~~~~~~
+../drivers/misc/mediatek/thermal/common/mtk_thermal_platform.c:468:7: error: implicit declaration of function 'mtk_get_gpu_loading' [-Werror,-Wimplicit-function-declaration]
+  468 |                 if (mtk_get_gpu_loading(&rd_gpu_loading)) {
+      |                     ^
+8 errors generated.
+make[5]: *** [../scripts/Makefile.build:273: drivers/misc/mediatek/thermal/common/mtk_thermal_platform.o] Error 1
+make[5]: *** Se espera a que terminen otras tareas....
+../drivers/misc/mediatek/thermal/common/ap_thermal_limit.c:30:10: fatal error: 'mt_cpufreq.h' file not found
+   30 | #include "mt_cpufreq.h"
+      |          ^~~~~~~~~~~~~~
+1 error generated.
+make[5]: *** [../scripts/Makefile.build:273: drivers/misc/mediatek/thermal/common/ap_thermal_limit.o] Error 1
+make[4]: *** [../scripts/Makefile.build:516: drivers/misc/mediatek/thermal] Error 2
+make[3]: *** [../scripts/Makefile.build:516: drivers/misc/mediatek] Error 2
+make[2]: *** [../scripts/Makefile.build:516: drivers/misc] Error 2
+make[2]: *** Se espera a que terminen otras tareas....
+  CC      drivers/gpu/drm/mediatek/mediatek_v2/mtk_mmlsys_bypass_mode.o
+  AR      drivers/gpu/drm/mediatek/mediatek_v2/built-in.a
+  AR      drivers/gpu/drm/mediatek/built-in.a
+  AR      drivers/gpu/drm/built-in.a
+  AR      drivers/gpu/built-in.a
+make[1]: *** [/home/rebelpilot89/manaus-kernel/Makefile:1923: drivers] Error 2
+make[1]: *** Se espera a que terminen otras tareas....
+  CC      kernel/kheaders.o
+  AR      kernel/built-in.a
+make[1]: se sale del directorio '/home/rebelpilot89/manaus-kernel/out'
+make: *** [Makefile:192: __sub-make] Error 2

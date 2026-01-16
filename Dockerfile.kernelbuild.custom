@@ -1,0 +1,45 @@
+FROM ubuntu:24.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Instalar dependencias básicas
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    build-essential \
+    bc \
+    git \
+    wget \
+    curl \
+    ca-certificates \
+    python3 \
+    python-is-python3 \
+    bison \
+    flex \
+    libssl-dev \
+    libelf-dev \
+    rsync \
+    file \
+    xz-utils \
+    cpio \
+    libdebuginfod1 \
+    gcc-aarch64-linux-gnu \
+    libxml2 \
+    zlib1g-dev \
+    libncurses-dev \
+    libtool \
+    pkg-config \
+    cmake \
+    ninja-build \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copiar toolchain local (Neutron Clang y Binutils) al contenedor
+COPY toolchain/neutron-clang-19 /opt/neutron-clang-19
+COPY toolchain/binutils-2.37 /opt/binutils-2.37
+
+# Exportar paths de toolchain
+ENV PATH="/opt/neutron-clang-19/bin:/opt/binutils-2.37/bin:$PATH"
+
+WORKDIR /uniLoader
+
+# Comando por defecto
+CMD ["bash"]

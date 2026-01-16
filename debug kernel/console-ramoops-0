@@ -1,0 +1,348 @@
+[    0.128096][    T1] OF: /ccu_rproc@1b080000: could not get #interconnect-cells for /interconnect
+[    0.129113][    T1] OF: /imgsys_fw@15000000: could not get #interconnect-cells for /interconnect
+[    0.130369][    T1] OF: /soc/sspm@1C340000: could not get #interconnect-cells for /firmware/scmi/protocol@80
+[    0.131048][    T1] OF: /soc/ktf-mmdvfs-test: could not get #interconnect-cells for /interconnect
+[    0.131534][    T1] OF: /soc/pda@1a100000: could not get #interconnect-cells for /interconnect
+[    0.131651][    T1] OF: /soc/mdp_rdma0@1f003000: could not get #interconnect-cells for /interconnect
+[    0.131694][    T1] OF: /soc/mdp_wrot0@1f00f000: could not get #interconnect-cells for /interconnect
+[    0.146015][    T1] OF: /vdec@16000000: could not get #interconnect-cells for /interconnect
+[    0.146163][    T1] OF: /vdec_fmt@16080000: could not get #interconnect-cells for /interconnect
+[    0.146340][    T1] OF: /venc@17000000: could not get #interconnect-cells for /interconnect
+[    0.146480][    T1] OF: /jpgenc@17030000: could not get #interconnect-cells for /interconnect
+[    0.146691][    T1] OF: /dispsys_config@14000000: could not get #interconnect-cells for /interconnect
+[    0.146990][    T1] OF: /disp_ovl0@14002000: could not get #interconnect-cells for /interconnect
+[    0.147079][    T1] OF: /disp_ovl0_2l@14003000: could not get #interconnect-cells for /interconnect
+[    0.147291][    T1] OF: /disp_rdma0@14006000: could not get #interconnect-cells for /interconnect
+[    0.149370][    T1] OF: /disp_ovl0_2l_nwcg@1401a000: could not get #interconnect-cells for /interconnect
+[    0.152623][    T1] OF: /cam_raw_a@1a030000: could not get #interconnect-cells for /interconnect
+[    0.152814][    T1] OF: /cam_yuv_a@1a050000: could not get #interconnect-cells for /interconnect
+[    0.152994][    T1] OF: /cam_raw_b@1a070000: could not get #interconnect-cells for /interconnect
+[    0.153166][    T1] OF: /cam_yuv_b@1a090000: could not get #interconnect-cells for /interconnect
+[    0.153318][    T1] OF: /camsv1@1a110000: could not get #interconnect-cells for /interconnect
+[    0.153467][    T1] OF: /camsv2@1a111000: could not get #interconnect-cells for /interconnect
+[    0.153602][    T1] OF: /camsv3@1a112000: could not get #interconnect-cells for /interconnect
+[    0.153739][    T1] OF: /camsv4@1a113000: could not get #interconnect-cells for /interconnect
+[    0.153877][    T1] OF: /camsv5@1a114000: could not get #interconnect-cells for /interconnect
+[    0.154011][    T1] OF: /camsv6@1a115000: could not get #interconnect-cells for /interconnect
+[    0.154161][    T1] OF: /camsv7@1a116000: could not get #interconnect-cells for /interconnect
+[    0.154294][    T1] OF: /camsv8@1a117000: could not get #interconnect-cells for /interconnect
+[    0.154443][    T1] OF: /camsv9@1a180000: could not get #interconnect-cells for /interconnect
+[    0.154582][    T1] OF: /camsv10@1a181000: could not get #interconnect-cells for /interconnect
+[    0.154717][    T1] OF: /camsv11@1a182000: could not get #interconnect-cells for /interconnect
+[    0.154859][    T1] OF: /camsv12@1a183000: could not get #interconnect-cells for /interconnect
+[    0.154994][    T1] OF: /camsv13@1a184000: could not get #interconnect-cells for /interconnect
+[    0.155127][    T1] OF: /camsv14@1a185000: could not get #interconnect-cells for /interconnect
+[    0.155269][    T1] OF: /camsv15@1a186000: could not get #interconnect-cells for /interconnect
+[    0.155402][    T1] OF: /camsv16@1a187000: could not get #interconnect-cells for /interconnect
+[    0.155540][    T1] OF: /mraw1@1a130000: could not get #interconnect-cells for /interconnect
+[    0.155697][    T1] OF: /mraw2@1a140000: could not get #interconnect-cells for /interconnect
+[    0.155840][    T1] OF: /mraw3@1a150000: could not get #interconnect-cells for /interconnect
+[    0.155978][    T1] OF: /mraw4@1a160000: could not get #interconnect-cells for /interconnect
+[    0.156291][    T1] OF: /mdp@1f000000: could not get #interconnect-cells for /interconnect
+[    0.402550][    T1] Warning: unable to open an initial console.
+[    0.738360][    T1] init: softdep lines in modules.softdep must have at least 4 entries
+[    0.749616][T700001] log_store: pmic child device not found.
+[    0.864364][T700001] spmi-mtk 1c804000.spmi: IRQ pmif_irq not found
+[    0.890997][T600001] of_clk_src_onecell_get: invalid clock index 211
+[    0.891025][T600001] of_clk_src_onecell_get: invalid clock index 15
+[    0.891172][T600001] of_clk_src_onecell_get: invalid clock index 2
+[    0.891179][T600001] of_clk_src_onecell_get: invalid clock index 3
+[    0.891186][T600001] of_clk_src_onecell_get: invalid clock index 3
+[    0.891194][T600001] of_clk_src_onecell_get: invalid clock index 4
+[    0.891267][T600001] of_clk_src_onecell_get: invalid clock index 13
+[    0.891301][T600001] of_clk_src_onecell_get: invalid clock index 25
+[    0.891309][T600001] of_clk_src_onecell_get: invalid clock index 4
+[    0.891318][T600001] of_clk_src_onecell_get: invalid clock index 5
+[    0.891353][T600001] of_clk_src_onecell_get: invalid clock index 2
+[    0.891528][T600001] of_clk_src_onecell_get: invalid clock index 37
+[    0.891549][T600001] of_clk_src_onecell_get: invalid clock index 16
+[    0.891555][T600001] of_clk_src_onecell_get: invalid clock index 2
+[    0.891560][T600001] of_clk_src_onecell_get: invalid clock index 2
+[    0.891566][T600001] of_clk_src_onecell_get: invalid clock index 2
+[    0.891573][T600001] of_clk_src_onecell_get: invalid clock index 5
+[    0.891579][T600001] of_clk_src_onecell_get: invalid clock index 2
+[    0.891585][T600001] of_clk_src_onecell_get: invalid clock index 2
+[    0.891592][T600001] of_clk_src_onecell_get: invalid clock index 4
+[    0.891600][T600001] of_clk_src_onecell_get: invalid clock index 4
+[    0.891760][T600001] of_clk_src_onecell_get: invalid clock index 16
+[    0.891801][T600001] of_clk_src_onecell_get: invalid clock index 36
+[    0.891808][T600001] of_clk_src_onecell_get: invalid clock index 4
+[    0.891816][T600001] of_clk_src_onecell_get: invalid clock index 4
+[    0.891823][T600001] of_clk_src_onecell_get: invalid clock index 4
+[    0.891829][T600001] of_clk_src_onecell_get: invalid clock index 4
+[    0.891841][T600001] of_clk_src_onecell_get: invalid clock index 9
+[    0.891848][T600001] of_clk_src_onecell_get: invalid clock index 4
+[    0.891890][T600001] of_clk_src_onecell_get: invalid clock index 37
+[    0.891898][T600001] of_clk_src_onecell_get: invalid clock index 4
+[    0.892198][T600001] of_clk_src_onecell_get: invalid clock index 21
+[    1.002916][T600001] mediatek-mml 1f000000.mmlsys_config: can't request region for resource [mem 0x1f000000-0x1f000fff]
+[    1.002933][T600001] mediatek-mml 1f000000.mmlsys_config: fail to init component 4 larb ret -2
+[    1.002941][T600001] mediatek-mml 1f000000.mmlsys_config: can't request region for resource [mem 0x1f000000-0x1f000fff]
+[    1.002949][T600001] mediatek-mml 1f000000.mmlsys_config: fail to init component 13 larb ret -2
+[    1.002955][T600001] mediatek-mml 1f000000.mmlsys_config: can't request region for resource [mem 0x1f000000-0x1f000fff]
+[    1.002964][T600001] mediatek-mml 1f000000.mmlsys_config: can't request region for resource [mem 0x1f000000-0x1f000fff]
+[    1.068574][T600001] mediatek-drm 14000000.dispsys_config: no dispsys_config dispsys_num
+[    1.077094][T600001] mediatek-ddp 14001000.disp_mutex0: no mutex dispsys_num
+[    1.079845][T600001] [DISP][E]read ccorr_prim_force_linear failed
+[    1.127881][T700001] mtu3 11201000.usb0: failed to get vusb33
+[    1.130407][T700007] mtu3 11201000.usb0: failed to get vusb33
+[    1.161575][T600001] read mediatek,use-extend-type error.
+[    1.176063][T600001] wl2864c 6-0029: Success to write register: 0x1, value: 0x40 
+[    1.176186][T600001] wl2864c 6-0029: Success to write register: 0x2, value: 0x0 
+[    1.176298][T600001] wl2864c 6-0029: Success to write register: 0xa, value: 0x0 
+[    1.176410][T700001] wl2864c 6-0029: Success to write register: 0xb, value: 0x0 
+[    1.176524][T700001] wl2864c 6-0029: Success to write register: 0xc, value: 0x0 
+[    1.176636][T700001] wl2864c 6-0029: Success to write register: 0xd, value: 0x0 
+[    1.176743][T700001] wl2864c 6-0029: Success to write register: 0xf, value: 0x0 
+[    1.176993][T700001] wl2864c_regulator_init: LDO1, default value:0x28
+[    1.177102][T700001] wl2864c_regulator_init: LDO1, initial value:0x28
+[    1.177668][T700001] wl2864c_regulator_init: LDO2, default value:0x28
+[    1.177772][T700001] wl2864c_regulator_init: LDO2, initial value:0x28
+[    1.178273][T700001] wl2864c_regulator_init: LDO3, default value:0x80
+[    1.178377][T700001] wl2864c_regulator_init: LDO3, initial value:0x80
+[    1.178888][T600001] wl2864c_regulator_init: LDO4, default value:0x80
+[    1.178995][T600001] wl2864c_regulator_init: LDO4, initial value:0x80
+[    1.179519][T600001] wl2864c_regulator_init: LDO5, default value:0x80
+[    1.179623][T600001] wl2864c_regulator_init: LDO5, initial value:0x80
+[    1.180124][T600001] wl2864c_regulator_init: LDO6, default value:0x80
+[    1.180233][T600001] wl2864c_regulator_init: LDO6, initial value:0x80
+[    1.180731][T600001] wl2864c_regulator_init: LDO7, default value:0x30
+[    1.180836][T600001] wl2864c_regulator_init: LDO7, initial value:0x30
+[    1.181195][T600001] wl2864c 6-0029: ************ start dump wl2864c register ************
+[    1.181198][T600001] wl2864c 6-0029: regulator name = ldo1 
+[    1.181201][T600001] wl2864c 6-0029: register 0x00:      chip version
+[    1.181204][T600001] wl2864c 6-0029: register 0x01:      LDO CL
+[    1.181207][T600001] wl2864c 6-0029: register 0x03~0x09: LDO1~LDO7 OUT Voltage
+[    1.181210][T600001] wl2864c 6-0029: register 0x0e:      Bit[6:0] LDO7~LDO1 EN
+[    1.181348][T600001] wl2864c 6-0029: Reg[0x00] = 0x1
+[    1.181486][T600001] wl2864c 6-0029: Reg[0x01] = 0x40
+[    1.181619][T600001] wl2864c 6-0029: Reg[0x02] = 0x0
+[    1.181768][T600001] wl2864c 6-0029: Reg[0x03] = 0x28
+[    1.182009][T600001] wl2864c 6-0029: Reg[0x04] = 0x28
+[    1.182290][T600001] wl2864c 6-0029: Reg[0x05] = 0x80
+[    1.182583][T600001] wl2864c 6-0029: Reg[0x06] = 0x80
+[    1.182862][T600001] wl2864c 6-0029: Reg[0x07] = 0x80
+[    1.183146][T600001] wl2864c 6-0029: Reg[0x08] = 0x80
+[    1.183433][T600001] wl2864c 6-0029: Reg[0x09] = 0x30
+[    1.183719][T600001] wl2864c 6-0029: Reg[0x0a] = 0x0
+[    1.184007][T700001] wl2864c 6-0029: Reg[0x0b] = 0x0
+[    1.184295][T700001] wl2864c 6-0029: Reg[0x0c] = 0x0
+[    1.184584][T700001] wl2864c 6-0029: Reg[0x0d] = 0x0
+[    1.184869][T700001] wl2864c 6-0029: Reg[0x0e] = 0x0
+[    1.185151][T700001] wl2864c 6-0029: Reg[0x0f] = 0x0
+[    1.185154][T700001] wl2864c 6-0029: ************ end dump wl2864c register ************
+[    1.271896][T700001] [bq25980_probe] model_name=sc8541-master
+[    1.297786][T700001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[00] = 0x4A
+[    1.298389][T700001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[01] = 0x42
+[    1.298987][T700001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[02] = 0xEE
+[    1.299583][T700001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[03] = 0x7F
+[    1.300176][T700001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[04] = 0x00
+[    1.300774][T700001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[05] = 0x40
+[    1.301369][T700001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[06] = 0x64
+[    1.301971][T700001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[07] = 0x50
+[    1.302571][T700001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[08] = 0x0C
+[    1.303171][T700001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[09] = 0x00
+[    1.303767][T700001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[0A] = 0x0C
+[    1.304364][T700001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[0B] = 0x78
+[    1.304956][T700001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[0C] = 0x15
+[    1.305552][T700001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[0D] = 0x15
+[    1.306152][T700001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[0E] = 0x6C
+[    1.306753][T700001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[0F] = 0x02
+[    1.307351][T700001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[10] = 0x94
+[    1.307955][T700001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[11] = 0xF0
+[    1.308560][T700001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[12] = 0x62
+[    1.309168][T700001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[13] = 0x00
+[    1.309771][T700001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[14] = 0x00
+[    1.310378][T700001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[15] = 0x37
+[    1.310976][T700001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[16] = 0x00
+[    1.311579][T700001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[17] = 0x08
+[    1.312185][T700001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[18] = 0x00
+[    1.312782][T700001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[19] = 0x00
+[    1.313378][T700001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[1A] = 0x00
+[    1.313980][T700001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[1B] = 0x00
+[    1.314576][T700001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[1C] = 0x00
+[    1.315179][T700001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[1D] = 0x00
+[    1.315791][T700001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[1E] = 0x00
+[    1.316393][T700001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[1F] = 0x00
+[    1.316988][T700001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[20] = 0x00
+[    1.317585][T700001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[21] = 0x00
+[    1.318194][T700001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[22] = 0x41
+[    1.318793][T700001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[23] = 0x00
+[    1.319394][T700001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[24] = 0x06
+[    1.319997][T700001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[25] = 0x00
+[    1.320597][T700001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[26] = 0x02
+[    1.321193][T700001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[27] = 0x05
+[    1.321794][T700001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[28] = 0x5C
+[    1.322391][T700001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[29] = 0x03
+[    1.322985][T700001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[2A] = 0xF1
+[    1.323584][T700001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[2B] = 0x00
+[    1.324180][T700001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[2C] = 0x02
+[    1.324772][T700001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[2D] = 0x0D
+[    1.325369][T700001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[2E] = 0xC6
+[    1.325967][T700001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[2F] = 0x0D
+[    1.326567][T700001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[30] = 0xC8
+[    1.327165][T700001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[31] = 0x00
+[    1.327768][T700001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[32] = 0x02
+[    1.328374][T700001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[33] = 0x00
+[    1.328969][T700001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[34] = 0x00
+[    1.329568][T700001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[35] = 0x00
+[    1.330176][T700001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[36] = 0x00
+[    1.330788][T700001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[37] = 0x00
+[    1.331508][T700001] [bq25980_probe] model_name=sc8541-slave
+[    1.362955][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[00] = 0x4A
+[    1.363557][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[01] = 0x42
+[    1.364154][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[02] = 0xEE
+[    1.364748][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[03] = 0x7F
+[    1.365345][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[04] = 0x00
+[    1.365959][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[05] = 0x40
+[    1.366559][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[06] = 0x64
+[    1.367164][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[07] = 0x50
+[    1.367768][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[08] = 0x0C
+[    1.368378][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[09] = 0x00
+[    1.368984][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[0A] = 0x0C
+[    1.369590][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[0B] = 0x78
+[    1.370193][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[0C] = 0x15
+[    1.370797][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[0D] = 0x15
+[    1.371397][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[0E] = 0x6C
+[    1.371999][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[0F] = 0x00
+[    1.372597][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[10] = 0x94
+[    1.373196][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[11] = 0xF0
+[    1.373798][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[12] = 0x61
+[    1.374394][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[13] = 0x00
+[    1.375003][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[14] = 0x00
+[    1.375611][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[15] = 0x3C
+[    1.376212][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[16] = 0x00
+[    1.376814][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[17] = 0x08
+[    1.377410][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[18] = 0x00
+[    1.378005][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[19] = 0x00
+[    1.378608][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[1A] = 0x00
+[    1.379208][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[1B] = 0x00
+[    1.379806][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[1C] = 0x00
+[    1.380406][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[1D] = 0x00
+[    1.381000][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[1E] = 0x00
+[    1.381596][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[1F] = 0x00
+[    1.382191][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[20] = 0x00
+[    1.382786][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[21] = 0x00
+[    1.383379][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[22] = 0x41
+[    1.383974][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[23] = 0x00
+[    1.384569][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[24] = 0x06
+[    1.385166][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[25] = 0x00
+[    1.385759][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[26] = 0x02
+[    1.386360][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[27] = 0x05
+[    1.386961][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[28] = 0x5C
+[    1.387555][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[29] = 0x04
+[    1.388149][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[2A] = 0x07
+[    1.388743][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[2B] = 0x04
+[    1.389342][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[2C] = 0x07
+[    1.389952][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[2D] = 0x0D
+[    1.390549][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[2E] = 0xD0
+[    1.391156][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[2F] = 0x00
+[    1.391760][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[30] = 0x06
+[    1.392363][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[31] = 0x00
+[    1.392960][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[32] = 0x54
+[    1.393559][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[33] = 0x00
+[    1.394159][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[34] = 0x00
+[    1.394756][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[35] = 0x00
+[    1.395358][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[36] = 0x00
+[    1.395959][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[37] = 0x00
+[    1.398944][T700001] mt6375-chg 11ed1000.i2c:mt6375@34:chg: mos_pinctrl not found
+[    1.424914][T600001] mtk_ctd_probe: --start--
+[    1.424929][T600001] mtk_ctd_parse_dt: size:0x10 tag:0x41000802 bootmode:0x2 boottype:0x2
+[    1.431110][T600001] [parse_mmi_dt]mmi cycle cv steps is not set
+[    1.431149][T600001] FFC:Zone 0,Temp 0,Volt 4200,Ich 438
+[    1.431151][T600001] FFC:Zone 1,Temp 10,Volt 4500,Ich 438
+[    1.431156][T600001] FFC:Zone 2,Temp 15,Volt 4500,Ich 438
+[    1.431160][T600001] FFC:Zone 3,Temp 25,Volt 4530,Ich 741
+[    1.431164][T600001] FFC:Zone 4,Temp 35,Volt 4530,Ich 835
+[    1.431168][T600001] FFC:Zone 5,Temp 45,Volt 4530,Ich 1175
+[    1.431172][T600001] FFC:Zone 6,Temp 60,Volt 4200,Ich 438
+[    1.431183][T600001] mmi wls_switch_en is -2 invalid
+[    1.431191][T600001] mmi wls_boost_en is -2 invalid
+[    1.431204][T600001] [parse_mmi_dt]mmi typec ntc table is not set
+[    1.445818][T600061] power_supply mtk-slv-div-chg: driver failed to report `input_power_limit' property: -22
+[    1.445846][T600061] power_supply mtk-mst-div-chg: driver failed to report `input_power_limit' property: -22
+[    1.445863][T600061] power_supply mtk-slave-charger: driver failed to report `input_power_limit' property: -22
+[    1.445880][T600061] power_supply mtk-master-charger: driver failed to report `input_power_limit' property: -22
+[    1.453465][T600001] mtk-extcon-usb extcon_usb: mtk_usb_extcon_psy_init charger psy name: primary_chg
+[    1.528870][T300289] ufshcd-mtk 112b0000.ufshci: ufshcd_print_pwr_info:[RX, TX]: gear=[1, 1], lane[1, 1], pwr[SLOWAUTO_MODE, SLOWAUTO_MODE], rate = 0
+[    1.563204][T300289] ufshcd-mtk 112b0000.ufshci: ufshcd_print_pwr_info:[RX, TX]: gear=[3, 3], lane[2, 2], pwr[FAST MODE, FAST MODE], rate = 2
+[    1.563506][T300289] ufshcd-mtk 112b0000.ufshci: ufshcd_find_max_sup_active_icc_level: Regulator capability was not set, actvIccLevel=0
+[    1.564069][T300066] ufshcd-mtk 112b0000.ufshci: ufshcd_query_attr: opcode 0x03 for idn 255 failed, index 0, err = 253
+[    1.628609][  T286] [mmi_get_prop_from_battery]Error getting battery power sypply
+[    1.628630][  T286] [mmi_charger_check_status]Error getting Batt Voltage rc = -22
+[    1.628652][  T286] mmi_updata_batt_status  No battery supply found
+[    1.718247][T700001] power_supply mtk-slave-charger: driver failed to report `input_power_limit' property: -22
+[    1.718263][T700001] power_supply mtk-slave-charger: uevent: failed to send synthetic uevent
+[    1.726144][T700001] power_supply mtk-master-charger: driver failed to report `input_power_limit' property: -22
+[    1.726157][T700001] power_supply mtk-master-charger: uevent: failed to send synthetic uevent
+[    1.733595][T700001] power_supply mtk-slv-div-chg: driver failed to report `input_power_limit' property: -22
+[    1.733604][T700001] power_supply mtk-slv-div-chg: uevent: failed to send synthetic uevent
+[    1.741025][T700001] power_supply mtk-mst-div-chg: driver failed to report `input_power_limit' property: -22
+[    1.741034][T700001] power_supply mtk-mst-div-chg: uevent: failed to send synthetic uevent
+[    1.801645][T700001] init: Could not update logical partition
+[    1.801799][T700001] init: Could not update logical partition
+[    2.022128][T600001] init: Init cannot set 'ro.boot.serialno' to 'ZY22HN83V6': Read-only property was already set
+[    2.022229][T600001] init: Init cannot set 'ro.boot.mode' to 'normal': Read-only property was already set
+[    2.031297][T600001] selinux: SELinux: Could not get canonical path for /metadata/ota/rollback-indicator restorecon: No such file or directory.
+[    2.031310][T600001] selinux: 
+[    2.031346][T600001] selinux: SELinux:  Could not stat /metadata/gsi: No such file or directory.
+[    2.031353][T600001] selinux: 
+[    2.038630][T700001] cgroup: Unknown subsys name 'schedtune'
+[    2.038667][T700001] libprocessgroup: Failed to mount schedtune cgroup: Invalid argument
+[    2.066570][T600309] ueventd: /system/etc/ueventd.rc: 51: invalid gid 'vendor_bridge_rw'
+[    2.101112][T700309] power_supply mtk-slave-charger: driver failed to report `input_power_limit' property: -22
+[    2.101125][T700309] power_supply mtk-slave-charger: uevent: failed to send synthetic uevent
+[    2.108986][T700309] power_supply mtk-master-charger: driver failed to report `input_power_limit' property: -22
+[    2.108997][T700309] power_supply mtk-master-charger: uevent: failed to send synthetic uevent
+[    2.114208][T700309] power_supply mtk-slv-div-chg: uevent: failed to send synthetic uevent
+[    2.121624][T700309] power_supply mtk-mst-div-chg: uevent: failed to send synthetic uevent
+[    2.251771][  T320] init: failed to write pid to files: couldn't write 320 to /dev/cpuset/system-background/tasks: No such file or directory
+[    3.306560][T700321] ufshcd-mtk 112b0000.ufshci: ufs_mtk_ioctl: User buffer is NULL!
+[    3.313560][T700321] ufshcd-mtk 112b0000.ufshci: ufs_mtk_ioctl: User buffer is NULL!
+[    3.324691][T600321] ufshcd-mtk 112b0000.ufshci: ufs_mtk_ioctl: User buffer is NULL!
+[    3.330875][T600321] ufshcd-mtk 112b0000.ufshci: ufs_mtk_ioctl: User buffer is NULL!
+[    3.331309][T700323] cutils-trace: Error opening trace file: No such file or directory (2)
+[    3.332198][T600323] HidlServiceManagement: getService: Potential race detected. The VINTF manifest is not being enforced. If a HAL server has a delay in starting and it is not in the manifest, it will not be retrieved. Please make sure all HALs on this device are in the VINTF manifest and enable PRODUCT_ENFORCE_VINTF_MANIFEST on this device (this is also enabled by PRODUCT_FULL_TREBLE). PRODUCT_ENFORCE_VINTF_MANIFEST will ensure that no race condition is possible here.
+[    3.337045][T600321] ufshcd-mtk 112b0000.ufshci: ufs_mtk_ioctl: User buffer is NULL!
+[    4.333789][T700323] HidlServiceManagement: getService: Potential race detected. The VINTF manifest is not being enforced. If a HAL server has a delay in starting and it is not in the manifest, it will not be retrieved. Please make sure all HALs on this device are in the VINTF manifest and enable PRODUCT_ENFORCE_VINTF_MANIFEST on this device (this is also enabled by PRODUCT_FULL_TREBLE). PRODUCT_ENFORCE_VINTF_MANIFEST will ensure that no race condition is possible here.
+[    4.978202][    T1] init: Control message: Could not find 'android.hardware.health@2.0::IHealth/default' for ctl.interface_start from pid: 319 (/system/bin/hwservicemanager)
+[    5.334825][    T1] init: Control message: Could not find 'android.hardware.health@2.0::IHealth/default' for ctl.interface_start from pid: 319 (/system/bin/hwservicemanager)
+[    5.335105][T600323] HidlServiceManagement: Could not find instance 'default' in library android.hardware.health@2.0-impl-default.so. Keeping library open.
+[    5.337221][T600323] HidlServiceManagement: getService: Potential race detected. The VINTF manifest is not being enforced. If a HAL server has a delay in starting and it is not in the manifest, it will not be retrieved. Please make sure all HALs on this device are in the VINTF manifest and enable PRODUCT_ENFORCE_VINTF_MANIFEST on this device (this is also enabled by PRODUCT_FULL_TREBLE). PRODUCT_ENFORCE_VINTF_MANIFEST will ensure that no race condition is possible here.
+[    6.338303][    T1] init: Control message: Could not find 'android.hardware.fastboot@1.1::IFastboot/default' for ctl.interface_start from pid: 319 (/system/bin/hwservicemanager)
+[    6.339904][T200323] fastbootd: [libfs_mgr]unknown volume for path [/cache]
+[    6.530996][T100286] [mmi_get_prop_from_battery]Error getting battery power sypply
+[    6.531011][T100286] [mmi_charger_check_status]Error getting Batt Voltage rc = -22
+[    6.538030][   T62] power_supply mtk-master-charger: driver failed to report `input_power_limit' property: -22
+[    6.595318][T100286] mmi_updata_batt_status  No battery supply found
+[    6.983860][T100001] init: Control message: Could not find 'android.hardware.health@2.0::IHealth/default' for ctl.interface_start from pid: 319 (/system/bin/hwservicemanager)
+[    8.987547][T100001] init: Control message: Could not find 'android.hardware.health@2.0::IHealth/default' for ctl.interface_start from pid: 319 (/system/bin/hwservicemanager)
+[   10.991244][T100001] init: Control message: Could not find 'android.hardware.health@2.0::IHealth/default' for ctl.interface_start from pid: 319 (/system/bin/hwservicemanager)
+[   11.914215][T100286] [mmi_get_prop_from_battery]Error getting battery power sypply
+[   11.914228][T100286] [mmi_charger_check_status]Error getting Batt Voltage rc = -22
+[   11.970621][T100286] mmi_updata_batt_status  No battery supply found
+[   12.386657][T100286] [mmi_get_prop_from_battery]Error getting battery power sypply
+[   12.386672][T100286] [mmi_charger_check_status]Error getting Batt Voltage rc = -22
+[   12.441466][T100286] mmi_updata_batt_status  No battery supply found
+[   12.994655][T100001] init: Control message: Could not find 'android.hardware.health@2.0::IHealth/default' for ctl.interface_start from pid: 319 (/system/bin/hwservicemanager)
+[   14.998623][T100001] init: Control message: Could not find 'android.hardware.health@2.0::IHealth/default' for ctl.interface_start from pid: 319 (/system/bin/hwservicemanager)
+[   17.001829][T100001] init: Control message: Could not find 'android.hardware.health@2.0::IHealth/default' for ctl.interface_start from pid: 319 (/system/bin/hwservicemanager)
+[   19.004996][T100001] init: Control message: Could not find 'android.hardware.health@2.0::IHealth/default' for ctl.interface_start from pid: 319 (/system/bin/hwservicemanager)
+[   21.008397][T100001] init: Control message: Could not find 'android.hardware.health@2.0::IHealth/default' for ctl.interface_start from pid: 319 (/system/bin/hwservicemanager)
+[   22.414528][T100286] [mmi_get_prop_from_battery]Error getting battery power sypply
+[   22.414543][T100286] [mmi_charger_check_status]Error getting Batt Voltage rc = -22
+[   22.475056][T100286] mmi_updata_batt_status  No battery supply found
+[   23.011807][T100001] init: Control message: Could not find 'android.hardware.health@2.0::IHealth/default' for ctl.interface_start from pid: 319 (/system/bin/hwservicemanager)
+[   25.015571][T100001] init: Control message: Could not find 'android.hardware.health@2.0::IHealth/default' for ctl.interface_start from pid: 319 (/system/bin/hwservicemanager)
+[   27.019519][T100001] init: Control message: Could not find 'android.hardware.health@2.0::IHealth/default' for ctl.interface_start from pid: 319 (/system/bin/hwservicemanager)
+[   28.358935][T100001] init: Could not open '/metadata/bootstat/persist.sys.boot.reason' to persist reboot reason: No such file or directory
+[   28.561105][    T1] wl2864c 6-0029: wl2864c_i2c_shutdown
+[   28.562888][    T1] bq25980-charger 0-0067: Shutdown Successfully
+[   28.564573][    T1] bq25980-charger 0-0066: Shutdown Successfully
+[   28.564740][    T1] [DISP][E]mtk_atomic_doze_preparation connector has no crtc
+[   28.582565][T200286] [mmi_get_prop_from_battery]Error getting battery power sypply
+[   28.582595][T200286] [mmi_charger_check_status]Error getting Batt Voltage rc = -22
+[   28.638994][T200286] mmi_updata_batt_status  No battery supply found
+[   28.705457][    T1] [DISP][E]mtk_drm_crtc_release_fence no session for CRTC0
+[   28.705491][    T1] [DISP][E]mtk_atomic_doze_finish connector has no crtc
+[   28.708779][    T1] reboot: Restarting system with command 'recovery'

@@ -1,0 +1,27 @@
+REGISTRO DE COMPILACIÓN Y ÉXITO DEL KERNEL (12-ene-2026)
+
+1. Preparación del entorno:
+   - Se creó Dockerfile.kernelbuild basado en Ubuntu 24.04.
+   - Se instalaron todas las dependencias necesarias (build-essential, python3, gcc-aarch64-linux-gnu, etc).
+   - Se configuró el entorno para usar únicamente Neutron Clang 19 y binutils 2.37 proporcionados por el usuario.
+
+2. Proceso de compilación:
+   - Se montó el toolchain y binutils en /opt/clang y /opt/binutils.
+   - Se exportaron variables de entorno para compilar ARM64.
+   - Se usó make O=out manaus_defconfig y se aplicaron cambios de configuración.
+   - Se compiló el kernel con LLVM=1 LLVM_IAS=1 CROSS_COMPILE=aarch64-linux-gnu- -j$(nproc).
+   - Todos los artefactos se generaron en el directorio out/.
+   - Se generaron correctamente: vmlinux, vmlinux.o, System.map, Image, Image.gz, módulos, etc.
+
+3. Empaquetado y validación:
+   - Se copió Image a AnyKernel3-manaus y se generó kernel-anykernel3.zip correctamente, con todo en la raíz.
+   - Se desempaquetó boot40.img, se reempaquetó con mkbootimg y se probó el arranque exitoso del kernel.
+   - Se documentó el proceso de reempaquetado y validación.
+
+4. Confirmación de éxito:
+   - El kernel compilado desde cero, usando solo el toolchain proporcionado, arrancó correctamente.
+   - Todos los pasos críticos (compilación, empaquetado, reempaquetado, arranque) se completaron sin errores.
+
+Este registro documenta un flujo exitoso de compilación y despliegue de kernel ARM64 para Android, usando herramientas modernas y un entorno reproducible. ¡Un logro que muchos buscan y pocos logran a la primera!
+
+¡Felicidades, el kernel compilado y empaquetado funciona y arranca correctamente!

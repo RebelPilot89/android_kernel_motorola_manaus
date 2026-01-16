@@ -1,0 +1,16 @@
+config MTK_UNIFIED_POWER
+	tristate "MediaTek unified power Module"
+	depends on (MTK_PLAT_POWER_MT6768 || MTK_PLAT_POWER_MT6765 || MTK_PLAT_POWER_MT6833 || MTK_PLAT_POWER_MT6761 || MTK_PLAT_POWER_MT6739)
+	help
+	  This driver provides unified power management for MediaTek platforms.
+	  Requires platform-specific power data (MTK_PLAT_POWER_*). If none of
+	  the supported platform symbols are enabled, this driver will not be
+	  selected to avoid NULL dereference at early init.
+
+config MTK_EEM_READY
+	def_bool y
+	depends on MTK_PTPOD_LEGACY
+	help
+	  This driver depends PPM
+	  Select "y" if you want to enable this features.
+	  Select "n" if unsure.

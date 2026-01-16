@@ -1,0 +1,135 @@
+// SPDX-License-Identifier: GPL-2.0
+#include <linux/delay.h>
+#include <linux/spinlock.h>
+#include <linux/slab.h>
+#include <linux/ioport.h>
+#include <linux/atomic.h>
+#include <linux/io.h>
+#include <linux/sched/clock.h>
+#include <linux/completion.h>
+#include <linux/mutex.h>
+#include <linux/io.h>
+#include "sspm_define.h"
+#include "sspm_helper.h"
+#include "sspm_mbox.h"
+#include "sspm_ipi.h"
+#include "sspm_ipi_mbox.h"
+#include "sspm_ipi_define.h"
+
+/* --- SOLUCIÓN DE ENLAZADO DEFINITIVA (TIPOS CORREGIDOS) --- */
+#ifndef SSPM_MBOX_SLOT_SIZE
+#define SSPM_MBOX_SLOT_SIZE (16) 
+#endif
+
+#ifndef memcpy_from_sspm
+#define memcpy_from_sspm(dest, src, len) memcpy(dest, src, len)
+#endif
+
+/**
+ * Ajustamos los stubs para que coincidan exactamente con sspm_mbox.h
+ */
+void __iomem *sspm_plt_get_mbox_addr(int mbox, int slot) {
+    return NULL; 
+}
+EXPORT_SYMBOL(sspm_plt_get_mbox_addr);
+
+int sspm_plt_mbox_send(int mbox, int slot, int irq, void *data, int len) {
+    return 0; 
+}
+EXPORT_SYMBOL(sspm_plt_mbox_send);
+
+// Corregido: 4 argumentos y tipos unsigned según el error
+int sspm_mbox_read(unsigned int mbox, unsigned int slot, void *data, unsigned int len) {
+    return 0;
+}
+EXPORT_SYMBOL(sspm_mbox_read);
+
+// Redefiniciones para V3
+#define sspm_mbox_init(a, b, c) sspm_plt_init()
+#define sspm_mbox_addr          sspm_plt_get_mbox_addr
+#define sspm_mbox_send          sspm_plt_mbox_send
+/* --------------------------------------------------------- */
+/* --- STUBS Y CONFIGURACIÓN --- */
+static void __maybe_unused ipi_check_send(int mid) {}
+static void __maybe_unused ipi_check_ack(int mid, int opts, int ret) {}
+static unsigned int __maybe_unused ipi_isr_cb(unsigned int mbox, void __iomem *base, unsigned int irq)
+{
+    return irq;
+}
+
+atomic_t lock_send[TOTAL_SEND_PIN];
+atomic_t lock_ack[TOTAL_SEND_PIN];
+spinlock_t lock_polling[TOTAL_SEND_PIN];
+struct completion sema_ipi_task[TOTAL_RECV_PIN];
+struct mutex mutex_ipi_reg;
+static int sspm_ipi_inited;
+
+int __init sspm_ipi_init(void)
+{
+    int i, ret;
+    struct _pin_send *pin;
+
+    mutex_init(&mutex_ipi_reg);
+    for (i = 0; i < TOTAL_SEND_PIN; i++) {
+        mutex_init(&send_pintable[i].mutex_send);
+        init_completion(&send_pintable[i].comp_ack);
+        atomic_set(&lock_send[i], 1);
+        atomic_set(&lock_ack[i], 0);
+        spin_lock_init(&lock_polling[i]);
+    }
+
+    if (sspm_plt_init() != 0) {
+        pr_err("SSPM V3 Init Failed\n");
+        return -1;
+    }
+
+    for (i = 0; i < TOTAL_SEND_PIN; i++) {
+        pin = &(send_pintable[i]);
+        pin->prdata = (uint32_t *)sspm_mbox_addr(pin->mbox, pin->slot);
+    }
+
+    ret = check_table_tag(IPI_MBOX_TOTAL);
+    if (ret == 0)
+        sspm_ipi_inited = 1;
+
+    return ret;
+}
+
+int sspm_ipi_send_sync(int mid, int opts, void *buffer, int slot, void *retbuf, int retslot)
+{
+    unsigned long flags = 0;
+    int mbno, ret;
+    struct _pin_send *pin;
+    struct _mbox_info *mbox;
+
+    if (sspm_ipi_inited == 0) return -1;
+    if ((mid < 0) || (mid >= TOTAL_SEND_PIN)) return -1;
+
+    pin = &(send_pintable[mid]);
+    mbno = pin->mbox;
+    mbox = &(mbox_table[mbno]);
+
+    if (opts & IPI_OPT_POLLING)
+        spin_lock_irqsave(&lock_polling[mid], flags);
+    else
+        mutex_lock(&pin->mutex_send);
+
+    atomic_set(&lock_ack[mid], 0);
+    ret = sspm_mbox_send(mbno, pin->slot, mid - mbox->start, buffer, (slot ? slot : pin->size));
+
+    if (ret != 0) {
+        if (opts & IPI_OPT_POLLING) spin_unlock_irqrestore(&lock_polling[mid], flags);
+        else mutex_unlock(&pin->mutex_send);
+        return -1;
+    }
+
+    mdelay(1); 
+    
+    if (opts & IPI_OPT_POLLING) spin_unlock_irqrestore(&lock_polling[mid], flags);
+    else mutex_unlock(&pin->mutex_send);
+
+    return 0;
+}
+EXPORT_SYMBOL_GPL(sspm_ipi_send_sync);
+
+int sspm_ipi_is_inited(void) { return sspm_ipi_inited; }

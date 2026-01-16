@@ -1,0 +1,127 @@
+--- drivers/iommu/mtk_iommu.c (líneas 2490-2530) ---
+
+	if (MTK_IOMMU_HAS_FLAG(data->plat_data, IOMMU_NO_IRQ))
+		goto skip_irq;
+
+	data->irq = platform_get_irq(pdev, 0);
+	if (data->irq < 0) {
+		pr_err("%s, %s(%d,%d) can not irq!!\n", __func__, dev_name(dev),
+			data->plat_data->iommu_type, data->plat_data->iommu_id);
+		return data->irq;
+	}
+skip_irq:
+	/*
+	 * Note: we must be find iommu bank from bank1;
+	 * And if iommu upstream, we need to merged with bank0.
+	 */
+	if (MTK_IOMMU_HAS_FLAG(data->plat_data, IOMMU_SEC_BK_EN)) {
+		int bk_nr = of_count_phandle_with_args(dev->of_node,
+					     "mediatek,iommu_banks", NULL);
+
+		if (bk_nr >= IOMMU_BK_NUM || bk_nr < 0) {
+			pr_info("%s, get bank nr fail, %d\n", __func__, bk_nr);
+			goto out;
+		}
+		pr_info("%s, get bank nr:%d\n", __func__, bk_nr);
+
+		for (i = 0; i < bk_nr; i++) {
+	}
+
+--- drivers/scsi/ufs/ufs-sysfs.c (líneas 1-30) ---
+
+// SPDX-License-Identifier: GPL-2.0
+// Copyright (C) 2018 Western Digital Corporation
+
+#include <linux/err.h>
+#include <linux/string.h>
+#include <linux/bitfield.h>
+#include <asm/unaligned.h>
+
+#include "ufs.h"
+#include "ufs-sysfs.h"
+
+#include <trace/hooks/ufshcd.h>
+
+static const char *ufschd_uic_link_state_to_string(
+			enum uic_link_state state)
+{
+	switch (state) {
+	case UIC_LINK_OFF_STATE:	return "OFF";
+	case UIC_LINK_ACTIVE_STATE:	return "ACTIVE";
+	case UIC_LINK_HIBERN8_STATE:	return "HIBERN8";
+	case UIC_LINK_BROKEN_STATE:	return "BROKEN";
+	default:			return "UNKNOWN";
+	}
+}
+
+static const char *ufschd_ufs_dev_pwr_mode_to_string(
+			enum ufs_dev_pwr_mode state)
+{
+	switch (state) {
+	case UFS_ACTIVE_PWR_MODE:	return "ACTIVE";
+
+--- drivers/scsi/ufs/ufs-debugfs.c (líneas 1-30) ---
+
+// SPDX-License-Identifier: GPL-2.0
+// Copyright (C) 2020 Intel Corporation
+
+#include <linux/debugfs.h>
+
+#include "ufs-debugfs.h"
+#include "ufshcd.h"
+
+static struct dentry *ufs_debugfs_root;
+
+void __init ufs_debugfs_init(void)
+{
+	ufs_debugfs_root = debugfs_create_dir("ufshcd", NULL);
+}
+
+void __exit ufs_debugfs_exit(void)
+{
+	debugfs_remove_recursive(ufs_debugfs_root);
+}
+
+static int ufs_debugfs_stats_show(struct seq_file *s, void *data)
+{
+	struct ufs_hba *hba = s->private;
+	struct ufs_event_hist *e = hba->ufs_stats.event;
+
+#define PRT(fmt, typ) \
+	seq_printf(s, fmt, e[UFS_EVT_ ## typ].cnt)
+
+	PRT("PHY Adapter Layer errors (except LINERESET): %llu\n", PA_ERR);
+	PRT("Data Link Layer errors: %llu\n", DL_ERR);
+
+--- drivers/scsi/ufs/vendor/ufs-manual-gc.c (líneas 1-30) ---
+
+// SPDX-License-Identifier: GPL-2.0-or-later
+/*
+ * Pixel-Specific UFS feature support
+ *
+ * Copyright 2020 Google LLC
+ *
+ * Authors: Jaegeuk Kim <jaegeuk@google.com>
+ */
+
+#include "ufs-mediatek.h"
+#include <trace/hooks/ufshcd.h>
+
+
+extern struct workqueue_struct *system_highpri_wq;
+
+/* for manual gc */
+static ssize_t manual_gc_show(struct device *dev,
+			struct device_attribute *attr, char *buf)
+{
+	struct ufs_hba *hba = dev_get_drvdata(dev);
+	struct ufs_mtk_host *ufs = ufshcd_get_variant(hba);
+	u32 status = MANUAL_GC_OFF;
+
+	if (ufs->manual_gc.state == MANUAL_GC_DISABLE)
+		return scnprintf(buf, PAGE_SIZE, "%s", "disabled\n");
+
+	if (ufs->manual_gc.hagc_support) {
+		int err;
+
+		if (!ufshcd_eh_in_progress(hba)) {

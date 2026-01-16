@@ -1,0 +1,9 @@
+// SPDX-License-Identifier: GPL-2.0
+/*
+ * Camera DTSI for Manaus
+ */
+
+#include <dt-bindings/gpio/gpio.h>
+
+// Este archivo puede estar vacío o contener configuraciones básicas
+// Las configuraciones específicas deberían estar en los archivos DVT

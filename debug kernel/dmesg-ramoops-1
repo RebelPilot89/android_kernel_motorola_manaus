@@ -1,0 +1,62 @@
+Panic#2 Part1
+<6>[    1.099228][    T1] [register_battery_oc_notify] prio_val=0
+<7>[    1.099247][    T1] probe of cpu_power_throttling returned 1 after 43 usecs
+<7>[    1.099310][    T1] initcall cpu_power_throttling_driver_init+0x0/0x40 returned 0 after 245 usecs
+<7>[    1.099314][    T1] calling  mt63xx_oc_debug_driver_init+0x0/0x40 @ 1
+<7>[    1.099521][    T1] initcall mt63xx_oc_debug_driver_init+0x0/0x40 returned 0 after 198 usecs
+<7>[    1.099525][    T1] calling  pmic_oc_debug_driver_init+0x0/0x40 @ 1
+<7>[    1.099923][    T1] probe of pmic-oc-debug returned -517 after 0 usecs
+<7>[    1.099944][    T1] initcall pmic_oc_debug_driver_init+0x0/0x40 returned 0 after 405 usecs
+<7>[    1.099948][    T1] calling  cpuhp_init+0x0/0x7c @ 1
+<7>[    1.100222][    T1] initcall cpuhp_init+0x0/0x7c returned 0 after 263 usecs
+<7>[    1.100226][    T1] calling  upower_init+0x0/0x91c @ 1
+<1>[    1.100237][    T1] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000000
+<1>[    1.100247][    T1] Mem abort info:
+<1>[    1.100251][    T1]   ESR = 0x96000045
+<1>[    1.100257][    T1]   EC = 0x25: DABT (current EL), IL = 32 bits
+<1>[    1.100260][    T1]   SET = 0, FnV = 0
+<1>[    1.100264][    T1]   EA = 0, S1PTW = 0
+<1>[    1.100268][    T1] Data abort info:
+<1>[    1.100271][    T1]   ISV = 0, ISS = 0x00000045
+<1>[    1.100275][    T1]   CM = 0, WnR = 1
+<1>[    1.100279][    T1] [0000000000000000] user address but active_mm is swapper
+<0>[    1.100285][    T1] Internal error: Oops: 96000045 [#1] PREEMPT SMP
+<4>[    1.100292][    T1] Modules linked in:
+<4>[    1.100301][    T1] CPU: 7 PID: 1 Comm: swapper/0 Not tainted 5.10.233-g6e5e6fdd4e6f-dirty #1
+<4>[    1.100305][    T1] Hardware name: MT6879V_T/ZA (DT)
+<4>[    1.100310][    T1] pstate: 80800005 (Nzcv daif -PAN +UAO -TCO BTYPE=--)
+<4>[    1.100315][    T1] pc : upower_init+0x80/0x91c
+<4>[    1.100319][    T1] lr : upower_init+0x64/0x91c
+<4>[    1.100323][    T1] sp : ffffffc00808bbf0
+<4>[    1.100327][    T1] x29: ffffffc00808bbf0 x28: 0000000000000000 
+<4>[    1.100334][    T1] x27: 0000000000000000 x26: ffffffd691cef000 
+<4>[    1.100341][    T1] x25: ffffffd691cef000 x24: ffffffd691cef000 
+<4>[    1.100347][    T1] x23: 0000000000000000 x22: ffffff80c02e4a00 
+<4>[    1.100353][    T1] x21: ffffffd691cef000 x20: ffffff80c01bca28 
+<4>[    1.100359][    T1] x19: ffffffd6922fd000 x18: ffffffc008083038 
+<4>[    1.100365][    T1] x17: 0000000000003f53 x16: ffffffd691d78000 
+<4>[    1.100371][    T1] x15: ffffffd691d8c000 x14: 0000000000017bd6 
+<4>[    1.100377][    T1] x13: 0000000000000222 x12: ffffffd6922fe000 
+<4>[    1.100383][    T1] x11: 0000000000000001 x10: 0000000000000000 
+<4>[    1.100389][    T1] x9 : 0000000000000000 x8 : ffffffd6922fd000 
+<4>[    1.100395][    T1] x7 : 0000000000004311 x6 : 000000000000000c 
+<4>[    1.100401][    T1] x5 : 00000000ffffffff x4 : 0000000000000000 
+<4>[    1.100407][    T1] x3 : ffffffc00808b858 x2 : ffffffc00808b860 
+<4>[    1.100413][    T1] x1 : 0000000000000003 x0 : 0000000000001800 
+<4>[    1.100419][    T1] Call trace:
+<4>[    1.100424][    T1]  upower_init+0x80/0x91c
+<4>[    1.100431][    T1]  do_one_initcall+0x18c/0x76c
+<4>[    1.100436][    T1]  do_initcall_level+0xd4/0x108
+<4>[    1.100441][    T1]  do_initcalls+0x8c/0xec
+<4>[    1.100446][    T1]  do_basic_setup+0xa0/0xb8
+<4>[    1.100451][    T1]  kernel_init_freeable+0x40c/0x514
+<4>[    1.100458][    T1]  kernel_init+0x18/0x224
+<4>[    1.100463][    T1]  ret_from_fork+0x10/0x30
+<0>[    1.100470][    T1] Code: b40001c0 aa1f03ea 5280002b 9000528c (382a693f) 
+<4>[    1.100479][    T1] ---[ end trace e283c08648b39553 ]---
+<0>[    1.110820][    T1] Kernel panic - not syncing: Oops: Fatal exception
+<2>[    1.110831][    T1] SMP: stopping secondary CPUs
+<0>[    1.110857][    T1] Kernel Offset: 0x1686000000 from 0xffffffc008000000
+<0>[    1.110861][    T1] PHYS_OFFSET: 0x40000000
+<0>[    1.110866][    T1] CPU features: 0x002,48040026,6a80a238
+<0>[    1.110870][    T1] Memory Limit: none

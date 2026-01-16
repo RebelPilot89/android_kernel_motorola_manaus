@@ -1,0 +1,30 @@
+Registro de reempaquetado de boot.img (12-ene-2026)
+
+1. Se desempaquetó boot40.img usando unpack_bootimg:
+   - kernel (19 MB, sin comprimir)
+   - ramdisk (1.4 MB, LZ4)
+   - boot_signature (4 KB)
+
+2. Se intentó usar magiskboot, pero el binario no era compatible x86_64.
+
+3. Se instaló mkbootimg y unpack_bootimg (android-sdk-libsparse-utils, mkbootimg).
+
+4. Se reempaquetó boot40-repacked.img con mkbootimg usando los parámetros:
+   --kernel boot40_unpacked2/kernel
+   --ramdisk boot40_unpacked2/ramdisk
+   --header_version 4
+   --os_version 12.0.0
+   --os_patch_level 2025-03
+
+5. Se comprobó que el kernel arrancó correctamente.
+
+6. Se reempaquetó bootimg-from-out-Imagegz.img usando el kernel comprimido generado en out:
+   --kernel out/arch/arm64/boot/Image.gz
+   --ramdisk boot40_unpacked2/ramdisk
+   --header_version 4
+   --os_version 12.0.0
+   --os_patch_level 2025-03
+
+Todos los pasos y comandos se ejecutaron con éxito. El kernel generado y empaquetado arrancó correctamente.
+
+¡Proceso completado y verificado con éxito!

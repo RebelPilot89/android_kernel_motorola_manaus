@@ -1,0 +1,1 @@
+-Wno-error -Wno-implicit-function-declaration -Wno-int-to-void-pointer-cast -Wno-macro-redefined
