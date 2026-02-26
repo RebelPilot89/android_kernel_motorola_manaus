@@ -1,0 +1,16 @@
+# drivers/misc/mediatek/connectivity/bt/Kconfig
+
+menuconfig MTK_CONN_BT
+	tristate "MediaTek Bluetooth Driver Support"
+	depends on MTK_CONNECTIVITY && MTK_CONN_COMMON
+	default y
+	help
+	  Habilita el soporte para el driver de Bluetooth de MediaTek.
+	  Este driver es necesario para las funcionalidades de BT/BLE en dispositivos MTK.
+
+if MTK_CONN_BT
+
+# Enlazamos con el Kconfig del SoC específico que acabas de organizar
+source "drivers/misc/mediatek/connectivity/bt/mt6879/Kconfig"
+
+endif # MTK_CONN_BT

@@ -1,0 +1,158 @@
+make[1]: se entra en el directorio '/home/rebelpilot89/manaus-kernel/out'
+  GEN     Makefile
+../scripts/Makefile.asm-generic:25: redundant generic-y found in arch/arm64/include/asm/Kbuild: set_memory.h
+  CALL    ../scripts/atomic/check-atomics.sh
+  CALL    ../scripts/checksyscalls.sh
+  CHK     include/generated/compile.h
+  CC      arch/arm64/kvm/arm.o
+MTK_GPU_VERSION = mali avalon r49p1
+*GPU BM QoS 2.0 QOS Framework defined
+*GPU [mtk-Kbuild] building r49p1 DDK ...
+*GPU defined GPU BM QoS 2.0 for MT6879
+*GPU [mtk-Kbuild] CONFIG_DEBUG_FS = y
+*GPU [mtk-Kbuild] CONFIG_PROC_FS = y
+*GPU [mtk-Kbuild] CONFIG_MTK_GPU_COMMON_DVFS_SUPPORT = y
+*GPU [mtk-Kbuild] CONFIG_MTK_GPU_SUPPORT = y
+*GPU [mtk-Kbuild] CONFIG_MTK_GPU_VERSION = "mali avalon r49p1"
+*GPU [mtk-Kbuild] MTK_GPU_VERSION = 
+*GPU [mtk-Kbuild] MTK_PLATFORM = mt6879
+*GPU [mtk-Kbuild] CONFIG_MALI_MIDGARD = y
+*GPU [mtk-Kbuild] CONFIG_MALI_PLATFORM_NAME = mt6879
+*GPU [mtk-Kbuild] CONFIG_MALI_CSF_SUPPORT = 
+*GPU [mtk-Kbuild] CONFIG_MALI_REAL_HW = y
+*GPU [mtk-Kbuild] CONFIG_MALI_NO_MALI = 
+*GPU [mtk-Kbuild] CONFIG_MALI_DEBUG = y
+*GPU [mtk-Kbuild] CONFIG_MALI_MIDGARD_DVFS = y
+*GPU [mtk-Kbuild] CONFIG_MALI_DEVFREQ = y
+*GPU [mtk-Kbuild] CONFIG_MALI_MTK_DEBUG = y
+*GPU [mtk-Kbuild] CONFIG_MALI_MTK_DEBUG_DFD = y
+*GPU [mtk-Kbuild] CONFIG_MALI_MTK_MEM_TRACK = y
+*GPU [mtk-Kbuild] CONFIG_MALI_MTK_DEVFREQ = y
+*GPU [mtk-Kbuild] CONFIG_MALI_MTK_DEVFREQ_THERMAL = y
+*GPU [mtk-Kbuild] CONFIG_MALI_MTK_GPU_BM_2 = y
+*GPU [mtk-Kbuild] CONFIG_MALI_MTK_BRINGUP = 
+*GPU [mtk-Kbuild] CONFIG_MALI_MTK_NO_THERMAL = 
+  AR      arch/arm64/kvm/built-in.a
+  AR      arch/arm64/built-in.a
+************  drivers/trusty/mtee-kree mk ************
+../drivers/misc/mediatek/cameraisp/dip/Makefile:14: "isp6s"
+..
+  AR      drivers/gpu/drm/panel/built-in.a
+..
+fdvt tina
+Tina add dma: 
+..
+  CC      drivers/gpu/drm/mediatek/mediatek_v2/mtk_drm_crtc.o
+  CC      drivers/gpu/drm/mediatek/mml/mtk-mml-tp-mt6879.o
+mot_dubai_ak7377a-objs : mot_dubai_ak7377.o dw9781_circle_test.o dw9781_i2c.o dw9781.o
+  CC      drivers/gpu/drm/mediatek/mediatek_v2/mtk_drm_gem.o
+../drivers/gpu/drm/mediatek/mml/mtk-mml-tp-mt6879.c:154:10: error: no member named 'sys_en' in 'struct mml_topology_path'
+  154 |                         path->sys_en[mml_sys_frame] = true;
+      |                         ~~~~  ^
+../drivers/gpu/drm/mediatek/mml/mtk-mml-tp-mt6879.c:154:17: error: use of undeclared identifier 'mml_sys_frame'; did you mean 'mml_sys_driver'?
+  154 |                         path->sys_en[mml_sys_frame] = true;
+      |                                      ^~~~~~~~~~~~~
+      |                                      mml_sys_driver
+../drivers/gpu/drm/mediatek/mml/mtk-mml-driver.h:204:31: note: 'mml_sys_driver' declared here
+  204 | extern struct platform_driver mml_sys_driver;
+      |                               ^
+../drivers/gpu/drm/mediatek/mml/mtk-mml-tp-mt6879.c:154:16: error: array subscript is not an integer
+  154 |                         path->sys_en[mml_sys_frame] = true;
+      |                                     ^~~~~~~~~~~~~~
+3 errors generated.
+make[6]: *** [../scripts/Makefile.build:273: drivers/gpu/drm/mediatek/mml/mtk-mml-tp-mt6879.o] Error 1
+make[5]: *** [../scripts/Makefile.build:516: drivers/gpu/drm/mediatek/mml] Error 2
+make[5]: *** Se espera a que terminen otras tareas....
+  CC      drivers/gpu/drm/mediatek/mediatek_v2/mtk_drm_plane.o
+framesync_drv: frame-sync
+virt-sensor: virt-sensor
+common_drv : mot_manaus_ov50a_mipi_raw mot_manaus_ov32b_mipi_raw mot_manaus_hi1336_mipi_raw
+imgsensor-objs : adaptor-hw.o adaptor-drv.o adaptor-i2c.o adaptor-ctrls.o adaptor-ioctl.o adaptor-common-ctrl.o  frame-sync/frame_sync.o frame-sync/frame_sync_algo.o frame-sync/frame_monitor.o frame-sync/frame_sync_util.o frame-sync/frame_sync_console.o frame-sync/hw_sensor_sync_algo.o frame-sync/custom/custom_hw_sync.o  virt-sensor/virt-sensor-drv.o  common/mot_manaus_ov50a_mipi_raw/mot_ov50amipiraw_Sensor.o common/mot_manaus_ov32b_mipi_raw/mot_manaus_ov32bmipiraw_Sensor.o common/mot_manaus_hi1336_mipi_raw/mot_hi1336mipiraw_Sensor.o
+subdir-ccflags-y : -I../drivers/misc/mediatek/imgsensor/inc -I/home/rebelpilot89/manaus-kernel/drivers/misc/mediatek/imgsensor/src-v4l2/ -I../drivers/media/platform/mtk-isp/ -I../drivers/media/platform/mtk-isp/camsys/isp7_1/cam/  -I/home/rebelpilot89/manaus-kernel/drivers/misc/mediatek/imgsensor/src-v4l2/frame-sync  -I/home/rebelpilot89/manaus-kernel/drivers/misc/mediatek/imgsensor/src-v4l2/virt-sensor  -D'IMGSENSOR_SUBDRVS=E(mot_manaus_ov50a_mipi_raw),E(mot_manaus_ov32b_mipi_raw),E(mot_manaus_hi1336_mipi_raw)'
+../drivers/gpu/drm/mediatek/mediatek_v2/mtk_drm_crtc.c:763:23: error: unused variable 'comp' [-Werror,-Wunused-variable]
+  763 |         struct mtk_ddp_comp *comp = mtk_crtc_get_comp(&mtk_crtc->base, 0, 0);
+      |                              ^~~~
+../drivers/gpu/drm/mediatek/mediatek_v2/mtk_drm_crtc.c:859:6: error: unused variable 'index' [-Werror,-Wunused-variable]
+  859 |         int index = drm_crtc_index(crtc);
+      |             ^~~~~
+../drivers/gpu/drm/mediatek/mediatek_v2/mtk_drm_crtc.c:1047:6: error: unused variable 'index' [-Werror,-Wunused-variable]
+ 1047 |         int index = drm_crtc_index(crtc);
+      |             ^~~~~
+  CC      drivers/gpu/drm/mediatek/mediatek_v2/mtk_dsi.o
+../drivers/gpu/drm/mediatek/mediatek_v2/mtk_drm_crtc.c:1393:23: error: unused variable 'comp' [-Werror,-Wunused-variable]
+ 1393 |         struct mtk_ddp_comp *comp = mtk_crtc_get_comp(&mtk_crtc->base, 0, 0);
+      |                              ^~~~
+imgsensor-virt-sensor-objs : imgsensor-glue.o 
+subdir-ccflags-y : -I../drivers/misc/mediatek/imgsensor/inc -I/home/rebelpilot89/manaus-kernel/drivers/misc/mediatek/imgsensor/src-v4l2/imgsensor-glue/ 
+  CC      drivers/gpu/drm/mediatek/mediatek_v2/mtk_mipi_tx.o
+../drivers/gpu/drm/mediatek/mediatek_v2/mtk_drm_crtc.c:5984:6: error: unused variable 'index' [-Werror,-Wunused-variable]
+ 5984 |         int index = drm_crtc_index(crtc);
+      |             ^~~~~
+../drivers/gpu/drm/mediatek/mediatek_v2/mtk_drm_crtc.c:6633:23: error: unused variable 'mtk_crtc' [-Werror,-Wunused-variable]
+ 6633 |         struct mtk_drm_crtc *mtk_crtc = to_mtk_crtc(crtc);
+      |                              ^~~~~~~~
+../drivers/gpu/drm/mediatek/mediatek_v2/mtk_drm_crtc.c:7562:6: error: unused variable 'index' [-Werror,-Wunused-variable]
+ 7562 |         int index = drm_crtc_index(crtc);
+      |             ^~~~~
+../drivers/gpu/drm/mediatek/mediatek_v2/mtk_drm_crtc.c:7843:6: error: unused variable 'index' [-Werror,-Wunused-variable]
+ 7843 |         int index = drm_crtc_index(crtc);
+      |             ^~~~~
+"imgsys, subdir-ccflags-y = -DWPE_TF_DUMP_71_2 -DONEPIXEL_MODE"
+  CC      drivers/gpu/drm/mediatek/mediatek_v2/mtk_writeback.o
+"imgsys, subdir-ccflags-y = -DTF_DUMP_71_2"
+os option: linux
+$MTK_PLATFORM is [mt6879]
+$WLAN_CHIP_ID is [6879]
+$MTK_COMBO_CHIP is [CONNAC]
+../drivers/gpu/drm/mediatek/mediatek_v2/mtk_drm_crtc.c:7490:3: error: 'mtk_dprec_logger_pr' requires 'double' type support, but ABI 'aapcs' does not support it
+ 7490 |                 DDPDBG("[Msync] min fps:%f, fps:%d, time_diff:%d\n", MSYNC_MIN_FPS, fps, time_diff);
+      |                 ^
+../drivers/gpu/drm/mediatek/mediatek_v2/mtk_log.h:46:3: note: expanded from macro 'DDPDBG'
+   46 |                 mtk_dprec_logger_pr(DPREC_LOGGER_DEBUG, fmt, ##arg);           \
+      |                 ^
+../drivers/gpu/drm/mediatek/mediatek_v2/mtk_drm_crtc.c:7490:3: error: 'printk' requires 'double' type support, but ABI 'aapcs' does not support it
+../drivers/gpu/drm/mediatek/mediatek_v2/mtk_log.h:48:4: note: expanded from macro 'DDPDBG'
+   48 |                         pr_info("[DISP]" pr_fmt(fmt), ##arg);     \
+      |                         ^
+../include/linux/printk.h:419:2: note: expanded from macro 'pr_info'
+  419 |         printk(KERN_INFO pr_fmt(fmt), ##__VA_ARGS__)
+      |         ^
+../drivers/misc/mediatek/connectivity/wlan/Makefile:613: wlan_6879_axi build-in boot.img
+10 errors generated.
+make[6]: *** [../scripts/Makefile.build:273: drivers/gpu/drm/mediatek/mediatek_v2/mtk_drm_crtc.o] Error 1
+make[6]: *** Se espera a que terminen otras tareas....
+../drivers/misc/mediatek/ccu/src/Makefile:17: CCU_MAKE_FILE_CALLED_2_1_1
+"mt6879"
+CCU_MAKE_FILE_CALLED
+y
+
+mt6879
+
+
+..
+"CONFIG_MICROTRUST_TEE_VERSION="400""
+"CONFIG_MICROTRUST_TEE_SUPPORT=y"
+"CONFIG_MICROTRUST_TZ_DRIVER=y"
+"CONFIG_MICROTRUST_VFS_DRIVER=y"
+"CONFIG_MICROTRUST_FP_DRIVER=y"
+"CONFIG_MICROTRUST_DEBUG="
+"CONFIG_MICROTRUST_TEST_DRIVERS="
+"-----------CONFIG_MTPROF="
+"-----------MICROTRUST_TZ_DRIVER_MTK_BOOTPROF="
+"whf src=drivers/tee/teei/400"
+"whf subdir-ccflags-y=-I../drivers/tee/teei/400/common/include"
+"whf ccflags-y="
+"=----------------1---------------------------"
+"=----------------2---------------------------"
+-- KernelSU-Next Git repo detected at: /home/rebelpilot89/manaus-kernel/drivers/kernelsu
+-- KernelSU-Next version: 33024
+-- KernelSU-Next tag: v3.1.0
+-- KernelSU-Next Manager signature size: 0x3e6
+-- KernelSU-Next Manager signature hash: 79e590113c4c4c0c222978e413a5faa801666957b1212a328e46c00c69821bf7
+make[5]: *** [../scripts/Makefile.build:516: drivers/gpu/drm/mediatek/mediatek_v2] Error 2
+make[4]: *** [../scripts/Makefile.build:516: drivers/gpu/drm/mediatek] Error 2
+make[3]: *** [../scripts/Makefile.build:516: drivers/gpu/drm] Error 2
+make[2]: *** [../scripts/Makefile.build:516: drivers/gpu] Error 2
+make[1]: *** [/home/rebelpilot89/manaus-kernel/Makefile:1908: drivers] Error 2
+make[1]: se sale del directorio '/home/rebelpilot89/manaus-kernel/out'
+make: *** [Makefile:185: __sub-make] Error 2

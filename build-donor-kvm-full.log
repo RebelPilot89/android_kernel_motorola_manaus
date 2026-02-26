@@ -1,0 +1,361 @@
+make[1]: se entra en el directorio '/home/rebelpilot89/manaus-kernel/out'
+  GEN     Makefile
+../scripts/Makefile.asm-generic:25: redundant generic-y found in arch/arm64/include/asm/Kbuild: set_memory.h
+  CALL    ../scripts/atomic/check-atomics.sh
+  CALL    ../scripts/checksyscalls.sh
+  CC      arch/arm64/kvm/hyp-constants.s
+  AS      arch/arm64/crypto/aes-ce-core.o
+  CC      arch/arm64/geniezone/vm.o
+  CHK     include/generated/compile.h
+  CC      arch/arm64/geniezone/vcpu.o
+  CC      arch/arm64/crypto/aes-ce-glue.o
+  CC      arch/arm64/geniezone/vgic.o
+  CC      arch/arm64/crypto/aes-glue-ce.o
+  CC      arch/arm64/mm/dma-mapping.o
+  AR      arch/arm64/geniezone/built-in.a
+In file included from ../arch/arm64/kvm/hyp/hyp-constants.c:5:
+In file included from ../arch/arm64/kvm/hyp/include/nvhe/pkvm.h:12:
+../arch/arm64/kvm/hyp/include/nvhe/gfp.h:54:3: error: implicit declaration of function 'hyp_panic' [-Werror,-Wimplicit-function-declaration]
+   54 |                 hyp_panic();
+      |                 ^
+../arch/arm64/kvm/hyp/include/nvhe/gfp.h:54:3: note: did you mean 'nmi_panic'?
+../include/linux/kernel.h:322:6: note: 'nmi_panic' declared here
+  322 | void nmi_panic(struct pt_regs *regs, const char *msg);
+      |      ^
+In file included from ../arch/arm64/kvm/hyp/hyp-constants.c:6:
+In file included from ../arch/arm64/kvm/hyp/include/nvhe/trace.h:9:
+In file included from ../arch/arm64/include/asm/kvm_hyptrace.h:3:
+../arch/arm64/include/asm/kvm_hyp.h:108:17: error: conflicting types for 'hyp_panic'
+  108 | void __noreturn hyp_panic(void);
+      |                 ^
+../arch/arm64/kvm/hyp/include/nvhe/gfp.h:54:3: note: previous implicit declaration is here
+   54 |                 hyp_panic();
+      |                 ^
+In file included from ../arch/arm64/kvm/hyp/hyp-constants.c:6:
+In file included from ../arch/arm64/kvm/hyp/include/nvhe/trace.h:9:
+../arch/arm64/include/asm/kvm_hyptrace.h:17:30: error: field has incomplete type 'struct kvm_nvhe_clock_data'
+   17 |         struct kvm_nvhe_clock_data              trace_clock_data;
+      |                                                 ^
+../arch/arm64/include/asm/kvm_hyptrace.h:17:9: note: forward declaration of 'struct kvm_nvhe_clock_data'
+   17 |         struct kvm_nvhe_clock_data              trace_clock_data;
+      |                ^
+3 errors generated.
+make[3]: *** [../arch/arm64/kvm/Makefile:38: arch/arm64/kvm/hyp-constants.s] Error 1
+make[2]: *** [../scripts/Makefile.build:516: arch/arm64/kvm] Error 2
+make[2]: *** Se espera a que terminen otras tareas....
+  AS      arch/arm64/crypto/aes-ce.o
+  CC      arch/arm64/mm/extable.o
+  AS      arch/arm64/crypto/chacha-neon-core.o
+  CC      arch/arm64/mm/fault.o
+  CC      arch/arm64/crypto/chacha-neon-glue.o
+  SHIPPED arch/arm64/crypto/poly1305-core.S
+  CC      arch/arm64/crypto/poly1305-glue.o
+  CC      arch/arm64/mm/init.o
+  AS      arch/arm64/mm/cache.o
+  AS      arch/arm64/crypto/poly1305-core.o
+  CC      drivers/irqchip/irqchip.o
+  CC      drivers/bus/simple-pm-bus.o
+  CC      drivers/irqchip/irq-gic.o
+  AR      drivers/phy/allwinner/built-in.a
+  AR      drivers/phy/amlogic/built-in.a
+  AR      arch/arm64/crypto/built-in.a
+  AR      drivers/phy/broadcom/built-in.a
+  AR      drivers/phy/cadence/built-in.a
+  AR      drivers/phy/freescale/built-in.a
+  CC      sound/core/sound.o
+  AR      drivers/phy/hisilicon/built-in.a
+  AR      drivers/phy/intel/built-in.a
+  AR      drivers/phy/lantiq/built-in.a
+  AR      drivers/phy/marvell/built-in.a
+  AR      drivers/bus/built-in.a
+  CC      drivers/phy/mediatek/phy-mtk-tphy.o
+  AR      drivers/pinctrl/actions/built-in.a
+  AR      drivers/pinctrl/bcm/built-in.a
+  AR      drivers/pinctrl/freescale/built-in.a
+  CC      arch/arm64/mm/copypage.o
+  AR      drivers/pinctrl/mvebu/built-in.a
+  AR      drivers/pinctrl/nomadik/built-in.a
+  AR      drivers/pinctrl/sprd/built-in.a
+  CC      sound/core/init.o
+  CC      drivers/phy/motorola/phy-mapphone-mdm6600.o
+  AR      drivers/pinctrl/ti/built-in.a
+  CC      drivers/pinctrl/mediatek/mtk-eint.o
+  AR      sound/i2c/other/built-in.a
+  AR      sound/i2c/built-in.a
+  CC      drivers/gpio/gpiolib.o
+  CC      drivers/irqchip/irq-gic-common.o
+  CC      sound/core/memory.o
+  CC      arch/arm64/mm/flush.o
+  CC      drivers/irqchip/irq-gic-v3.o
+  CC      drivers/phy/mediatek/phy-mtk-ufs.o
+  CC      sound/core/control.o
+  CC      drivers/pinctrl/mediatek/pinctrl-mtk-common-v2.o
+  AR      drivers/phy/motorola/built-in.a
+  AR      drivers/pinctrl/cirrus/built-in.a
+  AR      sound/drivers/opl3/built-in.a
+  CC      arch/arm64/mm/ioremap.o
+  AR      sound/drivers/opl4/built-in.a
+  AR      sound/drivers/mpu401/built-in.a
+  AR      sound/drivers/vx/built-in.a
+  AR      sound/drivers/pcsp/built-in.a
+  AR      sound/drivers/built-in.a
+  CC      drivers/phy/mediatek/phy-mtk-xsphy.o
+  CC      drivers/pinctrl/mediatek/pinctrl-paris.o
+  CC      drivers/irqchip/irq-gic-v3-mbi.o
+  CC      drivers/pwm/core.o
+  CC      sound/core/misc.o
+  CC      arch/arm64/mm/mmap.o
+  CC      drivers/gpio/gpiolib-devres.o
+  CC      sound/core/device.o
+  CC      drivers/irqchip/irq-gic-v3-its.o
+  CC      drivers/pinctrl/mediatek/pinctrl-mtk-common-v2_debug.o
+  CC      arch/arm64/mm/pgd.o
+  CC      drivers/phy/mediatek/phy-mtk-fpgaphy.o
+  CC      drivers/pwm/sysfs.o
+  CC      net/core/sock.o
+  CC      drivers/gpio/gpiolib-legacy.o
+  CC      sound/core/info.o
+  CC      arch/arm64/mm/mmu.o
+  CC      drivers/pwm/pwm-mediatek.o
+  CC      drivers/phy/mediatek/phy-mtk-hdmi.o
+  CC      drivers/gpio/gpiolib-of.o
+  CC      drivers/pinctrl/mediatek/pinctrl-mt6879.o
+  AR      sound/core/built-in.a
+  AR      sound/isa/ad1816a/built-in.a
+  AR      sound/isa/ad1848/built-in.a
+  AR      sound/isa/cs423x/built-in.a
+  AR      sound/isa/es1688/built-in.a
+  AR      sound/isa/galaxy/built-in.a
+  AR      sound/isa/gus/built-in.a
+  AR      sound/isa/msnd/built-in.a
+  AR      sound/isa/opti9xx/built-in.a
+  AR      sound/isa/sb/built-in.a
+  AR      sound/isa/wavefront/built-in.a
+  AR      sound/isa/wss/built-in.a
+  AR      sound/isa/built-in.a
+  AR      sound/pci/ac97/built-in.a
+  AR      sound/pci/ali5451/built-in.a
+  AR      sound/pci/asihpi/built-in.a
+  AR      sound/pci/au88x0/built-in.a
+  AR      sound/pci/aw2/built-in.a
+  AR      sound/pci/ctxfi/built-in.a
+  AR      sound/pci/ca0106/built-in.a
+  CC      drivers/pwm/pwm-mtk-disp.o
+  AR      sound/pci/cs46xx/built-in.a
+  AR      sound/pci/cs5535audio/built-in.a
+  AR      sound/pci/lola/built-in.a
+  AR      sound/pci/lx6464es/built-in.a
+  AR      sound/pci/echoaudio/built-in.a
+  AR      sound/pci/emu10k1/built-in.a
+  AR      sound/pci/hda/built-in.a
+  AR      sound/pci/ice1712/built-in.a
+  AR      sound/pci/korg1212/built-in.a
+  AR      sound/pci/mixart/built-in.a
+  AR      sound/pci/nm256/built-in.a
+  AR      sound/pci/oxygen/built-in.a
+  AR      sound/pci/pcxhr/built-in.a
+  AR      sound/pci/riptide/built-in.a
+  AR      sound/pci/rme9652/built-in.a
+  CC      drivers/irqchip/irq-gic-v3-its-platform-msi.o
+  AR      sound/pci/trident/built-in.a
+  AR      sound/pci/ymfpci/built-in.a
+  AR      sound/pci/vx222/built-in.a
+  AR      sound/pci/built-in.a
+  AR      sound/ppc/built-in.a
+  AR      sound/arm/built-in.a
+  AR      sound/sh/built-in.a
+  AR      sound/synth/built-in.a
+  AR      sound/usb/misc/built-in.a
+  AR      sound/usb/usx2y/built-in.a
+  AR      sound/usb/caiaq/built-in.a
+  AR      sound/usb/6fire/built-in.a
+  AR      sound/usb/hiface/built-in.a
+  AR      sound/usb/bcd2000/built-in.a
+  AR      sound/usb/built-in.a
+  AR      sound/firewire/built-in.a
+  AR      drivers/pwm/built-in.a
+  AR      sound/sparc/built-in.a
+  AR      sound/spi/built-in.a
+  AR      drivers/pci/controller/dwc/built-in.a
+  AR      drivers/pci/controller/mobiveil/built-in.a
+  AR      sound/parisc/built-in.a
+  AR      drivers/pci/controller/built-in.a
+  AR      sound/pcmcia/vx/built-in.a
+  AR      drivers/pci/switch/built-in.a
+  AR      sound/pcmcia/pdaudiocf/built-in.a
+  CC      drivers/pci/of.o
+  AR      sound/pcmcia/built-in.a
+  AR      sound/mips/built-in.a
+  AR      sound/soc/built-in.a
+  AR      sound/atmel/built-in.a
+  AR      sound/hda/built-in.a
+  AR      sound/x86/built-in.a
+  AR      sound/xen/built-in.a
+  CC      sound/sound_core.o
+  CC      arch/arm64/mm/context.o
+  CC      drivers/gpio/gpiolib-cdev.o
+  AR      drivers/pinctrl/mediatek/built-in.a
+  CC      drivers/pinctrl/core.o
+  CC      drivers/phy/mediatek/phy-mtk-hdmi-mt2701.o
+  CC      drivers/irqchip/irq-gic-v4.o
+  CC      sound/last.o
+  AR      drivers/pci/built-in.a
+  CC      net/core/request_sock.o
+  CC      drivers/phy/mediatek/phy-mtk-hdmi-mt8173.o
+  AR      sound/built-in.a
+  CC      drivers/pinctrl/pinctrl-utils.o
+  CC      arch/arm64/mm/pageattr.o
+  CC      net/llc/llc_core.o
+  CC      drivers/gpio/gpio-mmio.o
+  CC      drivers/irqchip/irq-partition-percpu.o
+  CC      drivers/gpio/gpio-aggregator.o
+  AR      drivers/phy/mediatek/built-in.a
+  AR      drivers/phy/ralink/built-in.a
+  AR      drivers/phy/renesas/built-in.a
+  AR      drivers/phy/rockchip/built-in.a
+  AR      drivers/phy/samsung/built-in.a
+  AR      drivers/phy/socionext/built-in.a
+  AR      drivers/phy/st/built-in.a
+  AR      drivers/phy/tegra/built-in.a
+  AR      drivers/phy/ti/built-in.a
+  AR      drivers/phy/xilinx/built-in.a
+  CC      drivers/phy/phy-core.o
+  CC      arch/arm64/mm/numa.o
+  CC      drivers/pinctrl/pinmux.o
+  CC      net/llc/llc_input.o
+  CC      net/ethernet/eth.o
+  CC      drivers/irqchip/irq-mtk-sysirq.o
+  CC      drivers/pinctrl/pinconf.o
+  CC      drivers/gpio/gpio-mockup.o
+  CC      net/core/skbuff.o
+  CC      drivers/phy/phy-core-mipi-dphy.o
+  CC      arch/arm64/mm/mteswap.o
+  CC      drivers/irqchip/irq-mtk-cirq.o
+  CC      net/llc/llc_output.o
+fixdep: error opening file: drivers/pinctrl/.pinconf.o.d: No such file or directory
+make[3]: *** [../scripts/Makefile.build:273: drivers/pinctrl/pinconf.o] Error 2
+make[3]: *** Se borra el archivo 'drivers/pinctrl/pinconf.o'
+make[2]: *** [../scripts/Makefile.build:516: drivers/pinctrl] Error 2
+make[2]: *** Se espera a que terminen otras tareas....
+  CC      arch/arm64/lib/delay.o
+  CC      drivers/gpio/gpio-pca953x.o
+  AR      drivers/phy/built-in.a
+  AS      arch/arm64/lib/memchr.o
+  AR      net/ethernet/built-in.a
+  CC      net/802/p8022.o
+/tmp/memchr-4b4a7a.s:1321:1: warning: memchr changed binding to STB_WEAK
+.weak memchr
+^
+  CC      drivers/gpio/gpio-pcf857x.o
+  AR      net/llc/built-in.a
+  CC      lib/math/div64.o
+  AS      arch/arm64/lib/memcmp.o
+fixdep: error opening file: drivers/irqchip/.irq-mtk-cirq.o.d: No such file or directory
+make[3]: *** [../scripts/Makefile.build:273: drivers/irqchip/irq-mtk-cirq.o] Error 2
+make[3]: *** Se borra el archivo 'drivers/irqchip/irq-mtk-cirq.o'
+make[2]: *** [../scripts/Makefile.build:516: drivers/irqchip] Error 2
+  CC      net/core/datagram.o
+/tmp/memcmp-89a8b6.s:1391:1: warning: memcmp changed binding to STB_WEAK
+.weak memcmp
+^
+  AS      arch/arm64/lib/memcpy.o
+/tmp/memcpy-06088b.s:1466:1: warning: memcpy changed binding to STB_WEAK
+.weak memcpy
+^
+/tmp/memcpy-06088b.s:1476:1: warning: memmove changed binding to STB_WEAK
+.weak memmove
+^
+  AS      arch/arm64/lib/memset.o
+  AS      arch/arm64/lib/strchr.o
+/tmp/strchr-6bc2b7.s:1301:1: warning: strchr changed binding to STB_WEAK
+.weak strchr
+^
+  AS      arch/arm64/lib/strcmp.o
+  CC      lib/math/gcd.o
+/tmp/strcmp-a435aa.s:1400:1: warning: strcmp changed binding to STB_WEAK
+.weak strcmp
+^
+  AS      arch/arm64/lib/strlen.o
+/tmp/strlen-e7c4b6.s:1402:1: warning: strlen changed binding to STB_WEAK
+.weak strlen
+^
+  AS      arch/arm64/lib/strncmp.o
+  CC      lib/math/lcm.o
+  AR      arch/arm64/mm/built-in.a
+make[1]: *** [/home/rebelpilot89/manaus-kernel/Makefile:1908: arch/arm64] Error 2
+make[1]: *** Se espera a que terminen otras tareas....
+  CC      net/802/psnap.o
+/tmp/strncmp-b6db99.s:1450:1: warning: strncmp changed binding to STB_WEAK
+.weak strncmp
+^
+  AS      arch/arm64/lib/strnlen.o
+  AS      arch/arm64/lib/strrchr.o
+  CC      lib/math/int_pow.o
+  AS      arch/arm64/lib/tishift.o
+  AS      arch/arm64/lib/mte.o
+  AR      arch/arm64/lib/lib.a
+  AR      arch/arm64/lib/built-in.a
+  CC      drivers/gpio/gpio-syscon.o
+  CC      lib/math/int_sqrt.o
+  CC      net/sched/sch_generic.o
+  CC      lib/math/reciprocal_div.o
+  CC      lib/crypto/libchacha.o
+  CC      net/core/stream.o
+  CC      lib/math/rational.o
+  CC      net/netlink/af_netlink.o
+  AR      drivers/gpio/built-in.a
+make[1]: *** [/home/rebelpilot89/manaus-kernel/Makefile:1908: drivers] Error 2
+  CC      net/sched/sch_mq.o
+  AR      lib/math/built-in.a
+  CC      lib/zlib_inflate/inffast.o
+  CC      lib/crypto/aes.o
+  CC      lib/zlib_inflate/inflate.o
+  CC      net/802/stp.o
+  CC      net/core/scm.o
+  CC      lib/zlib_inflate/infutil.o
+  CC      net/core/gen_stats.o
+  CC      lib/crypto/arc4.o
+  AR      net/bpf/built-in.a
+  CC      net/netlink/genetlink.o
+  CC      lib/zlib_inflate/inftrees.o
+  CC      lib/zlib_inflate/inflate_syms.o
+  CC      lib/zlib_deflate/deflate.o
+  CC      net/802/garp.o
+  CC      lib/crypto/blake2s.o
+  CC      net/netlink/policy.o
+  CC      net/core/gen_estimator.o
+  CC      lib/zlib_deflate/deftree.o
+  AR      lib/zlib_inflate/built-in.a
+llvm-ar: error: lib/zlib_inflate/inflate_syms.o: No such file or directory
+make[3]: *** [../scripts/Makefile.build:408: lib/zlib_inflate/built-in.a] Error 1
+make[2]: *** [../scripts/Makefile.build:516: lib/zlib_inflate] Error 2
+make[2]: *** Se espera a que terminen otras tareas....
+  CC      net/ethtool/ioctl.o
+  CC      net/sched/sch_api.o
+  CC      lib/zlib_deflate/deflate_syms.o
+  CC      lib/crypto/blake2s-generic.o
+  CC      net/ethtool/common.o
+  CC      net/802/mrp.o
+  CC      net/core/net_namespace.o
+  AR      lib/zlib_deflate/built-in.a
+  CC      net/netfilter/core.o
+  AR      net/netlink/built-in.a
+  CC      net/ipv4/netfilter/nf_defrag_ipv4.o
+  CC      lib/crypto/chacha20poly1305.o
+  CC      net/sched/sch_blackhole.o
+  CC      lib/crypto/curve25519-hacl64.o
+  CC      net/ipv4/netfilter/nf_log_ipv4.o
+  CC      net/netfilter/nf_log.o
+  AR      net/802/built-in.a
+  CC      net/unix/af_unix.o
+  CC      net/ethtool/netlink.o
+  CC      net/sched/cls_api.o
+  CC      net/core/secure_seq.o
+  CC      net/netfilter/nf_queue.o
+  CC      net/ethtool/bitset.o
+  CC      lib/crypto/curve25519-generic.o
+  CC      net/core/flow_dissector.o
+  CC      net/ipv4/netfilter/nf_reject_ipv4.o
+  CC      lib/crypto/curve25519.o
+  CC      net/ipv4/route.o
+  CC      net/unix/garbage.o

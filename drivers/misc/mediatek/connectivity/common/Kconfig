@@ -1,0 +1,19 @@
+config MTK_CONN_COMMON
+	tristate "MediaTek Connectivity Common Driver (WMT/STP) - In-Tree"
+	depends on MTK_CONNECTIVITY
+	default y
+	help
+	  Módulo core que gestiona el Wireless Management Task (WMT) y el
+	  Shared Transport Protocol (STP). Es la base para BT/WiFi/GPS/FM.
+
+if MTK_CONN_COMMON
+
+config MTK_WCN_CORE_EN
+	bool "Enable WCN Core Support"
+	default y
+
+config MTK_CONNSYS_DEDICATED_LOG_PATH
+	bool "Enable Connsys Dedicated Log Path"
+	default y
+
+endif

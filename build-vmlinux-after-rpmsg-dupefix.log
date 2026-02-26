@@ -1,0 +1,205 @@
+make[1]: se entra en el directorio '/home/rebelpilot89/manaus-kernel/out'
+  GEN     Makefile
+../scripts/Makefile.asm-generic:25: redundant generic-y found in arch/arm64/include/asm/Kbuild: set_memory.h
+  CALL    ../scripts/atomic/check-atomics.sh
+  CALL    ../scripts/checksyscalls.sh
+  CHK     include/generated/compile.h
+MTK_GPU_VERSION = mali avalon r49p1
+*GPU BM QoS 2.0 QOS Framework defined
+*GPU [mtk-Kbuild] building r49p1 DDK ...
+*GPU defined GPU BM QoS 2.0 for MT6879
+*GPU [mtk-Kbuild] CONFIG_DEBUG_FS = y
+*GPU [mtk-Kbuild] CONFIG_PROC_FS = y
+*GPU [mtk-Kbuild] CONFIG_MTK_GPU_COMMON_DVFS_SUPPORT = y
+*GPU [mtk-Kbuild] CONFIG_MTK_GPU_SUPPORT = y
+*GPU [mtk-Kbuild] CONFIG_MTK_GPU_VERSION = "mali avalon r49p1"
+*GPU [mtk-Kbuild] MTK_GPU_VERSION = 
+*GPU [mtk-Kbuild] MTK_PLATFORM = mt6879
+*GPU [mtk-Kbuild] CONFIG_MALI_MIDGARD = y
+*GPU [mtk-Kbuild] CONFIG_MALI_PLATFORM_NAME = mt6879
+*GPU [mtk-Kbuild] CONFIG_MALI_CSF_SUPPORT = 
+*GPU [mtk-Kbuild] CONFIG_MALI_REAL_HW = y
+*GPU [mtk-Kbuild] CONFIG_MALI_NO_MALI = 
+*GPU [mtk-Kbuild] CONFIG_MALI_DEBUG = y
+*GPU [mtk-Kbuild] CONFIG_MALI_MIDGARD_DVFS = y
+*GPU [mtk-Kbuild] CONFIG_MALI_DEVFREQ = y
+*GPU [mtk-Kbuild] CONFIG_MALI_MTK_DEBUG = y
+*GPU [mtk-Kbuild] CONFIG_MALI_MTK_DEBUG_DFD = y
+*GPU [mtk-Kbuild] CONFIG_MALI_MTK_MEM_TRACK = y
+*GPU [mtk-Kbuild] CONFIG_MALI_MTK_DEVFREQ = y
+*GPU [mtk-Kbuild] CONFIG_MALI_MTK_DEVFREQ_THERMAL = y
+*GPU [mtk-Kbuild] CONFIG_MALI_MTK_GPU_BM_2 = y
+*GPU [mtk-Kbuild] CONFIG_MALI_MTK_BRINGUP = 
+*GPU [mtk-Kbuild] CONFIG_MALI_MTK_NO_THERMAL = 
+************  drivers/trusty/mtee-kree mk ************
+../drivers/misc/mediatek/cameraisp/dip/Makefile:14: "isp6s"
+..
+..
+fdvt tina
+Tina add dma: 
+..
+mot_dubai_ak7377a-objs : mot_dubai_ak7377.o dw9781_circle_test.o dw9781_i2c.o dw9781.o
+framesync_drv: frame-sync
+virt-sensor: virt-sensor
+common_drv : mot_manaus_ov50a_mipi_raw mot_manaus_ov32b_mipi_raw mot_manaus_hi1336_mipi_raw
+imgsensor-objs : adaptor-hw.o adaptor-drv.o adaptor-i2c.o adaptor-ctrls.o adaptor-ioctl.o adaptor-common-ctrl.o  frame-sync/frame_sync.o frame-sync/frame_sync_algo.o frame-sync/frame_monitor.o frame-sync/frame_sync_util.o frame-sync/frame_sync_console.o frame-sync/hw_sensor_sync_algo.o frame-sync/custom/custom_hw_sync.o  virt-sensor/virt-sensor-drv.o  common/mot_manaus_ov50a_mipi_raw/mot_ov50amipiraw_Sensor.o common/mot_manaus_ov32b_mipi_raw/mot_manaus_ov32bmipiraw_Sensor.o common/mot_manaus_hi1336_mipi_raw/mot_hi1336mipiraw_Sensor.o
+subdir-ccflags-y : -I../drivers/misc/mediatek/imgsensor/inc -I/home/rebelpilot89/manaus-kernel/drivers/misc/mediatek/imgsensor/src-v4l2/ -I../drivers/media/platform/mtk-isp/ -I../drivers/media/platform/mtk-isp/camsys/isp7_1/cam/  -I/home/rebelpilot89/manaus-kernel/drivers/misc/mediatek/imgsensor/src-v4l2/frame-sync  -I/home/rebelpilot89/manaus-kernel/drivers/misc/mediatek/imgsensor/src-v4l2/virt-sensor  -D'IMGSENSOR_SUBDRVS=E(mot_manaus_ov50a_mipi_raw),E(mot_manaus_ov32b_mipi_raw),E(mot_manaus_hi1336_mipi_raw)'
+imgsensor-virt-sensor-objs : imgsensor-glue.o 
+subdir-ccflags-y : -I../drivers/misc/mediatek/imgsensor/inc -I/home/rebelpilot89/manaus-kernel/drivers/misc/mediatek/imgsensor/src-v4l2/imgsensor-glue/ 
+os option: linux
+$MTK_PLATFORM is [mt6879]
+$WLAN_CHIP_ID is [6879]
+$MTK_COMBO_CHIP is [CONNAC]
+../drivers/misc/mediatek/connectivity/wlan/Makefile:613: wlan_6879_axi build-in boot.img
+"imgsys, subdir-ccflags-y = -DWPE_TF_DUMP_71_2 -DONEPIXEL_MODE"
+"imgsys, subdir-ccflags-y = -DTF_DUMP_71_2"
+../drivers/misc/mediatek/ccu/src/Makefile:17: CCU_MAKE_FILE_CALLED_2_1_1
+"mt6879"
+CCU_MAKE_FILE_CALLED
+y
+
+mt6879
+
+
+..
+  AR      drivers/rpmsg/built-in.a
+"CONFIG_MICROTRUST_TEE_VERSION="400""
+"CONFIG_MICROTRUST_TEE_SUPPORT=y"
+"CONFIG_MICROTRUST_TZ_DRIVER=y"
+"CONFIG_MICROTRUST_VFS_DRIVER=y"
+"CONFIG_MICROTRUST_FP_DRIVER=y"
+"CONFIG_MICROTRUST_DEBUG="
+"CONFIG_MICROTRUST_TEST_DRIVERS="
+"-----------CONFIG_MTPROF="
+"-----------MICROTRUST_TZ_DRIVER_MTK_BOOTPROF="
+"whf src=drivers/tee/teei/400"
+"whf subdir-ccflags-y=-I../drivers/tee/teei/400/common/include"
+"whf ccflags-y="
+"=----------------1---------------------------"
+"=----------------2---------------------------"
+-- KernelSU-Next Git repo detected at: /home/rebelpilot89/manaus-kernel/drivers/kernelsu
+-- KernelSU-Next version: 33024
+-- KernelSU-Next tag: v3.1.0
+-- KernelSU-Next Manager signature size: 0x3e6
+-- KernelSU-Next Manager signature hash: 79e590113c4c4c0c222978e413a5faa801666957b1212a328e46c00c69821bf7
+  AR      drivers/built-in.a
+  GEN     .version
+  CHK     include/generated/compile.h
+  UPD     include/generated/compile.h
+  CC      init/version.o
+  AR      init/built-in.a
+  GEN     .tmp_initcalls.lds
+  LTO     vmlinux.o
+ld.lld: warning: ../drivers/thermal/mediatek/thermal_trace.c:275:0: stack frame size (4192) exceeds limit (2048) in function 'thermal_trace_work.449fc79a1a9c078dc537fe8a08ee21d0'
+ld.lld: warning: ../drivers/memory/mediatek/emi-mpu.c:81:0: stack frame size (4256) exceeds limit (2048) in function 'emimpu_violation_irq.dcf3198dae052ad4c2abf2101fcd897e'
+  MODPOST vmlinux.symvers
+  MODINFO modules.builtin.modinfo
+  GEN     modules.builtin
+  LD      .tmp_vmlinux.kallsyms1
+ld.lld: error: undefined symbol: kbase_gpu_device_destroy
+>>> referenced by irqbypass.c
+>>>               vmlinux.o:(kbase_gpu_device_destroy.cfi_jt)
+
+ld.lld: error: undefined symbol: kbase_gpu_device_create
+>>> referenced by irqbypass.c
+>>>               vmlinux.o:(kbase_gpu_device_create.cfi_jt)
+
+ld.lld: error: undefined symbol: fm_get_read_result
+>>> referenced by irqbypass.c
+>>>               vmlinux.o:(fm_get_read_result.cfi_jt)
+
+ld.lld: error: undefined symbol: kvm_clr_pmu_events
+>>> referenced by perf_event.c:645 (/home/rebelpilot89/manaus-kernel/out/../arch/arm64/kernel/perf_event.c:645)
+>>>               vmlinux.o:(armv8pmu_enable_event)
+>>> referenced by perf_event.c:645 (/home/rebelpilot89/manaus-kernel/out/../arch/arm64/kernel/perf_event.c:645)
+>>>               vmlinux.o:(armv8pmu_disable_event)
+>>> referenced by perf_event.c:937 (/home/rebelpilot89/manaus-kernel/out/../arch/arm64/kernel/perf_event.c:937)
+>>>               vmlinux.o:(armv8pmu_reset)
+
+ld.lld: error: undefined symbol: kvm_set_pmu_events
+>>> referenced by perf_event.c:623 (/home/rebelpilot89/manaus-kernel/out/../arch/arm64/kernel/perf_event.c:623)
+>>>               vmlinux.o:(armv8pmu_enable_event)
+
+ld.lld: error: undefined symbol: aarch64_insn_gen_load_store_imm
+>>> referenced by bpf_jit_comp.c:310 (/home/rebelpilot89/manaus-kernel/out/../arch/arm64/net/bpf_jit_comp.c:310)
+>>>               vmlinux.o:(build_prologue)
+>>> referenced by bpf_jit_comp.c:0 (/home/rebelpilot89/manaus-kernel/out/../arch/arm64/net/bpf_jit_comp.c:0)
+>>>               vmlinux.o:(build_body)
+>>> referenced by bpf_jit_comp.c:0 (/home/rebelpilot89/manaus-kernel/out/../arch/arm64/net/bpf_jit_comp.c:0)
+>>>               vmlinux.o:(build_body)
+>>> referenced 1 more times
+
+ld.lld: error: undefined symbol: aarch64_insn_gen_cas
+>>> referenced by bpf_jit_comp.c:450 (/home/rebelpilot89/manaus-kernel/out/../arch/arm64/net/bpf_jit_comp.c:450)
+>>>               vmlinux.o:(build_body)
+
+ld.lld: error: undefined symbol: aarch64_insn_gen_dmb
+>>> referenced by bpf_jit_comp.c:0 (/home/rebelpilot89/manaus-kernel/out/../arch/arm64/net/bpf_jit_comp.c:0)
+>>>               vmlinux.o:(build_body)
+
+ld.lld: error: undefined symbol: aarch64_insn_gen_atomic_ld_op
+>>> referenced by bpf_jit_comp.c:0 (/home/rebelpilot89/manaus-kernel/out/../arch/arm64/net/bpf_jit_comp.c:0)
+>>>               vmlinux.o:(build_body)
+>>> referenced by bpf_jit_comp.c:0 (/home/rebelpilot89/manaus-kernel/out/../arch/arm64/net/bpf_jit_comp.c:0)
+>>>               vmlinux.o:(build_body)
+
+ld.lld: error: undefined symbol: kvm_dirty_ring_free
+>>> referenced by kvm_main.c:590 (/home/rebelpilot89/manaus-kernel/out/../arch/arm64/kvm/../../../virt/kvm/kvm_main.c:590)
+>>>               vmlinux.o:(kvm_vcpu_destroy)
+>>> referenced by kvm_main.c:590 (/home/rebelpilot89/manaus-kernel/out/../arch/arm64/kvm/../../../virt/kvm/kvm_main.c:590)
+>>>               vmlinux.o:(kvm_destroy_vcpus)
+>>> referenced by kvm_main.c:4079 (/home/rebelpilot89/manaus-kernel/out/../arch/arm64/kvm/../../../virt/kvm/kvm_main.c:4079)
+>>>               vmlinux.o:(kvm_vm_ioctl_create_vcpu)
+
+ld.lld: error: undefined symbol: kvm_unregister_perf_callbacks
+>>> referenced by arm.c:2511 (../arch/arm64/kvm/arm.c:2511)
+>>>               vmlinux.o:(kvm_init)
+>>> referenced by arm.c:2511 (../arch/arm64/kvm/arm.c:2511)
+>>>               vmlinux.o:(kvm_exit)
+>>> referenced by arm.c:2511 (/home/rebelpilot89/manaus-kernel/out/../arch/arm64/kvm/arm.c:2511)
+>>>               vmlinux.o:(kvm_arch_exit)
+
+ld.lld: error: undefined symbol: kvm_dirty_ring_alloc
+>>> referenced by kvm_main.c:4033 (/home/rebelpilot89/manaus-kernel/out/../arch/arm64/kvm/../../../virt/kvm/kvm_main.c:4033)
+>>>               vmlinux.o:(kvm_vm_ioctl_create_vcpu)
+
+ld.lld: error: undefined symbol: trace_kvm_set_spte_hva
+>>> referenced by kvm_main.c:814 (/home/rebelpilot89/manaus-kernel/out/../arch/arm64/kvm/../../../virt/kvm/kvm_main.c:814)
+>>>               vmlinux.o:(kvm_mmu_notifier_change_pte)
+
+ld.lld: error: undefined symbol: kvm_make_cpus_request_mask
+>>> referenced by pfncache.c:81 (/home/rebelpilot89/manaus-kernel/out/../arch/arm64/kvm/../../../virt/kvm/pfncache.c:81)
+>>>               vmlinux.o:(gfn_to_pfn_cache_invalidate_start)
+
+ld.lld: error: undefined symbol: pkvm_vm_ioctl_enable_cap
+>>> referenced by arm.c:95 (/home/rebelpilot89/manaus-kernel/out/../arch/arm64/kvm/arm.c:95)
+>>>               vmlinux.o:(kvm_vm_ioctl_enable_cap)
+
+ld.lld: error: undefined symbol: pkvm_init_host_vm
+>>> referenced by arm.c:181 (/home/rebelpilot89/manaus-kernel/out/../arch/arm64/kvm/arm.c:181)
+>>>               vmlinux.o:(kvm_arch_init_vm)
+
+ld.lld: error: undefined symbol: pkvm_destroy_hyp_vm
+>>> referenced by arm.c:229 (/home/rebelpilot89/manaus-kernel/out/../arch/arm64/kvm/arm.c:229)
+>>>               vmlinux.o:(kvm_arch_destroy_vm)
+
+ld.lld: error: undefined symbol: kvm_pmu_vcpu_init
+>>> referenced by arm.c:471 (/home/rebelpilot89/manaus-kernel/out/../arch/arm64/kvm/arm.c:471)
+>>>               vmlinux.o:(kvm_arch_vcpu_create)
+
+ld.lld: error: undefined symbol: kvm_pmu_vcpu_destroy
+>>> referenced by arm.c:505 (/home/rebelpilot89/manaus-kernel/out/../arch/arm64/kvm/arm.c:505)
+>>>               vmlinux.o:(kvm_arch_vcpu_destroy)
+
+ld.lld: error: undefined symbol: kvm_vcpu_pmu_restore_guest
+>>> referenced by arm.c:557 (/home/rebelpilot89/manaus-kernel/out/../arch/arm64/kvm/arm.c:557)
+>>>               vmlinux.o:(kvm_arch_vcpu_load)
+>>> referenced by sys_regs.c:922 (/home/rebelpilot89/manaus-kernel/out/../arch/arm64/kvm/sys_regs.c:922)
+>>>               vmlinux.o:(access_pmcnten)
+>>> referenced by sys_regs.c:899 (/home/rebelpilot89/manaus-kernel/out/../arch/arm64/kvm/sys_regs.c:899)
+>>>               vmlinux.o:(access_pmu_evtyper)
+
+ld.lld: error: too many errors emitted, stopping now (use --error-limit=0 to see all errors)
+make[1]: *** [/home/rebelpilot89/manaus-kernel/Makefile:1296: vmlinux] Error 1
+make[1]: se sale del directorio '/home/rebelpilot89/manaus-kernel/out'
+make: *** [Makefile:185: __sub-make] Error 2

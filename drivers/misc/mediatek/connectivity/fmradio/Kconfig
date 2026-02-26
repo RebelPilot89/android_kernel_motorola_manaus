@@ -1,0 +1,20 @@
+config MTK_FM
+	tristate "MediaTek FM Radio support"
+	default y
+	help
+	  Habilita el soporte para la radio FM en el SoC MT6879.
+	  Al ser built-in, la inicialización se realiza durante el arranque
+	  del kernel, mejorando la respuesta de la interfaz de audio.
+
+config MTK_FM_CHIP_CONNAC2X
+	bool "FM Chip Support: CONNAC2X (MT6879)"
+	depends on MTK_FM
+	default y
+	help
+	  Habilita el soporte para el motor de radio FM integrado en la
+	  arquitectura CONNAC2X del Dimensity 7030.
+
+config MTK_FM_50KHZ_SUPPORT
+	bool "FM 50KHz Step Support"
+	depends on MTK_FM
+	default y

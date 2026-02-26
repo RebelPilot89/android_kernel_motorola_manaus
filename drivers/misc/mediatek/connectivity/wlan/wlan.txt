@@ -1,0 +1,799 @@
+.
+├── chips
+│   ├── bellwether
+│   │   ├── bellwether.c
+│   │   ├── dbg_bellwether.c
+│   │   └── hal_dmashdl_bellwether.c
+│   ├── common
+│   │   ├── cmm_asic_common.c
+│   │   ├── cmm_asic_connac2x.c
+│   │   ├── cmm_asic_connac3x.c
+│   │   ├── cmm_asic_connac.c
+│   │   ├── dbg_connac2x.c
+│   │   ├── dbg_connac3x.c
+│   │   ├── dbg_connac.c
+│   │   ├── dbg_wtbl_connac3x.c
+│   │   ├── fw_dl.c
+│   │   ├── fw_log.c
+│   │   ├── fw_log_emi.c
+│   │   ├── fw_log_mmio.c
+│   │   └── pre_cal.c
+│   ├── connac
+│   │   └── connac.c
+│   ├── mt6632
+│   │   └── mt6632.c
+│   ├── mt6639
+│   │   ├── dbg_mt6639.c
+│   │   ├── hal_dmashdl_mt6639.c
+│   │   └── mt6639.c
+│   ├── mt6655
+│   │   ├── dbg_mt6655.c
+│   │   ├── hal_dmashdl_mt6655.c
+│   │   └── mt6655.c
+│   ├── mt7663
+│   │   └── mt7663.c
+│   ├── mt7668
+│   │   └── mt7668.c
+│   ├── mt7915
+│   │   ├── dbg_mt7915.c
+│   │   └── mt7915.c
+│   ├── mt7961
+│   │   ├── dbg_mt7961.c
+│   │   ├── hal_dmashdl_mt7961.c
+│   │   ├── hal_wfsys_reset_mt7961.c
+│   │   └── mt7961.c
+│   ├── mt7990
+│   │   ├── dbg_mt7990.c
+│   │   ├── hal_dmashdl_mt7990.c
+│   │   └── mt7990.c
+│   ├── soc2_1x1
+│   │   └── soc2_1x1.c
+│   ├── soc2_2x2
+│   │   └── soc2_2x2.c
+│   ├── soc3_0
+│   │   ├── dbg_soc3_0.c
+│   │   ├── hal_dmashdl_soc3_0.c
+│   │   └── soc3_0.c
+│   ├── soc5_0
+│   │   ├── dbg_soc5_0.c
+│   │   ├── hal_dmashdl_soc5_0.c
+│   │   └── soc5_0.c
+│   └── soc7_0
+│       ├── dbg_soc7_0.c
+│       ├── hal_dmashdl_soc7_0.c
+│       └── soc7_0.c
+├── common
+│   ├── debug.c
+│   ├── dump.c
+│   ├── mot_config.c
+│   ├── wlan_bow.c
+│   ├── wlan_he.c
+│   ├── wlan_lib.c
+│   ├── wlan_oid.c
+│   └── wlan_p2p.c
+├── configs
+│   ├── MT6639
+│   │   ├── ce
+│   │   │   └── defconfig
+│   │   ├── defconfig
+│   │   └── mobile
+│   │       └── defconfig
+│   └── MT6655
+│       ├── ce
+│       │   └── defconfig
+│       ├── defconfig
+│       └── mobile
+│           └── defconfig
+├── dvt
+│   ├── dvt_common.c
+│   ├── dvt_dmashdl.c
+│   └── dvt_phtput.c
+├── include
+│   ├── CFG_Wifi_File.h
+│   ├── chips
+│   │   ├── bellwether.h
+│   │   ├── ccif.h
+│   │   ├── cmm_asic_common.h
+│   │   ├── cmm_asic_connac2x.h
+│   │   ├── cmm_asic_connac3x.h
+│   │   ├── cmm_asic_connac.h
+│   │   ├── coda
+│   │   │   ├── bellwether
+│   │   │   │   ├── bn0_wf_mib_top.h
+│   │   │   │   ├── bn1_wf_mib_top.h
+│   │   │   │   ├── conn_host_csr_top.h
+│   │   │   │   ├── conn_infra_bus_cr_on.h
+│   │   │   │   ├── conn_infra_cfg.h
+│   │   │   │   ├── conn_infra_cfg_on.h
+│   │   │   │   ├── conn_infra_rgu_on.h
+│   │   │   │   ├── hal_common.h
+│   │   │   │   ├── ip1_bn0_wf_mib_top.h
+│   │   │   │   ├── pcie_mac_ireg.h
+│   │   │   │   ├── wf_ds_lwtbl.h
+│   │   │   │   ├── wf_ds_uwtbl.h
+│   │   │   │   ├── wf_hif_dmashdl_top.h
+│   │   │   │   ├── wf_mcu_bus_cr.h
+│   │   │   │   ├── wf_ple_top.h
+│   │   │   │   ├── wf_pse_top.h
+│   │   │   │   ├── wf_top_cfg_on.h
+│   │   │   │   ├── wf_umib_top.h
+│   │   │   │   ├── wf_uwtbl_top.h
+│   │   │   │   ├── wf_wfdma_host_dma0.h
+│   │   │   │   ├── wf_wfdma_mcu_dma0.h
+│   │   │   │   └── wf_wtblon_top.h
+│   │   │   ├── mt6639
+│   │   │   │   ├── ap2wf_conn_infra_on_ccif4.h
+│   │   │   │   ├── bcrm_on_pwr_wrapper_u_bcrm_on_pwr_bcrm.h
+│   │   │   │   ├── bn0_wf_mib_top.h
+│   │   │   │   ├── bn1_wf_mib_top.h
+│   │   │   │   ├── cb_infra_misc0.h
+│   │   │   │   ├── cb_infra_rgu.h
+│   │   │   │   ├── cb_infra_slp_ctrl.h
+│   │   │   │   ├── cbtop_gpio_sw_def.h
+│   │   │   │   ├── conn_bus_cr.h
+│   │   │   │   ├── conn_bus_cr_on.h
+│   │   │   │   ├── conn_bus_cr_von.h
+│   │   │   │   ├── conn_cfg.h
+│   │   │   │   ├── conn_dbg_ctl.h
+│   │   │   │   ├── conn_host_csr_top.h
+│   │   │   │   ├── conn_mcu_bus_cr.h
+│   │   │   │   ├── conn_mcu_confg_ls.h
+│   │   │   │   ├── conn_semaphore.h
+│   │   │   │   ├── hal_common.h
+│   │   │   │   ├── mawd_reg.h
+│   │   │   │   ├── pcie_mac_ireg.h
+│   │   │   │   ├── top_misc.h
+│   │   │   │   ├── wf2ap_conn_infra_on_ccif4.h
+│   │   │   │   ├── wf_cr_sw_def.h
+│   │   │   │   ├── wf_ds_lwtbl.h
+│   │   │   │   ├── wf_ds_uwtbl.h
+│   │   │   │   ├── wf_hif_dmashdl_top.h
+│   │   │   │   ├── wf_mcusys_vdnr_gen_bus_u_debug_ctrl_ao.h
+│   │   │   │   ├── wf_ple_top.h
+│   │   │   │   ├── wf_pse_top.h
+│   │   │   │   ├── wf_rro_top.h
+│   │   │   │   ├── wf_top_cfg.h
+│   │   │   │   ├── wf_top_cfg_on.h
+│   │   │   │   ├── wf_umib_top.h
+│   │   │   │   ├── wf_uwtbl_top.h
+│   │   │   │   ├── wf_wfdma_ext_wrap_csr.h
+│   │   │   │   ├── wf_wfdma_host_dma0.h
+│   │   │   │   ├── wf_wfdma_mcu_dma0.h
+│   │   │   │   └── wf_wtblon_top.h
+│   │   │   ├── mt6655
+│   │   │   │   ├── ap2wf_conn_infra_on_ccif4.h
+│   │   │   │   ├── bn0_wf_mib_top.h
+│   │   │   │   ├── bn1_wf_mib_top.h
+│   │   │   │   ├── conn_bus_cr_on.h
+│   │   │   │   ├── conn_bus_cr_von.h
+│   │   │   │   ├── conn_cfg.h
+│   │   │   │   ├── conn_host_csr_top.h
+│   │   │   │   ├── conn_mcu_bus_cr.h
+│   │   │   │   ├── hal_common.h
+│   │   │   │   ├── mawd_reg.h
+│   │   │   │   ├── pcie_mac_ireg.h
+│   │   │   │   ├── wf2ap_conn_infra_on_ccif4.h
+│   │   │   │   ├── wf_cr_sw_def.h
+│   │   │   │   ├── wf_ds_lwtbl.h
+│   │   │   │   ├── wf_ds_uwtbl.h
+│   │   │   │   ├── wf_hif_dmashdl_top.h
+│   │   │   │   ├── wf_ple_top.h
+│   │   │   │   ├── wf_pse_top.h
+│   │   │   │   ├── wf_rro_top.h
+│   │   │   │   ├── wf_umib_top.h
+│   │   │   │   ├── wf_uwtbl_top.h
+│   │   │   │   ├── wf_wfdma_ext_wrap_csr.h
+│   │   │   │   ├── wf_wfdma_host_dma0.h
+│   │   │   │   ├── wf_wfdma_mcu_dma0.h
+│   │   │   │   └── wf_wtblon_top.h
+│   │   │   ├── mt7915
+│   │   │   │   ├── wf_cr_sw_def.h
+│   │   │   │   ├── wf_ple_top.h
+│   │   │   │   ├── wf_pse_top.h
+│   │   │   │   ├── wf_wfdma_host_dma0.h
+│   │   │   │   └── wf_wfdma_host_dma1.h
+│   │   │   ├── mt7961
+│   │   │   │   ├── cbtop_rgu.h
+│   │   │   │   ├── ssusb_epctl_csr.h
+│   │   │   │   ├── wf_cr_sw_def.h
+│   │   │   │   ├── wf_hif_dmashdl_top.h
+│   │   │   │   ├── wf_ple_top.h
+│   │   │   │   ├── wf_pse_top.h
+│   │   │   │   └── wf_wfdma_host_dma0.h
+│   │   │   ├── mt7990
+│   │   │   │   ├── bn0_wf_mib_top.h
+│   │   │   │   ├── bn1_wf_mib_top.h
+│   │   │   │   ├── conn_bus_cr_on.h
+│   │   │   │   ├── conn_host_csr_top.h
+│   │   │   │   ├── conn_infra_bus_cr_on.h
+│   │   │   │   ├── conn_infra_cfg.h
+│   │   │   │   ├── conn_infra_cfg_on.h
+│   │   │   │   ├── conn_infra_rgu_on.h
+│   │   │   │   ├── conn_mcu_bus_cr.h
+│   │   │   │   ├── conn_rgu_on.h
+│   │   │   │   ├── hal_common.h
+│   │   │   │   ├── ip1_bn0_wf_mib_top.h
+│   │   │   │   ├── pcie_mac_ireg.h
+│   │   │   │   ├── wf_ds_lwtbl.h
+│   │   │   │   ├── wf_ds_uwtbl.h
+│   │   │   │   ├── wf_hif_dmashdl_top.h
+│   │   │   │   ├── wf_mcu_bus_cr.h
+│   │   │   │   ├── wf_ple_top.h
+│   │   │   │   ├── wf_pse_top.h
+│   │   │   │   ├── wf_top_cfg.h
+│   │   │   │   ├── wf_top_cfg_on.h
+│   │   │   │   ├── wf_umib_top.h
+│   │   │   │   ├── wf_uwtbl_top.h
+│   │   │   │   ├── wf_wfdma_host_dma0.h
+│   │   │   │   ├── wf_wfdma_host_dma0_pcie1.h
+│   │   │   │   ├── wf_wfdma_mcu_dma0.h
+│   │   │   │   └── wf_wtblon_top.h
+│   │   │   ├── soc3_0
+│   │   │   │   ├── conn_infra_cfg.h
+│   │   │   │   ├── wf_hif_dmashdl_top.h
+│   │   │   │   ├── wf_ple_top.h
+│   │   │   │   ├── wf_pse_top.h
+│   │   │   │   ├── wf_wfdma_host_dma0.h
+│   │   │   │   ├── wf_wfdma_host_dma1.h
+│   │   │   │   ├── wf_wfdma_mcu_dma0.h
+│   │   │   │   └── wf_wfdma_mcu_dma1.h
+│   │   │   ├── soc5_0
+│   │   │   │   ├── conn_bus_cr.h
+│   │   │   │   ├── conn_mcu_bus_cr.h
+│   │   │   │   ├── wf_hif_dmashdl_top.h
+│   │   │   │   ├── wf_ple_top.h
+│   │   │   │   ├── wf_pse_top.h
+│   │   │   │   ├── wf_wfdma_host_dma0.h
+│   │   │   │   └── wf_wfdma_mcu_dma0.h
+│   │   │   ├── soc7_0
+│   │   │   │   ├── ap2wf_conn_infra_on_ccif4.h
+│   │   │   │   ├── conn_host_csr_top.h
+│   │   │   │   ├── conn_infra_bus_cr_on.h
+│   │   │   │   ├── conn_infra_cfg.h
+│   │   │   │   ├── conn_infra_cfg_on.h
+│   │   │   │   ├── conn_infra_clkgen_top.h
+│   │   │   │   ├── conn_infra_rgu_on.h
+│   │   │   │   ├── conn_semaphore.h
+│   │   │   │   ├── conn_wt_slp_ctl_reg.h
+│   │   │   │   ├── hal_common.h
+│   │   │   │   ├── wf_hif_dmashdl_top.h
+│   │   │   │   ├── wf_mcu_bus_cr.h
+│   │   │   │   ├── wf_mcu_confg_ls.h
+│   │   │   │   ├── wf_mcusys_infra_bus_full_u_debug_ctrl_ao_wfmcu_pwa_debug_ctrl_ao.h
+│   │   │   │   ├── wf_ple_top.h
+│   │   │   │   ├── wf_pp_top.h
+│   │   │   │   ├── wf_pse_top.h
+│   │   │   │   ├── wf_top_cfg.h
+│   │   │   │   ├── wf_top_cfg_on.h
+│   │   │   │   ├── wf_top_slpprot_on.h
+│   │   │   │   └── wf_wfdma_host_dma0.h
+│   │   │   └── WF_TX_FREE_DONE_EVENT_BESRA_c_header.h
+│   │   ├── connac.h
+│   │   ├── dbg_mt6639.h
+│   │   ├── dbg_wtbl_connac3x.h
+│   │   ├── dma_sch.h
+│   │   ├── fw_dl.h
+│   │   ├── fw_log_emi.h
+│   │   ├── fw_log.h
+│   │   ├── fw_log_mmio.h
+│   │   ├── hal_dmashdl_bellwether.h
+│   │   ├── hal_dmashdl_mt6639.h
+│   │   ├── hal_dmashdl_mt6655.h
+│   │   ├── hal_dmashdl_mt7961.h
+│   │   ├── hal_dmashdl_mt7990.h
+│   │   ├── hal_dmashdl_soc3_0.h
+│   │   ├── hal_dmashdl_soc5_0.h
+│   │   ├── hal_dmashdl_soc7_0.h
+│   │   ├── hal_wfsys_reset_mt7961.h
+│   │   ├── host_csr.h
+│   │   ├── mt6632.h
+│   │   ├── mt6639.h
+│   │   ├── mt6655.h
+│   │   ├── mt7663.h
+│   │   ├── mt7668.h
+│   │   ├── mt7915.h
+│   │   ├── mt7961.h
+│   │   ├── mt7990.h
+│   │   ├── mt_dmac.h
+│   │   ├── pre_cal.h
+│   │   ├── pse.h
+│   │   ├── soc2_1x1.h
+│   │   ├── soc2_2x2.h
+│   │   ├── soc3_0.h
+│   │   ├── soc5_0.h
+│   │   ├── soc7_0.h
+│   │   └── wf_ple.h
+│   ├── config.h
+│   ├── debug.h
+│   ├── dvt
+│   │   ├── dvt_common.h
+│   │   ├── dvt_dmashdl.h
+│   │   └── dvt_phtput.h
+│   ├── hif_cmm.h
+│   ├── link_drv.h
+│   ├── link.h
+│   ├── mgmt
+│   │   ├── aa_fsm.h
+│   │   ├── ais_fsm.h
+│   │   ├── ap_selection.h
+│   │   ├── aps.h
+│   │   ├── assoc.h
+│   │   ├── auth.h
+│   │   ├── bow_fsm.h
+│   │   ├── bss.h
+│   │   ├── cnm.h
+│   │   ├── cnm_mem.h
+│   │   ├── cnm_scan.h
+│   │   ├── cnm_timer.h
+│   │   ├── eht_ie.h
+│   │   ├── eht_rlm.h
+│   │   ├── gcm.h
+│   │   ├── he_ie.h
+│   │   ├── hem_mbox.h
+│   │   ├── he_rlm.h
+│   │   ├── hs20.h
+│   │   ├── ics.h
+│   │   ├── ie_sort.h
+│   │   ├── mddp.h
+│   │   ├── mib.h
+│   │   ├── mlo.h
+│   │   ├── mlr.h
+│   │   ├── mscs.h
+│   │   ├── p2p_assoc.h
+│   │   ├── p2p_bss.h
+│   │   ├── p2p_dev.h
+│   │   ├── p2p_dev_state.h
+│   │   ├── p2p_fsm.h
+│   │   ├── p2p_func.h
+│   │   ├── p2p_ie.h
+│   │   ├── p2p_link.h
+│   │   ├── p2p_rlm.h
+│   │   ├── p2p_rlm_obss.h
+│   │   ├── p2p_role.h
+│   │   ├── p2p_role_state.h
+│   │   ├── p2p_scan.h
+│   │   ├── privacy.h
+│   │   ├── qosmap.h
+│   │   ├── rate.h
+│   │   ├── rlm_domain.h
+│   │   ├── rlm.h
+│   │   ├── rlm_obss.h
+│   │   ├── rlm_protection.h
+│   │   ├── rlm_txpwr_init.h
+│   │   ├── roaming_fsm.h
+│   │   ├── rrm.h
+│   │   ├── rsn.h
+│   │   ├── rtt.h
+│   │   ├── scan.h
+│   │   ├── stats.h
+│   │   ├── swcr.h
+│   │   ├── tdls.h
+│   │   ├── thrm.h
+│   │   ├── twt.h
+│   │   ├── twt_planner.h
+│   │   ├── twt_req_fsm.h
+│   │   ├── wapi.h
+│   │   ├── wlan_ring.h
+│   │   ├── wlan_typedef.h
+│   │   ├── wmm.h
+│   │   └── wnm.h
+│   ├── mot_config.h
+│   ├── nan
+│   │   ├── nan_base.h
+│   │   ├── nan_data_engine.h
+│   │   ├── nan_dev.h
+│   │   ├── nanDiscovery.h
+│   │   ├── nan_intf.h
+│   │   ├── nan_ranging.h
+│   │   ├── nanReg.h
+│   │   ├── nanScheduler.h
+│   │   ├── nan_sec.h
+│   │   ├── nan_txm.h
+│   │   └── wpa_supp
+│   │       ├── FourWayHandShake.h
+│   │       ├── src
+│   │       │   ├── ap
+│   │       │   │   ├── ieee802_1x.h
+│   │       │   │   ├── wpa_auth_glue.h
+│   │       │   │   ├── wpa_auth.h
+│   │       │   │   └── wpa_auth_i.h
+│   │       │   ├── common
+│   │       │   │   ├── defs.h
+│   │       │   │   ├── eapol_common.h
+│   │       │   │   ├── ieee802_11_common.h
+│   │       │   │   ├── ieee802_11_defs.h
+│   │       │   │   ├── wpa_common.h
+│   │       │   │   └── wpa_ctrl.h
+│   │       │   ├── crypto
+│   │       │   │   ├── aes.h
+│   │       │   │   ├── aes_i.h
+│   │       │   │   ├── aes_wrap.h
+│   │       │   │   ├── crypto.h
+│   │       │   │   ├── random.h
+│   │       │   │   ├── sha1.h
+│   │       │   │   ├── sha1_i.h
+│   │       │   │   ├── sha256.h
+│   │       │   │   ├── sha256_i.h
+│   │       │   │   ├── sha384.h
+│   │       │   │   ├── sha384_i.h
+│   │       │   │   └── sha512_i.h
+│   │       │   ├── eapol_auth
+│   │       │   │   ├── eapol_auth_sm.h
+│   │       │   │   └── eapol_auth_sm_i.h
+│   │       │   ├── eapol_supp
+│   │       │   │   └── eapol_supp_sm.h
+│   │       │   ├── rsn_supp
+│   │       │   │   ├── wpa.h
+│   │       │   │   ├── wpa_ie.h
+│   │       │   │   └── wpa_i.h
+│   │       │   └── utils
+│   │       │       ├── common.h
+│   │       │       ├── list.h
+│   │       │       ├── state_machine.h
+│   │       │       └── wpabuf.h
+│   │       └── wpa_supplicant
+│   │           ├── wpas_glue.h
+│   │           └── wpa_supplicant_i.h
+│   ├── nic
+│   │   ├── adapter.h
+│   │   ├── bow.h
+│   │   ├── cmd_buf.h
+│   │   ├── connac_dmashdl.h
+│   │   ├── connac_reg.h
+│   │   ├── hal.h
+│   │   ├── hif_rx.h
+│   │   ├── hif_tx.h
+│   │   ├── mac.h
+│   │   ├── mt66xx_reg.h
+│   │   ├── nic_connac2x_rx.h
+│   │   ├── nic_connac2x_tx.h
+│   │   ├── nic_connac3x_rx.h
+│   │   ├── nic_connac3x_tx.h
+│   │   ├── nic.h
+│   │   ├── nic_rate.h
+│   │   ├── nic_rxd_v1.h
+│   │   ├── nic_rxd_v2.h
+│   │   ├── nic_rxd_v3.h
+│   │   ├── nic_rx.h
+│   │   ├── nic_txd_v1.h
+│   │   ├── nic_txd_v2.h
+│   │   ├── nic_txd_v3.h
+│   │   ├── nic_tx.h
+│   │   ├── nic_umac.h
+│   │   ├── p2p_cmd_buf.h
+│   │   ├── p2p.h
+│   │   ├── p2p_mac.h
+│   │   ├── p2p_nic_cmd_event.h
+│   │   ├── p2p_nic.h
+│   │   ├── que_mgt.h
+│   │   ├── radiotap.h
+│   │   └── wlan_def.h
+│   ├── nic_cmd_event.h
+│   ├── nic_ext_cmd_event.h
+│   ├── nic_init_cmd_event.h
+│   ├── nic_uni_cmd_event.h
+│   ├── p2p_precomp.h
+│   ├── p2p_typedef.h
+│   ├── precomp.h
+│   ├── pwr_mgt.h
+│   ├── queue.h
+│   ├── rftest.h
+│   ├── typedef.h
+│   ├── wlan_bow.h
+│   ├── wlan_he.h
+│   ├── wlan_lib.h
+│   ├── wlan_oid.h
+│   ├── wlan_p2p.h
+│   └── wsys_cmd_handler_fw.h
+├── Kconfig
+├── Makefile
+├── mgmt
+│   ├── aaa_fsm.c
+│   ├── ais_fsm.c
+│   ├── aps.c
+│   ├── ap_selection.c
+│   ├── assoc.c
+│   ├── auth.c
+│   ├── bss.c
+│   ├── cnm.c
+│   ├── cnm_mem.c
+│   ├── cnm_timer.c
+│   ├── eht_rlm.c
+│   ├── gcm.c
+│   ├── he_ie.c
+│   ├── hem_mbox.c
+│   ├── he_rlm.c
+│   ├── hs20.c
+│   ├── ics.c
+│   ├── ie_sort.c
+│   ├── mddp.c
+│   ├── mib.c
+│   ├── mlo.c
+│   ├── mlr.c
+│   ├── mscs.c
+│   ├── p2p_assoc.c
+│   ├── p2p_bss.c
+│   ├── p2p_dev_fsm.c
+│   ├── p2p_dev_state.c
+│   ├── p2p_fsm.c
+│   ├── p2p_func.c
+│   ├── p2p_ie.c
+│   ├── p2p_link.c
+│   ├── p2p_rlm.c
+│   ├── p2p_rlm_obss.c
+│   ├── p2p_role_fsm.c
+│   ├── p2p_role_state.c
+│   ├── p2p_scan.c
+│   ├── privacy.c
+│   ├── qosmap.c
+│   ├── rate.c
+│   ├── reg_rule.c
+│   ├── rlm.c
+│   ├── rlm_domain.c
+│   ├── rlm_obss.c
+│   ├── rlm_protection.c
+│   ├── roaming_fsm.c
+│   ├── rrm.c
+│   ├── rsn.c
+│   ├── rtt.c
+│   ├── saa_fsm.c
+│   ├── scan.c
+│   ├── scan_cache.c
+│   ├── scan_fsm.c
+│   ├── stats.c
+│   ├── swcr.c
+│   ├── tdls.c
+│   ├── thrm.c
+│   ├── tkip_mic.c
+│   ├── twt.c
+│   ├── twt_planner.c
+│   ├── twt_req_fsm.c
+│   ├── wapi.c
+│   ├── wlan_ring.c
+│   ├── wmm.c
+│   └── wnm.c
+├── nan
+│   ├── nan_data_engine.c
+│   ├── nan_data_engine_util.c
+│   ├── nan_dev.c
+│   ├── nanDiscovery.c
+│   ├── nan_ranging.c
+│   ├── nanReg.c
+│   ├── nanScheduler.c
+│   ├── nan_sec.c
+│   ├── nan_txm.c
+│   └── wpa_supp
+│       ├── FourWayHandShake.c
+│       ├── src
+│       │   ├── ap
+│       │   │   ├── wpa_auth.c
+│       │   │   ├── wpa_auth_glue.c
+│       │   │   └── wpa_auth_ie.c
+│       │   ├── common
+│       │   │   └── wpa_common.c
+│       │   ├── crypto
+│       │   │   ├── aes-internal.c
+│       │   │   ├── aes-internal-dec.c
+│       │   │   ├── aes-internal-enc.c
+│       │   │   ├── aes-unwrap.c
+│       │   │   ├── aes-wrap.c
+│       │   │   ├── pbkdf2-sha256.c
+│       │   │   ├── sha1.c
+│       │   │   ├── sha1-internal.c
+│       │   │   ├── sha1-prf.c
+│       │   │   ├── sha256.c
+│       │   │   ├── sha256-internal.c
+│       │   │   ├── sha256-prf.c
+│       │   │   ├── sha384.c
+│       │   │   ├── sha384-internal.c
+│       │   │   ├── sha384-prf.c
+│       │   │   └── sha512-internal.c
+│       │   ├── rsn_supp
+│       │   │   └── wpa.c
+│       │   └── utils
+│       │       └── common.c
+│       └── wpa_supplicant
+│           ├── wpas_glue.c
+│           └── wpa_supplicant.c
+├── nic
+│   ├── cmd_buf.c
+│   ├── nic.c
+│   ├── nic_cmd_event.c
+│   ├── nic_ext_cmd_event.c
+│   ├── nic_pwr_mgt.c
+│   ├── nic_rate.c
+│   ├── nic_rx.c
+│   ├── nic_rxd_v1.c
+│   ├── nic_rxd_v2.c
+│   ├── nic_rxd_v3.c
+│   ├── nic_tx.c
+│   ├── nic_txd_v1.c
+│   ├── nic_txd_v2.c
+│   ├── nic_txd_v3.c
+│   ├── nic_umac.c
+│   ├── nic_uni_cmd_event.c
+│   ├── p2p_nic.c
+│   ├── que_mgt.c
+│   └── radiotap.c
+├── os
+│   ├── linux
+│   │   ├── gl_ate_agent.c
+│   │   ├── gl_bow.c
+│   │   ├── gl_cfg80211.c
+│   │   ├── gl_cmd_validate.c
+│   │   ├── gl_coredump.c
+│   │   ├── gl_csi.c
+│   │   ├── gl_custom.c
+│   │   ├── gl_emi.c
+│   │   ├── gl_fw_log.c
+│   │   ├── gl_hook_api.c
+│   │   ├── gl_init.c
+│   │   ├── gl_kal.c
+│   │   ├── gl_nan.c
+│   │   ├── gl_p2p.c
+│   │   ├── gl_p2p_cfg80211.c
+│   │   ├── gl_p2p_init.c
+│   │   ├── gl_p2p_kal.c
+│   │   ├── gl_proc.c
+│   │   ├── gl_qa_agent.c
+│   │   ├── gl_rst.c
+│   │   ├── gl_sa_log.c
+│   │   ├── gl_sys.c
+│   │   ├── gl_sys_lock.c
+│   │   ├── gl_vendor.c
+│   │   ├── gl_vendor_nan.c
+│   │   ├── gl_vendor_ndp.c
+│   │   ├── gl_wext.c
+│   │   ├── gl_wext_priv.c
+│   │   ├── hif
+│   │   │   ├── axi
+│   │   │   │   ├── axi.c
+│   │   │   │   └── include
+│   │   │   │       └── hif.h
+│   │   │   ├── common
+│   │   │   │   ├── dbg_pdma.c
+│   │   │   │   ├── hal_offload.c
+│   │   │   │   ├── hal_pdma.c
+│   │   │   │   ├── hif_mem.c
+│   │   │   │   ├── include
+│   │   │   │   │   └── hif_pdma.h
+│   │   │   │   ├── kal_pdma.c
+│   │   │   │   ├── sw_emi_ring.c
+│   │   │   │   └── sw_wfdma.c
+│   │   │   ├── ehpi
+│   │   │   │   ├── arm.c
+│   │   │   │   ├── colibri.c
+│   │   │   │   ├── ehpi.c
+│   │   │   │   └── include
+│   │   │   │       ├── colibri.h
+│   │   │   │       └── hif.h
+│   │   │   ├── pcie
+│   │   │   │   ├── include
+│   │   │   │   │   └── hif.h
+│   │   │   │   ├── pcie.c
+│   │   │   │   └── pcie_msi.c
+│   │   │   ├── sdio
+│   │   │   │   ├── arm.c
+│   │   │   │   ├── hal_api.c
+│   │   │   │   ├── include
+│   │   │   │   │   ├── hif.h
+│   │   │   │   │   ├── hif_sdio.h
+│   │   │   │   │   ├── mtk_porting.h
+│   │   │   │   │   └── test_driver_sdio_ops.h
+│   │   │   │   ├── sdio.c
+│   │   │   │   ├── sdio_test_driver_core.c
+│   │   │   │   ├── sdio_test_driver_ops.c
+│   │   │   │   └── x86.c
+│   │   │   └── usb
+│   │   │       ├── hal_api.c
+│   │   │       ├── include
+│   │   │       │   ├── cust_usb_id.h
+│   │   │       │   ├── hif.h
+│   │   │       │   └── hif_usb.h
+│   │   │       └── usb.c
+│   │   ├── include
+│   │   │   ├── gl_ate_agent.h
+│   │   │   ├── gl_cfg80211.h
+│   │   │   ├── gl_cmd_validate.h
+│   │   │   ├── gl_coredump.h
+│   │   │   ├── gl_csi.h
+│   │   │   ├── gl_emi.h
+│   │   │   ├── gl_fw_log.h
+│   │   │   ├── gl_hook_api.h
+│   │   │   ├── gl_kal.h
+│   │   │   ├── gl_nan_os.h
+│   │   │   ├── gl_os.h
+│   │   │   ├── gl_p2p_ioctl.h
+│   │   │   ├── gl_p2p_kal.h
+│   │   │   ├── gl_p2p_os.h
+│   │   │   ├── gl_qa_agent.h
+│   │   │   ├── gl_rst.h
+│   │   │   ├── gl_sa_log.h
+│   │   │   ├── gl_sec.h
+│   │   │   ├── gl_sys_lock.h
+│   │   │   ├── gl_typedef.h
+│   │   │   ├── gl_vendor.h
+│   │   │   ├── gl_vendor_nan.h
+│   │   │   ├── gl_vendor_ndp.h
+│   │   │   ├── gl_wext.h
+│   │   │   ├── gl_wext_priv.h
+│   │   │   └── wlan_pinctrl.h
+│   │   ├── plat
+│   │   │   ├── mt6835
+│   │   │   │   └── plat_priv.c
+│   │   │   ├── mt6879
+│   │   │   │   └── plat_priv.c
+│   │   │   ├── mt6886
+│   │   │   │   └── plat_priv.c
+│   │   │   └── mt6985
+│   │   │       └── plat_priv.c
+│   │   └── platform.c
+│   ├── none
+│   │   ├── gl_ate_agent.c
+│   │   ├── gl_csi.c
+│   │   ├── gl_dependent.c
+│   │   ├── gl_init.c
+│   │   ├── gl_kal.c
+│   │   ├── gl_p2p_kal.c
+│   │   ├── gl_qa_agent.c
+│   │   ├── gl_sa_log.h
+│   │   ├── hif
+│   │   │   └── none
+│   │   │       ├── include
+│   │   │       │   └── hif.h
+│   │   │       └── none.c
+│   │   └── include
+│   │       ├── gl_ate_agent.h
+│   │       ├── gl_cfg80211.h
+│   │       ├── gl_coredump.h
+│   │       ├── gl_csi.h
+│   │       ├── gl_dependent.h
+│   │       ├── gl_emi.h
+│   │       ├── gl_kal.h
+│   │       ├── gl_os.h
+│   │       ├── gl_p2p_ioctl.h
+│   │       ├── gl_p2p_kal.h
+│   │       ├── gl_p2p_os.h
+│   │       ├── gl_qa_agent.h
+│   │       ├── gl_rst.h
+│   │       ├── gl_sys_lock.h
+│   │       ├── gl_typedef.h
+│   │       ├── gl_vendor.h
+│   │       ├── gl_wext_priv.h
+│   │       └── wlan_pinctrl.h
+│   └── version.h
+├── prealloc
+│   ├── include
+│   │   └── prealloc.h
+│   └── prealloc.c
+├── reset
+│   ├── include
+│   │   └── reset.h
+│   └── reset.c
+└── wlan_service
+    ├── agent
+    │   └── agent.c
+    ├── glue
+    │   ├── hal
+    │   │   ├── gen4m
+    │   │   │   └── operation_gen4m.c
+    │   │   └── include
+    │   │       ├── operation.h
+    │   │       └── test_mac.h
+    │   └── osal
+    │       ├── gen4m
+    │       │   ├── net_adaption_gen4m.c
+    │       │   └── sys_adaption_gen4m.c
+    │       └── include
+    │           ├── net_adaption.h
+    │           └── sys_adaption.h
+    ├── include
+    │   └── agent.h
+    └── service
+        ├── include
+        │   ├── service_test.h
+        │   └── test_engine.h
+        ├── service_test.c
+        └── test_engine.c
+
+106 directories, 691 files

@@ -1,0 +1,184 @@
+make[1]: se entra en el directorio '/home/rebelpilot89/manaus-kernel/out'
+  GEN     Makefile
+../scripts/Makefile.asm-generic:25: redundant generic-y found in arch/arm64/include/asm/Kbuild: set_memory.h
+  CALL    ../scripts/atomic/check-atomics.sh
+  CALL    ../scripts/checksyscalls.sh
+  CHK     include/generated/compile.h
+  CC      arch/arm64/kvm/hyp/nvhe/hyp-main.nvhe.o
+  CC      arch/arm64/kvm/hyp/pgtable.o
+  CC      kernel/sched/wait_bit.o
+  CC      arch/arm64/kvm/../../../virt/kvm/kvm_main.o
+  CC      crypto/lz4.o
+  CC      fs/crypto/keyring.o
+  CC      block/kyber-iosched.o
+  CC      arch/arm64/kvm/hyp/nvhe/psci-relay.nvhe.o
+  CC      crypto/xxhash_generic.o
+../arch/arm64/kvm/hyp/pgtable.c:583:10: error: use of undeclared identifier 'MT_S2_FWB_NORMAL_NC'
+  583 |                 attr = KVM_S2_MEMATTR(pgt, NORMAL_NC);
+      |                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../arch/arm64/kvm/hyp/pgtable.c:568:35: note: expanded from macro 'KVM_S2_MEMATTR'
+  568 | #define KVM_S2_MEMATTR(pgt, attr) PAGE_S2_MEMATTR(attr, stage2_has_fwb(pgt))
+      |                                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../arch/arm64/include/asm/pgtable-prot.h:78:27: note: expanded from macro 'PAGE_S2_MEMATTR'
+   78 |                         __val = PTE_S2_MEMATTR(MT_S2_FWB_ ## attr);     \
+      |                                                ^~~~~~~~~~~~~~~~~~
+<scratch space>:27:1: note: expanded from here
+   27 | MT_S2_FWB_NORMAL_NC
+      | ^~~~~~~~~~~~~~~~~~~
+../arch/arm64/kvm/hyp/pgtable.c:583:10: error: use of undeclared identifier 'MT_S2_NORMAL_NC'
+  583 |                 attr = KVM_S2_MEMATTR(pgt, NORMAL_NC);
+      |                        ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../arch/arm64/kvm/hyp/pgtable.c:568:35: note: expanded from macro 'KVM_S2_MEMATTR'
+  568 | #define KVM_S2_MEMATTR(pgt, attr) PAGE_S2_MEMATTR(attr, stage2_has_fwb(pgt))
+      |                                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../arch/arm64/include/asm/pgtable-prot.h:80:27: note: expanded from macro 'PAGE_S2_MEMATTR'
+   80 |                         __val = PTE_S2_MEMATTR(MT_S2_ ## attr);         \
+      |                                                ^~~~~~~~~~~~~~
+<scratch space>:28:1: note: expanded from here
+   28 | MT_S2_NORMAL_NC
+      | ^~~~~~~~~~~~~~~
+2 errors generated.
+make[4]: *** [../scripts/Makefile.build:273: arch/arm64/kvm/hyp/pgtable.o] Error 1
+make[4]: *** Se espera a que terminen otras tareas....
+  CC      kernel/locking/mutex.o
+  AR      fs/crypto/built-in.a
+../arch/arm64/kvm/hyp/nvhe/psci-relay.c:35:58: error: variable has incomplete type 'enum pkvm_psci_notification'
+   35 | static void pkvm_psci_notify(enum pkvm_psci_notification notif, struct kvm_cpu_context *host_ctxt)
+      |                                                          ^
+../arch/arm64/kvm/hyp/include/nvhe/modules.h:11:6: note: forward declaration of 'enum pkvm_psci_notification'
+   11 | enum pkvm_psci_notification;
+      |      ^
+../arch/arm64/kvm/../../../virt/kvm/kvm_main.c:371:21: error: anonymous bit-field has negative width (-1)
+  371 |         while (mc->nobjs < ARRAY_SIZE(mc->objects)) {
+      |                            ^
+../include/linux/kernel.h:48:59: note: expanded from macro 'ARRAY_SIZE'
+   48 | #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]) + __must_be_array(arr))
+      |                                                           ^
+../include/linux/compiler.h:240:28: note: expanded from macro '__must_be_array'
+  240 | #define __must_be_array(a)      BUILD_BUG_ON_ZERO(__same_type((a), &(a)[0]))
+      |                                 ^
+../include/linux/build_bug.h:16:53: note: expanded from macro 'BUILD_BUG_ON_ZERO'
+   16 | #define BUILD_BUG_ON_ZERO(e) ((int)(sizeof(struct { int:(-!!(e)); })))
+      |                                                     ^
+  CC      fs/nfs_common/grace.o
+../arch/arm64/kvm/hyp/nvhe/psci-relay.c:199:19: error: use of undeclared identifier 'PKVM_PSCI_CPU_SUSPEND'; did you mean 'PKVM_IOMMU_PM_SUSPEND'?
+  199 |         pkvm_psci_notify(PKVM_PSCI_CPU_SUSPEND, host_ctxt);
+      |                          ^~~~~~~~~~~~~~~~~~~~~
+      |                          PKVM_IOMMU_PM_SUSPEND
+../arch/arm64/include/asm/kvm_host.h:394:2: note: 'PKVM_IOMMU_PM_SUSPEND' declared here
+  394 |         PKVM_IOMMU_PM_SUSPEND,
+      |         ^
+../arch/arm64/kvm/hyp/nvhe/psci-relay.c:199:19: error: argument type 'enum pkvm_psci_notification' is incomplete
+  199 |         pkvm_psci_notify(PKVM_PSCI_CPU_SUSPEND, host_ctxt);
+      |                          ^~~~~~~~~~~~~~~~~~~~~
+../arch/arm64/kvm/hyp/include/nvhe/modules.h:11:6: note: forward declaration of 'enum pkvm_psci_notification'
+   11 | enum pkvm_psci_notification;
+      |      ^
+../arch/arm64/kvm/../../../virt/kvm/kvm_main.c:474:6: error: implicit declaration of function 'kvm_set_spte_hva' [-Werror,-Wimplicit-function-declaration]
+  474 |         if (kvm_set_spte_hva(kvm, address, pte))
+      |             ^
+../arch/arm64/kvm/hyp/nvhe/psci-relay.c:229:19: error: use of undeclared identifier 'PKVM_PSCI_SYSTEM_SUSPEND'
+  229 |         pkvm_psci_notify(PKVM_PSCI_SYSTEM_SUSPEND, host_ctxt);
+      |                          ^~~~~~~~~~~~~~~~~~~~~~~~
+../arch/arm64/kvm/../../../virt/kvm/kvm_main.c:495:19: error: implicit declaration of function 'kvm_unmap_hva_range' [-Werror,-Wimplicit-function-declaration]
+  495 |         need_tlb_flush = kvm_unmap_hva_range(kvm, range->start, range->end,
+      |                          ^
+../arch/arm64/kvm/../../../virt/kvm/kvm_main.c:543:10: error: implicit declaration of function 'kvm_age_hva' [-Werror,-Wimplicit-function-declaration]
+  543 |         young = kvm_age_hva(kvm, start, end);
+      |                 ^
+../arch/arm64/kvm/../../../virt/kvm/kvm_main.c:576:10: error: implicit declaration of function 'kvm_age_hva' [-Werror,-Wimplicit-function-declaration]
+  576 |         young = kvm_age_hva(kvm, start, end);
+      |                 ^
+../arch/arm64/kvm/hyp/nvhe/psci-relay.c:257:19: error: use of undeclared identifier 'PKVM_PSCI_CPU_ENTRY'
+  257 |         pkvm_psci_notify(PKVM_PSCI_CPU_ENTRY, host_ctxt);
+      |                          ^~~~~~~~~~~~~~~~~~~
+../arch/arm64/kvm/../../../virt/kvm/kvm_main.c:592:10: error: implicit declaration of function 'kvm_test_age_hva' [-Werror,-Wimplicit-function-declaration]
+  592 |         young = kvm_test_age_hva(kvm, address);
+      |                 ^
+5 errors generated.
+make[5]: *** [../arch/arm64/kvm/hyp/nvhe/Makefile.nvhe:31: arch/arm64/kvm/hyp/nvhe/psci-relay.nvhe.o] Error 1
+make[5]: *** Se espera a que terminen otras tareas....
+  CC      fs/nfs_common/nfs_ssc.o
+../arch/arm64/kvm/../../../virt/kvm/kvm_main.c:865:2: error: implicit declaration of function 'kvm_arch_free_vm' [-Werror,-Wimplicit-function-declaration]
+  865 |         kvm_arch_free_vm(kvm);
+      |         ^
+../arch/arm64/kvm/../../../virt/kvm/kvm_main.c:865:2: note: did you mean 'kvm_arch_init_vm'?
+../include/linux/kvm_host.h:1049:5: note: 'kvm_arch_init_vm' declared here
+ 1049 | int kvm_arch_init_vm(struct kvm *kvm, unsigned long type);
+      |     ^
+../arch/arm64/kvm/../../../virt/kvm/kvm_main.c:918:2: error: implicit declaration of function 'kvm_arch_free_vm' [-Werror,-Wimplicit-function-declaration]
+  918 |         kvm_arch_free_vm(kvm);
+      |         ^
+../arch/arm64/kvm/../../../virt/kvm/kvm_main.c:2173:23: error: no member named 'gfn' in 'struct gfn_to_pfn_cache'
+ 2173 |                 cache->pfn = cache->gfn = 0;
+      |                              ~~~~~  ^
+../arch/arm64/kvm/../../../virt/kvm/kvm_main.c:2184:37: error: no member named 'dirty' in 'struct gfn_to_pfn_cache'
+ 2184 |         kvm_release_pfn(cache->pfn, cache->dirty, cache);
+      |                                     ~~~~~  ^
+../arch/arm64/kvm/../../../virt/kvm/kvm_main.c:2187:9: error: no member named 'gfn' in 'struct gfn_to_pfn_cache'
+ 2187 |         cache->gfn = gfn;
+      |         ~~~~~  ^
+../arch/arm64/kvm/../../../virt/kvm/kvm_main.c:2188:9: error: no member named 'dirty' in 'struct gfn_to_pfn_cache'
+ 2188 |         cache->dirty = false;
+      |         ~~~~~  ^
+../arch/arm64/kvm/../../../virt/kvm/kvm_main.c:2207:29: error: no member named 'gfn' in 'struct gfn_to_pfn_cache'
+ 2207 |                 if (!cache->pfn || cache->gfn != gfn ||
+      |                                    ~~~~~  ^
+../arch/arm64/kvm/../../../virt/kvm/kvm_main.c:2290:10: error: no member named 'dirty' in 'struct gfn_to_pfn_cache'
+ 2290 |                 cache->dirty |= dirty;
+      |                 ~~~~~  ^
+  CC      crypto/rng.o
+../arch/arm64/kvm/../../../virt/kvm/kvm_main.c:2839:14: error: no member named 'halt_poll_fail_ns' in 'struct kvm_vcpu_stat'
+ 2839 |                 vcpu->stat.halt_poll_fail_ns += poll_ns;
+      |                 ~~~~~~~~~~ ^
+../arch/arm64/kvm/../../../virt/kvm/kvm_main.c:2841:14: error: no member named 'halt_poll_success_ns' in 'struct kvm_vcpu_stat'
+ 2841 |                 vcpu->stat.halt_poll_success_ns += poll_ns;
+      |                 ~~~~~~~~~~ ^
+../arch/arm64/kvm/../../../virt/kvm/kvm_main.c:2859:16: error: no member named 'halt_attempted_poll' in 'struct kvm_vcpu_stat'
+ 2859 |                 ++vcpu->stat.halt_attempted_poll;
+      |                   ~~~~~~~~~~ ^
+../arch/arm64/kvm/../../../virt/kvm/kvm_main.c:2866:18: error: no member named 'halt_successful_poll' in 'struct kvm_vcpu_stat'
+ 2866 |                                 ++vcpu->stat.halt_successful_poll;
+      |                                   ~~~~~~~~~~ ^
+../arch/arm64/kvm/../../../virt/kvm/kvm_main.c:2868:19: error: no member named 'halt_poll_invalid' in 'struct kvm_vcpu_stat'
+ 2868 |                                         ++vcpu->stat.halt_poll_invalid;
+      |                                           ~~~~~~~~~~ ^
+fatal error: too many errors emitted, stopping now [-ferror-limit=]
+20 errors generated.
+make[3]: *** [../scripts/Makefile.build:273: arch/arm64/kvm/../../../virt/kvm/kvm_main.o] Error 1
+make[3]: *** Se espera a que terminen otras tareas....
+  CC      kernel/locking/semaphore.o
+  CC      block/bio-integrity.o
+  CC      kernel/sched/swait.o
+make[4]: *** [../scripts/Makefile.build:516: arch/arm64/kvm/hyp/nvhe] Error 2
+make[3]: *** [../scripts/Makefile.build:516: arch/arm64/kvm/hyp] Error 2
+make[2]: *** [../scripts/Makefile.build:516: arch/arm64/kvm] Error 2
+make[1]: *** [/home/rebelpilot89/manaus-kernel/Makefile:1908: arch/arm64] Error 2
+make[1]: *** Se espera a que terminen otras tareas....
+  CC      kernel/power/qos.o
+  CC      kernel/sched/completion.o
+  CC      fs/coredump.o
+  CC      kernel/locking/rwsem.o
+  CC      crypto/ansi_cprng.o
+  CC      block/blk-integrity.o
+  CC      kernel/power/main.o
+  AR      fs/nfs_common/built-in.a
+  CC      kernel/printk/printk.o
+  CC      crypto/drbg.o
+  CC      kernel/locking/percpu-rwsem.o
+  CC      block/t10-pi.o
+  CC      kernel/sched/cpupri.o
+  CC      kernel/irq/irqdesc.o
+  CC      fs/drop_caches.o
+  CC      kernel/locking/spinlock.o
+  CC      kernel/power/console.o
+  CC      crypto/jitterentropy-kcapi.o
+  CC      kernel/locking/osq_lock.o
+  CC      block/blk-mq-virtio.o
+  CC      kernel/printk/printk_safe.o
+  CC      kernel/irq/handle.o
+  CC      crypto/ghash-generic.o
+  CC      fs/fhandle.o
+  CC      kernel/locking/qspinlock.o
+  CC      kernel/power/process.o
+  CC      kernel/sched/cpudeadline.o

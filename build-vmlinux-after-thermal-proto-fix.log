@@ -1,0 +1,191 @@
+make[1]: se entra en el directorio '/home/rebelpilot89/manaus-kernel/out'
+  GEN     Makefile
+../scripts/Makefile.asm-generic:25: redundant generic-y found in arch/arm64/include/asm/Kbuild: set_memory.h
+  CALL    ../scripts/atomic/check-atomics.sh
+  CALL    ../scripts/checksyscalls.sh
+  CHK     include/generated/compile.h
+MTK_GPU_VERSION = mali avalon r49p1
+*GPU BM QoS 2.0 QOS Framework defined
+*GPU [mtk-Kbuild] building r49p1 DDK ...
+*GPU defined GPU BM QoS 2.0 for MT6879
+*GPU [mtk-Kbuild] CONFIG_DEBUG_FS = y
+*GPU [mtk-Kbuild] CONFIG_PROC_FS = y
+*GPU [mtk-Kbuild] CONFIG_MTK_GPU_COMMON_DVFS_SUPPORT = y
+*GPU [mtk-Kbuild] CONFIG_MTK_GPU_SUPPORT = y
+*GPU [mtk-Kbuild] CONFIG_MTK_GPU_VERSION = "mali avalon r49p1"
+*GPU [mtk-Kbuild] MTK_GPU_VERSION = 
+*GPU [mtk-Kbuild] MTK_PLATFORM = mt6879
+*GPU [mtk-Kbuild] CONFIG_MALI_MIDGARD = y
+*GPU [mtk-Kbuild] CONFIG_MALI_PLATFORM_NAME = mt6879
+*GPU [mtk-Kbuild] CONFIG_MALI_CSF_SUPPORT = 
+*GPU [mtk-Kbuild] CONFIG_MALI_REAL_HW = y
+*GPU [mtk-Kbuild] CONFIG_MALI_NO_MALI = 
+*GPU [mtk-Kbuild] CONFIG_MALI_DEBUG = y
+*GPU [mtk-Kbuild] CONFIG_MALI_MIDGARD_DVFS = y
+*GPU [mtk-Kbuild] CONFIG_MALI_DEVFREQ = y
+*GPU [mtk-Kbuild] CONFIG_MALI_MTK_DEBUG = y
+*GPU [mtk-Kbuild] CONFIG_MALI_MTK_DEBUG_DFD = y
+*GPU [mtk-Kbuild] CONFIG_MALI_MTK_MEM_TRACK = y
+*GPU [mtk-Kbuild] CONFIG_MALI_MTK_DEVFREQ = y
+*GPU [mtk-Kbuild] CONFIG_MALI_MTK_DEVFREQ_THERMAL = y
+*GPU [mtk-Kbuild] CONFIG_MALI_MTK_GPU_BM_2 = y
+*GPU [mtk-Kbuild] CONFIG_MALI_MTK_BRINGUP = 
+*GPU [mtk-Kbuild] CONFIG_MALI_MTK_NO_THERMAL = 
+************  drivers/trusty/mtee-kree mk ************
+../drivers/misc/mediatek/cameraisp/dip/Makefile:14: "isp6s"
+..
+..
+fdvt tina
+Tina add dma: 
+..
+mot_dubai_ak7377a-objs : mot_dubai_ak7377.o dw9781_circle_test.o dw9781_i2c.o dw9781.o
+framesync_drv: frame-sync
+virt-sensor: virt-sensor
+common_drv : mot_manaus_ov50a_mipi_raw mot_manaus_ov32b_mipi_raw mot_manaus_hi1336_mipi_raw
+imgsensor-objs : adaptor-hw.o adaptor-drv.o adaptor-i2c.o adaptor-ctrls.o adaptor-ioctl.o adaptor-common-ctrl.o  frame-sync/frame_sync.o frame-sync/frame_sync_algo.o frame-sync/frame_monitor.o frame-sync/frame_sync_util.o frame-sync/frame_sync_console.o frame-sync/hw_sensor_sync_algo.o frame-sync/custom/custom_hw_sync.o  virt-sensor/virt-sensor-drv.o  common/mot_manaus_ov50a_mipi_raw/mot_ov50amipiraw_Sensor.o common/mot_manaus_ov32b_mipi_raw/mot_manaus_ov32bmipiraw_Sensor.o common/mot_manaus_hi1336_mipi_raw/mot_hi1336mipiraw_Sensor.o
+subdir-ccflags-y : -I../drivers/misc/mediatek/imgsensor/inc -I/home/rebelpilot89/manaus-kernel/drivers/misc/mediatek/imgsensor/src-v4l2/ -I../drivers/media/platform/mtk-isp/ -I../drivers/media/platform/mtk-isp/camsys/isp7_1/cam/  -I/home/rebelpilot89/manaus-kernel/drivers/misc/mediatek/imgsensor/src-v4l2/frame-sync  -I/home/rebelpilot89/manaus-kernel/drivers/misc/mediatek/imgsensor/src-v4l2/virt-sensor  -D'IMGSENSOR_SUBDRVS=E(mot_manaus_ov50a_mipi_raw),E(mot_manaus_ov32b_mipi_raw),E(mot_manaus_hi1336_mipi_raw)'
+imgsensor-virt-sensor-objs : imgsensor-glue.o 
+subdir-ccflags-y : -I../drivers/misc/mediatek/imgsensor/inc -I/home/rebelpilot89/manaus-kernel/drivers/misc/mediatek/imgsensor/src-v4l2/imgsensor-glue/ 
+  CC      drivers/thermal/mediatek/thermal_trace.o
+os option: linux
+$MTK_PLATFORM is [mt6879]
+$WLAN_CHIP_ID is [6879]
+$MTK_COMBO_CHIP is [CONNAC]
+../drivers/misc/mediatek/connectivity/wlan/Makefile:613: wlan_6879_axi build-in boot.img
+"imgsys, subdir-ccflags-y = -DWPE_TF_DUMP_71_2 -DONEPIXEL_MODE"
+"imgsys, subdir-ccflags-y = -DTF_DUMP_71_2"
+../drivers/misc/mediatek/ccu/src/Makefile:17: CCU_MAKE_FILE_CALLED_2_1_1
+"mt6879"
+CCU_MAKE_FILE_CALLED
+y
+
+mt6879
+
+
+..
+"CONFIG_MICROTRUST_TEE_VERSION="400""
+"CONFIG_MICROTRUST_TEE_SUPPORT=y"
+"CONFIG_MICROTRUST_TZ_DRIVER=y"
+"CONFIG_MICROTRUST_VFS_DRIVER=y"
+"CONFIG_MICROTRUST_FP_DRIVER=y"
+"CONFIG_MICROTRUST_DEBUG="
+"CONFIG_MICROTRUST_TEST_DRIVERS="
+"-----------CONFIG_MTPROF="
+"-----------MICROTRUST_TZ_DRIVER_MTK_BOOTPROF="
+"whf src=drivers/tee/teei/400"
+"whf subdir-ccflags-y=-I../drivers/tee/teei/400/common/include"
+"whf ccflags-y="
+"=----------------1---------------------------"
+"=----------------2---------------------------"
+-- KernelSU-Next Git repo detected at: /home/rebelpilot89/manaus-kernel/drivers/kernelsu
+-- KernelSU-Next version: 33024
+-- KernelSU-Next tag: v3.1.0
+-- KernelSU-Next Manager signature size: 0x3e6
+-- KernelSU-Next Manager signature hash: 79e590113c4c4c0c222978e413a5faa801666957b1212a328e46c00c69821bf7
+  AR      drivers/thermal/mediatek/built-in.a
+  AR      drivers/thermal/built-in.a
+  AR      drivers/built-in.a
+  GEN     .version
+  CHK     include/generated/compile.h
+  UPD     include/generated/compile.h
+  CC      init/version.o
+  AR      init/built-in.a
+  GEN     .tmp_initcalls.lds
+  LTO     vmlinux.o
+ld.lld: warning: ../drivers/thermal/mediatek/thermal_trace.c:266:0: stack frame size (4192) exceeds limit (2048) in function 'thermal_trace_work.e745d0a9ee75e342c293539524d98e1b'
+ld.lld: warning: ../drivers/memory/mediatek/emi-mpu.c:81:0: stack frame size (4256) exceeds limit (2048) in function 'emimpu_violation_irq.dcf3198dae052ad4c2abf2101fcd897e'
+  MODPOST vmlinux.symvers
+  MODINFO modules.builtin.modinfo
+  GEN     modules.builtin
+  LD      .tmp_vmlinux.kallsyms1
+ld.lld: error: undefined symbol: __kcfi_typeid_chacha_block_xor_neon
+>>> referenced by chacha-neon-core.S:107 (/home/rebelpilot89/manaus-kernel/out/../arch/arm64/crypto/chacha-neon-core.S:107)
+>>>               vmlinux.o:(.text+0x63e4)
+
+ld.lld: error: undefined symbol: __kcfi_typeid_hchacha_block_neon
+>>> referenced by chacha-neon-core.S:146 (/home/rebelpilot89/manaus-kernel/out/../arch/arm64/crypto/chacha-neon-core.S:146)
+>>>               vmlinux.o:(.text+0x642c)
+
+ld.lld: error: undefined symbol: __kcfi_typeid_chacha_4block_xor_neon
+>>> referenced by chacha-neon-core.S:166 (/home/rebelpilot89/manaus-kernel/out/../arch/arm64/crypto/chacha-neon-core.S:166)
+>>>               vmlinux.o:(.text+0x6480)
+
+ld.lld: error: undefined symbol: mtk_dprec_logger_pr
+>>> referenced by mtk_drm_panel_drv.c:35 (/home/rebelpilot89/manaus-kernel/out/../drivers/gpu/drm/panel/mtk_drm_panel_drv.c:35)
+>>>               vmlinux.o:(mtk_drm_panel_drv_init)
+>>> referenced by mtk_drm_panel_drv.c:38 (/home/rebelpilot89/manaus-kernel/out/../drivers/gpu/drm/panel/mtk_drm_panel_drv.c:38)
+>>>               vmlinux.o:(mtk_drm_panel_drv_init)
+>>> referenced by mtk_drm_panel_drv.c:43 (/home/rebelpilot89/manaus-kernel/out/../drivers/gpu/drm/panel/mtk_drm_panel_drv.c:43)
+>>>               vmlinux.o:(mtk_drm_panel_drv_init)
+>>> referenced 440 more times
+
+ld.lld: error: undefined symbol: __register_rpmsg_driver
+>>> referenced by smd.c:107 (/home/rebelpilot89/manaus-kernel/out/../net/qrtr/smd.c:107)
+>>>               vmlinux.o:(__initstub__kmod_qrtr_smd__362_107_qcom_smd_qrtr_driver_init6.cfi)
+
+ld.lld: error: undefined symbol: __kcfi_typeid_idmap_cpu_replace_ttbr1
+>>> referenced by proc.S:164 (/home/rebelpilot89/manaus-kernel/out/../arch/arm64/mm/proc.S:164)
+>>>               vmlinux.o:(.idmap.text+0x5a8)
+
+ld.lld: error: undefined symbol: rpmsg_ccd_ipi_send
+>>> referenced by irqbypass.c
+>>>               vmlinux.o:(rpmsg_ccd_ipi_send.cfi_jt)
+
+ld.lld: error: undefined symbol: connsys_low_power_setting_mt6886
+>>> referenced by irqbypass.c
+>>>               vmlinux.o:(connsys_low_power_setting_mt6886.cfi_jt)
+
+ld.lld: error: undefined symbol: connsys_low_power_setting_mt6886_atf
+>>> referenced by irqbypass.c
+>>>               vmlinux.o:(connsys_low_power_setting_mt6886_atf.cfi_jt)
+
+ld.lld: error: undefined symbol: consys_pre_cal_backup_mt6886_atf
+>>> referenced by irqbypass.c
+>>>               vmlinux.o:(consys_pre_cal_backup_mt6886_atf.cfi_jt)
+
+ld.lld: error: undefined symbol: kretprobe_trampoline
+>>> referenced by irqbypass.c
+>>>               vmlinux.o:(kretprobe_trampoline.cfi_jt)
+
+ld.lld: error: undefined symbol: connsys_afe_sw_patch_mt6886
+>>> referenced by irqbypass.c
+>>>               vmlinux.o:(connsys_afe_sw_patch_mt6886.cfi_jt)
+
+ld.lld: error: undefined symbol: consys_debug_init_mt6886
+>>> referenced by irqbypass.c
+>>>               vmlinux.o:(consys_debug_init_mt6886.cfi_jt)
+
+ld.lld: error: undefined symbol: consys_debug_deinit_mt6886
+>>> referenced by irqbypass.c
+>>>               vmlinux.o:(consys_debug_deinit_mt6886.cfi_jt)
+
+ld.lld: error: undefined symbol: consys_pmic_debug_log_mt6886
+>>> referenced by irqbypass.c
+>>>               vmlinux.o:(consys_pmic_debug_log_mt6886.cfi_jt)
+
+ld.lld: error: undefined symbol: connsys_afe_sw_patch_mt6886_atf
+>>> referenced by irqbypass.c
+>>>               vmlinux.o:(connsys_afe_sw_patch_mt6886_atf.cfi_jt)
+
+ld.lld: error: undefined symbol: consys_debug_init_mt6886_atf
+>>> referenced by irqbypass.c
+>>>               vmlinux.o:(consys_debug_init_mt6886_atf.cfi_jt)
+
+ld.lld: error: undefined symbol: consys_debug_deinit_mt6886_atf
+>>> referenced by irqbypass.c
+>>>               vmlinux.o:(consys_debug_deinit_mt6886_atf.cfi_jt)
+
+ld.lld: error: undefined symbol: consys_check_conninfra_on_domain_status_mt6886
+>>> referenced by irqbypass.c
+>>>               vmlinux.o:(consys_check_conninfra_on_domain_status_mt6886.cfi_jt)
+>>> referenced by mt6886.c:146 (/home/rebelpilot89/manaus-kernel/out/../drivers/misc/mediatek/connectivity/conninfra/conn_drv/connv2/platform/mt6886/mt6886.c:146)
+>>>               vmlinux.o:(consys_power_state_dump)
+
+ld.lld: error: undefined symbol: consys_polling_chipid_mt6886
+>>> referenced by irqbypass.c
+>>>               vmlinux.o:(consys_polling_chipid_mt6886.cfi_jt)
+
+ld.lld: error: too many errors emitted, stopping now (use --error-limit=0 to see all errors)
+make[1]: *** [/home/rebelpilot89/manaus-kernel/Makefile:1296: vmlinux] Error 1
+make[1]: se sale del directorio '/home/rebelpilot89/manaus-kernel/out'
+make: *** [Makefile:185: __sub-make] Error 2

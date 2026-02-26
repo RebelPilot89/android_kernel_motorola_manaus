@@ -1,0 +1,1991 @@
+.
+├── bt
+│   ├── btmtk_buffer_mode.c
+│   ├── btmtk_chip_reset.c
+│   ├── btmtk_fw_log.c
+│   ├── btmtk_main.c
+│   ├── btmtk_woble.c
+│   ├── bt_power_table
+│   │   └── btPowerTable.dat
+│   ├── bt.txt
+│   ├── cfg_example
+│   │   ├── bt.cfg
+│   │   └── woble_setting_7961.bin
+│   ├── include
+│   │   ├── btif
+│   │   │   ├── btmtk_beif.h
+│   │   │   ├── btmtk_beif_plat.h
+│   │   │   ├── btmtk_btif.h
+│   │   │   ├── btmtk_dbg_tp_evt.h
+│   │   │   ├── btmtk_dbg_tp_evt_if.h
+│   │   │   ├── platform_6877.h
+│   │   │   ├── platform_6878.h
+│   │   │   ├── platform_6879.h
+│   │   │   ├── platform_6885.h
+│   │   │   ├── platform_6886.h
+│   │   │   ├── platform_6893.h
+│   │   │   ├── platform_6895.h
+│   │   │   ├── platform_6897.h
+│   │   │   ├── platform_6899.h
+│   │   │   ├── platform_6983.h
+│   │   │   ├── platform_base.h
+│   │   │   └── platform_mt6893.h
+│   │   ├── btmtk_buffer_mode.h
+│   │   ├── btmtk_chip_if.h
+│   │   ├── btmtk_define.h
+│   │   ├── btmtk_drv.h
+│   │   ├── btmtk_fw_log.h
+│   │   ├── btmtk_main.h
+│   │   ├── btmtk_woble.h
+│   │   ├── sdio
+│   │   │   └── btmtk_sdio.h
+│   │   ├── uart
+│   │   │   └── btmtk_uart.h
+│   │   └── usb
+│   │       └── btmtk_usb.h
+│   ├── init.btmtk_sdio.rc
+│   ├── Kconfig
+│   ├── Makefile
+│   ├── mt6879
+│   │   ├── btmtk_beif.c
+│   │   ├── btmtk_beif_plat.c
+│   │   ├── btmtk_btif_main.c
+│   │   ├── btmtk_buffer_mode.c
+│   │   ├── btmtk_char_dev.c
+│   │   ├── btmtk_chip_reset.c
+│   │   ├── btmtk_dbg.c
+│   │   ├── btmtk_dbg_tp_evt_if.c
+│   │   ├── btmtk_fw_log.c
+│   │   ├── btmtk_irq.c
+│   │   ├── btmtk_main.c
+│   │   ├── btmtk_mt66xx.c
+│   │   ├── btmtk_queue.c
+│   │   ├── btmtk_woble.c
+│   │   ├── init.bt_drv.rc
+│   │   ├── Kconfig
+│   │   └── Makefile
+│   ├── sdio
+│   │   └── btmtksdio.c
+│   ├── uart
+│   │   └── btmtk_uart_main.c
+│   ├── uart_daemon
+│   │   ├── Makefile
+│   │   ├── serial.h
+│   │   └── uart_launcher.c
+│   ├── uboot_driver
+│   │   ├── Mstar
+│   │   │   ├── include
+│   │   │   │   └── mtk-bt
+│   │   │   │       ├── errno.h
+│   │   │   │       ├── LD_btmtk_usb.h
+│   │   │   │       └── LD_usbbt.h
+│   │   │   └── src
+│   │   │       └── mtk-bt
+│   │   │           ├── LD_btmtk_usb.c
+│   │   │           └── LD_usbbt.c
+│   │   └── MTK
+│   │       └── mtk-bt
+│   │           ├── Makefile
+│   │           └── mt7xxx
+│   │               ├── LD_btmtk_usb.c
+│   │               ├── LD_btmtk_usb.h
+│   │               ├── LD_errno.h
+│   │               ├── LD_usbbt.c
+│   │               ├── LD_usbbt.h
+│   │               └── Makefile
+│   ├── usb
+│   │   └── btmtkusb.c
+│   ├── util
+│   │   ├── checkpatch.pl
+│   │   ├── const_structs.checkpatch
+│   │   └── spelling.txt
+│   └── wmt
+│       ├── bt.h
+│       ├── btmtk_dbg.c
+│       ├── btmtk_dbg_tp_evt_if.c
+│       ├── fw_log_bt.c
+│       ├── init.bt_drv.rc
+│       ├── Makefile
+│       └── stp_chrdev_bt.c
+├── common
+│   ├── common_detect
+│   │   ├── drv_init
+│   │   │   ├── bluetooth_drv_init.c
+│   │   │   ├── common_drv_init.c
+│   │   │   ├── conn_drv_init.c
+│   │   │   ├── fm_drv_init.c
+│   │   │   ├── gps_drv_init.c
+│   │   │   ├── inc
+│   │   │   │   ├── bluetooth_drv_init.h
+│   │   │   │   ├── common_drv_init.h
+│   │   │   │   ├── conn_drv_init.h
+│   │   │   │   ├── fm_drv_init.h
+│   │   │   │   ├── gps_drv_init.h
+│   │   │   │   └── wlan_drv_init.h
+│   │   │   └── wlan_drv_init.c
+│   │   ├── mtk_wcn_stub_alps.c
+│   │   ├── sdio_detect.c
+│   │   ├── sdio_detect.h
+│   │   ├── wmt_detect.c
+│   │   ├── wmt_detect.h
+│   │   ├── wmt_detect_pwr.c
+│   │   ├── wmt_detect_pwr.h
+│   │   ├── wmt_gpio.c
+│   │   └── wmt_gpio.h
+│   ├── common_main
+│   │   ├── core
+│   │   │   ├── btm_core.c
+│   │   │   ├── include
+│   │   │   │   ├── btm_core.h
+│   │   │   │   ├── dbg_core.h
+│   │   │   │   ├── psm_core.h
+│   │   │   │   ├── stp_core.h
+│   │   │   │   ├── stp_wmt.h
+│   │   │   │   ├── wmt_conf.h
+│   │   │   │   ├── wmt_core.h
+│   │   │   │   ├── wmt_ctrl.h
+│   │   │   │   ├── wmt_func.h
+│   │   │   │   ├── wmt_ic.h
+│   │   │   │   └── wmt_lib.h
+│   │   │   ├── psm_core.c
+│   │   │   ├── stp_core.c
+│   │   │   ├── stp_exp.c
+│   │   │   ├── wmt_conf.c
+│   │   │   ├── wmt_core.c
+│   │   │   ├── wmt_ctrl.c
+│   │   │   ├── wmt_exp.c
+│   │   │   ├── wmt_func.c
+│   │   │   ├── wmt_ic_6620.c
+│   │   │   ├── wmt_ic_6628.c
+│   │   │   ├── wmt_ic_6630.c
+│   │   │   ├── wmt_ic_6632.c
+│   │   │   ├── wmt_ic_soc.c
+│   │   │   └── wmt_lib.c
+│   │   ├── include
+│   │   │   ├── connsys_smc_connv1.h
+│   │   │   ├── mtk_wcn_cmb_hw.h
+│   │   │   ├── stp_exp.h
+│   │   │   ├── wmt_exp.h
+│   │   │   ├── wmt.h
+│   │   │   ├── wmt_plat.h
+│   │   │   └── wmt_plat_stub.h
+│   │   ├── linux
+│   │   │   ├── bgw_desense.c
+│   │   │   ├── fw_log_wmt.c
+│   │   │   ├── hif_sdio.c
+│   │   │   ├── include
+│   │   │   │   ├── bgw_desense.h
+│   │   │   │   ├── fw_log_wmt.h
+│   │   │   │   ├── hif_sdio.h
+│   │   │   │   ├── osal.h
+│   │   │   │   ├── osal_typedef.h
+│   │   │   │   ├── stp_btif.h
+│   │   │   │   ├── stp_dbg_combo.h
+│   │   │   │   ├── stp_dbg.h
+│   │   │   │   ├── stp_dbg_soc.h
+│   │   │   │   ├── stp_sdio.h
+│   │   │   │   ├── wmt_alarm.h
+│   │   │   │   ├── wmt_dbg.h
+│   │   │   │   ├── wmt_dev.h
+│   │   │   │   ├── wmt_idc.h
+│   │   │   │   ├── wmt_proc_dbg.h
+│   │   │   │   ├── wmt_step.h
+│   │   │   │   └── wmt_user_proc.h
+│   │   │   ├── osal.c
+│   │   │   ├── stp_btif.c
+│   │   │   ├── stp_dbg.c
+│   │   │   ├── stp_dbg_combo.c
+│   │   │   ├── stp_dbg_soc.c
+│   │   │   ├── stp_sdio.c
+│   │   │   ├── stp_uart.c
+│   │   │   ├── wmt_alarm.c
+│   │   │   ├── wmt_dbg.c
+│   │   │   ├── wmt_dev.c
+│   │   │   ├── wmt_idc.c
+│   │   │   ├── wmt_proc_dbg.c
+│   │   │   └── wmt_user_proc.c
+│   │   └── platform
+│   │       ├── include
+│   │       │   ├── mt6835.h
+│   │       │   ├── mt6835_pos_gen.h
+│   │       │   └── mtk_wcn_consys_hw.h
+│   │       ├── mt6835.c
+│   │       ├── mt6835_dbg.c
+│   │       ├── mt6835_pos_gen.c
+│   │       ├── mtk_wcn_cmb_hw.c
+│   │       ├── mtk_wcn_consys_hw.c
+│   │       ├── mtk_wcn_dump_util.c
+│   │       ├── wmt_plat_alps.c
+│   │       └── wmt_plat_stub.c
+│   ├── conn_dbg.h
+│   ├── connectivity_build_in_adapter.c
+│   ├── connectivity_build_in_adapter.h
+│   ├── debug_utility
+│   │   ├── connsys_debug_utility.c
+│   │   ├── connsys_debug_utility_emi.h
+│   │   ├── connsys_debug_utility.h
+│   │   ├── ring.c
+│   │   ├── ring_emi.c
+│   │   ├── ring_emi.h
+│   │   ├── ring.h
+│   │   └── tool
+│   │       ├── connsys_log_AT
+│   │       │   ├── connsys_debut_utility_tester.bat
+│   │       │   └── dedicated_log_path_test.py
+│   │       └── connsys_log_tool
+│   │           ├── connsys_log_converter.py
+│   │           └── kernel_to_utc.py
+│   ├── init.wmt_drv.rc
+│   ├── Kconfig
+│   ├── Makefile
+│   ├── test
+│   │   ├── include
+│   │   │   └── wmt_step_test.h
+│   │   └── wmt_step_test.c
+│   ├── wmt_build_in_adapter.c
+│   └── wmt_build_in_adapter.h
+├── connfem
+│   ├── connfem_api.c
+│   ├── connfem_cfg.c
+│   ├── connfem_container.c
+│   ├── connfem_dt_parser.c
+│   ├── connfem_epaelna.c
+│   ├── connfem_internal.c
+│   ├── connfem_module.c
+│   ├── connfem_sku.c
+│   ├── connfem_subsys_bt.c
+│   ├── connfem_subsys_common.c
+│   ├── connfem_subsys_wifi.c
+│   ├── connfem_test.c
+│   ├── include
+│   │   ├── connfem_api.h
+│   │   ├── connfem_cfg.h
+│   │   ├── connfem_container.h
+│   │   ├── connfem_dt.h
+│   │   ├── connfem_epaelna.h
+│   │   ├── connfem.h
+│   │   ├── connfem_sku.h
+│   │   └── connfem_test.h
+│   ├── init.connfem.rc
+│   ├── Kconfig
+│   └── Makefile
+├── conninfra
+│   ├── adaptor
+│   │   ├── connadp_internal.c
+│   │   ├── conninfra_dev.c
+│   │   ├── conn_kern_adaptor.c
+│   │   ├── connsyslog
+│   │   │   ├── connsyslog_macro.h
+│   │   │   ├── connsyslog_to_user.c
+│   │   │   ├── connsyslog_to_user.h
+│   │   │   ├── fw_log_mcu.c
+│   │   │   └── fw_log_mcu.h
+│   │   ├── coredump
+│   │   │   ├── conndump_netlink.c
+│   │   │   ├── conndump_netlink.h
+│   │   │   └── coredump_macro.h
+│   │   └── include
+│   │       ├── conn_adaptor.h
+│   │       ├── conn_drv.h
+│   │       └── conn_kern_adaptor.h
+│   ├── base
+│   │   ├── include
+│   │   │   ├── consys_reg_util.h
+│   │   │   ├── msg_thread.h
+│   │   │   ├── osal.h
+│   │   │   └── ring.h
+│   │   ├── msg_thread.c
+│   │   ├── osal.c
+│   │   └── ring.c
+│   ├── conf
+│   │   ├── conninfra_conf.c
+│   │   └── include
+│   │       └── conninfra_conf.h
+│   ├── conn_drv
+│   │   ├── connv2
+│   │   │   ├── core
+│   │   │   │   ├── conninfra_core.c
+│   │   │   │   └── include
+│   │   │   │       └── conninfra_core.h
+│   │   │   ├── debug_utility
+│   │   │   │   ├── conninfra_dbg.c
+│   │   │   │   ├── conninfra_dbg.h
+│   │   │   │   ├── connsyslog
+│   │   │   │   │   ├── connsyslog.c
+│   │   │   │   │   ├── connsyslog_emi.h
+│   │   │   │   │   ├── connsyslog.h
+│   │   │   │   │   ├── connsyslog_hw_config.h
+│   │   │   │   │   ├── ring_emi.c
+│   │   │   │   │   └── ring_emi.h
+│   │   │   │   ├── coredump
+│   │   │   │   │   ├── connsys_coredump.c
+│   │   │   │   │   ├── connsys_coredump_emi.h
+│   │   │   │   │   ├── connsys_coredump.h
+│   │   │   │   │   ├── connsys_coredump_hw_config.h
+│   │   │   │   │   ├── coredump_mng.c
+│   │   │   │   │   └── coredump_mng.h
+│   │   │   │   ├── include
+│   │   │   │   │   └── connsys_debug_utility.h
+│   │   │   │   └── metlog
+│   │   │   │       ├── metlog.c
+│   │   │   │       └── metlog.h
+│   │   │   ├── drv_init
+│   │   │   │   ├── bluetooth_drv_init.c
+│   │   │   │   ├── conn_drv_init.c
+│   │   │   │   ├── fm_drv_init.c
+│   │   │   │   ├── gps_drv_init.c
+│   │   │   │   ├── include
+│   │   │   │   │   ├── bluetooth_drv_init.h
+│   │   │   │   │   ├── conn_drv_init.h
+│   │   │   │   │   ├── fm_drv_init.h
+│   │   │   │   │   ├── gps_drv_init.h
+│   │   │   │   │   └── wlan_drv_init.h
+│   │   │   │   └── wlan_drv_init.c
+│   │   │   ├── platform
+│   │   │   │   ├── clock_mng.c
+│   │   │   │   ├── consys_hw.c
+│   │   │   │   ├── consys_hw_plat_data.c
+│   │   │   │   ├── consys_reg_mng.c
+│   │   │   │   ├── emi_mng.c
+│   │   │   │   ├── include
+│   │   │   │   │   ├── clock_mng.h
+│   │   │   │   │   ├── connsys_library.h
+│   │   │   │   │   ├── connsys_smc.h
+│   │   │   │   │   ├── consys_hw.h
+│   │   │   │   │   ├── consys_reg_base.h
+│   │   │   │   │   ├── consys_reg_mng.h
+│   │   │   │   │   ├── emi_mng.h
+│   │   │   │   │   ├── plat_def.h
+│   │   │   │   │   ├── plat_library.h
+│   │   │   │   │   └── pmic_mng.h
+│   │   │   │   ├── mt6886
+│   │   │   │   │   ├── include
+│   │   │   │   │   │   ├── CODA
+│   │   │   │   │   │   │   ├── conn_afe_ctl.h
+│   │   │   │   │   │   │   ├── conn_bus_cr.h
+│   │   │   │   │   │   │   ├── conn_bus_cr_on.h
+│   │   │   │   │   │   │   ├── conn_cfg.h
+│   │   │   │   │   │   │   ├── conn_cfg_on.h
+│   │   │   │   │   │   │   ├── conn_clkgen_top.h
+│   │   │   │   │   │   │   ├── conn_dbg_ctl.h
+│   │   │   │   │   │   │   ├── conn_host_csr_top.h
+│   │   │   │   │   │   │   ├── conn_off_bus_bcrm.h
+│   │   │   │   │   │   │   ├── conn_off_debug_ctrl_ao.h
+│   │   │   │   │   │   │   ├── conn_on_bus_bcrm.h
+│   │   │   │   │   │   │   ├── conn_rf_spi_mst_reg.h
+│   │   │   │   │   │   │   ├── conn_rgu_on.h
+│   │   │   │   │   │   │   ├── conn_semaphore.h
+│   │   │   │   │   │   │   ├── conn_therm_ctl.h
+│   │   │   │   │   │   │   ├── conn_von_bus_bcrm.h
+│   │   │   │   │   │   │   └── conn_wt_slp_ctl_reg.h
+│   │   │   │   │   │   ├── mt6886_atf.h
+│   │   │   │   │   │   ├── mt6886_connsyslog.h
+│   │   │   │   │   │   ├── mt6886_consys_reg.h
+│   │   │   │   │   │   ├── mt6886_consys_reg_offset.h
+│   │   │   │   │   │   ├── mt6886_coredump.h
+│   │   │   │   │   │   ├── mt6886_debug_gen.h
+│   │   │   │   │   │   ├── mt6886_emi.h
+│   │   │   │   │   │   ├── mt6886.h
+│   │   │   │   │   │   ├── mt6886_pmic.h
+│   │   │   │   │   │   ├── mt6886_pos_gen.h
+│   │   │   │   │   │   ├── mt6886_pos.h
+│   │   │   │   │   │   └── mt6886_soc.h
+│   │   │   │   │   ├── mt6886_atf.c
+│   │   │   │   │   ├── mt6886.c
+│   │   │   │   │   ├── mt6886_consys_reg_atf.c
+│   │   │   │   │   ├── mt6886_consys_reg.c
+│   │   │   │   │   ├── mt6886_coredump_atf.c
+│   │   │   │   │   ├── mt6886_coredump.c
+│   │   │   │   │   ├── mt6886_debug_gen.c
+│   │   │   │   │   ├── mt6886_emi_atf.c
+│   │   │   │   │   ├── mt6886_emi.c
+│   │   │   │   │   ├── mt6886_ops.c
+│   │   │   │   │   ├── mt6886_pmic.c
+│   │   │   │   │   ├── mt6886_pos.c
+│   │   │   │   │   ├── mt6886_pos_gen.c
+│   │   │   │   │   └── mt6886_soc.c
+│   │   │   │   ├── mt6985
+│   │   │   │   │   ├── include
+│   │   │   │   │   │   ├── CODA
+│   │   │   │   │   │   │   ├── conn_afe_ctl_mt6985.h
+│   │   │   │   │   │   │   ├── conn_bus_cr_mt6985.h
+│   │   │   │   │   │   │   ├── conn_bus_cr_on_mt6985.h
+│   │   │   │   │   │   │   ├── conn_cfg_mt6985.h
+│   │   │   │   │   │   │   ├── conn_cfg_on_mt6985.h
+│   │   │   │   │   │   │   ├── conn_clkgen_top_mt6985.h
+│   │   │   │   │   │   │   ├── conn_dbg_ctl_mt6985.h
+│   │   │   │   │   │   │   ├── conn_host_csr_top_mt6985.h
+│   │   │   │   │   │   │   ├── conn_off_debug_ctrl_ao_mt6985.h
+│   │   │   │   │   │   │   ├── conn_rf_spi_mst_reg_mt6985.h
+│   │   │   │   │   │   │   ├── conn_rgu_on_mt6985.h
+│   │   │   │   │   │   │   ├── conn_semaphore_mt6985.h
+│   │   │   │   │   │   │   └── conn_wt_slp_ctl_reg_mt6985.h
+│   │   │   │   │   │   ├── mt6985_atf.h
+│   │   │   │   │   │   ├── mt6985_connsyslog.h
+│   │   │   │   │   │   ├── mt6985_consys_reg.h
+│   │   │   │   │   │   ├── mt6985_consys_reg_offset.h
+│   │   │   │   │   │   ├── mt6985_coredump.h
+│   │   │   │   │   │   ├── mt6985_debug_gen.h
+│   │   │   │   │   │   ├── mt6985.h
+│   │   │   │   │   │   ├── mt6985_pmic.h
+│   │   │   │   │   │   ├── mt6985_pos_gen.h
+│   │   │   │   │   │   ├── mt6985_pos.h
+│   │   │   │   │   │   └── mt6985_soc.h
+│   │   │   │   │   ├── mt6985_atf.c
+│   │   │   │   │   ├── mt6985.c
+│   │   │   │   │   ├── mt6985_consys_reg_atf.c
+│   │   │   │   │   ├── mt6985_consys_reg.c
+│   │   │   │   │   ├── mt6985_coredump_atf.c
+│   │   │   │   │   ├── mt6985_coredump.c
+│   │   │   │   │   ├── mt6985_debug_gen.c
+│   │   │   │   │   ├── mt6985_emi.c
+│   │   │   │   │   ├── mt6985_ops.c
+│   │   │   │   │   ├── mt6985_pmic.c
+│   │   │   │   │   ├── mt6985_pos.c
+│   │   │   │   │   ├── mt6985_pos_gen.c
+│   │   │   │   │   └── mt6985_soc.c
+│   │   │   │   └── pmic_mng.c
+│   │   │   └── src
+│   │   │       ├── conninfra.c
+│   │   │       ├── connv2_drv.c
+│   │   │       └── connv2_drv.h
+│   │   └── connv3
+│   │       ├── core
+│   │       │   ├── connv3_core.c
+│   │       │   └── include
+│   │       │       └── connv3_core.h
+│   │       ├── debug_utility
+│   │       │   ├── connsyslog
+│   │       │   │   ├── connv3_mcu_log.c
+│   │       │   │   └── connv3_mcu_log.h
+│   │       │   ├── coredump
+│   │       │   │   ├── connv3_coredump.c
+│   │       │   │   ├── connv3_coredump.h
+│   │       │   │   ├── connv3_dump_mng.c
+│   │       │   │   └── connv3_dump_mng.h
+│   │       │   └── include
+│   │       │       └── connv3_debug_utility.h
+│   │       ├── platform
+│   │       │   ├── connv3_hw.c
+│   │       │   ├── connv3_hw_dbg.c
+│   │       │   ├── connv3_hw_plat_data.c
+│   │       │   ├── connv3_pinctrl_mng.c
+│   │       │   ├── connv3_pmic_mng.c
+│   │       │   ├── include
+│   │       │   │   ├── connv3_coredump.h
+│   │       │   │   ├── connv3_hw_dbg.h
+│   │       │   │   ├── connv3_hw.h
+│   │       │   │   ├── connv3_pinctrl_mng.h
+│   │       │   │   └── connv3_pmic_mng.h
+│   │       │   ├── mt6639
+│   │       │   │   ├── include
+│   │       │   │   │   └── mt6639_dbg.h
+│   │       │   │   └── mt6639_dbg.c
+│   │       │   └── mt6985
+│   │       │       ├── mt6985.c
+│   │       │       ├── mt6985_pinctrl.c
+│   │       │       └── mt6985_pmic.c
+│   │       └── src
+│   │           ├── connv3.c
+│   │           ├── connv3_drv.c
+│   │           └── connv3_drv.h
+│   ├── include
+│   │   ├── conninfra.h
+│   │   └── connv3.h
+│   ├── init.conninfra.rc
+│   ├── Kconfig
+│   ├── Makefile
+│   └── test
+│       ├── connv2
+│       │   ├── cal_test.c
+│       │   ├── chip_rst_test.c
+│       │   ├── conf_test.c
+│       │   ├── conninfra_core_test.c
+│       │   ├── conninfra_test.c
+│       │   ├── connsyslog_test.c
+│       │   ├── connv2_pos_test.c
+│       │   ├── dump_test.c
+│       │   ├── include
+│       │   │   ├── cal_test.h
+│       │   │   ├── chip_rst_test.h
+│       │   │   ├── conf_test.h
+│       │   │   ├── conninfra_core_test.h
+│       │   │   ├── conninfra_test.h
+│       │   │   ├── connsyslog_test.h
+│       │   │   ├── connv2_pos_test.h
+│       │   │   ├── coredump_test.h
+│       │   │   └── msg_evt_test.h
+│       │   └── msg_evt_test.c
+│       └── connv3
+│           ├── connv3_dump_test.c
+│           ├── connv3_test.c
+│           └── include
+│               ├── connv3_dump_test.h
+│               └── connv3_test.h
+├── fmradio
+│   ├── chips
+│   │   ├── connac2x
+│   │   │   └── pub
+│   │   │       └── connac2x_fm_lib.c
+│   │   ├── mt6627
+│   │   │   ├── inc
+│   │   │   │   ├── mt6627_drv_dsp.h
+│   │   │   │   ├── mt6627_fm_lib.h
+│   │   │   │   └── mt6627_fm_reg.h
+│   │   │   └── pub
+│   │   │       ├── mt6627_fm_lib.c
+│   │   │       └── mt6627_fm_rds.c
+│   │   ├── mt6630
+│   │   │   ├── inc
+│   │   │   │   ├── mt6630_fm_lib.h
+│   │   │   │   └── mt6630_fm_reg.h
+│   │   │   └── pub
+│   │   │       ├── mt6630_fm_lib.c
+│   │   │       └── mt6630_fm_rds.c
+│   │   ├── mt6631
+│   │   │   ├── inc
+│   │   │   │   ├── mt6631_fm_lib.h
+│   │   │   │   └── mt6631_fm_reg.h
+│   │   │   └── pub
+│   │   │       ├── mt6631_fm_lib.c
+│   │   │       └── mt6631_fm_rds.c
+│   │   ├── mt6632
+│   │   │   ├── inc
+│   │   │   │   ├── mt6632_fm_lib.h
+│   │   │   │   └── mt6632_fm_reg.h
+│   │   │   └── pub
+│   │   │       ├── mt6632_fm_lib.c
+│   │   │       └── mt6632_fm_rds.c
+│   │   ├── mt6635
+│   │   │   ├── inc
+│   │   │   │   ├── mt6635_fm_lib.h
+│   │   │   │   └── mt6635_fm_reg.h
+│   │   │   └── pub
+│   │   │       ├── mt6635_fm_lib.c
+│   │   │       └── mt6635_fm_rds.c
+│   │   └── soc
+│   │       ├── inc
+│   │       │   ├── soc_drv_dsp.h
+│   │       │   ├── soc_fm_lib.h
+│   │       │   └── soc_fm_reg.h
+│   │       └── pub
+│   │           ├── soc_fm_lib.c
+│   │           └── soc_fm_rds.c
+│   ├── core
+│   │   ├── fm_cmd.c
+│   │   ├── fm_config.c
+│   │   ├── fm_eint.c
+│   │   ├── fm_link.c
+│   │   ├── fm_main.c
+│   │   ├── fm_module.c
+│   │   ├── fm_patch.c
+│   │   ├── fm_rds_parser.c
+│   │   ├── fm_reg_utils.c
+│   │   └── fm_utils.c
+│   ├── dummy.c
+│   ├── inc
+│   │   ├── fm_cmd.h
+│   │   ├── fm_config.h
+│   │   ├── fm_dbg.h
+│   │   ├── fm_eint.h
+│   │   ├── fm_err.h
+│   │   ├── fm_ext_api.h
+│   │   ├── fm_interface.h
+│   │   ├── fm_ioctl.h
+│   │   ├── fm_link.h
+│   │   ├── fm_main.h
+│   │   ├── fm_patch.h
+│   │   ├── fm_rds.h
+│   │   ├── fm_reg_utils.h
+│   │   ├── fm_stdlib.h
+│   │   ├── fm_typedef.h
+│   │   └── fm_utils.h
+│   ├── init.fmradio_drv.rc
+│   ├── Kconfig
+│   ├── Makefile
+│   └── plat
+│       ├── conn_infra.c
+│       ├── inc
+│       │   └── plat.h
+│       └── legacy_wmt.c
+├── gps
+│   ├── data_link
+│   │   ├── gps_dl_context.c
+│   │   ├── gps_dl_module.c
+│   │   ├── gps_each_link.c
+│   │   ├── hal
+│   │   │   ├── gps_dl_conn_infra.c
+│   │   │   ├── gps_dl_dma.c
+│   │   │   ├── gps_dl_hal.c
+│   │   │   ├── gps_dl_hal_met2_0.c
+│   │   │   ├── gps_dl_hal_util.c
+│   │   │   ├── gps_dl_isr.c
+│   │   │   ├── gps_dl_mcub.c
+│   │   │   ├── gps_dl_power_ctrl.c
+│   │   │   ├── gps_dl_zbus.c
+│   │   │   ├── gps_dsp_fsm.c
+│   │   │   └── inc
+│   │   │       ├── gps_dl_hal_api.h
+│   │   │       ├── gps_dl_hal.h
+│   │   │       ├── gps_dl_hal_met2_0.h
+│   │   │       ├── gps_dl_hal_type.h
+│   │   │       ├── gps_dl_hal_util.h
+│   │   │       ├── gps_dl_isr.h
+│   │   │       ├── gps_dsp_fsm.h
+│   │   │       └── hal_common.h
+│   │   ├── hw
+│   │   │   ├── gps_dl_hw_atf_conn_infra.c
+│   │   │   ├── gps_dl_hw_atf_gps.c
+│   │   │   ├── gps_dl_hw_atf_mvcd.c
+│   │   │   ├── gps_dl_hw_atf_power_ctrl.c
+│   │   │   ├── gps_dl_hw_atf_usrt_apb.c
+│   │   │   ├── gps_dl_hw_bgf.c
+│   │   │   ├── gps_dl_hw_conn_infra.c
+│   │   │   ├── gps_dl_hw_gps.c
+│   │   │   ├── gps_dl_hw_power_ctrl.c
+│   │   │   ├── gps_dl_hw_priv_util.h
+│   │   │   ├── gps_dl_hw_semaphore.c
+│   │   │   ├── gps_dl_hw_usrt_apb.c
+│   │   │   ├── gps_dl_hw_util.c
+│   │   │   └── inc
+│   │   │       ├── gps_dl_hw_api.h
+│   │   │       ├── gps_dl_hw_atf.h
+│   │   │       ├── gps_dl_hw_dep_api.h
+│   │   │       ├── gps_dl_hw_semaphore.h
+│   │   │       ├── gps_dl_hw_type.h
+│   │   │       └── gps_dl_hw_ver.h
+│   │   ├── inc
+│   │   │   ├── gps_dl_context.h
+│   │   │   ├── gps_dl_log.h
+│   │   │   └── gps_each_link.h
+│   │   ├── init.gps_drv.rc
+│   │   ├── lib
+│   │   │   ├── gps_dl_dma_buf.c
+│   │   │   ├── gps_dl_dma_buf_lock.c
+│   │   │   ├── gps_dl_hist_rec2.c
+│   │   │   ├── gps_dl_hist_rec.c
+│   │   │   ├── gps_dl_lib_misc.c
+│   │   │   ├── gps_dl_name_list.c
+│   │   │   ├── gps_dl_time_tick.c
+│   │   │   └── inc
+│   │   │       ├── gps_dl_base.h
+│   │   │       ├── gps_dl_dma_buf.h
+│   │   │       ├── gps_dl_dma_buf_lock.h
+│   │   │       ├── gps_dl_hist_rec2.h
+│   │   │       ├── gps_dl_hist_rec.h
+│   │   │       ├── gps_dl_lib_misc.h
+│   │   │       ├── gps_dl_name_list.h
+│   │   │       └── gps_dl_time_tick.h
+│   │   ├── link
+│   │   │   ├── gps_dl_link_event_proc.c
+│   │   │   ├── gps_dl_link_hal_ctrl.c
+│   │   │   ├── gps_dl_link_irq_ctrl.c
+│   │   │   ├── gps_dl_link_state.c
+│   │   │   ├── gps_dl_link_sync.c
+│   │   │   ├── gps_dl_link_util.c
+│   │   │   ├── gps_dl_subsys_reset.c
+│   │   │   └── inc
+│   │   │       └── gps_dl_subsys_reset.h
+│   │   ├── linux
+│   │   │   ├── gps_data_link_devices.c
+│   │   │   ├── gps_dl_ctrld.c
+│   │   │   ├── gps_dl_emi.c
+│   │   │   ├── gps_dl_iomem_dump.c
+│   │   │   ├── gps_dl_linux.c
+│   │   │   ├── gps_dl_linux_clock_mng.c
+│   │   │   ├── gps_dl_linux_plat_drv.c
+│   │   │   ├── gps_dl_linux_reserved_mem.c
+│   │   │   ├── gps_dl_linux_reserved_mem_v2.c
+│   │   │   ├── gps_dl_osal.c
+│   │   │   ├── gps_dl_procfs.c
+│   │   │   ├── gps_each_device.c
+│   │   │   └── inc
+│   │   │       ├── gps_data_link_devices.h
+│   │   │       ├── gps_dl_ctrld.h
+│   │   │       ├── gps_dl_emi.h
+│   │   │       ├── gps_dl_iomem_dump.h
+│   │   │       ├── gps_dl_linux_clock_mng.h
+│   │   │       ├── gps_dl_linux.h
+│   │   │       ├── gps_dl_linux_plat_drv.h
+│   │   │       ├── gps_dl_linux_reserved_mem.h
+│   │   │       ├── gps_dl_linux_reserved_mem_v2.h
+│   │   │       ├── gps_dl_osal.h
+│   │   │       ├── gps_dl_procfs.h
+│   │   │       └── gps_each_device.h
+│   │   ├── Makefile
+│   │   └── plat
+│   │       ├── v010
+│   │       │   ├── gps_dl_hw_dep_bgf.c
+│   │       │   ├── gps_dl_hw_dep_debug.c
+│   │       │   ├── gps_dl_hw_dep_dma.c
+│   │       │   ├── gps_dl_hw_dep_gps.c
+│   │       │   ├── gps_dl_hw_dep_macro.h
+│   │       │   ├── gps_dl_hw_dep_met2_0.c
+│   │       │   ├── hw
+│   │       │   │   └── inc
+│   │       │   │       ├── conn_infra
+│   │       │   │       │   ├── conn_host_csr_top.h
+│   │       │   │       │   ├── conn_infra_cfg.h
+│   │       │   │       │   ├── conn_infra_rgu.h
+│   │       │   │       │   ├── conn_pta6.h
+│   │       │   │       │   ├── conn_rf_spi_mst_reg.h
+│   │       │   │       │   ├── conn_semaphore.h
+│   │       │   │       │   └── conn_uart_pta.h
+│   │       │   │       └── gps
+│   │       │   │           ├── bgf_gps_cfg.h
+│   │       │   │           ├── bgf_gps_dma.h
+│   │       │   │           ├── gps_aon_top.h
+│   │       │   │           ├── gps_cfg_on.h
+│   │       │   │           ├── gps_l5_sys_adrdec.h
+│   │       │   │           ├── gps_l5_usrt_apb.h
+│   │       │   │           ├── gps_rgu_on.h
+│   │       │   │           ├── gps_sys_adrdec.h
+│   │       │   │           └── gps_usrt_apb.h
+│   │       │   ├── inc
+│   │       │   │   └── gps_dl_config.h
+│   │       │   └── Makefile
+│   │       ├── v030
+│   │       │   ├── gps_dl_hw_dep_bgf.c
+│   │       │   ├── gps_dl_hw_dep_debug.c
+│   │       │   ├── gps_dl_hw_dep_dma.c
+│   │       │   ├── gps_dl_hw_dep_gps.c
+│   │       │   ├── gps_dl_hw_dep_macro.h
+│   │       │   ├── gps_dl_hw_dep_met2_0.c
+│   │       │   ├── hw
+│   │       │   │   └── inc
+│   │       │   │       ├── conn_infra
+│   │       │   │       │   ├── conn_afe_ctl.h
+│   │       │   │       │   ├── conn_cfg.h
+│   │       │   │       │   ├── conn_clkgen_on_top.h
+│   │       │   │       │   ├── conn_host_csr_top.h
+│   │       │   │       │   ├── conn_infra_cfg.h
+│   │       │   │       │   ├── conn_infra_rgu.h
+│   │       │   │       │   ├── conn_pta.h
+│   │       │   │       │   ├── conn_rf_spi_mst_reg.h
+│   │       │   │       │   ├── conn_semaphore.h
+│   │       │   │       │   ├── conn_uart_pta.h
+│   │       │   │       │   ├── conn_vdnr_gen_on_debug_ctrl_ao.h
+│   │       │   │       │   └── conn_wt_slp_ctl_reg.h
+│   │       │   │       └── gps
+│   │       │   │           ├── bgf_gps_cfg.h
+│   │       │   │           ├── bgf_gps_cfg_on.h
+│   │       │   │           ├── bgf_gps_dma.h
+│   │       │   │           ├── bgf_gps_rgu_on.h
+│   │       │   │           ├── gps_aon_top.h
+│   │       │   │           ├── gps_l5_sys_adrdec.h
+│   │       │   │           ├── gps_l5_usrt_apb.h
+│   │       │   │           ├── gps_sys_adrdec.h
+│   │       │   │           └── gps_usrt_apb.h
+│   │       │   ├── inc
+│   │       │   │   └── gps_dl_config.h
+│   │       │   └── Makefile
+│   │       ├── v050
+│   │       │   ├── gps_dl_hw_dep_bgf.c
+│   │       │   ├── gps_dl_hw_dep_debug.c
+│   │       │   ├── gps_dl_hw_dep_dma.c
+│   │       │   ├── gps_dl_hw_dep_gps.c
+│   │       │   ├── gps_dl_hw_dep_macro.h
+│   │       │   ├── gps_dl_hw_dep_met2_0.c
+│   │       │   ├── hw
+│   │       │   │   └── inc
+│   │       │   │       ├── conn_infra
+│   │       │   │       │   ├── conn_dbg_ctl.h
+│   │       │   │       │   ├── conn_host_csr_top.h
+│   │       │   │       │   ├── conn_infra_bus_cr.h
+│   │       │   │       │   ├── conn_infra_bus_cr_on.h
+│   │       │   │       │   ├── conn_infra_cfg.h
+│   │       │   │       │   ├── conn_infra_cfg_on.h
+│   │       │   │       │   ├── conn_infra_rgu_on.h
+│   │       │   │       │   ├── conn_rf_spi_mst_reg.h
+│   │       │   │       │   ├── conn_semaphore.h
+│   │       │   │       │   ├── conn_uart_pta.h
+│   │       │   │       │   └── conn_wt_slp_ctl_reg.h
+│   │       │   │       └── gps
+│   │       │   │           ├── bgf_gps_cfg.h
+│   │       │   │           ├── bgf_gps_cfg_on.h
+│   │       │   │           ├── bgf_gps_dma.h
+│   │       │   │           ├── bgf_gps_met_top.h
+│   │       │   │           ├── bgf_gps_rgu_on.h
+│   │       │   │           ├── gps_aon_top.h
+│   │       │   │           ├── gps_l5_sys_adrdec.h
+│   │       │   │           ├── gps_l5_usrt_apb.h
+│   │       │   │           ├── gps_sys_adrdec.h
+│   │       │   │           └── gps_usrt_apb.h
+│   │       │   ├── inc
+│   │       │   │   └── gps_dl_config.h
+│   │       │   └── Makefile
+│   │       ├── v051
+│   │       │   ├── gps_dl_hw_dep_bgf.c
+│   │       │   ├── gps_dl_hw_dep_debug.c
+│   │       │   ├── gps_dl_hw_dep_dma.c
+│   │       │   ├── gps_dl_hw_dep_gps.c
+│   │       │   ├── gps_dl_hw_dep_macro.h
+│   │       │   ├── gps_dl_hw_dep_met2_0.c
+│   │       │   ├── hw
+│   │       │   │   └── inc
+│   │       │   │       ├── conn_infra
+│   │       │   │       │   ├── conn_dbg_ctl.h
+│   │       │   │       │   ├── conn_host_csr_top.h
+│   │       │   │       │   ├── conn_infra_bus_cr.h
+│   │       │   │       │   ├── conn_infra_bus_cr_on.h
+│   │       │   │       │   ├── conn_infra_cfg.h
+│   │       │   │       │   ├── conn_infra_cfg_on.h
+│   │       │   │       │   ├── conn_infra_rgu_on.h
+│   │       │   │       │   ├── conn_rf_spi_mst_reg.h
+│   │       │   │       │   ├── conn_semaphore.h
+│   │       │   │       │   ├── conn_uart_pta.h
+│   │       │   │       │   └── conn_wt_slp_ctl_reg.h
+│   │       │   │       └── gps
+│   │       │   │           ├── bgf_gps_cfg.h
+│   │       │   │           ├── bgf_gps_cfg_on.h
+│   │       │   │           ├── bgf_gps_dma.h
+│   │       │   │           ├── bgf_gps_met_top.h
+│   │       │   │           ├── bgf_gps_rgu_on.h
+│   │       │   │           ├── gps_aon_top.h
+│   │       │   │           ├── gps_l5_sys_adrdec.h
+│   │       │   │           ├── gps_l5_usrt_apb.h
+│   │       │   │           ├── gps_sys_adrdec.h
+│   │       │   │           └── gps_usrt_apb.h
+│   │       │   ├── inc
+│   │       │   │   └── gps_dl_config.h
+│   │       │   └── Makefile
+│   │       ├── v060
+│   │       │   ├── gps_dl_hw_dep_bgf.c
+│   │       │   ├── gps_dl_hw_dep_debug.c
+│   │       │   ├── gps_dl_hw_dep_dma.c
+│   │       │   ├── gps_dl_hw_dep_gps.c
+│   │       │   ├── gps_dl_hw_dep_macro.h
+│   │       │   ├── gps_dl_hw_dep_met2_0.c
+│   │       │   ├── hw
+│   │       │   │   └── inc
+│   │       │   │       ├── conn_infra
+│   │       │   │       │   ├── conn_bus_cr.h
+│   │       │   │       │   ├── conn_bus_cr_on.h
+│   │       │   │       │   ├── conn_cfg.h
+│   │       │   │       │   ├── conn_cfg_on.h
+│   │       │   │       │   ├── conn_dbg_ctl.h
+│   │       │   │       │   ├── conn_host_csr_top.h
+│   │       │   │       │   ├── conn_rf_spi_mst_reg.h
+│   │       │   │       │   ├── conn_rgu_on.h
+│   │       │   │       │   ├── conn_semaphore.h
+│   │       │   │       │   └── conn_wt_slp_ctl_reg.h
+│   │       │   │       └── gps
+│   │       │   │           ├── bg_gps_cfg.h
+│   │       │   │           ├── bg_gps_cfg_on.h
+│   │       │   │           ├── bg_gps_rgu_on.h
+│   │       │   │           ├── conn_mcu_config.h
+│   │       │   │           ├── conn_mcu_dma.h
+│   │       │   │           ├── gps_aon_top.h
+│   │       │   │           ├── gps_l5_sys_adrdec.h
+│   │       │   │           ├── gps_l5_usrt_apb.h
+│   │       │   │           ├── gps_sys_adrdec.h
+│   │       │   │           └── gps_usrt_apb.h
+│   │       │   ├── inc
+│   │       │   │   └── gps_dl_config.h
+│   │       │   └── Makefile
+│   │       └── v061
+│   │           ├── gps_dl_hw_dep_bgf.c
+│   │           ├── gps_dl_hw_dep_debug.c
+│   │           ├── gps_dl_hw_dep_dma.c
+│   │           ├── gps_dl_hw_dep_gps.c
+│   │           ├── gps_dl_hw_dep_macro.h
+│   │           ├── gps_dl_hw_dep_met2_0.c
+│   │           ├── hw
+│   │           │   └── inc
+│   │           │       ├── conn_infra
+│   │           │       │   ├── conn_bus_cr.h
+│   │           │       │   ├── conn_bus_cr_on.h
+│   │           │       │   ├── conn_cfg.h
+│   │           │       │   ├── conn_cfg_on.h
+│   │           │       │   ├── conn_dbg_ctl.h
+│   │           │       │   ├── conn_host_csr_top.h
+│   │           │       │   ├── conn_rf_spi_mst_reg.h
+│   │           │       │   ├── conn_rgu_on.h
+│   │           │       │   ├── conn_semaphore.h
+│   │           │       │   └── conn_wt_slp_ctl_reg.h
+│   │           │       └── gps
+│   │           │           ├── bg_gps_cfg.h
+│   │           │           ├── bg_gps_cfg_on.h
+│   │           │           ├── bg_gps_rgu_on.h
+│   │           │           ├── conn_mcu_config.h
+│   │           │           ├── conn_mcu_dma.h
+│   │           │           ├── gps_aon_top.h
+│   │           │           ├── gps_l5_sys_adrdec.h
+│   │           │           ├── gps_l5_usrt_apb.h
+│   │           │           ├── gps_sys_adrdec.h
+│   │           │           └── gps_usrt_apb.h
+│   │           ├── inc
+│   │           │   └── gps_dl_config.h
+│   │           └── Makefile
+│   ├── fmradio
+│   │   ├── chips
+│   │   │   ├── connac2x
+│   │   │   │   └── pub
+│   │   │   │       └── connac2x_fm_lib.c
+│   │   │   ├── mt6627
+│   │   │   │   ├── inc
+│   │   │   │   │   ├── mt6627_drv_dsp.h
+│   │   │   │   │   ├── mt6627_fm_lib.h
+│   │   │   │   │   └── mt6627_fm_reg.h
+│   │   │   │   └── pub
+│   │   │   │       ├── mt6627_fm_lib.c
+│   │   │   │       └── mt6627_fm_rds.c
+│   │   │   ├── mt6630
+│   │   │   │   ├── inc
+│   │   │   │   │   ├── mt6630_fm_lib.h
+│   │   │   │   │   └── mt6630_fm_reg.h
+│   │   │   │   └── pub
+│   │   │   │       ├── mt6630_fm_lib.c
+│   │   │   │       └── mt6630_fm_rds.c
+│   │   │   ├── mt6631
+│   │   │   │   ├── inc
+│   │   │   │   │   ├── mt6631_fm_lib.h
+│   │   │   │   │   └── mt6631_fm_reg.h
+│   │   │   │   └── pub
+│   │   │   │       ├── mt6631_fm_lib.c
+│   │   │   │       └── mt6631_fm_rds.c
+│   │   │   ├── mt6632
+│   │   │   │   ├── inc
+│   │   │   │   │   ├── mt6632_fm_lib.h
+│   │   │   │   │   └── mt6632_fm_reg.h
+│   │   │   │   └── pub
+│   │   │   │       ├── mt6632_fm_lib.c
+│   │   │   │       └── mt6632_fm_rds.c
+│   │   │   ├── mt6635
+│   │   │   │   ├── inc
+│   │   │   │   │   ├── mt6635_fm_lib.h
+│   │   │   │   │   └── mt6635_fm_reg.h
+│   │   │   │   └── pub
+│   │   │   │       ├── mt6635_fm_lib.c
+│   │   │   │       └── mt6635_fm_rds.c
+│   │   │   └── soc
+│   │   │       ├── inc
+│   │   │       │   ├── soc_drv_dsp.h
+│   │   │       │   ├── soc_fm_lib.h
+│   │   │       │   └── soc_fm_reg.h
+│   │   │       └── pub
+│   │   │           ├── soc_fm_lib.c
+│   │   │           └── soc_fm_rds.c
+│   │   ├── core
+│   │   │   ├── fm_cmd.c
+│   │   │   ├── fm_config.c
+│   │   │   ├── fm_eint.c
+│   │   │   ├── fm_link.c
+│   │   │   ├── fm_main.c
+│   │   │   ├── fm_module.c
+│   │   │   ├── fm_patch.c
+│   │   │   ├── fm_rds_parser.c
+│   │   │   ├── fm_reg_utils.c
+│   │   │   └── fm_utils.c
+│   │   ├── dummy.c
+│   │   ├── inc
+│   │   │   ├── fm_cmd.h
+│   │   │   ├── fm_config.h
+│   │   │   ├── fm_dbg.h
+│   │   │   ├── fm_eint.h
+│   │   │   ├── fm_err.h
+│   │   │   ├── fm_ext_api.h
+│   │   │   ├── fm_interface.h
+│   │   │   ├── fm_ioctl.h
+│   │   │   ├── fm_link.h
+│   │   │   ├── fm_main.h
+│   │   │   ├── fm_patch.h
+│   │   │   ├── fm_rds.h
+│   │   │   ├── fm_reg_utils.h
+│   │   │   ├── fm_stdlib.h
+│   │   │   ├── fm_typedef.h
+│   │   │   └── fm_utils.h
+│   │   ├── Include.mk
+│   │   ├── init.fmradio_drv.rc
+│   │   ├── Kconfig
+│   │   ├── Makefile
+│   │   ├── plat
+│   │   │   ├── conn_infra.c
+│   │   │   ├── inc
+│   │   │   │   └── plat.h
+│   │   │   └── legacy_wmt.c
+│   │   └── README
+│   ├── fw_log
+│   │   ├── fw_log_gps_lib.c
+│   │   └── inc
+│   │       └── fw_log_gps_lib.h
+│   ├── fw_log_gps.c
+│   ├── gps_mcudl
+│   │   ├── data_intf
+│   │   │   ├── common
+│   │   │   │   ├── gps_mcudl_data_pkt_parser.c
+│   │   │   │   ├── gps_mcudl_data_pkt_rbuf.c
+│   │   │   │   ├── gps_mcudl_data_pkt_slot.c
+│   │   │   │   └── inc
+│   │   │   │       ├── gps_mcudl_data_intf_type.h
+│   │   │   │       ├── gps_mcudl_data_pkt.h
+│   │   │   │       ├── gps_mcudl_data_pkt_parser.h
+│   │   │   │       ├── gps_mcudl_data_pkt_payload_struct.h
+│   │   │   │       ├── gps_mcudl_data_pkt_rbuf.h
+│   │   │   │       ├── gps_mcudl_data_pkt_slot.h
+│   │   │   │       ├── gps_mcusys_data.h
+│   │   │   │       └── gps_mcusys_data_wrapper.h
+│   │   │   └── host
+│   │   │       ├── gps_mcudl_data_pkt_host_impl.c
+│   │   │       └── inc
+│   │   │           └── gps_mcudl_data_pkt_host_api.h
+│   │   ├── fw
+│   │   │   ├── gps_mcudl_fw_code.c
+│   │   │   └── inc
+│   │   │       └── gps_mcudl_fw_code.h
+│   │   ├── gps_hif
+│   │   │   ├── common
+│   │   │   │   ├── gps_mcu_hif_common.c
+│   │   │   │   ├── gps_mcu_hif_core.c
+│   │   │   │   └── inc
+│   │   │   │       ├── gps_mcu_hif_api.h
+│   │   │   │       └── gps_mcu_hif_shared_struct.h
+│   │   │   └── host
+│   │   │       ├── gps_mcu_hif_host.c
+│   │   │       ├── gps_mcu_hif_mgmt_cmd_send.c
+│   │   │       └── inc
+│   │   │           ├── gps_mcu_hif_host.h
+│   │   │           └── gps_mcu_hif_mgmt_cmd_send.h
+│   │   ├── gps_mcudl_context.c
+│   │   ├── gps_mcudl_name_list.c
+│   │   ├── hal
+│   │   │   ├── gps_mcudl_hal_ccif.c
+│   │   │   ├── gps_mcudl_hal_conn.c
+│   │   │   ├── gps_mcudl_hal_mcu.c
+│   │   │   ├── gps_mcudl_hal_user_fw_own_ctrl.c
+│   │   │   └── inc
+│   │   │       ├── gps_mcudl_hal_ccif.h
+│   │   │       ├── gps_mcudl_hal_conn.h
+│   │   │       ├── gps_mcudl_hal_mcu.h
+│   │   │       └── gps_mcudl_hal_user_fw_own_ctrl.h
+│   │   ├── hw
+│   │   │   ├── gps_mcudl_hw_atf_ccif.c
+│   │   │   ├── gps_mcudl_hw_atf_mcu.c
+│   │   │   ├── gps_mcudl_hw_ccif.c
+│   │   │   ├── gps_mcudl_hw_mcu.c
+│   │   │   ├── gps_mcudl_hw_priv_util.h
+│   │   │   └── inc
+│   │   │       ├── gps_mcudl_hw_ccif.h
+│   │   │       ├── gps_mcudl_hw_mcu.h
+│   │   │       └── gps_mcudl_hw_type.h
+│   │   ├── inc
+│   │   │   ├── gps_mcudl_config.h
+│   │   │   ├── gps_mcudl_context.h
+│   │   │   ├── gps_mcudl_emi_layout.h
+│   │   │   ├── gps_mcudl_log.h
+│   │   │   └── gps_mcudl_plat_api.h
+│   │   ├── linux
+│   │   │   ├── gps_mcudl_devices.c
+│   │   │   ├── gps_mcudl_each_device.c
+│   │   │   ├── gps_mcudl_linux_fw_loading.c
+│   │   │   ├── gps_mcudl_linux_xlink_buf.c
+│   │   │   ├── gps_nv_each_device.c
+│   │   │   └── inc
+│   │   │       ├── gps_mcudl_devices.h
+│   │   │       ├── gps_mcudl_each_device.h
+│   │   │       └── gps_nv_each_device.h
+│   │   ├── mcu_sys
+│   │   │   ├── common
+│   │   │   │   ├── gps_mcusys_nv_common_impl.c
+│   │   │   │   └── inc
+│   │   │   │       ├── gps_mcusys_data_api.h
+│   │   │   │       ├── gps_mcusys_fsm.h
+│   │   │   │       ├── gps_mcusys_nv_common_impl.h
+│   │   │   │       ├── gps_mcusys_nv_data_api.h
+│   │   │   │       ├── gps_mcusys_nv_data.h
+│   │   │   │       └── gps_mcusys_nv_data_layout.h
+│   │   │   └── host
+│   │   │       ├── gps_mcusys_data_dispatcher_host.c
+│   │   │       ├── gps_mcusys_data_sync2target.c
+│   │   │       ├── gps_mcusys_fsm_host.c
+│   │   │       ├── gps_mcusys_nv_data_host.c
+│   │   │       ├── gps_mcusys_nv_lock_host.c
+│   │   │       └── inc
+│   │   │           ├── gps_mcusys_data_sync2target.h
+│   │   │           └── gps_mcusys_nv_per_side_macro.h
+│   │   ├── plat
+│   │   │   ├── gps_mcudl_plat_dedicated_mcu.c
+│   │   │   └── v060
+│   │   │       ├── fw
+│   │   │       │   └── inc
+│   │   │       │       └── mcu_rom_code.h
+│   │   │       └── hw
+│   │   │           └── inc
+│   │   │               ├── gps_mcudl_hw_dep_macro.h
+│   │   │               └── mcudl
+│   │   │                   ├── conn_infra
+│   │   │                   │   ├── ap2bgf_conn_infra_on_ccif4.h
+│   │   │                   │   ├── bgf2ap_conn_infra_on_ccif4.h
+│   │   │                   │   ├── conn_bus_cr.h
+│   │   │                   │   ├── conn_cfg.h
+│   │   │                   │   ├── conn_cfg_on.h
+│   │   │                   │   ├── conn_dbg_ctl.h
+│   │   │                   │   ├── conn_host_csr_top.h
+│   │   │                   │   ├── conn_rgu_on.h
+│   │   │                   │   ├── conn_semaphore.h
+│   │   │                   │   └── conn_wt_slp_ctl_reg.h
+│   │   │                   ├── gps_sys
+│   │   │                   │   └── gps_vlp_rtc_top.h
+│   │   │                   ├── mcu_sys
+│   │   │                   │   └── conn_mcu_confg_on.h
+│   │   │                   └── mcu_top
+│   │   │                       ├── bg_gps_cfg.h
+│   │   │                       ├── bg_gps_cfg_on.h
+│   │   │                       ├── bg_gps_mcu_bus_cr.h
+│   │   │                       ├── bg_gps_mcu_confg.h
+│   │   │                       └── bg_gps_rgu_on.h
+│   │   ├── xlink
+│   │   │   ├── gps_mcudl_each_link.c
+│   │   │   ├── gps_mcudl_link_state.c
+│   │   │   ├── gps_mcudl_link_sync.c
+│   │   │   ├── gps_mcudl_link_util.c
+│   │   │   ├── gps_mcudl_reset.c
+│   │   │   ├── gps_mcudl_xlink.c
+│   │   │   ├── gps_mcudl_xlink_event_proc.c
+│   │   │   └── inc
+│   │   │       ├── gps_mcudl_each_link.h
+│   │   │       ├── gps_mcudl_link_state.h
+│   │   │       ├── gps_mcudl_link_sync.h
+│   │   │       ├── gps_mcudl_link_util.h
+│   │   │       ├── gps_mcudl_reset.h
+│   │   │       ├── gps_mcudl_xlink_buf.h
+│   │   │       └── gps_mcudl_xlink.h
+│   │   └── ylink
+│   │       ├── gps_mcudl_ylink_event_proc.c
+│   │       └── inc
+│   │           └── gps_mcudl_ylink.h
+│   ├── gps_pwr
+│   │   ├── gpspwr.c
+│   │   ├── init.gps_pwr.rc
+│   │   └── Makefile
+│   ├── gps_scp
+│   │   ├── gps2scp.c
+│   │   ├── init.gps_scp.rc
+│   │   └── Makefile
+│   ├── gps_stp
+│   │   ├── fw_log_gps.c
+│   │   ├── gps_emi.c
+│   │   ├── gps.h
+│   │   ├── gps_mt3337.c
+│   │   ├── init.gps_drv.rc
+│   │   ├── lna_ctrl
+│   │   │   ├── inc
+│   │   │   │   └── gps_lna_drv.h
+│   │   │   └── src
+│   │   │       └── gps_lna_drv.c
+│   │   ├── Makefile
+│   │   ├── stp_chrdev_gps2.c
+│   │   └── stp_chrdev_gps.c
+│   ├── init.gps_drv.rc
+│   ├── Kconfig
+│   └── Makefile
+├── Kconfig
+├── Makefile
+├── power_throttling
+│   ├── adapter.c
+│   ├── conn_power_throttling.h
+│   ├── core.c
+│   ├── Kconfig
+│   ├── Makefile
+│   └── test.c
+└── wlan
+    ├── chips
+    │   ├── bellwether
+    │   │   ├── bellwether.c
+    │   │   ├── dbg_bellwether.c
+    │   │   └── hal_dmashdl_bellwether.c
+    │   ├── common
+    │   │   ├── cmm_asic_common.c
+    │   │   ├── cmm_asic_connac2x.c
+    │   │   ├── cmm_asic_connac3x.c
+    │   │   ├── cmm_asic_connac.c
+    │   │   ├── dbg_connac2x.c
+    │   │   ├── dbg_connac3x.c
+    │   │   ├── dbg_connac.c
+    │   │   ├── dbg_wtbl_connac3x.c
+    │   │   ├── fw_dl.c
+    │   │   ├── fw_log.c
+    │   │   ├── fw_log_emi.c
+    │   │   ├── fw_log_mmio.c
+    │   │   └── pre_cal.c
+    │   ├── connac
+    │   │   └── connac.c
+    │   ├── mt6632
+    │   │   └── mt6632.c
+    │   ├── mt6639
+    │   │   ├── dbg_mt6639.c
+    │   │   ├── hal_dmashdl_mt6639.c
+    │   │   └── mt6639.c
+    │   ├── mt6655
+    │   │   ├── dbg_mt6655.c
+    │   │   ├── hal_dmashdl_mt6655.c
+    │   │   └── mt6655.c
+    │   ├── mt7663
+    │   │   └── mt7663.c
+    │   ├── mt7668
+    │   │   └── mt7668.c
+    │   ├── mt7915
+    │   │   ├── dbg_mt7915.c
+    │   │   └── mt7915.c
+    │   ├── mt7961
+    │   │   ├── dbg_mt7961.c
+    │   │   ├── hal_dmashdl_mt7961.c
+    │   │   ├── hal_wfsys_reset_mt7961.c
+    │   │   └── mt7961.c
+    │   ├── mt7990
+    │   │   ├── dbg_mt7990.c
+    │   │   ├── hal_dmashdl_mt7990.c
+    │   │   └── mt7990.c
+    │   ├── soc2_1x1
+    │   │   └── soc2_1x1.c
+    │   ├── soc2_2x2
+    │   │   └── soc2_2x2.c
+    │   ├── soc3_0
+    │   │   ├── dbg_soc3_0.c
+    │   │   ├── hal_dmashdl_soc3_0.c
+    │   │   └── soc3_0.c
+    │   ├── soc5_0
+    │   │   ├── dbg_soc5_0.c
+    │   │   ├── hal_dmashdl_soc5_0.c
+    │   │   └── soc5_0.c
+    │   └── soc7_0
+    │       ├── dbg_soc7_0.c
+    │       ├── hal_dmashdl_soc7_0.c
+    │       └── soc7_0.c
+    ├── common
+    │   ├── debug.c
+    │   ├── dump.c
+    │   ├── mot_config.c
+    │   ├── wlan_bow.c
+    │   ├── wlan_he.c
+    │   ├── wlan_lib.c
+    │   ├── wlan_oid.c
+    │   └── wlan_p2p.c
+    ├── configs
+    │   ├── MT6639
+    │   │   ├── ce
+    │   │   │   └── defconfig
+    │   │   ├── defconfig
+    │   │   └── mobile
+    │   │       └── defconfig
+    │   └── MT6655
+    │       ├── ce
+    │       │   └── defconfig
+    │       ├── defconfig
+    │       └── mobile
+    │           └── defconfig
+    ├── dvt
+    │   ├── dvt_common.c
+    │   ├── dvt_dmashdl.c
+    │   └── dvt_phtput.c
+    ├── include
+    │   ├── CFG_Wifi_File.h
+    │   ├── chips
+    │   │   ├── bellwether.h
+    │   │   ├── ccif.h
+    │   │   ├── cmm_asic_common.h
+    │   │   ├── cmm_asic_connac2x.h
+    │   │   ├── cmm_asic_connac3x.h
+    │   │   ├── cmm_asic_connac.h
+    │   │   ├── coda
+    │   │   │   ├── bellwether
+    │   │   │   │   ├── bn0_wf_mib_top.h
+    │   │   │   │   ├── bn1_wf_mib_top.h
+    │   │   │   │   ├── conn_host_csr_top.h
+    │   │   │   │   ├── conn_infra_bus_cr_on.h
+    │   │   │   │   ├── conn_infra_cfg.h
+    │   │   │   │   ├── conn_infra_cfg_on.h
+    │   │   │   │   ├── conn_infra_rgu_on.h
+    │   │   │   │   ├── hal_common.h
+    │   │   │   │   ├── ip1_bn0_wf_mib_top.h
+    │   │   │   │   ├── pcie_mac_ireg.h
+    │   │   │   │   ├── wf_ds_lwtbl.h
+    │   │   │   │   ├── wf_ds_uwtbl.h
+    │   │   │   │   ├── wf_hif_dmashdl_top.h
+    │   │   │   │   ├── wf_mcu_bus_cr.h
+    │   │   │   │   ├── wf_ple_top.h
+    │   │   │   │   ├── wf_pse_top.h
+    │   │   │   │   ├── wf_top_cfg_on.h
+    │   │   │   │   ├── wf_umib_top.h
+    │   │   │   │   ├── wf_uwtbl_top.h
+    │   │   │   │   ├── wf_wfdma_host_dma0.h
+    │   │   │   │   ├── wf_wfdma_mcu_dma0.h
+    │   │   │   │   └── wf_wtblon_top.h
+    │   │   │   ├── mt6639
+    │   │   │   │   ├── ap2wf_conn_infra_on_ccif4.h
+    │   │   │   │   ├── bcrm_on_pwr_wrapper_u_bcrm_on_pwr_bcrm.h
+    │   │   │   │   ├── bn0_wf_mib_top.h
+    │   │   │   │   ├── bn1_wf_mib_top.h
+    │   │   │   │   ├── cb_infra_misc0.h
+    │   │   │   │   ├── cb_infra_rgu.h
+    │   │   │   │   ├── cb_infra_slp_ctrl.h
+    │   │   │   │   ├── cbtop_gpio_sw_def.h
+    │   │   │   │   ├── conn_bus_cr.h
+    │   │   │   │   ├── conn_bus_cr_on.h
+    │   │   │   │   ├── conn_bus_cr_von.h
+    │   │   │   │   ├── conn_cfg.h
+    │   │   │   │   ├── conn_dbg_ctl.h
+    │   │   │   │   ├── conn_host_csr_top.h
+    │   │   │   │   ├── conn_mcu_bus_cr.h
+    │   │   │   │   ├── conn_mcu_confg_ls.h
+    │   │   │   │   ├── conn_semaphore.h
+    │   │   │   │   ├── hal_common.h
+    │   │   │   │   ├── mawd_reg.h
+    │   │   │   │   ├── pcie_mac_ireg.h
+    │   │   │   │   ├── top_misc.h
+    │   │   │   │   ├── wf2ap_conn_infra_on_ccif4.h
+    │   │   │   │   ├── wf_cr_sw_def.h
+    │   │   │   │   ├── wf_ds_lwtbl.h
+    │   │   │   │   ├── wf_ds_uwtbl.h
+    │   │   │   │   ├── wf_hif_dmashdl_top.h
+    │   │   │   │   ├── wf_mcusys_vdnr_gen_bus_u_debug_ctrl_ao.h
+    │   │   │   │   ├── wf_ple_top.h
+    │   │   │   │   ├── wf_pse_top.h
+    │   │   │   │   ├── wf_rro_top.h
+    │   │   │   │   ├── wf_top_cfg.h
+    │   │   │   │   ├── wf_top_cfg_on.h
+    │   │   │   │   ├── wf_umib_top.h
+    │   │   │   │   ├── wf_uwtbl_top.h
+    │   │   │   │   ├── wf_wfdma_ext_wrap_csr.h
+    │   │   │   │   ├── wf_wfdma_host_dma0.h
+    │   │   │   │   ├── wf_wfdma_mcu_dma0.h
+    │   │   │   │   └── wf_wtblon_top.h
+    │   │   │   ├── mt6655
+    │   │   │   │   ├── ap2wf_conn_infra_on_ccif4.h
+    │   │   │   │   ├── bn0_wf_mib_top.h
+    │   │   │   │   ├── bn1_wf_mib_top.h
+    │   │   │   │   ├── conn_bus_cr_on.h
+    │   │   │   │   ├── conn_bus_cr_von.h
+    │   │   │   │   ├── conn_cfg.h
+    │   │   │   │   ├── conn_host_csr_top.h
+    │   │   │   │   ├── conn_mcu_bus_cr.h
+    │   │   │   │   ├── hal_common.h
+    │   │   │   │   ├── mawd_reg.h
+    │   │   │   │   ├── pcie_mac_ireg.h
+    │   │   │   │   ├── wf2ap_conn_infra_on_ccif4.h
+    │   │   │   │   ├── wf_cr_sw_def.h
+    │   │   │   │   ├── wf_ds_lwtbl.h
+    │   │   │   │   ├── wf_ds_uwtbl.h
+    │   │   │   │   ├── wf_hif_dmashdl_top.h
+    │   │   │   │   ├── wf_ple_top.h
+    │   │   │   │   ├── wf_pse_top.h
+    │   │   │   │   ├── wf_rro_top.h
+    │   │   │   │   ├── wf_umib_top.h
+    │   │   │   │   ├── wf_uwtbl_top.h
+    │   │   │   │   ├── wf_wfdma_ext_wrap_csr.h
+    │   │   │   │   ├── wf_wfdma_host_dma0.h
+    │   │   │   │   ├── wf_wfdma_mcu_dma0.h
+    │   │   │   │   └── wf_wtblon_top.h
+    │   │   │   ├── mt7915
+    │   │   │   │   ├── wf_cr_sw_def.h
+    │   │   │   │   ├── wf_ple_top.h
+    │   │   │   │   ├── wf_pse_top.h
+    │   │   │   │   ├── wf_wfdma_host_dma0.h
+    │   │   │   │   └── wf_wfdma_host_dma1.h
+    │   │   │   ├── mt7961
+    │   │   │   │   ├── cbtop_rgu.h
+    │   │   │   │   ├── ssusb_epctl_csr.h
+    │   │   │   │   ├── wf_cr_sw_def.h
+    │   │   │   │   ├── wf_hif_dmashdl_top.h
+    │   │   │   │   ├── wf_ple_top.h
+    │   │   │   │   ├── wf_pse_top.h
+    │   │   │   │   └── wf_wfdma_host_dma0.h
+    │   │   │   ├── mt7990
+    │   │   │   │   ├── bn0_wf_mib_top.h
+    │   │   │   │   ├── bn1_wf_mib_top.h
+    │   │   │   │   ├── conn_bus_cr_on.h
+    │   │   │   │   ├── conn_host_csr_top.h
+    │   │   │   │   ├── conn_infra_bus_cr_on.h
+    │   │   │   │   ├── conn_infra_cfg.h
+    │   │   │   │   ├── conn_infra_cfg_on.h
+    │   │   │   │   ├── conn_infra_rgu_on.h
+    │   │   │   │   ├── conn_mcu_bus_cr.h
+    │   │   │   │   ├── conn_rgu_on.h
+    │   │   │   │   ├── hal_common.h
+    │   │   │   │   ├── ip1_bn0_wf_mib_top.h
+    │   │   │   │   ├── pcie_mac_ireg.h
+    │   │   │   │   ├── wf_ds_lwtbl.h
+    │   │   │   │   ├── wf_ds_uwtbl.h
+    │   │   │   │   ├── wf_hif_dmashdl_top.h
+    │   │   │   │   ├── wf_mcu_bus_cr.h
+    │   │   │   │   ├── wf_ple_top.h
+    │   │   │   │   ├── wf_pse_top.h
+    │   │   │   │   ├── wf_top_cfg.h
+    │   │   │   │   ├── wf_top_cfg_on.h
+    │   │   │   │   ├── wf_umib_top.h
+    │   │   │   │   ├── wf_uwtbl_top.h
+    │   │   │   │   ├── wf_wfdma_host_dma0.h
+    │   │   │   │   ├── wf_wfdma_host_dma0_pcie1.h
+    │   │   │   │   ├── wf_wfdma_mcu_dma0.h
+    │   │   │   │   └── wf_wtblon_top.h
+    │   │   │   ├── soc3_0
+    │   │   │   │   ├── conn_infra_cfg.h
+    │   │   │   │   ├── wf_hif_dmashdl_top.h
+    │   │   │   │   ├── wf_ple_top.h
+    │   │   │   │   ├── wf_pse_top.h
+    │   │   │   │   ├── wf_wfdma_host_dma0.h
+    │   │   │   │   ├── wf_wfdma_host_dma1.h
+    │   │   │   │   ├── wf_wfdma_mcu_dma0.h
+    │   │   │   │   └── wf_wfdma_mcu_dma1.h
+    │   │   │   ├── soc5_0
+    │   │   │   │   ├── conn_bus_cr.h
+    │   │   │   │   ├── conn_mcu_bus_cr.h
+    │   │   │   │   ├── wf_hif_dmashdl_top.h
+    │   │   │   │   ├── wf_ple_top.h
+    │   │   │   │   ├── wf_pse_top.h
+    │   │   │   │   ├── wf_wfdma_host_dma0.h
+    │   │   │   │   └── wf_wfdma_mcu_dma0.h
+    │   │   │   ├── soc7_0
+    │   │   │   │   ├── ap2wf_conn_infra_on_ccif4.h
+    │   │   │   │   ├── conn_host_csr_top.h
+    │   │   │   │   ├── conn_infra_bus_cr_on.h
+    │   │   │   │   ├── conn_infra_cfg.h
+    │   │   │   │   ├── conn_infra_cfg_on.h
+    │   │   │   │   ├── conn_infra_clkgen_top.h
+    │   │   │   │   ├── conn_infra_rgu_on.h
+    │   │   │   │   ├── conn_semaphore.h
+    │   │   │   │   ├── conn_wt_slp_ctl_reg.h
+    │   │   │   │   ├── hal_common.h
+    │   │   │   │   ├── wf_hif_dmashdl_top.h
+    │   │   │   │   ├── wf_mcu_bus_cr.h
+    │   │   │   │   ├── wf_mcu_confg_ls.h
+    │   │   │   │   ├── wf_mcusys_infra_bus_full_u_debug_ctrl_ao_wfmcu_pwa_debug_ctrl_ao.h
+    │   │   │   │   ├── wf_ple_top.h
+    │   │   │   │   ├── wf_pp_top.h
+    │   │   │   │   ├── wf_pse_top.h
+    │   │   │   │   ├── wf_top_cfg.h
+    │   │   │   │   ├── wf_top_cfg_on.h
+    │   │   │   │   ├── wf_top_slpprot_on.h
+    │   │   │   │   └── wf_wfdma_host_dma0.h
+    │   │   │   └── WF_TX_FREE_DONE_EVENT_BESRA_c_header.h
+    │   │   ├── connac.h
+    │   │   ├── dbg_mt6639.h
+    │   │   ├── dbg_wtbl_connac3x.h
+    │   │   ├── dma_sch.h
+    │   │   ├── fw_dl.h
+    │   │   ├── fw_log_emi.h
+    │   │   ├── fw_log.h
+    │   │   ├── fw_log_mmio.h
+    │   │   ├── hal_dmashdl_bellwether.h
+    │   │   ├── hal_dmashdl_mt6639.h
+    │   │   ├── hal_dmashdl_mt6655.h
+    │   │   ├── hal_dmashdl_mt7961.h
+    │   │   ├── hal_dmashdl_mt7990.h
+    │   │   ├── hal_dmashdl_soc3_0.h
+    │   │   ├── hal_dmashdl_soc5_0.h
+    │   │   ├── hal_dmashdl_soc7_0.h
+    │   │   ├── hal_wfsys_reset_mt7961.h
+    │   │   ├── host_csr.h
+    │   │   ├── mt6632.h
+    │   │   ├── mt6639.h
+    │   │   ├── mt6655.h
+    │   │   ├── mt7663.h
+    │   │   ├── mt7668.h
+    │   │   ├── mt7915.h
+    │   │   ├── mt7961.h
+    │   │   ├── mt7990.h
+    │   │   ├── mt_dmac.h
+    │   │   ├── pre_cal.h
+    │   │   ├── pse.h
+    │   │   ├── soc2_1x1.h
+    │   │   ├── soc2_2x2.h
+    │   │   ├── soc3_0.h
+    │   │   ├── soc5_0.h
+    │   │   ├── soc7_0.h
+    │   │   └── wf_ple.h
+    │   ├── config.h
+    │   ├── debug.h
+    │   ├── dvt
+    │   │   ├── dvt_common.h
+    │   │   ├── dvt_dmashdl.h
+    │   │   └── dvt_phtput.h
+    │   ├── hif_cmm.h
+    │   ├── link_drv.h
+    │   ├── link.h
+    │   ├── mgmt
+    │   │   ├── aa_fsm.h
+    │   │   ├── ais_fsm.h
+    │   │   ├── ap_selection.h
+    │   │   ├── aps.h
+    │   │   ├── assoc.h
+    │   │   ├── auth.h
+    │   │   ├── bow_fsm.h
+    │   │   ├── bss.h
+    │   │   ├── cnm.h
+    │   │   ├── cnm_mem.h
+    │   │   ├── cnm_scan.h
+    │   │   ├── cnm_timer.h
+    │   │   ├── eht_ie.h
+    │   │   ├── eht_rlm.h
+    │   │   ├── gcm.h
+    │   │   ├── he_ie.h
+    │   │   ├── hem_mbox.h
+    │   │   ├── he_rlm.h
+    │   │   ├── hs20.h
+    │   │   ├── ics.h
+    │   │   ├── ie_sort.h
+    │   │   ├── mddp.h
+    │   │   ├── mib.h
+    │   │   ├── mlo.h
+    │   │   ├── mlr.h
+    │   │   ├── mscs.h
+    │   │   ├── p2p_assoc.h
+    │   │   ├── p2p_bss.h
+    │   │   ├── p2p_dev.h
+    │   │   ├── p2p_dev_state.h
+    │   │   ├── p2p_fsm.h
+    │   │   ├── p2p_func.h
+    │   │   ├── p2p_ie.h
+    │   │   ├── p2p_link.h
+    │   │   ├── p2p_rlm.h
+    │   │   ├── p2p_rlm_obss.h
+    │   │   ├── p2p_role.h
+    │   │   ├── p2p_role_state.h
+    │   │   ├── p2p_scan.h
+    │   │   ├── privacy.h
+    │   │   ├── qosmap.h
+    │   │   ├── rate.h
+    │   │   ├── rlm_domain.h
+    │   │   ├── rlm.h
+    │   │   ├── rlm_obss.h
+    │   │   ├── rlm_protection.h
+    │   │   ├── rlm_txpwr_init.h
+    │   │   ├── roaming_fsm.h
+    │   │   ├── rrm.h
+    │   │   ├── rsn.h
+    │   │   ├── rtt.h
+    │   │   ├── scan.h
+    │   │   ├── stats.h
+    │   │   ├── swcr.h
+    │   │   ├── tdls.h
+    │   │   ├── thrm.h
+    │   │   ├── twt.h
+    │   │   ├── twt_planner.h
+    │   │   ├── twt_req_fsm.h
+    │   │   ├── wapi.h
+    │   │   ├── wlan_ring.h
+    │   │   ├── wlan_typedef.h
+    │   │   ├── wmm.h
+    │   │   └── wnm.h
+    │   ├── mot_config.h
+    │   ├── nan
+    │   │   ├── nan_base.h
+    │   │   ├── nan_data_engine.h
+    │   │   ├── nan_dev.h
+    │   │   ├── nanDiscovery.h
+    │   │   ├── nan_intf.h
+    │   │   ├── nan_ranging.h
+    │   │   ├── nanReg.h
+    │   │   ├── nanScheduler.h
+    │   │   ├── nan_sec.h
+    │   │   ├── nan_txm.h
+    │   │   └── wpa_supp
+    │   │       ├── FourWayHandShake.h
+    │   │       ├── src
+    │   │       │   ├── ap
+    │   │       │   │   ├── ieee802_1x.h
+    │   │       │   │   ├── wpa_auth_glue.h
+    │   │       │   │   ├── wpa_auth.h
+    │   │       │   │   └── wpa_auth_i.h
+    │   │       │   ├── common
+    │   │       │   │   ├── defs.h
+    │   │       │   │   ├── eapol_common.h
+    │   │       │   │   ├── ieee802_11_common.h
+    │   │       │   │   ├── ieee802_11_defs.h
+    │   │       │   │   ├── wpa_common.h
+    │   │       │   │   └── wpa_ctrl.h
+    │   │       │   ├── crypto
+    │   │       │   │   ├── aes.h
+    │   │       │   │   ├── aes_i.h
+    │   │       │   │   ├── aes_wrap.h
+    │   │       │   │   ├── crypto.h
+    │   │       │   │   ├── random.h
+    │   │       │   │   ├── sha1.h
+    │   │       │   │   ├── sha1_i.h
+    │   │       │   │   ├── sha256.h
+    │   │       │   │   ├── sha256_i.h
+    │   │       │   │   ├── sha384.h
+    │   │       │   │   ├── sha384_i.h
+    │   │       │   │   └── sha512_i.h
+    │   │       │   ├── eapol_auth
+    │   │       │   │   ├── eapol_auth_sm.h
+    │   │       │   │   └── eapol_auth_sm_i.h
+    │   │       │   ├── eapol_supp
+    │   │       │   │   └── eapol_supp_sm.h
+    │   │       │   ├── rsn_supp
+    │   │       │   │   ├── wpa.h
+    │   │       │   │   ├── wpa_ie.h
+    │   │       │   │   └── wpa_i.h
+    │   │       │   └── utils
+    │   │       │       ├── common.h
+    │   │       │       ├── list.h
+    │   │       │       ├── state_machine.h
+    │   │       │       └── wpabuf.h
+    │   │       └── wpa_supplicant
+    │   │           ├── wpas_glue.h
+    │   │           └── wpa_supplicant_i.h
+    │   ├── nic
+    │   │   ├── adapter.h
+    │   │   ├── bow.h
+    │   │   ├── cmd_buf.h
+    │   │   ├── connac_dmashdl.h
+    │   │   ├── connac_reg.h
+    │   │   ├── hal.h
+    │   │   ├── hif_rx.h
+    │   │   ├── hif_tx.h
+    │   │   ├── mac.h
+    │   │   ├── mt66xx_reg.h
+    │   │   ├── nic_connac2x_rx.h
+    │   │   ├── nic_connac2x_tx.h
+    │   │   ├── nic_connac3x_rx.h
+    │   │   ├── nic_connac3x_tx.h
+    │   │   ├── nic.h
+    │   │   ├── nic_rate.h
+    │   │   ├── nic_rxd_v1.h
+    │   │   ├── nic_rxd_v2.h
+    │   │   ├── nic_rxd_v3.h
+    │   │   ├── nic_rx.h
+    │   │   ├── nic_txd_v1.h
+    │   │   ├── nic_txd_v2.h
+    │   │   ├── nic_txd_v3.h
+    │   │   ├── nic_tx.h
+    │   │   ├── nic_umac.h
+    │   │   ├── p2p_cmd_buf.h
+    │   │   ├── p2p.h
+    │   │   ├── p2p_mac.h
+    │   │   ├── p2p_nic_cmd_event.h
+    │   │   ├── p2p_nic.h
+    │   │   ├── que_mgt.h
+    │   │   ├── radiotap.h
+    │   │   └── wlan_def.h
+    │   ├── nic_cmd_event.h
+    │   ├── nic_ext_cmd_event.h
+    │   ├── nic_init_cmd_event.h
+    │   ├── nic_uni_cmd_event.h
+    │   ├── p2p_precomp.h
+    │   ├── p2p_typedef.h
+    │   ├── precomp.h
+    │   ├── pwr_mgt.h
+    │   ├── queue.h
+    │   ├── rftest.h
+    │   ├── typedef.h
+    │   ├── wlan_bow.h
+    │   ├── wlan_he.h
+    │   ├── wlan_lib.h
+    │   ├── wlan_oid.h
+    │   ├── wlan_p2p.h
+    │   └── wsys_cmd_handler_fw.h
+    ├── init.connfem.rc
+    ├── Kconfig
+    ├── Makefile
+    ├── mgmt
+    │   ├── aaa_fsm.c
+    │   ├── ais_fsm.c
+    │   ├── aps.c
+    │   ├── ap_selection.c
+    │   ├── assoc.c
+    │   ├── auth.c
+    │   ├── bss.c
+    │   ├── cnm.c
+    │   ├── cnm_mem.c
+    │   ├── cnm_timer.c
+    │   ├── eht_rlm.c
+    │   ├── gcm.c
+    │   ├── he_ie.c
+    │   ├── hem_mbox.c
+    │   ├── he_rlm.c
+    │   ├── hs20.c
+    │   ├── ics.c
+    │   ├── ie_sort.c
+    │   ├── mddp.c
+    │   ├── mib.c
+    │   ├── mlo.c
+    │   ├── mlr.c
+    │   ├── mscs.c
+    │   ├── p2p_assoc.c
+    │   ├── p2p_bss.c
+    │   ├── p2p_dev_fsm.c
+    │   ├── p2p_dev_state.c
+    │   ├── p2p_fsm.c
+    │   ├── p2p_func.c
+    │   ├── p2p_ie.c
+    │   ├── p2p_link.c
+    │   ├── p2p_rlm.c
+    │   ├── p2p_rlm_obss.c
+    │   ├── p2p_role_fsm.c
+    │   ├── p2p_role_state.c
+    │   ├── p2p_scan.c
+    │   ├── privacy.c
+    │   ├── qosmap.c
+    │   ├── rate.c
+    │   ├── reg_rule.c
+    │   ├── rlm.c
+    │   ├── rlm_domain.c
+    │   ├── rlm_obss.c
+    │   ├── rlm_protection.c
+    │   ├── roaming_fsm.c
+    │   ├── rrm.c
+    │   ├── rsn.c
+    │   ├── rtt.c
+    │   ├── saa_fsm.c
+    │   ├── scan.c
+    │   ├── scan_cache.c
+    │   ├── scan_fsm.c
+    │   ├── stats.c
+    │   ├── swcr.c
+    │   ├── tdls.c
+    │   ├── thrm.c
+    │   ├── tkip_mic.c
+    │   ├── twt.c
+    │   ├── twt_planner.c
+    │   ├── twt_req_fsm.c
+    │   ├── wapi.c
+    │   ├── wlan_ring.c
+    │   ├── wmm.c
+    │   └── wnm.c
+    ├── nan
+    │   ├── nan_data_engine.c
+    │   ├── nan_data_engine_util.c
+    │   ├── nan_dev.c
+    │   ├── nanDiscovery.c
+    │   ├── nan_ranging.c
+    │   ├── nanReg.c
+    │   ├── nanScheduler.c
+    │   ├── nan_sec.c
+    │   ├── nan_txm.c
+    │   └── wpa_supp
+    │       ├── FourWayHandShake.c
+    │       ├── src
+    │       │   ├── ap
+    │       │   │   ├── wpa_auth.c
+    │       │   │   ├── wpa_auth_glue.c
+    │       │   │   └── wpa_auth_ie.c
+    │       │   ├── common
+    │       │   │   └── wpa_common.c
+    │       │   ├── crypto
+    │       │   │   ├── aes-internal.c
+    │       │   │   ├── aes-internal-dec.c
+    │       │   │   ├── aes-internal-enc.c
+    │       │   │   ├── aes-unwrap.c
+    │       │   │   ├── aes-wrap.c
+    │       │   │   ├── pbkdf2-sha256.c
+    │       │   │   ├── sha1.c
+    │       │   │   ├── sha1-internal.c
+    │       │   │   ├── sha1-prf.c
+    │       │   │   ├── sha256.c
+    │       │   │   ├── sha256-internal.c
+    │       │   │   ├── sha256-prf.c
+    │       │   │   ├── sha384.c
+    │       │   │   ├── sha384-internal.c
+    │       │   │   ├── sha384-prf.c
+    │       │   │   └── sha512-internal.c
+    │       │   ├── rsn_supp
+    │       │   │   └── wpa.c
+    │       │   └── utils
+    │       │       └── common.c
+    │       └── wpa_supplicant
+    │           ├── wpas_glue.c
+    │           └── wpa_supplicant.c
+    ├── nic
+    │   ├── cmd_buf.c
+    │   ├── nic.c
+    │   ├── nic_cmd_event.c
+    │   ├── nic_ext_cmd_event.c
+    │   ├── nic_pwr_mgt.c
+    │   ├── nic_rate.c
+    │   ├── nic_rx.c
+    │   ├── nic_rxd_v1.c
+    │   ├── nic_rxd_v2.c
+    │   ├── nic_rxd_v3.c
+    │   ├── nic_tx.c
+    │   ├── nic_txd_v1.c
+    │   ├── nic_txd_v2.c
+    │   ├── nic_txd_v3.c
+    │   ├── nic_umac.c
+    │   ├── nic_uni_cmd_event.c
+    │   ├── p2p_nic.c
+    │   ├── que_mgt.c
+    │   └── radiotap.c
+    ├── os
+    │   ├── linux
+    │   │   ├── gl_ate_agent.c
+    │   │   ├── gl_bow.c
+    │   │   ├── gl_cfg80211.c
+    │   │   ├── gl_cmd_validate.c
+    │   │   ├── gl_coredump.c
+    │   │   ├── gl_csi.c
+    │   │   ├── gl_custom.c
+    │   │   ├── gl_emi.c
+    │   │   ├── gl_fw_log.c
+    │   │   ├── gl_hook_api.c
+    │   │   ├── gl_init.c
+    │   │   ├── gl_kal.c
+    │   │   ├── gl_nan.c
+    │   │   ├── gl_p2p.c
+    │   │   ├── gl_p2p_cfg80211.c
+    │   │   ├── gl_p2p_init.c
+    │   │   ├── gl_p2p_kal.c
+    │   │   ├── gl_proc.c
+    │   │   ├── gl_qa_agent.c
+    │   │   ├── gl_rst.c
+    │   │   ├── gl_sa_log.c
+    │   │   ├── gl_sys.c
+    │   │   ├── gl_sys_lock.c
+    │   │   ├── gl_vendor.c
+    │   │   ├── gl_vendor_nan.c
+    │   │   ├── gl_vendor_ndp.c
+    │   │   ├── gl_wext.c
+    │   │   ├── gl_wext_priv.c
+    │   │   ├── hif
+    │   │   │   ├── axi
+    │   │   │   │   ├── axi.c
+    │   │   │   │   └── include
+    │   │   │   │       └── hif.h
+    │   │   │   ├── common
+    │   │   │   │   ├── dbg_pdma.c
+    │   │   │   │   ├── hal_offload.c
+    │   │   │   │   ├── hal_pdma.c
+    │   │   │   │   ├── hif_mem.c
+    │   │   │   │   ├── include
+    │   │   │   │   │   └── hif_pdma.h
+    │   │   │   │   ├── kal_pdma.c
+    │   │   │   │   ├── sw_emi_ring.c
+    │   │   │   │   └── sw_wfdma.c
+    │   │   │   ├── ehpi
+    │   │   │   │   ├── arm.c
+    │   │   │   │   ├── colibri.c
+    │   │   │   │   ├── ehpi.c
+    │   │   │   │   └── include
+    │   │   │   │       ├── colibri.h
+    │   │   │   │       └── hif.h
+    │   │   │   ├── pcie
+    │   │   │   │   ├── include
+    │   │   │   │   │   └── hif.h
+    │   │   │   │   ├── pcie.c
+    │   │   │   │   └── pcie_msi.c
+    │   │   │   ├── sdio
+    │   │   │   │   ├── arm.c
+    │   │   │   │   ├── hal_api.c
+    │   │   │   │   ├── include
+    │   │   │   │   │   ├── hif.h
+    │   │   │   │   │   ├── hif_sdio.h
+    │   │   │   │   │   ├── mtk_porting.h
+    │   │   │   │   │   └── test_driver_sdio_ops.h
+    │   │   │   │   ├── sdio.c
+    │   │   │   │   ├── sdio_test_driver_core.c
+    │   │   │   │   ├── sdio_test_driver_ops.c
+    │   │   │   │   └── x86.c
+    │   │   │   └── usb
+    │   │   │       ├── hal_api.c
+    │   │   │       ├── include
+    │   │   │       │   ├── cust_usb_id.h
+    │   │   │       │   ├── hif.h
+    │   │   │       │   └── hif_usb.h
+    │   │   │       └── usb.c
+    │   │   ├── include
+    │   │   │   ├── gl_ate_agent.h
+    │   │   │   ├── gl_cfg80211.h
+    │   │   │   ├── gl_cmd_validate.h
+    │   │   │   ├── gl_coredump.h
+    │   │   │   ├── gl_csi.h
+    │   │   │   ├── gl_emi.h
+    │   │   │   ├── gl_fw_log.h
+    │   │   │   ├── gl_hook_api.h
+    │   │   │   ├── gl_kal.h
+    │   │   │   ├── gl_nan_os.h
+    │   │   │   ├── gl_os.h
+    │   │   │   ├── gl_p2p_ioctl.h
+    │   │   │   ├── gl_p2p_kal.h
+    │   │   │   ├── gl_p2p_os.h
+    │   │   │   ├── gl_qa_agent.h
+    │   │   │   ├── gl_rst.h
+    │   │   │   ├── gl_sa_log.h
+    │   │   │   ├── gl_sec.h
+    │   │   │   ├── gl_sys_lock.h
+    │   │   │   ├── gl_typedef.h
+    │   │   │   ├── gl_vendor.h
+    │   │   │   ├── gl_vendor_nan.h
+    │   │   │   ├── gl_vendor_ndp.h
+    │   │   │   ├── gl_wext.h
+    │   │   │   ├── gl_wext_priv.h
+    │   │   │   └── wlan_pinctrl.h
+    │   │   ├── plat
+    │   │   │   ├── mt6835
+    │   │   │   │   └── plat_priv.c
+    │   │   │   ├── mt6879
+    │   │   │   │   └── plat_priv.c
+    │   │   │   ├── mt6886
+    │   │   │   │   └── plat_priv.c
+    │   │   │   └── mt6985
+    │   │   │       └── plat_priv.c
+    │   │   └── platform.c
+    │   ├── none
+    │   │   ├── gl_ate_agent.c
+    │   │   ├── gl_csi.c
+    │   │   ├── gl_dependent.c
+    │   │   ├── gl_init.c
+    │   │   ├── gl_kal.c
+    │   │   ├── gl_p2p_kal.c
+    │   │   ├── gl_qa_agent.c
+    │   │   ├── gl_sa_log.h
+    │   │   ├── hif
+    │   │   │   └── none
+    │   │   │       ├── include
+    │   │   │       │   └── hif.h
+    │   │   │       └── none.c
+    │   │   └── include
+    │   │       ├── gl_ate_agent.h
+    │   │       ├── gl_cfg80211.h
+    │   │       ├── gl_coredump.h
+    │   │       ├── gl_csi.h
+    │   │       ├── gl_dependent.h
+    │   │       ├── gl_emi.h
+    │   │       ├── gl_kal.h
+    │   │       ├── gl_os.h
+    │   │       ├── gl_p2p_ioctl.h
+    │   │       ├── gl_p2p_kal.h
+    │   │       ├── gl_p2p_os.h
+    │   │       ├── gl_qa_agent.h
+    │   │       ├── gl_rst.h
+    │   │       ├── gl_sys_lock.h
+    │   │       ├── gl_typedef.h
+    │   │       ├── gl_vendor.h
+    │   │       ├── gl_wext_priv.h
+    │   │       └── wlan_pinctrl.h
+    │   └── version.h
+    ├── prealloc
+    │   ├── include
+    │   │   └── prealloc.h
+    │   └── prealloc.c
+    ├── reset
+    │   ├── include
+    │   │   └── reset.h
+    │   └── reset.c
+    ├── wlan_service
+    │   ├── agent
+    │   │   └── agent.c
+    │   ├── glue
+    │   │   ├── hal
+    │   │   │   ├── gen4m
+    │   │   │   │   └── operation_gen4m.c
+    │   │   │   └── include
+    │   │   │       ├── operation.h
+    │   │   │       └── test_mac.h
+    │   │   └── osal
+    │   │       ├── gen4m
+    │   │       │   ├── net_adaption_gen4m.c
+    │   │       │   └── sys_adaption_gen4m.c
+    │   │       └── include
+    │   │           ├── net_adaption.h
+    │   │           └── sys_adaption.h
+    │   ├── include
+    │   │   └── agent.h
+    │   └── service
+    │       ├── include
+    │       │   ├── service_test.h
+    │       │   └── test_engine.h
+    │       ├── service_test.c
+    │       └── test_engine.c
+    └── wlan.txt
+
+350 directories, 1639 files

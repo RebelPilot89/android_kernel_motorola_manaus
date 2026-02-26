@@ -1,0 +1,111 @@
+.
+├── btmtk_buffer_mode.c
+├── btmtk_chip_reset.c
+├── btmtk_fw_log.c
+├── btmtk_main.c
+├── btmtk_woble.c
+├── bt_power_table
+│   └── btPowerTable.dat
+├── bt.txt
+├── cfg_example
+│   ├── bt.cfg
+│   └── woble_setting_7961.bin
+├── include
+│   ├── btif
+│   │   ├── btmtk_beif.h
+│   │   ├── btmtk_beif_plat.h
+│   │   ├── btmtk_btif.h
+│   │   ├── btmtk_dbg_tp_evt.h
+│   │   ├── btmtk_dbg_tp_evt_if.h
+│   │   ├── platform_6877.h
+│   │   ├── platform_6878.h
+│   │   ├── platform_6879.h
+│   │   ├── platform_6885.h
+│   │   ├── platform_6886.h
+│   │   ├── platform_6893.h
+│   │   ├── platform_6895.h
+│   │   ├── platform_6897.h
+│   │   ├── platform_6899.h
+│   │   ├── platform_6983.h
+│   │   ├── platform_base.h
+│   │   └── platform_mt6893.h
+│   ├── btmtk_buffer_mode.h
+│   ├── btmtk_chip_if.h
+│   ├── btmtk_define.h
+│   ├── btmtk_drv.h
+│   ├── btmtk_fw_log.h
+│   ├── btmtk_main.h
+│   ├── btmtk_woble.h
+│   ├── sdio
+│   │   └── btmtk_sdio.h
+│   ├── uart
+│   │   └── btmtk_uart.h
+│   └── usb
+│       └── btmtk_usb.h
+├── init.btmtk_sdio.rc
+├── Kconfig
+├── Makefile
+├── mt6879
+│   ├── btmtk_beif.c
+│   ├── btmtk_beif_plat.c
+│   ├── btmtk_btif_main.c
+│   ├── btmtk_buffer_mode.c
+│   ├── btmtk_char_dev.c
+│   ├── btmtk_chip_reset.c
+│   ├── btmtk_dbg.c
+│   ├── btmtk_dbg_tp_evt_if.c
+│   ├── btmtk_fw_log.c
+│   ├── btmtk_irq.c
+│   ├── btmtk_main.c
+│   ├── btmtk_mt66xx.c
+│   ├── btmtk_queue.c
+│   ├── btmtk_woble.c
+│   ├── init.bt_drv.rc
+│   ├── Kconfig
+│   └── Makefile
+├── sdio
+│   └── btmtksdio.c
+├── uart
+│   └── btmtk_uart_main.c
+├── uart_daemon
+│   ├── Makefile
+│   ├── serial.h
+│   └── uart_launcher.c
+├── uboot_driver
+│   ├── Mstar
+│   │   ├── include
+│   │   │   └── mtk-bt
+│   │   │       ├── errno.h
+│   │   │       ├── LD_btmtk_usb.h
+│   │   │       └── LD_usbbt.h
+│   │   └── src
+│   │       └── mtk-bt
+│   │           ├── LD_btmtk_usb.c
+│   │           └── LD_usbbt.c
+│   └── MTK
+│       └── mtk-bt
+│           ├── Makefile
+│           └── mt7xxx
+│               ├── LD_btmtk_usb.c
+│               ├── LD_btmtk_usb.h
+│               ├── LD_errno.h
+│               ├── LD_usbbt.c
+│               ├── LD_usbbt.h
+│               └── Makefile
+├── usb
+│   └── btmtkusb.c
+├── util
+│   ├── checkpatch.pl
+│   ├── const_structs.checkpatch
+│   └── spelling.txt
+└── wmt
+    ├── bt.h
+    ├── btmtk_dbg.c
+    ├── btmtk_dbg_tp_evt_if.c
+    ├── fw_log_bt.c
+    ├── init.bt_drv.rc
+    ├── Kbuild
+    ├── Makefile
+    └── stp_chrdev_bt.c
+
+24 directories, 85 files

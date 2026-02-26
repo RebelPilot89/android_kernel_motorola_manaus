@@ -1,0 +1,15 @@
+config MTK_COMBO_POWER_THROTTLING
+	bool "MediaTek Connectivity Power Throttling Support"
+	default y
+	help
+	  Habilita el framework de arbitraje térmico y de batería para 
+	  Bluetooth, FM, GPS y Wi-Fi en el MT6879. 
+	  Es vital para evitar sobrecalentamiento en el Motorola Edge 40 Neo.
+
+config CONN_PWR_DEBUG
+	bool "Power Throttling Debugging"
+	depends on MTK_COMBO_POWER_THROTTLING
+	default n
+	help
+	  Activa logs detallados y la interfaz de test (test.c) para verificar
+	  cómo el driver baja la potencia de las radios.

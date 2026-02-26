@@ -1,0 +1,17 @@
+# SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note
+# Canonización Estricta para MT6879 - Sin Módulos Dinámicos
+
+# Forzar rutas relativas al árbol del kernel
+src := $(if $(patsubst /%,,$(src)),$(srctree)/$(src),$(src))
+
+$(info *GPU [Mali-Arb] Integrating Arbitration into Kernel Image (Static)...)
+
+# Compilación estática (obj-y) vinculada al símbolo de virtualización
+obj-$(CONFIG_MALI_ARBITRATION) += mali_gpu_power/
+obj-$(CONFIG_MALI_ARBITRATION) += dummy_gpu_power/
+obj-$(CONFIG_MALI_ARBITRATION) += mali_arbiter/
+obj-$(CONFIG_MALI_ARBITRATION) += mali_arbiter/mali_arbif_xenback/
+obj-$(CONFIG_MALI_ARBITRATION) += xen/mali_arbif_xenfront/
+
+# Gestión de particiones (si se habilita IA avanzada/Virtualización)
+obj-$(CONFIG_MALI_PARTITION_MANAGER) += ptm/

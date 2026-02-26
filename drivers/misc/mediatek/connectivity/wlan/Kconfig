@@ -1,0 +1,43 @@
+# drivers/misc/mediatek/connectivity/wlan/Kconfig
+
+menuconfig MTK_WLAN_DEVICE
+	tristate "MediaTek MT6879 (Edge 40 Neo) Connectivity WLAN support"
+	depends on NET && INET && WIRELESS
+	select WIRELESS_EXT
+	select WEXT_PRIV
+	select CFG80211
+	default y
+	help
+	  Este es el driver de Wi-Fi para el SoC MT6879 (Dimensity 7030).
+	  Al seleccionar 'y' (Built-in), el driver se integrará directamente
+	  en la imagen del kernel para optimizar la virtualización y el arranque.
+
+if MTK_WLAN_DEVICE
+
+config MTK_WLAN_VIRT_ISOLATION
+	bool "Enable Native Virtualization Isolation for WLAN"
+	default y
+	help
+	  Activa el soporte de aislamiento de memoria y protección de DMA
+	  específico para entornos virtualizados en Android. Robustece el
+	  manejo de buffers en operation_gen4m.c.
+
+config MTK_WLAN_CHIP_ID
+	string "Chip ID"
+	default "MT6879"
+
+config MTK_COMBO_WIFI_HIF
+	string "HIF Interface"
+	default "axi"
+	help
+	  Interfaz de hardware. Para el MT6879 en el Edge 40 Neo, 
+	  se utiliza 'axi' para máxima velocidad de transferencia.
+
+config MTK_WLAN_GEN4M_HAVE_SERVICE
+	bool "Support WLAN Service and Operation HAL"
+	default y
+	help
+	  Habilita la compilación de wlan_service/glue/hal/gen4m/
+	  necesario para las funcionalidades avanzadas de red en Android 13/14+.
+
+endif # MTK_WLAN_DEVICE

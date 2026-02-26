@@ -1,0 +1,15 @@
+config MTK_CONNFEM
+	tristate "MediaTek Connectivity FEM support"
+	default y
+	help
+	  Habilita el soporte para el Front-End Module (FEM) de conectividad.
+	  Este módulo es esencial para el MT6879, ya que controla los amplificadores
+	  externos (ePA) y los selectores de antena (eLNA) del Motorola Edge 40 Neo.
+
+config MTK_CONNFEM_DT_SUPPORT
+	bool "Enable Device Tree support for CONNFEM"
+	depends on MTK_CONNFEM
+	default y
+	help
+	  Permite que el driver parsee la configuración de las antenas directamente
+	  desde el Device Tree (DTS) de Motorola.

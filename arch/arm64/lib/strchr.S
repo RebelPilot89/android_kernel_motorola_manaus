@@ -1,0 +1,39 @@
+/* SPDX-License-Identifier: GPL-2.0-only */
+/*
+ * Based on arch/arm/lib/strchr.S
+ *
+ * Copyright (C) 1995-2000 Russell King
+ * Copyright (C) 2013 ARM Ltd.
+ */
+
+#include <linux/linkage.h>
+#include <asm/assembler.h>
+
+/*
+ * Find the first occurrence of a character in a string.
+ *
+ * Parameters:
+ *	x0 - str
+ *	x1 - c
+ * Returns:
+ *	x0 - address of first occurrence of 'c' or 0
+ */
+	.p2align 4
+SYM_FUNC_START(__pi_strchr)
+	and	w1, w1, #0xff		// Mask to 8 bits to avoid garbage in upper bits
+	.p2align 2
+1:	ldrb	w2, [x0], #1
+	cmp	w2, w1
+	ccmp	w2, wzr, #4, ne		// If not char, is it null?
+	b.ne	1b
+	sub	x0, x0, #1		// Adjust for post-increment
+	cmp	w2, w1
+	csel	x0, x0, xzr, eq		// Return pointer if equal, else NULL
+	ret
+SYM_FUNC_END(__pi_strchr)
+
+/* Alias manual para strchr */
+.globl strchr
+.weak strchr
+strchr = __pi_strchr
+EXPORT_SYMBOL_NOKASAN(strchr)

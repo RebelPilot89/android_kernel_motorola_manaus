@@ -1,0 +1,26 @@
+# SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note
+# Configuración Canonizada para Soporte Nativo (Built-in)
+
+config BSP_HAS_HYPERVISOR
+	bool "Native Hypervisor Support"
+	depends on MALI_MIDGARD && !GPU_HAS_CSF
+	default y
+	select MALI_ARBITRATION
+	help
+	  Activa el soporte nativo para hipervisores dentro del kernel. 
+	  Optimizado para virtualización de baja latencia en MT6879.
+
+config MALI_HAS_ARBITER
+	bool "Mali Hardware Arbiter (Static)"
+	depends on MALI_MIDGARD
+	default y if BSP_HAS_HYPERVISOR
+	help
+	  Compila el árbitro de GPU directamente en el kernel. 
+	  Evita la sobrecarga de los módulos .ko tradicionales.
+
+config MALI_ARBITER_LOST_TEST
+	bool "Aggressive GPU_LOST testing"
+	depends on MALI_HAS_ARBITER && DEBUG_KERNEL
+	default n
+	help
+	  Solo habilitar para pruebas de estrés en el desarrollo del kernel.

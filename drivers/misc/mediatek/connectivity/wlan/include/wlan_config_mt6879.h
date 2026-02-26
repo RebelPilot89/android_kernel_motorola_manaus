@@ -1,0 +1,69 @@
+/* SPDX-License-Identifier: GPL-2.0 */
+/*
+ * MediaTek WLAN Driver Configuration for MT6879 (Dimensity 7030)
+ * Auto-generated configuration header for built-in kernel compilation
+ */
+
+#ifndef _WLAN_CONFIG_MT6879_H
+#define _WLAN_CONFIG_MT6879_H
+
+/* Platform and Architecture */
+#define CFG_SUPPORT_CONNAC2X 0
+#define CFG_SUPPORT_CONNAC3X 1
+#define CFG_SUPPORT_802_11AX 1
+#define CFG_SUPPORT_WIFI_6G 1
+
+/* HIF Configuration (PCIE for MT6879) */
+#define CFG_ENABLE_PCI_MSI 1
+#define CFG_ENABLE_PCIE 1
+
+/* Feature Flags */
+#define CFG_SUPPORT_AEE 0
+#define CFG_SUPPORT_BTM_OFFLOAD 0
+#define CFG_SUPPORT_THERMAL_QUERY 1
+#define CFG_VOLT_INFO 0
+#define CFG_SUPPORT_PASSPOINT 0
+#define CFG_SUPPORT_TWT 1
+#define CFG_SUPPORT_TWT_HOTSPOT 1
+#define CFG_SUPPORT_BTWT 1
+#define CFG_SUPPORT_802_11BE_ML_TWT 0
+#define CFG_SUPPORT_PCIE_GEN_SWITCH 0
+#define CONFIG_BAND_NUM 3
+#define CFG_SUPPORT_WIFI_DL_BT_PATCH 0
+#define CFG_SUPPORT_WIFI_DL_ZB_PATCH 0
+#define CFG_SUPPORT_SINGLE_FW_BINARY 1
+#define CFG_SUPPORT_STATS_ONE_CMD 1
+#define CFG_SUPPORT_DATA_STALL 1
+#define CONFIG_WLAN_SERVICE 1
+#define CFG_SUPPORT_DUAL_STA 0
+#define CFG_SUPPORT_AGPS_ASSIST 0
+#define CFG_SUPPORT_BIGDATA_PIP 0
+#define CFG_MTK_ANDROID_EMI 1
+#define CFG_SUPPORT_WPA3 1
+#define CFG_SUPPORT_HOST_OFFLOAD 1
+#define CFG_MTK_MDDP_SUPPORT 0
+#define CFG_MTK_CCCI_SUPPORT 0
+#define CFG_SUPPORT_PCIE_ASPM 1
+#define CFG_MTK_DRIVER_OWN_DELAY 0
+#define CFG_SUPPORT_WIFI_SLEEP_COUNT 0
+#define CFG_SUPPORT_HOST_RX_WM_EVENT_FROM_PSE 1
+
+/* Test and Debug */
+#define CFG_TC1_FEATURE 0
+#define CFG_TC10_FEATURE 0
+#define DBG 0
+
+/* Additional Feature Flags */
+#define CFG_ENABLE_GKI_SUPPORT 0
+#define CFG_ADVANCED_80211_MLO 0
+#define CONFIG_SUPPORT_GTK_REKEY 1
+#define CFG_SUPPORT_TWT_STA_CNM 1
+#define CFG_TWT_SMART_STA 0
+#define ARP_MONITER_ENABLE 0
+#define CFG_TWT_STA_DIRECT_TEARDOWN 1
+#define UNI_TM_MAX_BAND_NUM 3
+#define UNI_TM_MAX_USER_NUM 16
+#define UNI_TM_MAX_ANT_NUM 4
+#define CONFIG_WM_RAM_TYPE 0
+
+#endif /* _WLAN_CONFIG_MT6879_H */

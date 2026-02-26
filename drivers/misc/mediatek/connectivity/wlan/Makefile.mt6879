@@ -1,0 +1,259 @@
+# drivers/misc/mediatek/connectivity/wlan/Makefile.mt6879
+# MediaTek WLAN MT6879 Gen4m Build Configuration (Motorola Optimized)
+
+# ===== Build Target =====
+obj-$(CONFIG_MTK_WLAN_DEVICE) += wlan_mt6879.o
+
+# ===== Configuration =====
+WLAN_CHIP_ID := 6879
+MTK_COMBO_CHIP := CONNAC2X2_SOC7_0
+WIFI_HIF := axi
+WIFI_WMT := y
+WIFI_EMI := y
+
+# ===== Compiler Flags =====
+ccflags-y := -DLINUX
+ccflags-y += -DMT6879
+ccflags-y += -DCONNAC2X2_SOC7_0
+ccflags-y += -D_HIF_AXI
+ccflags-y += -DMOTO_UTAGS_MAC=1
+ccflags-y += -DMOTO_DYNAMIC_TX_PWR=1
+ccflags-y += -DCFG_SUPPORT_DEBUG_FS=0
+ccflags-y += -DWLAN_INCLUDE_PROC
+ccflags-y += -DCFG_SUPPORT_AGPS_ASSIST=0
+ccflags-y += -DCFG_SUPPORT_TSF_USING_BOOTTIME=1
+ccflags-y += -DARP_MONITER_ENABLE=1
+ccflags-y += -DMTK_WLAN_BUILT_IN
+ccflags-y += -Wno-unused-value
+ccflags-y += -Wno-unused-result
+ccflags-y += -Wno-format
+ccflags-y += -Wno-parentheses
+ccflags-y += -Werror $(call cc-disable-warning, unused-but-set-variable)
+
+# ===== Include Paths =====
+ccflags-y += -I$(srctree)/$(src)/include
+ccflags-y += -I$(srctree)/$(src)/include/nic
+ccflags-y += -I$(srctree)/$(src)/include/mgmt
+ccflags-y += -I$(srctree)/$(src)/include/chips
+ccflags-y += -I$(srctree)/$(src)/include/dvt
+ccflags-y += -I$(srctree)/$(src)/include/nan
+ccflags-y += -I$(srctree)/$(src)/os/linux/include
+ccflags-y += -I$(srctree)/$(src)/os/linux/hif/axi/include
+ccflags-y += -I$(srctree)/$(src)/os/linux/hif/common/include
+ccflags-y += -I$(srctree)/$(src)/os/linux/plat/mt6879
+ccflags-y += -I$(srctree)/$(src)/chips/common
+ccflags-y += -I$(srctree)/$(src)/chips/soc7_0
+ccflags-y += -I$(srctree)/$(src)/wlan_service/include
+ccflags-y += -I$(srctree)/$(src)/wlan_service/glue/hal/include
+ccflags-y += -I$(srctree)/$(src)/wlan_service/glue/osal/include
+
+# ===== Source Files - Organize by directory =====
+
+# NIC (RX/TX, command buffer)
+wlan_mt6879-objs += nic/nic.o
+wlan_mt6879-objs += nic/nic_tx.o
+wlan_mt6879-objs += nic/nic_rx.o
+wlan_mt6879-objs += nic/nic_rxd_v1.o
+wlan_mt6879-objs += nic/nic_rxd_v2.o
+wlan_mt6879-objs += nic/nic_txd_v1.o
+wlan_mt6879-objs += nic/nic_txd_v2.o
+wlan_mt6879-objs += nic/nic_umac.o
+wlan_mt6879-objs += nic/nic_rate.o
+wlan_mt6879-objs += nic/nic_pwr_mgt.o
+wlan_mt6879-objs += nic/nic_ connac2x_tx.o
+wlan_mt6879-objs += nic/nic_ connac2x_rx.o
+wlan_mt6879-objs += nic/cmd_buf.o
+wlan_mt6879-objs += nic/nic_cmd_event.o
+wlan_mt6879-objs += nic/nic_ext_cmd_event.o
+wlan_mt6879-objs += nic/nic_uni_cmd_event.o
+wlan_mt6879-objs += nic/que_mgt.o
+wlan_mt6879-objs += nic/radiotap.o
+wlan_mt6879-objs += nic/p2p_nic.o
+
+# MGMT (Management, scanning, authentication)
+wlan_mt6879-objs += mgmt/ais_fsm.o
+wlan_mt6879-objs += mgmt/scan_fsm.o
+wlan_mt6879-objs += mgmt/scan.o
+wlan_mt6879-objs += mgmt/scan_cache.o
+wlan_mt6879-objs += mgmt/assoc.o
+wlan_mt6879-objs += mgmt/auth.o
+wlan_mt6879-objs += mgmt/bss.o
+wlan_mt6879-objs += mgmt/rlm.o
+wlan_mt6879-objs += mgmt/rlm_domain.o
+wlan_mt6879-objs += mgmt/rlm_obss.o
+wlan_mt6879-objs += mgmt/rlm_protection.o
+wlan_mt6879-objs += mgmt/aa_fsm.o
+wlan_mt6879-objs += mgmt/saa_fsm.o
+wlan_mt6879-objs += mgmt/cnm.o
+wlan_mt6879-objs += mgmt/cnm_mem.o
+wlan_mt6879-objs += mgmt/cnm_timer.o
+wlan_mt6879-objs += mgmt/cnm_scan.o
+wlan_mt6879-objs += mgmt/mib.o
+wlan_mt6879-objs += mgmt/privacy.o
+wlan_mt6879-objs += mgmt/roaming_fsm.o
+wlan_mt6879-objs += mgmt/he_ie.o
+wlan_mt6879-objs += mgmt/he_rlm.o
+wlan_mt6879-objs += mgmt/eht_rlm.o
+wlan_mt6879-objs += mgmt/rate.o
+wlan_mt6879-objs += mgmt/stats.o
+wlan_mt6879-objs += mgmt/rsn.o
+wlan_mt6879-objs += mgmt/ap_selection.o
+wlan_mt6879-objs += mgmt/ie_sort.o
+wlan_mt6879-objs += mgmt/mddp.o
+wlan_mt6879-objs += mgmt/qosmap.o
+wlan_mt6879-objs += mgmt/rrm.o
+wlan_mt6879-objs += mgmt/swcr.o
+wlan_mt6879-objs += mgmt/tdls.o
+wlan_mt6879-objs += mgmt/wnm.o
+wlan_mt6879-objs += mgmt/wmm.o
+wlan_mt6879-objs += mgmt/thrm.o
+wlan_mt6879-objs += mgmt/hem_mbox.o
+wlan_mt6879-objs += mgmt/hs20.o
+wlan_mt6879-objs += mgmt/wapi.o
+wlan_mt6879-objs += mgmt/mscs.o
+wlan_mt6879-objs += mgmt/twt.o
+wlan_mt6879-objs += mgmt/twt_req_fsm.o
+wlan_mt6879-objs += mgmt/twt_planner.o
+wlan_mt6879-objs += mgmt/reg_rule.o
+wlan_mt6879-objs += mgmt/tkip_mic.o
+
+# P2P Management
+wlan_mt6879-objs += mgmt/p2p_dev.o
+wlan_mt6879-objs += mgmt/p2p_dev_fsm.o
+wlan_mt6879-objs += mgmt/p2p_dev_state.o
+wlan_mt6879-objs += mgmt/p2p_role.o
+wlan_mt6879-objs += mgmt/p2p_role_fsm.o
+wlan_mt6879-objs += mgmt/p2p_role_state.o
+wlan_mt6879-objs += mgmt/p2p_fsm.o
+wlan_mt6879-objs += mgmt/p2p_func.o
+wlan_mt6879-objs += mgmt/p2p_ie.o
+wlan_mt6879-objs += mgmt/p2p_scan.o
+wlan_mt6879-objs += mgmt/p2p_assoc.o
+wlan_mt6879-objs += mgmt/p2p_bss.o
+wlan_mt6879-objs += mgmt/p2p_rlm.o
+wlan_mt6879-objs += mgmt/p2p_rlm_obss.o
+
+# COMMON (Library, OID handlers)
+wlan_mt6879-objs += common/wlan_lib.o
+wlan_mt6879-objs += common/wlan_oid.o
+wlan_mt6879-objs += common/wlan_bow.o
+wlan_mt6879-objs += common/wlan_he.o
+wlan_mt6879-objs += common/wlan_p2p.o
+wlan_mt6879-objs += common/debug.o
+wlan_mt6879-objs += common/dump.o
+wlan_mt6879-objs += common/mot_config.o
+
+# CHIPS - Common HW
+wlan_mt6879-objs += chips/common/cmm_asic_connac.o
+wlan_mt6879-objs += chips/common/cmm_asic_connac2x.o
+wlan_mt6879-objs += chips/common/fw_dl.o
+wlan_mt6879-objs += chips/common/pre_cal.o
+wlan_mt6879-objs += chips/common/dbg_connac.o
+wlan_mt6879-objs += chips/common/dbg_connac2x.o
+
+# CHIPS - CONNAC Architecture
+wlan_mt6879-objs += chips/connac/connac.o
+
+# CHIPS - SOC7_0 (MT6879, MT6895)
+wlan_mt6879-objs += chips/soc7_0/soc7_0.o
+wlan_mt6879-objs += chips/soc7_0/dbg_soc7_0.o
+wlan_mt6879-objs += chips/soc7_0/hal_dmashdl_soc7_0.o
+
+# DVT Support
+wlan_mt6879-objs += dvt/dvt_common.o
+wlan_mt6879-objs += dvt/dvt_dmashdl.o
+
+# OS - Linux Glue Layer
+wlan_mt6879-objs += os/linux/gl_init.o
+wlan_mt6879-objs += os/linux/gl_kal.o
+wlan_mt6879-objs += os/linux/gl_cfg80211.o
+wlan_mt6879-objs += os/linux/gl_proc.o
+wlan_mt6879-objs += os/linux/gl_vendor.o
+wlan_mt6879-objs += os/linux/gl_hook_api.o
+wlan_mt6879-objs += os/linux/gl_wext.o
+wlan_mt6879-objs += os/linux/gl_wext_priv.o
+wlan_mt6879-objs += os/linux/platform.o
+wlan_mt6879-objs += os/linux/gl_sys.o
+wlan_mt6879-objs += os/linux/gl_rst.o
+wlan_mt6879-objs += os/linux/gl_p2p.o
+wlan_mt6879-objs += os/linux/gl_p2p_init.o
+wlan_mt6879-objs += os/linux/gl_p2p_cfg80211.o
+wlan_mt6879-objs += os/linux/gl_p2p_kal.o
+wlan_mt6879-objs += os/linux/gl_bow.o
+wlan_mt6879-objs += os/linux/gl_nan.o
+wlan_mt6879-objs += os/linux/gl_vendor_nan.o
+wlan_mt6879-objs += os/linux/gl_vendor_ndp.o
+wlan_mt6879-objs += os/linux/gl_ate_agent.o
+wlan_mt6879-objs += os/linux/gl_qa_agent.o
+
+# Platform specific (MT6879)
+wlan_mt6879-objs += os/linux/plat/mt6879/plat_priv.o
+
+# HIF - AXI Interface
+wlan_mt6879-objs += os/linux/hif/axi/axi.o
+
+# HIF - Common
+wlan_mt6879-objs += os/linux/hif/common/dbg_pdma.o
+wlan_mt6879-objs += os/linux/hif/common/hal_pdma.o
+wlan_mt6879-objs += os/linux/hif/common/kal_pdma.o
+wlan_mt6879-objs += os/linux/hif/common/sw_wfdma.o
+
+# WLAN Service - Glue Layer (Gen4m)
+wlan_mt6879-objs += wlan_service/glue/hal/gen4m/operation_gen4m.o
+wlan_mt6879-objs += wlan_service/glue/osal/gen4m/net_adaption_gen4m.o
+wlan_mt6879-objs += wlan_service/glue/osal/gen4m/sys_adaption_gen4m.o
+
+# WLAN Service - Agent
+wlan_mt6879-objs += wlan_service/agent/agent.o
+
+# NAN Support
+wlan_mt6879-objs += nan/nan_dev.o
+wlan_mt6879-objs += nan/nan_ranging.o
+wlan_mt6879-objs += nan/nan_sec.o
+wlan_mt6879-objs += nan/nan_txm.o
+wlan_mt6879-objs += nan/nan_data_engine.o
+wlan_mt6879-objs += nan/nan_data_engine_util.o
+wlan_mt6879-objs += nan/nanDiscovery.o
+wlan_mt6879-objs += nan/nanReg.o
+wlan_mt6879-objs += nan/nanScheduler.o
+
+# NAN - WPA Supplicant
+wlan_mt6879-objs += nan/wpa_supp/FourWayHandShake.o
+wlan_mt6879-objs += nan/wpa_supp/src/ap/wpa_auth.o
+wlan_mt6879-objs += nan/wpa_supp/src/ap/wpa_auth_glue.o
+wlan_mt6879-objs += nan/wpa_supp/src/ap/wpa_auth_ie.o
+wlan_mt6879-objs += nan/wpa_supp/src/ap/ieee802_1x.o
+wlan_mt6879-objs += nan/wpa_supp/src/common/wpa_common.o
+wlan_mt6879-objs += nan/wpa_supp/src/crypto/aes-internal-dec.o
+wlan_mt6879-objs += nan/wpa_supp/src/crypto/aes-internal-enc.o
+wlan_mt6879-objs += nan/wpa_supp/src/crypto/aes-internal.o
+wlan_mt6879-objs += nan/wpa_supp/src/crypto/aes-wrap.o
+wlan_mt6879-objs += nan/wpa_supp/src/crypto/aes-unwrap.o
+wlan_mt6879-objs += nan/wpa_supp/src/crypto/pbkdf2-sha256.o
+wlan_mt6879-objs += nan/wpa_supp/src/crypto/sha1.o
+wlan_mt6879-objs += nan/wpa_supp/src/crypto/sha1-internal.o
+wlan_mt6879-objs += nan/wpa_supp/src/crypto/sha1-prf.o
+wlan_mt6879-objs += nan/wpa_supp/src/crypto/sha256.o
+wlan_mt6879-objs += nan/wpa_supp/src/crypto/sha256-internal.o
+wlan_mt6879-objs += nan/wpa_supp/src/crypto/sha256-prf.o
+wlan_mt6879-objs += nan/wpa_supp/src/crypto/sha384.o
+wlan_mt6879-objs += nan/wpa_supp/src/crypto/sha384-internal.o
+wlan_mt6879-objs += nan/wpa_supp/src/crypto/sha384-prf.o
+wlan_mt6879-objs += nan/wpa_supp/src/crypto/sha512-internal.o
+wlan_mt6879-objs += nan/wpa_supp/src/rsn_supp/wpa.o
+wlan_mt6879-objs += nan/wpa_supp/src/utils/common.o
+wlan_mt6879-objs += nan/wpa_supp/wpa_supplicant/wpa_supplicant.o
+wlan_mt6879-objs += nan/wpa_supp/wpa_supplicant/wpas_glue.o
+
+# EMI Legacy Support (if needed)
+ifneq ($(CONFIG_MTK_EMI_LEGACY),)
+ccflags-y += -DCONFIG_WLAN_MTK_EMI=1
+endif
+
+ifneq ($(CONFIG_MTK_EMI),)
+ccflags-y += -DCONFIG_WLAN_MTK_EMI=1
+endif
+
+ifneq ($(CONFIG_MEDIATEK_EMI),)
+ccflags-y += -DCONFIG_WLAN_MTK_EMI=1
+endif

@@ -1,0 +1,4 @@
+# Unified with drivers/misc/mediatek/connectivity/fmradio/Kconfig
+# This file was a duplicate and now sources the canonical FM radio Kconfig
+
+source "../../fmradio/Kconfig"

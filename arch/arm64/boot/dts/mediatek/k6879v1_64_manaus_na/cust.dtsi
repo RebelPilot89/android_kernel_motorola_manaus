@@ -1,0 +1,5 @@
+/* Placeholder cust.dtsi for k6879v1_64_manaus_na - provides no board-specific overlays.
+   Added to satisfy DTS include during build. Replace with real content if required. */
+
+/ {
+};

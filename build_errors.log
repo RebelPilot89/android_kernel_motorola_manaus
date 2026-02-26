@@ -1,0 +1,21 @@
+make[1]: se entra en el directorio '/home/rebelpilot89/manaus-kernel/out'
+  GEN     Makefile
+../scripts/Makefile.asm-generic:25: redundant generic-y found in arch/arm64/include/asm/Kbuild: set_memory.h
+  CALL    ../scripts/checksyscalls.sh
+  CALL    ../scripts/atomic/check-atomics.sh
+  CHK     include/generated/compile.h
+  CC      arch/arm64/kvm/hyp/vhe/tlb.o
+../arch/arm64/kvm/hyp/vhe/tlb.c:56:21: error: incompatible pointer to integer conversion passing 'struct kvm_arch *' to parameter of type 'unsigned long' [-Wint-conversion]
+   56 |         __load_stage2(mmu, mmu->arch);
+      |                            ^~~~~~~~~
+../arch/arm64/include/asm/kvm_mmu.h:275:22: note: passing argument to parameter 'vtcr' here
+  275 |                                           unsigned long vtcr)
+      |                                                         ^
+1 error generated.
+make[5]: *** [../scripts/Makefile.build:273: arch/arm64/kvm/hyp/vhe/tlb.o] Error 1
+make[4]: *** [../scripts/Makefile.build:516: arch/arm64/kvm/hyp/vhe] Error 2
+make[3]: *** [../scripts/Makefile.build:516: arch/arm64/kvm/hyp] Error 2
+make[2]: *** [../scripts/Makefile.build:516: arch/arm64/kvm] Error 2
+make[1]: *** [/home/rebelpilot89/manaus-kernel/Makefile:1908: arch/arm64] Error 2
+make[1]: se sale del directorio '/home/rebelpilot89/manaus-kernel/out'
+make: *** [Makefile:185: __sub-make] Error 2

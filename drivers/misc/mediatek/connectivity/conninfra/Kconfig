@@ -1,0 +1,25 @@
+# drivers/misc/mediatek/connectivity/conninfra/Kconfig
+
+menuconfig MTK_CONN_INFRA
+	tristate "MediaTek Connectivity Infrastructure Support (ConnV2)"
+	depends on MTK_CONNECTIVITY
+	default y
+	help
+	  Infraestructura de conectividad basada en la arquitectura ConnV2.
+	  Necesaria para el MT6879 (Motorola Edge 40 Neo).
+
+if MTK_CONN_INFRA
+
+config MTK_CONN_CONNV2
+	bool "Enable ConnV2 Driver Support"
+	default y
+
+config MTK_CONN_CONNV2_MT6886
+	bool "MT6886/MT6879 Platform Support"
+	depends on MTK_CONN_CONNV2
+	default y
+	help
+	  Soporte específico de plataforma. MediaTek suele agrupar el 6879
+	  bajo la lógica del 6886 en esta versión de conninfra.
+
+endif

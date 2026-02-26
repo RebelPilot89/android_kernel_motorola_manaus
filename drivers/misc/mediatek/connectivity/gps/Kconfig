@@ -1,0 +1,31 @@
+menuconfig MTK_GPS
+	tristate "MediaTek GPS Support (MT6879/MET 2.0)"
+	default y
+	select MTK_CONN_INFRA
+	help
+	  Habilita el soporte nativo para el subsistema GPS en el Dimensity 7030.
+	  Esta configuración integra el soporte para MET 2.0 y xlink para
+	  comunicación de baja latencia necesaria en virtualización.
+
+if MTK_GPS
+
+config MTK_GPS_DATA_LINK
+	bool "Enable GPS Data Link Layer"
+	default y
+	help
+	  Gestiona los buffers de memoria compartida entre el kernel y el DSP de GPS.
+
+config MTK_GPS_XLINK
+	bool "Enable GPS xlink communication"
+	default y
+	help
+	  Protocolo de transporte avanzado para el intercambio de mensajes
+	  entre el host y el subsistema GPS.
+
+config MTK_GPS_SUPPORT_MET20
+	bool "Enable MET 2.0 HAL support"
+	default y
+	help
+	  Soporte para la arquitectura MediaTek Enhanced Tracking 2.0 presente en el MT6879.
+
+endif

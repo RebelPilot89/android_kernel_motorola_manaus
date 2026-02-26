@@ -1,0 +1,35 @@
+# drivers/misc/mediatek/connectivity/Kconfig
+
+menuconfig MTK_CONNECTIVITY
+	bool "MediaTek Connectivity Support (In-Tree)"
+	default y
+	help
+	  Habilita el soporte para los módulos de conectividad de MediaTek (BT, WIFI, GPS, FM).
+	  Esta configuración integra los repositorios de proveedores directamente en el kernel.
+
+if MTK_CONNECTIVITY
+
+config MTK_CONN_SOC_MT6879
+	bool "MT6879 (Dimensity 7030) Connectivity Support"
+	default y
+	help
+	  Habilitar soporte específico para el SoC MT6879 (Motorola Edge 40 Neo).
+
+# Flag Maestro de Robustecimiento para Virtualización
+config MTK_WLAN_VIRT_ISOLATION
+	bool "Enable Native Virtualization Isolation (MPU & Throttle Guard)"
+	default y
+	help
+	  Activa el aislamiento de memoria EMI y el límite de throttling térmico
+	  para garantizar estabilidad en entornos de virtualización nativa.
+
+# Fuentes de Subsistemas
+source "drivers/misc/mediatek/connectivity/common/Kconfig"
+source "drivers/misc/mediatek/connectivity/conninfra/Kconfig"
+source "drivers/misc/mediatek/connectivity/connfem/Kconfig"
+source "drivers/misc/mediatek/connectivity/wlan/Kconfig"
+source "drivers/misc/mediatek/connectivity/bt/Kconfig"
+source "drivers/misc/mediatek/connectivity/gps/Kconfig"
+source "drivers/misc/mediatek/connectivity/fmradio/Kconfig"
+
+endif # MTK_CONNECTIVITY

@@ -1,0 +1,114 @@
+make[1]: se entra en el directorio '/home/rebelpilot89/manaus-kernel/out'
+  GEN     Makefile
+../scripts/Makefile.asm-generic:25: redundant generic-y found in arch/arm64/include/asm/Kbuild: set_memory.h
+  CALL    ../scripts/atomic/check-atomics.sh
+  CALL    ../scripts/checksyscalls.sh
+  CHK     include/generated/compile.h
+  AS      arch/arm64/crypto/chacha-neon-core.o
+  AS      arch/arm64/mm/proc.o
+  AR      arch/arm64/crypto/built-in.a
+  AR      arch/arm64/mm/built-in.a
+  AS      arch/arm64/kernel/probes/kprobes_trampoline.o
+  AR      arch/arm64/kernel/probes/built-in.a
+  AR      arch/arm64/kernel/built-in.a
+  AR      arch/arm64/built-in.a
+MTK_GPU_VERSION = mali avalon r49p1
+*GPU BM QoS 2.0 QOS Framework defined
+*GPU [mtk-Kbuild] building r49p1 DDK ...
+*GPU defined GPU BM QoS 2.0 for MT6879
+*GPU [mtk-Kbuild] CONFIG_DEBUG_FS = y
+*GPU [mtk-Kbuild] CONFIG_PROC_FS = y
+*GPU [mtk-Kbuild] CONFIG_MTK_GPU_COMMON_DVFS_SUPPORT = y
+*GPU [mtk-Kbuild] CONFIG_MTK_GPU_SUPPORT = y
+*GPU [mtk-Kbuild] CONFIG_MTK_GPU_VERSION = "mali avalon r49p1"
+*GPU [mtk-Kbuild] MTK_GPU_VERSION = 
+*GPU [mtk-Kbuild] MTK_PLATFORM = mt6879
+*GPU [mtk-Kbuild] CONFIG_MALI_MIDGARD = y
+*GPU [mtk-Kbuild] CONFIG_MALI_PLATFORM_NAME = mt6879
+*GPU [mtk-Kbuild] CONFIG_MALI_CSF_SUPPORT = 
+*GPU [mtk-Kbuild] CONFIG_MALI_REAL_HW = y
+*GPU [mtk-Kbuild] CONFIG_MALI_NO_MALI = 
+*GPU [mtk-Kbuild] CONFIG_MALI_DEBUG = y
+*GPU [mtk-Kbuild] CONFIG_MALI_MIDGARD_DVFS = y
+*GPU [mtk-Kbuild] CONFIG_MALI_DEVFREQ = y
+*GPU [mtk-Kbuild] CONFIG_MALI_MTK_DEBUG = y
+*GPU [mtk-Kbuild] CONFIG_MALI_MTK_DEBUG_DFD = y
+*GPU [mtk-Kbuild] CONFIG_MALI_MTK_MEM_TRACK = y
+*GPU [mtk-Kbuild] CONFIG_MALI_MTK_DEVFREQ = y
+*GPU [mtk-Kbuild] CONFIG_MALI_MTK_DEVFREQ_THERMAL = y
+*GPU [mtk-Kbuild] CONFIG_MALI_MTK_GPU_BM_2 = y
+*GPU [mtk-Kbuild] CONFIG_MALI_MTK_BRINGUP = 
+*GPU [mtk-Kbuild] CONFIG_MALI_MTK_NO_THERMAL = 
+  CC      drivers/misc/mediatek/sspm/v3/sspm_compat_stub.o
+************  drivers/trusty/mtee-kree mk ************
+../drivers/misc/mediatek/cameraisp/dip/Makefile:14: "isp6s"
+..
+../drivers/gpu/drm/mediatek/mediatek_v2/ca/Makefile:9: ../drivers/misc/mediatek/teei/Makefile.include: No existe el archivo o el directorio
+make[7]: *** No hay ninguna regla para construir el objetivo '../drivers/misc/mediatek/teei/Makefile.include'.  Alto.
+make[6]: *** [../scripts/Makefile.build:516: drivers/gpu/drm/mediatek/mediatek_v2/ca] Error 2
+make[5]: *** [../scripts/Makefile.build:516: drivers/gpu/drm/mediatek/mediatek_v2] Error 2
+make[5]: *** Se espera a que terminen otras tareas....
+  CC      drivers/gpu/drm/mediatek/mml/mtk-mml-driver.o
+  CC      drivers/gpu/drm/mediatek/mml/mtk-mml-core.o
+..
+fdvt tina
+Tina add dma: 
+..
+  CC      drivers/gpu/drm/mediatek/mml/mtk-mml-tile.o
+  AR      drivers/misc/mediatek/sspm/v3/built-in.a
+  AR      drivers/misc/mediatek/sspm/built-in.a
+  CC      drivers/gpu/drm/mediatek/mml/mtk-mml-pq-core.o
+mot_dubai_ak7377a-objs : mot_dubai_ak7377.o dw9781_circle_test.o dw9781_i2c.o dw9781.o
+  CC      drivers/gpu/drm/mediatek/mml/mtk-mml-drm-adaptor.o
+  CC      drivers/gpu/drm/mediatek/mml/mtk-mml-dle-adaptor.o
+  CC      drivers/gpu/drm/mediatek/mml/mtk-mml-buf.o
+  CC      drivers/gpu/drm/mediatek/mml/mtk-mml-sys.o
+framesync_drv: frame-sync
+virt-sensor: virt-sensor
+common_drv : mot_manaus_ov50a_mipi_raw mot_manaus_ov32b_mipi_raw mot_manaus_hi1336_mipi_raw
+imgsensor-objs : adaptor-hw.o adaptor-drv.o adaptor-i2c.o adaptor-ctrls.o adaptor-ioctl.o adaptor-common-ctrl.o  frame-sync/frame_sync.o frame-sync/frame_sync_algo.o frame-sync/frame_monitor.o frame-sync/frame_sync_util.o frame-sync/frame_sync_console.o frame-sync/hw_sensor_sync_algo.o frame-sync/custom/custom_hw_sync.o  virt-sensor/virt-sensor-drv.o  common/mot_manaus_ov50a_mipi_raw/mot_ov50amipiraw_Sensor.o common/mot_manaus_ov32b_mipi_raw/mot_manaus_ov32bmipiraw_Sensor.o common/mot_manaus_hi1336_mipi_raw/mot_hi1336mipiraw_Sensor.o
+subdir-ccflags-y : -I../drivers/misc/mediatek/imgsensor/inc -I/home/rebelpilot89/manaus-kernel/drivers/misc/mediatek/imgsensor/src-v4l2/ -I../drivers/media/platform/mtk-isp/ -I../drivers/media/platform/mtk-isp/camsys/isp7_1/cam/  -I/home/rebelpilot89/manaus-kernel/drivers/misc/mediatek/imgsensor/src-v4l2/frame-sync  -I/home/rebelpilot89/manaus-kernel/drivers/misc/mediatek/imgsensor/src-v4l2/virt-sensor  -D'IMGSENSOR_SUBDRVS=E(mot_manaus_ov50a_mipi_raw),E(mot_manaus_ov32b_mipi_raw),E(mot_manaus_hi1336_mipi_raw)'
+../drivers/gpu/drm/mediatek/mml/mtk-mml-pq-core.c:1856:20: error: a function declaration without a prototype is deprecated in all versions of C [-Werror,-Wstrict-prototypes]
+ 1856 | static void ut_init()
+      |                    ^
+      |                     void
+1 error generated.
+make[6]: *** [../scripts/Makefile.build:273: drivers/gpu/drm/mediatek/mml/mtk-mml-pq-core.o] Error 1
+make[6]: *** Se espera a que terminen otras tareas....
+imgsensor-virt-sensor-objs : imgsensor-glue.o 
+subdir-ccflags-y : -I../drivers/misc/mediatek/imgsensor/inc -I/home/rebelpilot89/manaus-kernel/drivers/misc/mediatek/imgsensor/src-v4l2/imgsensor-glue/ 
+  CC      drivers/misc/mediatek/connectivity/conninfra/conn_drv/connv2/platform/mt6886/mt6886_pos.o
+os option: linux
+$MTK_PLATFORM is [mt6879]
+$WLAN_CHIP_ID is [6879]
+$MTK_COMBO_CHIP is [CONNAC]
+../drivers/misc/mediatek/connectivity/wlan/Makefile:613: wlan_6879_axi build-in boot.img
+  CC      drivers/misc/mediatek/connectivity/conninfra/conn_drv/connv2/platform/mt6886/mt6886_pos_gen.o
+  CC      drivers/misc/mediatek/connectivity/conninfra/conn_drv/connv2/platform/mt6886/mt6886_atf.o
+make[5]: *** [../scripts/Makefile.build:516: drivers/gpu/drm/mediatek/mml] Error 2
+make[4]: *** [../scripts/Makefile.build:516: drivers/gpu/drm/mediatek] Error 2
+make[3]: *** [../scripts/Makefile.build:516: drivers/gpu/drm] Error 2
+make[2]: *** [../scripts/Makefile.build:516: drivers/gpu] Error 2
+make[2]: *** Se espera a que terminen otras tareas....
+  CC      drivers/misc/mediatek/connectivity/conninfra/conn_drv/connv2/platform/mt6886/mt6886_consys_reg.o
+"imgsys, subdir-ccflags-y = -DWPE_TF_DUMP_71_2 -DONEPIXEL_MODE"
+"imgsys, subdir-ccflags-y = -DTF_DUMP_71_2"
+  CC      drivers/misc/mediatek/connectivity/conninfra/conn_drv/connv2/platform/mt6886/mt6886_consys_reg_atf.o
+  CC      drivers/misc/mediatek/connectivity/conninfra/conn_drv/connv2/platform/mt6886/mt6886_debug_gen.o
+  CC      drivers/misc/mediatek/connectivity/conninfra/conn_drv/connv2/platform/mt6886/mt6886_pmic.o
+../drivers/misc/mediatek/ccu/src/Makefile:17: CCU_MAKE_FILE_CALLED_2_1_1
+"mt6879"
+CCU_MAKE_FILE_CALLED
+y
+
+mt6879
+
+
+..
+  AR      drivers/misc/mediatek/connectivity/conninfra/built-in.a
+  AR      drivers/misc/mediatek/connectivity/built-in.a
+  AR      drivers/misc/mediatek/built-in.a
+  AR      drivers/misc/built-in.a
+make[1]: *** [/home/rebelpilot89/manaus-kernel/Makefile:1908: drivers] Error 2
+make[1]: se sale del directorio '/home/rebelpilot89/manaus-kernel/out'
+make: *** [Makefile:185: __sub-make] Error 2

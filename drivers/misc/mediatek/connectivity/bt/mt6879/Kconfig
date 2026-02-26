@@ -1,0 +1,10 @@
+# drivers/misc/mediatek/connectivity/bt/mt6879/Kconfig
+
+config MTK_CONN_BT_6879
+	bool "MT6879 (Edge 40 Neo) BT Platform Support"
+	depends on MTK_CONN_BT
+	default y
+	help
+	  Activa el soporte específico para la plataforma MT6879.
+	  Esto incluye el uso de la interfaz BEIF y las rutas de registros
+	  optimizadas para el Motorola Edge 40 Neo.

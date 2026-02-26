@@ -1,0 +1,81 @@
+menu "KernelSU"
+
+config KSU
+	tristate "KernelSU function support"
+	depends on KPROBES
+	default y
+	help
+	  Enable kernel-level root privileges on Android System.
+	  Requires CONFIG_KPROBES for kernel hooking support.
+	  To compile as a module, choose M here: the
+	  module will be called kernelsu.
+
+config KSU_DEBUG
+	bool "KernelSU debug mode"
+	depends on KSU
+	default n
+	help
+	  Enable KernelSU debug mode.
+
+menu "KernelSU - SUSFS"
+
+config KSU_SUSFS
+	bool "KernelSU addon - SUSFS"
+	depends on KSU
+	default y
+	help
+	  Patch and enable SUSFS integration in kernel with KernelSU.
+
+config KSU_SUSFS_SUS_PATH
+	bool "Enable to hide suspicious path"
+	depends on KSU_SUSFS
+	default y
+
+config KSU_SUSFS_SUS_MOUNT
+	bool "Enable to hide suspicious mounts"
+	depends on KSU_SUSFS
+	default y
+
+config KSU_SUSFS_SUS_MOUNT_MNT_ID_REORDER
+	bool "Enable mount id reorder in mountinfo (experimental)"
+	depends on KSU_SUSFS_SUS_MOUNT
+	default n
+
+config KSU_SUSFS_SUS_KSTAT
+	bool "Enable to spoof suspicious kstat"
+	depends on KSU_SUSFS
+	default y
+
+config KSU_SUSFS_SUS_MAPS
+	bool "Enable to spoof suspicious maps"
+	depends on KSU_SUSFS
+	default y
+
+config KSU_SUSFS_SUS_PROC_FD_LINK
+	bool "Enable to spoof suspicious proc fd links (experimental)"
+	depends on KSU_SUSFS
+	default n
+
+config KSU_SUSFS_SUS_MEMFD
+	bool "Enable to hide/spoof suspicious memfd (experimental)"
+	depends on KSU_SUSFS
+	default n
+
+config KSU_SUSFS_TRY_UMOUNT
+	bool "Enable to use ksu try_umount"
+	depends on KSU_SUSFS
+	default y
+
+config KSU_SUSFS_SPOOF_UNAME
+	bool "Enable to spoof uname"
+	depends on KSU_SUSFS
+	default y
+
+config KSU_SUSFS_ENABLE_LOG
+	bool "Enable SUSFS logging"
+	depends on KSU_SUSFS
+	default y
+
+endmenu
+
+endmenu
