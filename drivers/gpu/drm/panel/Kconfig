@@ -993,6 +993,7 @@ config DRM_MEDIATEK_PANEL
 	depends on OF
 	depends on DRM_MIPI_DSI
 	depends on BACKLIGHT_CLASS_DEVICE
+	depends on DRM_MEDIATEK_V2
 	help
 	  Say Y here if you want to enable support for panel common driver.
 	  support C-PHY and D-PHY, support HD, FHD resolution,

@@ -162,6 +162,9 @@ asm(
 #ifndef SYS_ICC_SGI1R_EL1
 #define SYS_ICC_SGI1R_EL1		sys_reg(3, 0, 12, 11, 5)
 #endif
+#ifndef SYS_ICC_IGRPEN1_EL1
+#define SYS_ICC_IGRPEN1_EL1		sys_reg(3, 0, 12, 12, 7)
+#endif
 #ifndef SYS_ICC_AP0R0_EL1
 #define SYS_ICC_AP0R0_EL1		sys_reg(3, 0, 12, 8, 4)
 #endif
@@ -185,6 +188,66 @@ asm(
 #endif
 #ifndef SYS_ICC_AP1R3_EL1
 #define SYS_ICC_AP1R3_EL1		sys_reg(3, 0, 12, 9, 3)
+#endif
+#ifndef SYS_PMBIDR_EL1
+#define SYS_PMBIDR_EL1			sys_reg(3, 0, 9, 10, 7)
+#endif
+#ifndef SYS_PMSIDR_EL1
+#define SYS_PMSIDR_EL1			sys_reg(3, 0, 9, 9, 7)
+#endif
+#ifndef SYS_PMSCR_EL1
+#define SYS_PMSCR_EL1			sys_reg(3, 0, 9, 9, 0)
+#endif
+#ifndef SYS_PMBLIMITR_EL1
+#define SYS_PMBLIMITR_EL1		sys_reg(3, 0, 9, 10, 0)
+#endif
+#ifndef SYS_PMBPTR_EL1
+#define SYS_PMBPTR_EL1			sys_reg(3, 0, 9, 10, 1)
+#endif
+#ifndef SYS_PMBSR_EL1
+#define SYS_PMBSR_EL1			sys_reg(3, 0, 9, 10, 3)
+#endif
+#ifndef SYS_PMSIRR_EL1
+#define SYS_PMSIRR_EL1			sys_reg(3, 0, 9, 9, 2)
+#endif
+#ifndef SYS_PMSICR_EL1
+#define SYS_PMSICR_EL1			sys_reg(3, 0, 9, 9, 3)
+#endif
+#ifndef SYS_PMSFCR_EL1
+#define SYS_PMSFCR_EL1			sys_reg(3, 0, 9, 9, 4)
+#endif
+#ifndef SYS_PMSEVFR_EL1
+#define SYS_PMSEVFR_EL1			sys_reg(3, 0, 9, 9, 5)
+#endif
+#ifndef SYS_PMSLATFR_EL1
+#define SYS_PMSLATFR_EL1		sys_reg(3, 0, 9, 9, 6)
+#endif
+#ifndef SYS_TRBIDR_EL1
+#define SYS_TRBIDR_EL1			sys_reg(3, 0, 9, 11, 7)
+#endif
+#ifndef SYS_AMEVCNTR0_CORE_EL0
+#define SYS_AMEVCNTR0_CORE_EL0		sys_reg(3, 3, 13, 2, 0)
+#endif
+#ifndef SYS_AMEVCNTR0_CONST_EL0
+#define SYS_AMEVCNTR0_CONST_EL0		sys_reg(3, 3, 13, 2, 1)
+#endif
+#ifndef SYS_GCR_EL1
+#define SYS_GCR_EL1			sys_reg(3, 0, 1, 0, 6)
+#endif
+#ifndef SYS_RGSR_EL1
+#define SYS_RGSR_EL1			sys_reg(3, 0, 1, 0, 5)
+#endif
+#ifndef SYS_TFSR_EL1
+#define SYS_TFSR_EL1			sys_reg(3, 0, 5, 6, 0)
+#endif
+#ifndef SYS_TFSRE0_EL1
+#define SYS_TFSRE0_EL1			sys_reg(3, 0, 5, 6, 1)
+#endif
+#ifndef SYS_APGAKEYLO_EL1
+#define SYS_APGAKEYLO_EL1		sys_reg(3, 0, 2, 3, 0)
+#endif
+#ifndef SYS_APGAKEYHI_EL1
+#define SYS_APGAKEYHI_EL1		sys_reg(3, 0, 2, 3, 1)
 #endif
 
 /* Pointer Auth Keys */

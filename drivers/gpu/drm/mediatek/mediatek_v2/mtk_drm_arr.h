@@ -6,6 +6,9 @@
 #ifndef _MTK_DRM_ARR_H_
 #define _MTK_DRM_ARR_H_
 
+#include <linux/errno.h>
+#include <linux/types.h>
+
 /*************************************************************************
  * mtk_dsi_lfr_con records LFR Related parameters belows:
  *
@@ -64,14 +67,36 @@ struct mtk_dsi_lfr_sta {
  * register call back for fpsgo or other kernel modules
  * who want't to monitor frame rate changing
  */
- /*interface with fpsgo*/
+/*interface with fpsgo*/
 typedef void (*FPS_CHG_CALLBACK)(unsigned int new_fps);
-int drm_register_fps_chg_callback(
-	FPS_CHG_CALLBACK fps_chg_cb);
-int drm_unregister_fps_chg_callback(
-	FPS_CHG_CALLBACK fps_chg_cb);
+#ifdef CONFIG_DRM_MEDIATEK_V2
+int drm_register_fps_chg_callback(FPS_CHG_CALLBACK fps_chg_cb);
+int drm_unregister_fps_chg_callback(FPS_CHG_CALLBACK fps_chg_cb);
 /*interface with primary_display*/
 void drm_invoke_fps_chg_callbacks(unsigned int new_fps);
 bool drm_need_fisrt_invoke_fps_callbacks(void);
+#else
+static inline int drm_register_fps_chg_callback(FPS_CHG_CALLBACK fps_chg_cb)
+{
+	(void)fps_chg_cb;
+	return -EOPNOTSUPP;
+}
+
+static inline int drm_unregister_fps_chg_callback(FPS_CHG_CALLBACK fps_chg_cb)
+{
+	(void)fps_chg_cb;
+	return -EOPNOTSUPP;
+}
+
+static inline void drm_invoke_fps_chg_callbacks(unsigned int new_fps)
+{
+	(void)new_fps;
+}
+
+static inline bool drm_need_fisrt_invoke_fps_callbacks(void)
+{
+	return false;
+}
+#endif
 
 #endif

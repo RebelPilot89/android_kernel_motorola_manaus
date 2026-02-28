@@ -7,6 +7,7 @@ mtk_fm_drv-objs := core/fm_main.o \
                    core/fm_config.o \
                    core/fm_module.o \
                    core/fm_utils.o \
+                   core/fm_cmd.o \
                    core/fm_link.o
 
 # Soporte específico para MT6879 (CONNAC2X)

@@ -168,14 +168,8 @@ void fs_con_set_listen_vsync_alg_cfg(unsigned int flag)
 /******************************************************************************/
 static void fs_console_set_log_tracer(unsigned int cmd)
 {
-	int len = 0;
-	char str_buf[PAGE_SIZE] = {0};
-
 	log_tracer = fs_console_get_cmd_value(cmd);
-
-	SHOW(str_buf, len,
-		"\n[fsync_console] set log_tracer to %u\n",
-		log_tracer);
+	LOG_MUST("[fsync_console] set log_tracer to %u", log_tracer);
 }
 
 
@@ -187,13 +181,8 @@ static void fs_console_set_pf_log_tracer(unsigned int cmd)
 
 static void fs_console_set_force_disable_frame_sync(unsigned int cmd)
 {
-	int len = 0;
-	char str_buf[PAGE_SIZE] = {0};
-
 	force_to_ignore_set_sync = fs_console_get_cmd_value(cmd);
-
-	SHOW(str_buf, len,
-		"\n[fsync_console] set force_to_ignore_set_sync to %u\n",
+	LOG_MUST("[fsync_console] set force_to_ignore_set_sync to %u",
 		force_to_ignore_set_sync);
 }
 
@@ -285,20 +274,16 @@ static ssize_t fsync_console_store(
 	struct device *dev, struct device_attribute *attr,
 	const char *buf, size_t count)
 {
-	int ret = 0, len = 0;
+	int ret = 0;
 	unsigned int cmd = 0;
 	enum fs_console_cmd_id cmd_id = 0;
-	char str_buf[PAGE_SIZE] = {0};
 
 
 	/* convert string to unsigned int */
 	ret = kstrtouint(buf, 0, &cmd);
 	if (ret != 0) {
-		SHOW(str_buf, len,
-			"\n\t[fsync_console]: kstrtoint failed, input:%s, cmd:%u, ret:%d\n",
-			buf,
-			cmd,
-			ret);
+		LOG_MUST("[fsync_console] kstrtouint failed, input:%s, cmd:%u, ret:%d",
+			buf, cmd, ret);
 	}
 
 
