@@ -86,6 +86,19 @@ asm(
 		write_sysreg(__scs_new, sysreg);			\
 } while (0)
 
+/* Variant using read_sysreg_s/write_sysreg_s (numeric sysreg ID) */
+#define sysreg_clear_set_s(sysreg, clear, set) do {			\
+	u64 __scs_val = read_sysreg_s(sysreg);				\
+	u64 __scs_new = (__scs_val & ~(u64)(clear)) | (set);		\
+	if (__scs_new != __scs_val)					\
+		write_sysreg_s(__scs_new, sysreg);			\
+} while (0)
+
+/* SCTLR_ELx bit definitions (for C code) */
+#ifndef SCTLR_ELx_M
+#define SCTLR_ELx_M		(1UL << 0)
+#endif
+
 /* 2. Macros para Ensamblador Inline (Corregidas) */
 #define __mrs_s(v, r) "mrs_s " v ", " __stringify(r)
 #define __msr_s(r, v) "msr_s " __stringify(r) ", " v
@@ -127,6 +140,52 @@ asm(
 #define SYS_PAR_EL1			sys_reg(3, 0, 7, 4, 0)
 #define SYS_ICC_PMR_EL1			sys_reg(3, 0, 4, 6, 0)
 #define SYS_RNDR_EL0			sys_reg(3, 3, 2, 4, 0)
+
+/* EL1 translation/fault registers required by KVM hypervisor */
+#ifndef SYS_TTBR0_EL1
+#define SYS_TTBR0_EL1			sys_reg(3, 0, 2, 0, 0)
+#endif
+#ifndef SYS_TTBR1_EL1
+#define SYS_TTBR1_EL1			sys_reg(3, 0, 2, 0, 1)
+#endif
+#ifndef SYS_TCR_EL1
+#define SYS_TCR_EL1			sys_reg(3, 0, 2, 0, 2)
+#endif
+#ifndef SYS_AFSR0_EL1
+#define SYS_AFSR0_EL1			sys_reg(3, 0, 5, 1, 0)
+#endif
+#ifndef SYS_AFSR1_EL1
+#define SYS_AFSR1_EL1			sys_reg(3, 0, 5, 1, 1)
+#endif
+#ifndef SYS_ESR_EL1
+#define SYS_ESR_EL1			sys_reg(3, 0, 5, 2, 0)
+#endif
+#ifndef SYS_FAR_EL1
+#define SYS_FAR_EL1			sys_reg(3, 0, 6, 0, 0)
+#endif
+#ifndef SYS_MAIR_EL1
+#define SYS_MAIR_EL1			sys_reg(3, 0, 10, 2, 0)
+#endif
+#ifndef SYS_AMAIR_EL1
+#define SYS_AMAIR_EL1			sys_reg(3, 0, 10, 3, 0)
+#endif
+#ifndef SYS_CONTEXTIDR_EL1
+#define SYS_CONTEXTIDR_EL1		sys_reg(3, 0, 13, 0, 1)
+#endif
+
+/* EL2 system registers required by KVM hypervisor */
+#ifndef SYS_ZCR_EL2
+#define SYS_ZCR_EL2			sys_reg(3, 4, 1, 2, 0)
+#endif
+#ifndef SYS_HFGRTR_EL2
+#define SYS_HFGRTR_EL2			sys_reg(3, 4, 1, 3, 0)
+#endif
+#ifndef SYS_HFGWTR_EL2
+#define SYS_HFGWTR_EL2			sys_reg(3, 4, 1, 3, 1)
+#endif
+#ifndef SYS_VSESR_EL2
+#define SYS_VSESR_EL2			sys_reg(3, 4, 5, 2, 3)
+#endif
 
 /* Hard-defines canónicos para rutas C/LTO cuando falta sysreg-defs.h */
 #ifndef SYS_ICC_SRE_EL1
