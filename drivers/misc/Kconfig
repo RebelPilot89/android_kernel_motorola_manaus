@@ -497,4 +497,19 @@ source "drivers/misc/ocxl/Kconfig"
 source "drivers/misc/cardreader/Kconfig"
 source "drivers/misc/habanalabs/Kconfig"
 source "drivers/misc/uacce/Kconfig"
+
+config POWER_SUSPEND
+	bool "Power Suspend"
+	depends on DRM
+	default n
+	help
+	  Enable the Power Suspend screen-state notification framework.
+	  This is a modern replacement for the legacy early_suspend mechanism.
+	  Drivers can register suspend/resume callbacks that are invoked when
+	  the display powers down or resumes. Uses the MediaTek display notifier
+	  (mtk_disp_notify) to detect screen-on and screen-off events.
+
+	  Say Y if you want kernel components to react to display state changes
+	  for power saving when the screen is off.
+
 endmenu

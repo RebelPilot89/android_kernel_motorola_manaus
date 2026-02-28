@@ -19,6 +19,7 @@
 struct sugov_tunables {
 	struct gov_attr_set	attr_set;
 	unsigned int		rate_limit_us;
+	unsigned int		hispeed_load;
 };
 
 struct sugov_policy {
@@ -164,6 +165,18 @@ static unsigned int get_next_freq(struct sugov_policy *sg_policy,
 	unsigned int freq = arch_scale_freq_invariant() ?
 				policy->cpuinfo.max_freq : policy->cur;
 	unsigned long next_freq = 0;
+	unsigned int hispeed_load = sg_policy->tunables->hispeed_load;
+
+	/*
+	 * Predictive high-speed boost: if CPU utilization has crossed the
+	 * hispeed_load threshold, immediately request the maximum frequency.
+	 * This reduces latency for workloads that suddenly demand full CPU
+	 * performance (e.g. touch input, UI rendering, game engines).
+	 *
+	 * Use u64 arithmetic to avoid potential overflow when scaling util.
+	 */
+	if (hispeed_load && (u64)util * 100 >= (u64)max * hispeed_load)
+		return policy->cpuinfo.max_freq;
 
 	trace_android_vh_map_util_freq(util, freq, max, &next_freq, policy,
 			&sg_policy->need_freq_update);
@@ -612,8 +625,35 @@ rate_limit_us_store(struct gov_attr_set *attr_set, const char *buf, size_t count
 
 static struct governor_attr rate_limit_us = __ATTR_RW(rate_limit_us);
 
+static ssize_t hispeed_load_show(struct gov_attr_set *attr_set, char *buf)
+{
+	struct sugov_tunables *tunables = to_sugov_tunables(attr_set);
+
+	return sprintf(buf, "%u\n", tunables->hispeed_load);
+}
+
+static ssize_t
+hispeed_load_store(struct gov_attr_set *attr_set, const char *buf, size_t count)
+{
+	struct sugov_tunables *tunables = to_sugov_tunables(attr_set);
+	unsigned int hispeed_load;
+
+	if (kstrtouint(buf, 10, &hispeed_load))
+		return -EINVAL;
+
+	/* 0 disables the feature; valid range is 1-100 */
+	if (hispeed_load > 100)
+		return -EINVAL;
+
+	tunables->hispeed_load = hispeed_load;
+	return count;
+}
+
+static struct governor_attr hispeed_load = __ATTR_RW(hispeed_load);
+
 static struct attribute *sugov_attrs[] = {
 	&rate_limit_us.attr,
+	&hispeed_load.attr,
 	NULL
 };
 ATTRIBUTE_GROUPS(sugov);
@@ -777,6 +817,7 @@ static int sugov_init(struct cpufreq_policy *policy)
 	}
 
 	tunables->rate_limit_us = cpufreq_policy_transition_delay_us(policy);
+	tunables->hispeed_load = 90;
 
 	policy->governor_data = sg_policy;
 	sg_policy->tunables = tunables;
