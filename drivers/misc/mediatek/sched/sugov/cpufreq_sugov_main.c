@@ -93,12 +93,27 @@ static bool sugov_up_down_rate_limit(struct sugov_policy *sg_policy, u64 time,
 				     unsigned int next_freq)
 {
 	s64 delta_ns;
+	unsigned int hispeed_load = READ_ONCE(sg_policy->tunables->hispeed_load);
 
 	delta_ns = time - sg_policy->last_freq_update_time;
 
 	if (next_freq > sg_policy->next_freq &&
-	    delta_ns < sg_policy->up_rate_delay_ns)
+	    delta_ns < sg_policy->up_rate_delay_ns) {
+		/*
+		 * Bypass the up-rate limit when utilization exceeds the
+		 * hispeed_load threshold.  This allows immediate frequency
+		 * ramp-up for sudden heavy workloads such as KVM/QEMU boot
+		 * or AI-inference bursts, while leaving the normal idle
+		 * behaviour of Android completely unaffected (low util
+		 * never triggers this path).
+		 */
+		if (hispeed_load < 100 &&
+		    sg_policy->current_util * 100 >=
+		    sg_policy->current_max * hispeed_load)
+			return false;
+
 		return true;
+	}
 
 	if (next_freq < sg_policy->next_freq &&
 	    delta_ns < sg_policy->down_rate_delay_ns)
@@ -606,6 +621,10 @@ static void sugov_update_single(struct update_util_data *hook, u64 time,
 	max = sg_cpu->max;
 	util = sugov_iowait_apply(sg_cpu, time, util, max);
 
+	/* Track utilization for hispeed_load burst detection. */
+	sg_policy->current_util = util;
+	sg_policy->current_max = max;
+
 	if (trace_sugov_ext_util_enabled()) {
 		rq = cpu_rq(sg_cpu->cpu);
 
@@ -680,6 +699,10 @@ static unsigned int sugov_next_freq_shared(struct sugov_cpu *sg_cpu, u64 time)
 			max = j_max;
 		}
 	}
+
+	/* Track peak utilization for hispeed_load burst detection. */
+	sg_policy->current_util = util;
+	sg_policy->current_max = max;
 
 	return get_next_freq(sg_policy, util, max);
 }
@@ -838,8 +861,36 @@ static ssize_t down_rate_limit_us_store(struct gov_attr_set *attr_set,
 static struct governor_attr up_rate_limit_us = __ATTR_RW(up_rate_limit_us);
 static struct governor_attr down_rate_limit_us = __ATTR_RW(down_rate_limit_us);
 
+static ssize_t hispeed_load_show(struct gov_attr_set *attr_set, char *buf)
+{
+	struct sugov_tunables *tunables = to_sugov_tunables(attr_set);
+
+	return sprintf(buf, "%u\n", tunables->hispeed_load);
+}
+
+static ssize_t hispeed_load_store(struct gov_attr_set *attr_set,
+				  const char *buf, size_t count)
+{
+	struct sugov_tunables *tunables = to_sugov_tunables(attr_set);
+	unsigned int val;
+
+	if (kstrtouint(buf, 10, &val))
+		return -EINVAL;
+
+	if (val > 100)
+		return -EINVAL;
+
+	WRITE_ONCE(tunables->hispeed_load, val);
+
+	return count;
+}
+
+static struct governor_attr hispeed_load = __ATTR_RW(hispeed_load);
+
 static struct attribute *sugov_attrs[] = { &up_rate_limit_us.attr,
-					   &down_rate_limit_us.attr, NULL };
+					   &down_rate_limit_us.attr,
+					   &hispeed_load.attr,
+					   NULL };
 ATTRIBUTE_GROUPS(sugov);
 
 static struct kobj_type sugov_tunables_ktype = {
@@ -1001,6 +1052,7 @@ static int sugov_init(struct cpufreq_policy *policy)
 	tunables->up_rate_limit_us = cpufreq_policy_transition_delay_us(policy);
 	tunables->down_rate_limit_us =
 		cpufreq_policy_transition_delay_us(policy);
+	tunables->hispeed_load = 90;
 
 	policy->governor_data = sg_policy;
 	sg_policy->tunables = tunables;
@@ -1074,6 +1126,8 @@ static int sugov_start(struct cpufreq_policy *policy)
 	sg_policy->limits_changed = false;
 	sg_policy->need_freq_update = false;
 	sg_policy->cached_raw_freq = 0;
+	sg_policy->current_util = 0;
+	sg_policy->current_max = 1;
 
 	for_each_cpu (cpu, policy->cpus) {
 		struct sugov_cpu *sg_cpu = &per_cpu(sugov_cpu, cpu);

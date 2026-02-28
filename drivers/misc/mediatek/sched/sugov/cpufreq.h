@@ -27,6 +27,12 @@ struct sugov_tunables {
 	struct gov_attr_set	attr_set;
 	unsigned int		up_rate_limit_us;
 	unsigned int		down_rate_limit_us;
+	/* Utilization threshold (0-100 %) above which up_rate_limit_us is
+	 * bypassed so that a sudden heavy workload (e.g. KVM/QEMU boot,
+	 * AI inference) ramps frequency immediately without waiting for
+	 * the normal rate-limit window.  Default: 90 %.
+	 */
+	unsigned int		hispeed_load;
 };
 
 struct sugov_policy {
@@ -53,6 +59,12 @@ struct sugov_policy {
 
 	bool			limits_changed;
 	bool			need_freq_update;
+
+	/* Highest utilization seen in the current update cycle.
+	 * Written under update_lock; read in sugov_up_down_rate_limit().
+	 */
+	unsigned long		current_util;
+	unsigned long		current_max;
 };
 
 #if IS_ENABLED(CONFIG_MTK_OPP_CAP_INFO)
