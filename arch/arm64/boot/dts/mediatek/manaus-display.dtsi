@@ -95,6 +95,8 @@
 
 &dsi0 {
 	status = "okay";
+	#address-cells = <1>;
+	#size-cells = <0>;
 
 	panel1@0 {
 		/delete-property/ compatible;

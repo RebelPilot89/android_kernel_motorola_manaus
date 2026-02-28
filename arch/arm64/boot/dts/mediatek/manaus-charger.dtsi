@@ -140,6 +140,8 @@
 
 &i2c0 {
 	status = "okay";
+	#address-cells = <1>;
+	#size-cells = <0>;
 
 	NFG1000: NFG1000@55 {
 		compatible = "HXZY,nfg1000";

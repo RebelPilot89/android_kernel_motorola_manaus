@@ -37,6 +37,8 @@
 };
 
 &i2c6 {
+	#address-cells = <1>;
+	#size-cells = <0>;
 	aw36518:aw36518@63 {
 		compatible = "mediatek,aw36518";
 		reg = <0x63>;
@@ -57,6 +59,8 @@
 };
 
 &i2c2 {
+	#address-cells = <1>;
+	#size-cells = <0>;
 	camera_af_main@18 {
 		compatible = "mediatek,mot_manaus_gt9764";
 		reg = <0x18>;
@@ -71,6 +75,8 @@
 
 
 &i2c8 {
+	#address-cells = <1>;
+	#size-cells = <0>;
 	camera_af_wide@18 {
 		compatible = "mediatek,mot_manaus_dw9800v";
 		reg = <0x18>;
