@@ -20,7 +20,7 @@
 
 KO_CODE_PATH := $(if $(filter /%,$(src)),,$(srctree)/)$(src)
 
-ccflags-y = -I$(KO_CODE_PATH)/../../../gpu/arm/midgard/include -I$(DEVICE_MODULES_PATH)/include/
+ccflags-y = -I$(KO_CODE_PATH)/../../../gpu/arm/midgard/include -I$(srctree)/include/
 subdir-ccflags-y += $(ccflags-y)
 
 ifeq ($(CONFIG_MALI_MEMORY_GROUP_MANAGER), y)
@@ -44,6 +44,6 @@ endif
 endif
 
 ifeq ($(CONFIG_MALI_MTK_SLC_ALL_CACHE_MODE), y)
-ccflags-y += -I$(DEVICE_MODULES_PATH)/drivers/dma-buf/heaps -I$(DEVICE_MODULES_PATH)/drivers/misc/mediatek/slbc
+ccflags-y += -I$(srctree)/drivers/dma-buf/heaps -I$(srctree)/drivers/misc/mediatek/slbc
 ccflags-y += -DCONFIG_MALI_MTK_SLC_ALL_CACHE_MODE
 endif

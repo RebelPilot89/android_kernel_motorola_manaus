@@ -1,14 +1,14 @@
 # common part
-ccflags-y += -I$(DEVICE_MODULES_PATH)/drivers/dma-buf/heaps/
-ccflags-y += -I$(DEVICE_MODULES_PATH)/drivers/misc/mediatek/geniezone/public/
-ccflags-y += -I$(DEVICE_MODULES_PATH)/drivers/iommu/arm/arm-smmu-v3/
+ccflags-y += -I$(srctree)/drivers/dma-buf/heaps/
+ccflags-y += -I$(srctree)/drivers/misc/mediatek/geniezone/public/
+ccflags-y += -I$(srctree)/drivers/iommu/arm/arm-smmu-v3/
 
 # sapu
-ccflags-y += -I$(DEVICE_MODULES_PATH)/drivers/misc/mediatek/apusys/sapu/
+ccflags-y += -I$(srctree)/drivers/misc/mediatek/apusys/sapu/
 sapu-objs := sapu_init.o
 sapu-objs += sapu_driver.o
 
-ccflags-y += -I$(DEVICE_MODULES_PATH)/drivers/misc/mediatek/apusys/sapu/platform/
+ccflags-y += -I$(srctree)/drivers/misc/mediatek/apusys/sapu/platform
 sapu-objs += platform/sapu_plat.o
 
 sapu-objs += platform/sapu_cb/sapu_cb_common.o

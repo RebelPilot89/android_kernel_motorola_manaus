@@ -2,7 +2,7 @@
 /*
  * Copyright (c) 2023 MediaTek Inc.
  */
-#include "sapu_plat.h"
+#include "platform/sapu_plat.h"
 #include "mtk-smmu-v3.h"
 
 static int sapu_ha_bridge(struct sapu_mem_info *mem_info,
@@ -24,9 +24,9 @@ static int sapu_ha_bridge(struct sapu_mem_info *mem_info,
 	param[0].mem.buffer = (void *)ha_transfer;
 
 	pr_info("[SAPU_LOG] KREE_TeeServiceCall\n");
-	ret = KREE_TeeServiceCall(ha_sess, mem_info->command,
-				  TZ_ParamTypes2(TZPT_MEM_INPUT,
-				  TZPT_VALUE_OUTPUT), param);
+	ret = KREE_TeeServiceCall(
+		ha_sess, mem_info->command,
+		TZ_ParamTypes2(TZPT_MEM_INPUT, TZPT_VALUE_OUTPUT), param);
 	if (ret != TZ_RESULT_SUCCESS) {
 		pr_info("[%s]TeeServiceCall fail(%d)\n", __func__, ret);
 		return -EPIPE;
@@ -38,8 +38,8 @@ static int sapu_ha_bridge(struct sapu_mem_info *mem_info,
 	pr_info("[SAPU_LOG] KREE_CloseSession\n");
 	ret = KREE_CloseSession(ha_sess);
 	if (ret != TZ_RESULT_SUCCESS) {
-		pr_info("[%s]ha_sess(0x%x) CloseSession fail(%d)\n",
-			__func__, ha_sess, ret);
+		pr_info("[%s]ha_sess(0x%x) CloseSession fail(%d)\n", __func__,
+			ha_sess, ret);
 		return -EPIPE;
 	}
 
@@ -70,8 +70,7 @@ static int get_secure_handle(struct sapu_mem_info *mem_info,
 	dma_buf_put(mem_dmabuf);
 	return 0;
 }
-static int get_apu_iova(struct sapu_mem_info *mem_info,
-			dma_addr_t *dma_addr)
+static int get_apu_iova(struct sapu_mem_info *mem_info, dma_addr_t *dma_addr)
 {
 	int ret = 0;
 	struct sapu_private *sapu_priv;
@@ -154,8 +153,8 @@ datamem_dmabuf_put:
 	return ret;
 }
 
-long apusys_sapu_internal_ioctl(struct file *filep, unsigned int cmd, void __user *arg,
-	unsigned int compat)
+long apusys_sapu_internal_ioctl(struct file *filep, unsigned int cmd,
+				void __user *arg, unsigned int compat)
 {
 	int ret;
 	struct sapu_private *sapu_priv;
@@ -252,7 +251,7 @@ long apusys_sapu_internal_ioctl(struct file *filep, unsigned int cmd, void __use
 	default:
 		pr_info("%s unknown 0x%x\n", __func__, cmd);
 		ret = -EINVAL;
-	break;
+		break;
 	}
 
 	return ret;

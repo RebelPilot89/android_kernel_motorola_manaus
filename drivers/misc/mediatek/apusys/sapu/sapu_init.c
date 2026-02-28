@@ -5,6 +5,16 @@
 #include "sapu_driver.h"
 #include "mtk-smmu-v3.h"
 
+#ifndef MTEE_SMCNR
+#define MTEE_SMCNR(fid, dev) (fid)
+#endif
+
+#ifndef MT_SMCF_SC_SAPU_DRAM_FB
+#define MT_SMCF_SC_SAPU_DRAM_FB 0
+#endif
+
+s32 trusty_std_call32(struct device *dev, u32 smcnr, u32 a0, u32 a1, u32 a2);
+
 #define ENABLE_DRAM_FB 1
 
 #define SAPU_DATAMEM_PAGE_BASED_HEAP "mtk_sapu_page-uncached"
@@ -37,8 +47,8 @@ struct sapu_lock_rpmsg_device *get_rpm_dev(void)
 	return &sapu_lock_rpm_dev;
 }
 
-static long
-apusys_sapu_ioctl(struct file *filep, unsigned int cmd, unsigned long arg)
+static long apusys_sapu_ioctl(struct file *filep, unsigned int cmd,
+			      unsigned long arg)
 {
 	long ret;
 	void __user *user_req = (void __user *)arg;
@@ -49,7 +59,7 @@ apusys_sapu_ioctl(struct file *filep, unsigned int cmd, unsigned long arg)
 
 #if IS_ENABLED(CONFIG_COMPAT)
 static long apusys_sapu_compat_ioctl(struct file *filep, unsigned int cmd,
-	unsigned long arg)
+				     unsigned long arg)
 {
 	long ret;
 	void __user *user_req = (void __user *)compat_ptr(arg);
@@ -104,35 +114,44 @@ static int dram_fb_register(void)
 	ret = of_property_read_u32(sapu_node, "datamem-type", &datamem_type);
 
 	if (ret == -EINVAL)
-		pr_info("[%s] datamem-type prop not found. Determined by smmu support", __func__);
+		pr_info("[%s] datamem-type prop not found. Determined by smmu support",
+			__func__);
 	else
-		pr_info("[%s] read prop datamem-type=%d (ret=%d)\n", __func__, datamem_type, ret);
+		pr_info("[%s] read prop datamem-type=%d (ret=%d)\n", __func__,
+			datamem_type, ret);
 
 	switch (datamem_type) {
 	case SAPU_DATAMEM_TYPE_DEFAULT: {
 		/* Legacy for mt6897 & mt6989 */
-		pr_info("[%s] smmu support = %d\n", __func__, smmu_v3_enabled());
+		pr_info("[%s] smmu support = %d\n", __func__,
+			smmu_v3_enabled());
 		if (smmu_v3_enabled()) {
-			pr_info("[%s] find dmaheap %s\n", __func__, SAPU_DATAMEM_PAGE_BASED_HEAP);
+			pr_info("[%s] find dmaheap %s\n", __func__,
+				SAPU_DATAMEM_PAGE_BASED_HEAP);
 			dma_heap = dma_heap_find(SAPU_DATAMEM_PAGE_BASED_HEAP);
 		} else {
-			pr_info("[%s] find dmaheap %s\n", __func__, SAPU_DATAMEM_REGION_BASED_HEAP);
-			dma_heap = dma_heap_find(SAPU_DATAMEM_REGION_BASED_HEAP);
+			pr_info("[%s] find dmaheap %s\n", __func__,
+				SAPU_DATAMEM_REGION_BASED_HEAP);
+			dma_heap =
+				dma_heap_find(SAPU_DATAMEM_REGION_BASED_HEAP);
 		}
 		break;
 	}
 	case SAPU_DATAMEM_TYPE_REGION_BASED: {
-		pr_info("[%s] find dmaheap %s\n", __func__, SAPU_DATAMEM_REGION_BASED_HEAP);
+		pr_info("[%s] find dmaheap %s\n", __func__,
+			SAPU_DATAMEM_REGION_BASED_HEAP);
 		dma_heap = dma_heap_find(SAPU_DATAMEM_REGION_BASED_HEAP);
 		break;
 	}
 	case SAPU_DATAMEM_TYPE_PAGE_BASED: {
-		pr_info("[%s] find dmaheap %s\n", __func__, SAPU_DATAMEM_PAGE_BASED_HEAP);
+		pr_info("[%s] find dmaheap %s\n", __func__,
+			SAPU_DATAMEM_PAGE_BASED_HEAP);
 		dma_heap = dma_heap_find(SAPU_DATAMEM_PAGE_BASED_HEAP);
 		break;
 	}
 	default: {
-		pr_info("[%s] unknown datamem type = %u\n", __func__, datamem_type);
+		pr_info("[%s] unknown datamem type = %u\n", __func__,
+			datamem_type);
 		dma_heap = NULL;
 		break;
 	}
@@ -143,10 +162,10 @@ static int dram_fb_register(void)
 		goto err_return;
 	}
 
-	sapu->dram_fb_info.dram_fb_dmabuf = dma_heap_buffer_alloc(
-						dma_heap, 0x400000,
-						DMA_HEAP_VALID_FD_FLAGS,
-						DMA_HEAP_VALID_HEAP_FLAGS);
+	sapu->dram_fb_info.dram_fb_dmabuf =
+		dma_heap_buffer_alloc(dma_heap, 0x400000,
+				      DMA_HEAP_VALID_FD_FLAGS,
+				      DMA_HEAP_VALID_HEAP_FLAGS);
 
 	dma_heap_put(dma_heap);
 	if (IS_ERR(sapu->dram_fb_info.dram_fb_dmabuf)) {
@@ -169,12 +188,10 @@ static int dram_fb_register(void)
 		}
 
 		sapu->dram_fb_info.dram_fb_attach = dma_buf_attach(
-					sapu->dram_fb_info.dram_fb_dmabuf,
-					&smmu_dev->dev);
+			sapu->dram_fb_info.dram_fb_dmabuf, &smmu_dev->dev);
 	} else {
 		sapu->dram_fb_info.dram_fb_attach = dma_buf_attach(
-					sapu->dram_fb_info.dram_fb_dmabuf,
-					dmem_device);
+			sapu->dram_fb_info.dram_fb_dmabuf, dmem_device);
 	}
 	if (IS_ERR(sapu->dram_fb_info.dram_fb_attach)) {
 		pr_info("[%s]dma_buf_attach fail\n", __func__);
@@ -182,10 +199,10 @@ static int dram_fb_register(void)
 		goto dmabuf_free;
 	}
 
-	dmem_sgt = dma_buf_map_attachment_unlocked(sapu->dram_fb_info.dram_fb_attach,
+	dmem_sgt = dma_buf_map_attachment(sapu->dram_fb_info.dram_fb_attach,
 					  DMA_BIDIRECTIONAL);
 	if (IS_ERR(dmem_sgt)) {
-		pr_info("[%s]dma_buf_map_attachment_unlocked fail\n", __func__);
+		pr_info("[%s]dma_buf_map_attachment fail\n", __func__);
 		ret = PTR_ERR(dmem_sgt);
 		goto dmabuf_detach;
 	}
@@ -194,19 +211,20 @@ static int dram_fb_register(void)
 
 	higher_32_iova = (sapu->dram_fb_info.dram_dma_addr >> 32) & 0xFFFFFFFF;
 	lower_32_iova = sapu->dram_fb_info.dram_dma_addr & 0xFFFFFFFF;
-	pr_info("higher_32_iova = %x, lower_32_iova = %x\n", higher_32_iova , lower_32_iova);
+	pr_info("higher_32_iova = %x, lower_32_iova = %x\n", higher_32_iova,
+		lower_32_iova);
 	ret = trusty_std_call32(pdev->dev.parent,
 				MTEE_SMCNR(MT_SMCF_SC_SAPU_DRAM_FB,
 					   pdev->dev.parent),
 				1, higher_32_iova, lower_32_iova);
 
 	if (ret) {
-		pr_info("[%s]dram fallback register fail(0x%x)\n",
-			__func__, ret);
+		pr_info("[%s]dram fallback register fail(0x%x)\n", __func__,
+			ret);
 		goto dmabuf_detach;
 	} else {
-		pr_info("[%s]dram fallback register success(0x%x)\n",
-			__func__, ret);
+		pr_info("[%s]dram fallback register success(0x%x)\n", __func__,
+			ret);
 	}
 
 	ret = sapu->platdata->ops.power_ctrl(sapu, 0);
@@ -219,7 +237,7 @@ static int dram_fb_register(void)
 
 dmabuf_detach:
 	dma_buf_detach(sapu->dram_fb_info.dram_fb_dmabuf,
-			sapu->dram_fb_info.dram_fb_attach);
+		       sapu->dram_fb_info.dram_fb_attach);
 dmabuf_free:
 	dma_heap_buffer_free(sapu->dram_fb_info.dram_fb_dmabuf);
 err_return:
@@ -256,20 +274,19 @@ static int dram_fb_unregister(void)
 	higher_32_iova = (sapu->dram_fb_info.dram_dma_addr >> 32) & 0xFFFFFFFF;
 	lower_32_iova = sapu->dram_fb_info.dram_dma_addr & 0xFFFFFFFF;
 	ret = trusty_std_call32(pdev->dev.parent,
-			MTEE_SMCNR(MT_SMCF_SC_SAPU_DRAM_FB,
-			pdev->dev.parent),
-			0, higher_32_iova, lower_32_iova);
+				MTEE_SMCNR(MT_SMCF_SC_SAPU_DRAM_FB,
+					   pdev->dev.parent),
+				0, higher_32_iova, lower_32_iova);
 
 	if (ret) {
-		pr_info("[%s]dram callback unregister fail(0x%x)\n",
-			__func__, ret);
+		pr_info("[%s]dram callback unregister fail(0x%x)\n", __func__,
+			ret);
 		return -EPERM;
 	}
-	pr_info("[%s]dram callback unregister success(0x%x)\n",
-			__func__, ret);
+	pr_info("[%s]dram callback unregister success(0x%x)\n", __func__, ret);
 
 	dma_buf_detach(sapu->dram_fb_info.dram_fb_dmabuf,
-		sapu->dram_fb_info.dram_fb_attach);
+		       sapu->dram_fb_info.dram_fb_attach);
 	dma_heap_buffer_free(sapu->dram_fb_info.dram_fb_dmabuf);
 
 	sapu->dram_fb_info.dram_fb_attach = NULL;
@@ -331,9 +348,8 @@ static int apusys_sapu_release(struct inode *inode, struct file *filep)
 	return ret;
 }
 
-static ssize_t
-apusys_sapu_read(struct file *filep, char __user *buf, size_t count,
-					   loff_t *pos)
+static ssize_t apusys_sapu_read(struct file *filep, char __user *buf,
+				size_t count, loff_t *pos)
 {
 	return 0;
 }
@@ -375,11 +391,11 @@ static int apusys_sapu_probe(struct platform_device *pdev)
 	platform_set_drvdata(pdev, sapu);
 	sapu->pdev = pdev;
 
-	sapu->mdev.minor  = MISC_DYNAMIC_MINOR;
-	sapu->mdev.name   = "apusys_sapu";
-	sapu->mdev.fops   = &apusys_sapu_fops;
+	sapu->mdev.minor = MISC_DYNAMIC_MINOR;
+	sapu->mdev.name = "apusys_sapu";
+	sapu->mdev.fops = &apusys_sapu_fops;
 	sapu->mdev.parent = NULL;
-	sapu->mdev.mode   = 0x0660;
+	sapu->mdev.mode = 0x0660;
 
 	kref_init(&sapu->lock_ref_cnt); // ref_count == 1
 
@@ -398,8 +414,8 @@ static int apusys_sapu_probe(struct platform_device *pdev)
 	sapu->dram_register = false;
 
 	/* Get platdata from dts match */
-	sapu->platdata = (struct sapu_platdata *)
-			 of_device_get_match_data(&pdev->dev);
+	sapu->platdata =
+		(struct sapu_platdata *)of_device_get_match_data(&pdev->dev);
 	if (!sapu->platdata) {
 		pr_info("error: %s - NULL sapu platdata\n", __func__);
 		return -EINVAL;
@@ -408,7 +424,8 @@ static int apusys_sapu_probe(struct platform_device *pdev)
 	/* runtime set platdata by dts*/
 	ret = set_sapu_platdata_by_dts();
 	if (ret) {
-		pr_info("error: %s - set_sapu_platdata_by_dts failed\n", __func__);
+		pr_info("error: %s - set_sapu_platdata_by_dts failed\n",
+			__func__);
 		return ret;
 	}
 
@@ -434,8 +451,7 @@ static int apusys_sapu_remove(struct platform_device *pdev)
 
 static int sapu_lock_rpmsg_probe(struct rpmsg_device *rpdev)
 {
-	pr_info("%s: name=%s, src=%d\n",
-			__func__, rpdev->id.name, rpdev->src);
+	pr_info("%s: name=%s, src=%d\n", __func__, rpdev->id.name, rpdev->src);
 
 	sapu_lock_rpm_dev.ept = rpdev->ept;
 	sapu_lock_rpm_dev.rpdev = rpdev;
@@ -445,8 +461,8 @@ static int sapu_lock_rpmsg_probe(struct rpmsg_device *rpdev)
 	return 0;
 }
 
-static int sapu_lock_rpmsg_cb(struct rpmsg_device *rpdev, void *data,
-		int len, void *priv, u32 src)
+static int sapu_lock_rpmsg_cb(struct rpmsg_device *rpdev, void *data, int len,
+			      void *priv, u32 src)
 {
 	struct sapu_power_ctrl *d = data;
 
@@ -463,8 +479,8 @@ static void sapu_lock_rpmsg_remove(struct rpmsg_device *rpdev)
 
 #define MODULE_NAME "apusys_sapu"
 static const struct of_device_id apusys_sapu_of_match[] = {
-	{ .compatible = "mediatek,trusty-sapu", .data = &sapu_platdata},
-	{ /* end of list */},
+	{ .compatible = "mediatek,trusty-sapu", .data = &sapu_platdata },
+	{ /* end of list */ },
 };
 MODULE_DEVICE_TABLE(of, apusys_sapu_of_match);
 
@@ -479,7 +495,9 @@ struct platform_driver apusys_sapu_driver = {
 };
 
 static const struct of_device_id sapu_lock_rpmsg_of_match[] = {
-	{ .compatible = "mediatek,apu-lock-rv-rpmsg", },
+	{
+		.compatible = "mediatek,apu-lock-rv-rpmsg",
+	},
 	{},
 };
 
@@ -504,8 +522,7 @@ static int sapu_rpm_lock_init(void)
 	pr_info("%s: register rpmsg...\n", __func__);
 	ret = register_rpmsg_driver(&sapu_lock_rpmsg_driver);
 	if (ret) {
-		pr_info("(%d)failed to register sapu lock rpmsg driver\n",
-			ret);
+		pr_info("(%d)failed to register sapu lock rpmsg driver\n", ret);
 		mutex_destroy(&sapu_lock_rpm_mtx);
 		goto error;
 	}
@@ -526,16 +543,15 @@ static int __init sapu_init(void)
 	ret = platform_driver_register(&apusys_sapu_driver);
 
 	if (ret) {
-		pr_info("[%s] %s register fail\n",
-			__func__, "apusys_sapu_driver");
+		pr_info("[%s] %s register fail\n", __func__,
+			"apusys_sapu_driver");
 		goto sapu_driver_quit;
 	}
 
 	ret = sapu_rpm_lock_init();
 
 	if (ret) {
-		pr_info("[%s] %s register fail\n",
-			__func__,
+		pr_info("[%s] %s register fail\n", __func__,
 			"sapu_lock_rpmsg_driver");
 		goto sapu_rpmsg_quit;
 	}

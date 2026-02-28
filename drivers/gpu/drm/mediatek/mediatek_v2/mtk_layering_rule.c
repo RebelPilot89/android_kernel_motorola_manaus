@@ -38,12 +38,12 @@ static struct drm_mtk_layer_config *g_input_config;
 
 static int emi_bound_table[HRT_BOUND_NUM][HRT_LEVEL_NUM] = {
 	/* HRT_BOUND_TYPE_LP4 */
-	{100, 300, 500, 600},
+	{ 100, 300, 500, 600 },
 };
 
 static int larb_bound_table[HRT_BOUND_NUM][HRT_LEVEL_NUM] = {
 	/* HRT_BOUND_TYPE_LP4 */
-	{100, 300, 500, 600},
+	{ 100, 300, 500, 600 },
 };
 
 /**
@@ -51,45 +51,41 @@ static int larb_bound_table[HRT_BOUND_NUM][HRT_LEVEL_NUM] = {
  * primary and secondary display.Each table has 16 elements which
  * represent the layer mapping rule by the number of input layers.
  */
-static uint16_t layer_mapping_table[HRT_TB_NUM] = {
-	0x0003, 0x007E, 0x007A, 0x0001
-};
-static uint16_t layer_mapping_table_vds_switch[HRT_TB_NUM] = {
-	0x0078, 0x0078, 0x0078, 0x0078
-};
+static uint16_t layer_mapping_table[HRT_TB_NUM] = { 0x0003, 0x007E, 0x007A,
+						    0x0001 };
+static uint16_t layer_mapping_table_vds_switch[HRT_TB_NUM] = { 0x0078, 0x0078,
+							       0x0078, 0x0078 };
 
 /**
  * The larb mapping table represent the relation between LARB and OVL.
  */
-static uint16_t larb_mapping_table[HRT_TB_NUM] = {
-	0x0001, 0x0010, 0x0010, 0x0001
-};
-static uint16_t larb_mapping_tb_vds_switch[HRT_TB_NUM] = {
-	0x0010, 0x0010, 0x0010, 0x0001
-};
+static uint16_t larb_mapping_table[HRT_TB_NUM] = { 0x0001, 0x0010, 0x0010,
+						   0x0001 };
+static uint16_t larb_mapping_tb_vds_switch[HRT_TB_NUM] = { 0x0010, 0x0010,
+							   0x0010, 0x0001 };
 
 /**
  * The OVL mapping table is used to get the OVL index of correcponding layer.
  * The bit value 1 means the position of the last layer in OVL engine.
  */
-static uint16_t ovl_mapping_table[HRT_TB_NUM] = {
-	0x0002, 0x0045, 0x0045, 0x0001
-};
-static uint16_t ovl_mapping_tb_vds_switch[HRT_TB_NUM] = {
-	0x0045, 0x0045, 0x0045, 0x0045
-};
+static uint16_t ovl_mapping_table[HRT_TB_NUM] = { 0x0002, 0x0045, 0x0045,
+						  0x0001 };
+static uint16_t ovl_mapping_tb_vds_switch[HRT_TB_NUM] = { 0x0045, 0x0045,
+							  0x0045, 0x0045 };
 
 #define GET_SYS_STATE(sys_state)                                               \
 	((l_rule_info.hrt_sys_state >> sys_state) & 0x1)
 
 static void layering_rule_scenario_decision(struct drm_device *dev,
-	unsigned int scn_decision_flag, unsigned int scale_num)
+					    unsigned int scn_decision_flag,
+					    unsigned int scale_num)
 {
 /*TODO: need MMP support*/
 #ifdef IF_ZERO
 	mmprofile_log_ex(ddp_mmp_get_events()->hrt, MMPROFILE_FLAG_START,
-			 l_rule_info.addon_scn[0], l_rule_info.layer_tb_idx |
-			 (l_rule_info.bound_tb_idx << 16));
+			 l_rule_info.addon_scn[0],
+			 l_rule_info.layer_tb_idx |
+				 (l_rule_info.bound_tb_idx << 16));
 #endif
 	l_rule_info.primary_fps = 60;
 	l_rule_info.bound_tb_idx = HRT_BOUND_TYPE_LP4;
@@ -98,8 +94,8 @@ static void layering_rule_scenario_decision(struct drm_device *dev,
 		l_rule_info.addon_scn[HRT_PRIMARY] = MML_SRAM_ONLY;
 	} else if (scn_decision_flag & SCN_MML) {
 		l_rule_info.addon_scn[HRT_PRIMARY] = MML;
-		DDPMSG("%s:%d + addon_scn:%d\n",
-			__func__, __LINE__, l_rule_info.addon_scn[HRT_PRIMARY]);
+		DDPMSG("%s:%d + addon_scn:%d\n", __func__, __LINE__,
+		       l_rule_info.addon_scn[HRT_PRIMARY]);
 	} else if (scn_decision_flag & SCN_NEED_GAME_PQ)
 		l_rule_info.addon_scn[HRT_PRIMARY] = GAME_PQ;
 	else if (scn_decision_flag & SCN_NEED_VP_PQ)
@@ -121,8 +117,9 @@ static void layering_rule_scenario_decision(struct drm_device *dev,
 /*TODO: need MMP support*/
 #ifdef IF_ZERO
 	mmprofile_log_ex(ddp_mmp_get_events()->hrt, MMPROFILE_FLAG_END,
-			 l_rule_info.addon_scn[0], l_rule_info.layer_tb_idx |
-			 (l_rule_info.bound_tb_idx << 16));
+			 l_rule_info.addon_scn[0],
+			 l_rule_info.layer_tb_idx |
+				 (l_rule_info.bound_tb_idx << 16));
 #endif
 }
 
@@ -135,7 +132,7 @@ static void filter_by_yuv_layers(struct drm_mtk_layering_info *disp_info)
 	unsigned int yuv_layer_gpu[MAX_PHY_OVL_CNT];
 	int yuv_layer_ovl = -1;
 
-	for (disp_idx = 0 ; disp_idx < HRT_DISP_TYPE_NUM ; disp_idx++) {
+	for (disp_idx = 0; disp_idx < HRT_DISP_TYPE_NUM; disp_idx++) {
 		yuv_layer_ovl = -1;
 		yuv_gpu_cnt = 0;
 
@@ -146,14 +143,14 @@ static void filter_by_yuv_layers(struct drm_mtk_layering_info *disp_info)
 				continue;
 
 			if (mtk_is_yuv(info->src_fmt)) {
-				if (info->secure == 1 &&
-				    yuv_layer_ovl < 0) {
+				if (info->secure == 1 && yuv_layer_ovl < 0) {
 					yuv_layer_ovl = i;
 				} else if (yuv_gpu_cnt < MAX_PHY_OVL_CNT) {
 					yuv_layer_gpu[yuv_gpu_cnt] = i;
 					yuv_gpu_cnt++;
 				} else {
-					DDPPR_ERR("%s: yuv_gpu_cnt %d over MAX_PHY_OVL_CNT\n",
+					DDPPR_ERR(
+						"%s: yuv_gpu_cnt %d over MAX_PHY_OVL_CNT\n",
 						__func__, yuv_gpu_cnt);
 					return;
 				}
@@ -166,15 +163,15 @@ static void filter_by_yuv_layers(struct drm_mtk_layering_info *disp_info)
 		if (yuv_layer_ovl >= 0) {
 			//if have sec layer, rollback the others to gpu
 			for (i = 0; i < yuv_gpu_cnt; i++)
-				mtk_rollback_layer_to_GPU(disp_info,
-					disp_idx, yuv_layer_gpu[i]);
+				mtk_rollback_layer_to_GPU(disp_info, disp_idx,
+							  yuv_layer_gpu[i]);
 		} else {
 			/* keep the 1st normal yuv layer,
 			 * rollback the others to gpu
 			 */
 			for (i = 1; i < yuv_gpu_cnt; i++)
-				mtk_rollback_layer_to_GPU(disp_info,
-					disp_idx, yuv_layer_gpu[i]);
+				mtk_rollback_layer_to_GPU(disp_info, disp_idx,
+							  yuv_layer_gpu[i]);
 		}
 	}
 }
@@ -270,15 +267,15 @@ static bool can_be_compress(struct drm_device *dev, uint32_t format)
 {
 	struct mtk_drm_private *priv = dev->dev_private;
 
-	if (mtk_is_yuv(format) || (format == DRM_FORMAT_RGB565 &&
-			!priv->data->can_compress_rgb565))
-			return 0;
+	if (mtk_is_yuv(format) ||
+	    (format == DRM_FORMAT_RGB565 && !priv->data->can_compress_rgb565))
+		return 0;
 
 	return 1;
 }
 
 static void filter_by_fbdc(struct drm_device *dev,
-			struct drm_mtk_layering_info *disp_info)
+			   struct drm_mtk_layering_info *disp_info)
 {
 	unsigned int i, j;
 	struct drm_mtk_layer_config *c;
@@ -300,8 +297,7 @@ static void filter_by_fbdc(struct drm_device *dev,
 		for (j = 0; j < disp_info->layer_num[i]; j++) {
 			c = &(disp_info->input_config[i][j]);
 
-			if (!c->compress ||
-				mtk_is_gles_layer(disp_info, i, j))
+			if (!c->compress || mtk_is_gles_layer(disp_info, i, j))
 				continue;
 
 			/* if the layer is already gles layer,
@@ -332,7 +328,8 @@ static uint16_t get_mapping_table(struct drm_device *dev, int disp_idx,
 static int layering_get_valid_hrt(struct drm_crtc *crtc, int mode_idx);
 
 static void copy_hrt_bound_table(struct drm_mtk_layering_info *disp_info,
-			int is_larb, int *hrt_table, struct drm_device *dev)
+				 int is_larb, int *hrt_table,
+				 struct drm_device *dev)
 {
 	int valid_num, ovl_bound, i;
 	struct drm_crtc *crtc;
@@ -341,7 +338,7 @@ static void copy_hrt_bound_table(struct drm_mtk_layering_info *disp_info,
 	if (is_larb)
 		return;
 
-	drm_for_each_crtc(crtc, dev) {
+	drm_for_each_crtc (crtc, dev) {
 		if (drm_crtc_index(crtc) == 0)
 			break;
 	}
@@ -386,12 +383,11 @@ static uint16_t get_mapping_table(struct drm_device *dev, int disp_idx,
 	const struct mtk_addon_scenario_data *addon_data = NULL;
 	struct mtk_drm_private *priv = dev->dev_private;
 
-	drm_for_each_crtc(crtc, dev) {
+	drm_for_each_crtc (crtc, dev) {
 		if (drm_crtc_index(crtc) == disp_idx) {
-			addon_data =
-				mtk_addon_get_scenario_data(__func__,
-					crtc,
-					l_rule_info.addon_scn[disp_idx]);
+			addon_data = mtk_addon_get_scenario_data(
+				__func__, crtc,
+				l_rule_info.addon_scn[disp_idx]);
 			break;
 		}
 	}
@@ -405,25 +401,26 @@ static uint16_t get_mapping_table(struct drm_device *dev, int disp_idx,
 	case DISP_HW_OVL_TB:
 		map = ovl_mapping_table[addon_data->hrt_type];
 		if (mtk_drm_helper_get_opt(priv->helper_opt,
-			MTK_DRM_OPT_VDS_PATH_SWITCH) &&
-			priv->need_vds_path_switch)
+					   MTK_DRM_OPT_VDS_PATH_SWITCH) &&
+		    priv->need_vds_path_switch)
 			map = ovl_mapping_tb_vds_switch[addon_data->hrt_type];
 		break;
 	case DISP_HW_LARB_TB:
 		map = larb_mapping_table[addon_data->hrt_type];
 		if (mtk_drm_helper_get_opt(priv->helper_opt,
-			MTK_DRM_OPT_VDS_PATH_SWITCH) &&
-			priv->need_vds_path_switch)
+					   MTK_DRM_OPT_VDS_PATH_SWITCH) &&
+		    priv->need_vds_path_switch)
 			map = larb_mapping_tb_vds_switch[addon_data->hrt_type];
 		break;
 	case DISP_HW_LAYER_TB:
 		if (param <= MAX_PHY_OVL_CNT && param >= 0) {
 			tmp_map = layer_mapping_table[addon_data->hrt_type];
-			if (mtk_drm_helper_get_opt(priv->helper_opt,
-				MTK_DRM_OPT_VDS_PATH_SWITCH) &&
-				priv->need_vds_path_switch)
-				tmp_map = layer_mapping_table_vds_switch[
-					addon_data->hrt_type];
+			if (mtk_drm_helper_get_opt(
+				    priv->helper_opt,
+				    MTK_DRM_OPT_VDS_PATH_SWITCH) &&
+			    priv->need_vds_path_switch)
+				tmp_map = layer_mapping_table_vds_switch
+					[addon_data->hrt_type];
 
 			for (i = 0, map = 0; i < 16; i++) {
 				if (cnt == param)
@@ -451,9 +448,9 @@ void mtk_layering_rule_init(struct drm_device *dev)
 	l_rule_info.hrt_idx = 0;
 	mtk_register_layering_rule_ops(&l_rule_ops, &l_rule_info);
 
-	mtk_set_layering_opt(
-		LYE_OPT_RPO,
-		mtk_drm_helper_get_opt(private->helper_opt, MTK_DRM_OPT_RPO));
+	mtk_set_layering_opt(LYE_OPT_RPO,
+			     mtk_drm_helper_get_opt(private->helper_opt,
+						    MTK_DRM_OPT_RPO));
 	mtk_set_layering_opt(LYE_OPT_EXT_LAYER,
 			     mtk_drm_helper_get_opt(private->helper_opt,
 						    MTK_DRM_OPT_OVL_EXT_LAYER));
@@ -484,7 +481,7 @@ static bool _rollback_all_to_GPU_for_idle(struct drm_device *dev)
 }
 
 unsigned long long _layering_get_frame_bw(struct drm_crtc *crtc,
-						struct drm_display_mode *mode)
+					  struct drm_display_mode *mode)
 {
 	static unsigned long long bw_base;
 	static int fps;
@@ -497,7 +494,7 @@ unsigned long long _layering_get_frame_bw(struct drm_crtc *crtc,
 
 		params = mtk_crtc->panel_ext->params;
 		if (params->dyn_fps.switch_en == 1 &&
-			params->dyn_fps.vact_timing_fps != 0)
+		    params->dyn_fps.vact_timing_fps != 0)
 			vact_fps = params->dyn_fps.vact_timing_fps;
 		else
 			vact_fps = drm_mode_vrefresh(mode);
@@ -523,11 +520,10 @@ static int layering_get_valid_hrt(struct drm_crtc *crtc, int mode_idx)
 	unsigned long long tmp = 0;
 	struct mtk_ddp_comp *output_comp;
 	struct mtk_drm_crtc *mtk_crtc = to_mtk_crtc(crtc);
-	struct mtk_drm_private *priv =
-			mtk_crtc->base.dev->dev_private;
+	struct mtk_drm_private *priv = mtk_crtc->base.dev->dev_private;
 
 	if (!mtk_drm_helper_get_opt(priv->helper_opt,
-			MTK_DRM_OPT_MMQOS_SUPPORT))
+				    MTK_DRM_OPT_MMQOS_SUPPORT))
 		return 600;
 
 	dvfs_bw = mtk_mmqos_get_avail_hrt_bw(HRT_DISP);
@@ -543,14 +539,14 @@ static int layering_get_valid_hrt(struct drm_crtc *crtc, int mode_idx)
 	if (!mtk_crtc->res_switch) {
 		if (output_comp)
 			mtk_ddp_comp_io_cmd(output_comp, NULL,
-				GET_FRAME_HRT_BW_BY_DATARATE, &tmp);
+					    GET_FRAME_HRT_BW_BY_DATARATE, &tmp);
 	} else {
 		DDPDBG("%s mode_idx:%d\n", __func__, mode_idx);
 		mtk_crtc->mode_idx = mode_idx;
 		tmp = mode_idx;
 		if (output_comp)
 			mtk_ddp_comp_io_cmd(output_comp, NULL,
-				GET_FRAME_HRT_BW_BY_MODE, &tmp);
+					    GET_FRAME_HRT_BW_BY_MODE, &tmp);
 	}
 	DDP_MUTEX_UNLOCK(&mtk_crtc->lock, __func__, __LINE__);
 
@@ -569,8 +565,7 @@ static int layering_get_valid_hrt(struct drm_crtc *crtc, int mode_idx)
 	}
 
 	DDPINFO("get avail HRT BW:%u : %llu %llu\n",
-		mtk_mmqos_get_avail_hrt_bw(HRT_DISP),
-		dvfs_bw, tmp);
+		mtk_mmqos_get_avail_hrt_bw(HRT_DISP), dvfs_bw, tmp);
 
 	return dvfs_bw;
 }

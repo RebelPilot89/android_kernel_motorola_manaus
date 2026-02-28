@@ -361,18 +361,18 @@ endif
 ccflags-y += \
     -I$(srctree)/include/linux \
     -I$(srctree)/drivers/staging/android \
-    -I$(DEVICE_MODULES_PATH)/drivers/misc/mediatek/trusted_mem/public \
-    -I$(DEVICE_MODULES_PATH)/drivers/dma-buf/heaps \
+    -I$(srctree)/drivers/misc/mediatek/trusted_mem/public \
+    -I$(srctree)/drivers/dma-buf/heaps \
     -I$(KO_CODE_PATH) \
     -I$(KO_CODE_PATH)/platform/$(MALI_PLATFORM_DIR) \
     -I$(KO_CODE_PATH)/../../../base \
     -I$(KO_CODE_PATH)/../../../../include
 ifeq ($(CONFIG_MALI_MTK_SLC_ALL_CACHE_MODE), y)
-ccflags-y += -I$(DEVICE_MODULES_PATH)/drivers/misc/mediatek/slbc
+ccflags-y += -I$(srctree)/drivers/misc/mediatek/slbc
 endif
 
 ifeq ($(CONFIG_MALI_MTK_SLC_DYNAMIC_POLICY_V2), y)
-ccflags-y += -I$(DEVICE_MODULES_PATH)/drivers/gpu/mediatek/gpu_pdma/include
+ccflags-y += -I$(srctree)/drivers/gpu/mediatek/gpu_pdma/include
 endif
 
 subdir-ccflags-y += $(ccflags-y)

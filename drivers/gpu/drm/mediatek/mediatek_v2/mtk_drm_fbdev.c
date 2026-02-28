@@ -45,7 +45,7 @@ unsigned int mtk_drm_fb_fm_auto_test(struct fb_info *info)
 
 	/* this debug cmd only for crtc0 */
 	crtc = list_first_entry(&(drm_dev)->mode_config.crtc_list,
-			typeof(*crtc), head);
+				typeof(*crtc), head);
 	if (!crtc) {
 		DDPPR_ERR("find crtc fail\n");
 		return -1;
@@ -61,15 +61,13 @@ unsigned int mtk_drm_fb_fm_auto_test(struct fb_info *info)
 	}
 
 	private = drm_dev->dev_private;
-	if (mtk_drm_helper_get_opt(private->helper_opt,
-			MTK_DRM_OPT_IDLE_MGR)) {
+	if (mtk_drm_helper_get_opt(private->helper_opt, MTK_DRM_OPT_IDLE_MGR)) {
 		mtk_drm_set_idlemgr(crtc, 0, 0);
 	}
 
 	ret = mtk_crtc_lcm_ATA(crtc);
 
-	if (mtk_drm_helper_get_opt(private->helper_opt,
-			MTK_DRM_OPT_IDLE_MGR))
+	if (mtk_drm_helper_get_opt(private->helper_opt, MTK_DRM_OPT_IDLE_MGR))
 		mtk_drm_set_idlemgr(crtc, 1, 0);
 
 	DDP_MUTEX_UNLOCK(&mtk_crtc->lock, __func__, __LINE__);
@@ -83,29 +81,28 @@ unsigned int mtk_drm_fb_fm_auto_test(struct fb_info *info)
 }
 
 static int mtk_drm_fb_ioctl(struct fb_info *info, unsigned int cmd,
-		       unsigned long arg)
+			    unsigned long arg)
 {
 	switch (cmd) {
-	case MTKFB_FACTORY_AUTO_TEST:
-	{
+	case MTKFB_FACTORY_AUTO_TEST: {
 		unsigned int result = 0;
 		void __user *argp = (void __user *)arg;
 
 		DDPMSG("factory mode: lcm auto test\n");
 		result = mtk_drm_fb_fm_auto_test(info);
-		return copy_to_user(argp, &result, sizeof(result)) ?
-					-EFAULT : 0;
+		return copy_to_user(argp, &result, sizeof(result)) ? -EFAULT :
+								     0;
 	}
 	default:
 		DDPINFO("%s: Not support:info=0x%p, cmd=0x%08x, arg=0x%08lx\n",
-			     __func__, info, (unsigned int)cmd, arg);
+			__func__, info, (unsigned int)cmd, arg);
 		break;
 	}
 	return 0;
 }
 
 static int mtk_drm_fb_pan_display(struct fb_var_screeninfo *var,
-			      struct fb_info *info)
+				  struct fb_info *info)
 {
 	struct drm_fb_helper *fb_helper = info->par;
 	struct drm_device *drm_dev = fb_helper->dev;
@@ -117,7 +114,7 @@ static int mtk_drm_fb_pan_display(struct fb_var_screeninfo *var,
 	ret = drm_fb_helper_pan_display(var, info);
 
 	crtc = list_first_entry(&(drm_dev)->mode_config.crtc_list,
-			typeof(*crtc), head);
+				typeof(*crtc), head);
 
 	if (!crtc) {
 		DDPPR_ERR("find crtc fail\n");
@@ -127,14 +124,14 @@ static int mtk_drm_fb_pan_display(struct fb_var_screeninfo *var,
 	DDP_MUTEX_LOCK(&mtk_crtc->lock, __func__, __LINE__);
 
 	mtk_crtc_pkt_create(&cmdq_handle, &mtk_crtc->base,
-			mtk_crtc->gce_obj.client[CLIENT_CFG]);
+			    mtk_crtc->gce_obj.client[CLIENT_CFG]);
 
 	if (mtk_crtc_with_sub_path(crtc, mtk_crtc->ddp_mode))
-		mtk_crtc_wait_frame_done(mtk_crtc, cmdq_handle,
-			DDP_SECOND_PATH, 0);
+		mtk_crtc_wait_frame_done(mtk_crtc, cmdq_handle, DDP_SECOND_PATH,
+					 0);
 	else
-		mtk_crtc_wait_frame_done(mtk_crtc, cmdq_handle,
-			DDP_FIRST_PATH, 0);
+		mtk_crtc_wait_frame_done(mtk_crtc, cmdq_handle, DDP_FIRST_PATH,
+					 0);
 
 	cmdq_pkt_flush(cmdq_handle);
 	cmdq_pkt_destroy(cmdq_handle);
@@ -149,9 +146,8 @@ static int mtk_drm_fb_pan_display(struct fb_var_screeninfo *var,
 void disp_get_fb_address(unsigned long *fbVirAddr)
 {
 	*fbVirAddr = (unsigned long)debug_info->screen_base;
-	DDPMSG(
-		  "%s fbdev->fb_va_base = 0x%p\n",
-		  __func__, debug_info->screen_base);
+	DDPMSG("%s fbdev->fb_va_base = 0x%p\n", __func__,
+	       debug_info->screen_base);
 }
 
 int pan_display_test(int frame_num, int bpp)
@@ -177,8 +173,8 @@ int pan_display_test(int frame_num, int bpp)
 	h = debug_info->var.yres;
 	fb_h = fb_size / (ALIGN_TO(w, 32) * Bpp) - 10;
 
-	DDPMSG("%s: frame_num=%d,bpp=%d, w=%d,h=%d,fb_h=%d\n",
-		__func__, frame_num, bpp, w, h, fb_h);
+	DDPMSG("%s: frame_num=%d,bpp=%d, w=%d,h=%d,fb_h=%d\n", __func__,
+	       frame_num, bpp, w, h, fb_h);
 
 	for (i = 0; i < fb_h; i++)
 		for (j = 0; j < w; j++) {
@@ -196,7 +192,6 @@ int pan_display_test(int frame_num, int bpp)
 	yoffset_max = fb_h - h;
 	yoffset = 0;
 	for (i = 0; i < frame_num; i++, yoffset += 10) {
-
 		if (yoffset >= yoffset_max)
 			yoffset = 0;
 
@@ -208,7 +203,6 @@ int pan_display_test(int frame_num, int bpp)
 	DDPMSG("%s, %d--\n", __func__, __LINE__);
 	return 0;
 }
-
 
 #define MTK_LEGACY_FB_MAP
 #ifndef MTK_LEGACY_FB_MAP
@@ -275,7 +269,7 @@ static int mtk_fbdev_probe(struct drm_fb_helper *helper,
 			   struct drm_fb_helper_surface_size *sizes)
 {
 	struct drm_device *dev = helper->dev;
-	struct drm_mode_fb_cmd2 mode = {0};
+	struct drm_mode_fb_cmd2 mode = { 0 };
 	struct mtk_drm_gem_obj *mtk_gem;
 	struct fb_info *info;
 	struct drm_framebuffer *fb;
@@ -292,8 +286,8 @@ static int mtk_fbdev_probe(struct drm_fb_helper *helper,
 	if (_parse_tag_videolfb(&vramsize, &fb_base, &fps) < 0) {
 		DDPINFO("[DT][videolfb] fb_base   = 0x%lx\n",
 			(unsigned long)fb_base);
-		DDPINFO("[DT][videolfb] vram	  = 0x%x (%d)\n",
-			vramsize, vramsize);
+		DDPINFO("[DT][videolfb] vram	  = 0x%x (%d)\n", vramsize,
+			vramsize);
 		DDPINFO("[DT][videolfb] fps	    = %d\n", fps);
 
 		mode.width = sizes->surface_width;
@@ -346,12 +340,12 @@ static int mtk_fbdev_probe(struct drm_fb_helper *helper,
 	debug_info = info;
 
 #if !defined(CONFIG_DRM_MTK_DISABLE_AEE_LAYER)
-	mtk_drm_assert_fb_init(dev,
-			       sizes->surface_width, sizes->surface_height);
+	mtk_drm_assert_fb_init(dev, sizes->surface_width,
+			       sizes->surface_height);
 #endif
 
-	DRM_DEBUG_KMS("FB [%ux%u]-%u size=%zd\n", fb->width,
-		      fb->height, fb->format->depth, size);
+	DRM_DEBUG_KMS("FB [%ux%u]-%u size=%zd\n", fb->width, fb->height,
+		      fb->format->depth, size);
 
 	info->skip_vt_switch = true;
 
@@ -369,7 +363,7 @@ static const struct drm_fb_helper_funcs mtk_drm_fb_helper_funcs = {
 };
 
 static int mtk_drm_fb_add_one_connector(struct drm_device *dev,
-	struct drm_fb_helper *helper)
+					struct drm_fb_helper *helper)
 {
 	struct drm_connector *connector;
 	struct drm_connector_list_iter conn_iter;
@@ -378,13 +372,12 @@ static int mtk_drm_fb_add_one_connector(struct drm_device *dev,
 	int ret = 0;
 
 	drm_connector_list_iter_begin(dev, &conn_iter);
-	drm_for_each_connector_iter(connector, &conn_iter) {
+	drm_for_each_connector_iter (connector, &conn_iter) {
 		helper_private = connector->helper_private;
 		if (helper_private->best_encoder)
 			encoder = helper_private->best_encoder(connector);
 		else {
-			encoder = drm_encoder_find(connector->dev, NULL,
-				0);
+			encoder = drm_encoder_find(connector->dev, NULL, 0);
 		}
 		if (encoder && (encoder->possible_crtcs & 0x1)) {
 			//ret = drm_fb_helper_add_one_connector(
@@ -440,7 +433,7 @@ int mtk_fbdev_init(struct drm_device *dev)
 
 fini:
 	drm_fb_helper_fini(helper);
-	err_free:
+err_free:
 	kfree(fbdev);
 
 	return ret;

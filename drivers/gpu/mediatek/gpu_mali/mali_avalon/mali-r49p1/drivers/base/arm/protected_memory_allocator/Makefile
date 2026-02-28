@@ -45,17 +45,17 @@ CONFIG_MALI_MTK_GPU_PMA_PAGE_HEAP_2MB ?= n
 
 ifeq ($(CONFIG_MALI_MTK_GPU_IOMMU), y)
 ccflags-y += -DCONFIG_MALI_MTK_GPU_IOMMU
-ccflags-y += -I$(DEVICE_MODULES_PATH)/drivers/gpu/mediatek/gpufreq
+ccflags-y += -I$(srctree)/drivers/gpu/mediatek/gpufreq
 ifeq ($(CONFIG_MALI_MTK_GHPM_STAGE1_ENABLE), y)
 ccflags-y += -DCONFIG_MALI_MTK_GHPM_STAGE1_ENABLE
-ccflags-y += -I$(DEVICE_MODULES_PATH)/drivers/gpu/mediatek/gpueb/include
+ccflags-y += -I$(srctree)/drivers/gpu/mediatek/gpueb/include
 endif
 endif
 
 ifeq ($(CONFIG_MALI_MTK_GPU_PMA_PAGE_HEAP), y)
 ccflags-y += -DCONFIG_MALI_MTK_GPU_PMA_PAGE_HEAP
-ccflags-y += -I$(DEVICE_MODULES_PATH)/drivers/misc/mediatek/trusted_mem/public \
-             -I$(DEVICE_MODULES_PATH)/drivers/dma-buf/heaps \
+ccflags-y += -I$(srctree)/drivers/misc/mediatek/trusted_mem/public \
+             -I$(srctree)/drivers/dma-buf/heaps \
              -Wno-unused-function -Wno-unused-variable
 endif
 

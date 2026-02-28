@@ -64,7 +64,7 @@ struct mtk_mmsys_driver_data {
 	bool shadow_register;
 	const struct mtk_session_mode_tb *mode_tb;
 	void (*sodi_config)(struct drm_device *drm, enum mtk_ddp_comp_id id,
-			struct cmdq_pkt *handle, void *data);
+			    struct cmdq_pkt *handle, void *data);
 	const struct mtk_fake_eng_data *fake_eng_data;
 	bool bypass_infra_ddr_control;
 	bool has_smi_limitation;
@@ -135,7 +135,7 @@ struct mtk_drm_private {
 
 	struct list_head lyeblob_head;
 	struct mutex lyeblob_list_mutex;
-	struct task_struct *fence_release_thread[MAX_CRTC-1];
+	struct task_struct *fence_release_thread[MAX_CRTC - 1];
 
 	/* variable for repaint */
 	struct {
@@ -196,7 +196,7 @@ struct repaint_job_t {
 	unsigned int type;
 };
 
-#define LCM_FPS_ARRAY_SIZE  32
+#define LCM_FPS_ARRAY_SIZE 32
 struct lcm_fps_ctx_t {
 	atomic_t is_inited;
 	spinlock_t lock;
@@ -225,14 +225,16 @@ struct tag_videolfb {
 };
 
 struct mtk_drm_disp_sec_cb {
-	int (*cb)(int value, struct cmdq_pkt *handle, resource_size_t dummy_larb);
+	int (*cb)(int value, struct cmdq_pkt *handle,
+		  resource_size_t dummy_larb);
 };
 
 struct mtk_drm_disp_mtee_cb {
 	struct drm_device *dev;
 	int (*cb)(int value, int fd, struct mtk_drm_gem_obj *mtk_gem_obj,
-	struct cmdq_pkt *handle, struct mtk_ddp_comp *comp, u32 crtc_id,
-	u32 regs_addr, u32 lye_addr, u32 offset, u32 size);
+		  struct cmdq_pkt *handle, struct mtk_ddp_comp *comp,
+		  u32 crtc_id, u32 regs_addr, u32 lye_addr, u32 offset,
+		  u32 size);
 };
 
 enum DISP_SEC_SIGNAL {
@@ -244,35 +246,35 @@ enum DISP_SEC_SIGNAL {
 };
 
 static const struct mtk_addon_module_data addon_rsz_data[] = {
-	{DISP_RSZ, ADDON_BETWEEN, DDP_COMPONENT_OVL0_2L},
+	{ DISP_RSZ, ADDON_BETWEEN, DDP_COMPONENT_OVL0_2L },
 };
 
 static const struct mtk_addon_module_data addon_rsz_data_v2[] = {
-	{DISP_RSZ_v2, ADDON_BETWEEN, DDP_COMPONENT_OVL0_2L},
+	{ DISP_RSZ_v2, ADDON_BETWEEN, DDP_COMPONENT_OVL0_2L },
 };
 
 static const struct mtk_addon_module_data addon_rsz_data_v3[] = {
-	{DISP_RSZ_v3, ADDON_BETWEEN, DDP_COMPONENT_OVL1_2L},
+	{ DISP_RSZ_v3, ADDON_BETWEEN, DDP_COMPONENT_OVL1_2L },
 };
 
 static const struct mtk_addon_module_data addon_rsz_data_v4[] = {
-	{DISP_RSZ_v4, ADDON_BETWEEN, DDP_COMPONENT_OVL2_2L},
+	{ DISP_RSZ_v4, ADDON_BETWEEN, DDP_COMPONENT_OVL2_2L },
 };
 
 static const struct mtk_addon_module_data addon_rsz_data_v5[] = {
-	{DISP_RSZ_v5, ADDON_BETWEEN, DDP_COMPONENT_OVL1_2L},
+	{ DISP_RSZ_v5, ADDON_BETWEEN, DDP_COMPONENT_OVL1_2L },
 };
 
 static const struct mtk_addon_module_data addon_rsz_data_v6[] = {
-	{DISP_RSZ_v6, ADDON_BETWEEN, DDP_COMPONENT_OVL3_2L},
+	{ DISP_RSZ_v6, ADDON_BETWEEN, DDP_COMPONENT_OVL3_2L },
 };
 
 static const struct mtk_addon_module_data addon_wdma0_data[] = {
-	{DISP_WDMA0, ADDON_AFTER, DDP_COMPONENT_DITHER0},
+	{ DISP_WDMA0, ADDON_AFTER, DDP_COMPONENT_DITHER0 },
 };
 
 static const struct mtk_addon_module_data addon_wdma1_data[] = {
-	{DISP_WDMA1, ADDON_AFTER, DDP_COMPONENT_DITHER1},
+	{ DISP_WDMA1, ADDON_AFTER, DDP_COMPONENT_DITHER1 },
 };
 
 struct disp_iommu_device *disp_get_iommu_dev(void);
@@ -331,18 +333,18 @@ bool mtk_drm_top_clk_isr_get(char *master);
 void mtk_drm_top_clk_isr_put(char *master);
 int lcm_fps_ctx_init(struct drm_crtc *crtc);
 int lcm_fps_ctx_reset(struct drm_crtc *crtc);
-int lcm_fps_ctx_update(unsigned long long cur_ns,
-		unsigned int crtc_id, unsigned int mode);
+int lcm_fps_ctx_update(unsigned long long cur_ns, unsigned int crtc_id,
+		       unsigned int mode);
 int mtk_mipi_clk_change(struct drm_crtc *crtc, unsigned int data_rate);
 bool mtk_drm_lcm_is_connect(void);
-size_t mtk_gce_get_dummy_table(unsigned int mmsys_id, struct dummy_mapping **table);
-
+size_t mtk_gce_get_dummy_table(unsigned int mmsys_id,
+			       struct dummy_mapping **table);
 
 int _parse_tag_videolfb(unsigned int *vramsize, phys_addr_t *fb_base,
-	unsigned int *fps);
+			unsigned int *fps);
 int free_fb_buf(void);
 struct mml_drm_ctx *mtk_drm_get_mml_drm_ctx(struct drm_device *dev,
-	struct drm_crtc *crtc);
+					    struct drm_crtc *crtc);
 void mtk_drm_wait_mml_submit_done(struct mtk_mml_cb_para *cb_para);
 void **mtk_aod_scp_ipi_init(void);
 void mtk_free_mml_submit(struct mml_submit *temp);
