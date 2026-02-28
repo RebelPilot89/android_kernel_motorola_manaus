@@ -380,6 +380,8 @@
 //#include <k6879v1_64/cust.dtsi>
 
 &i2c6 {
+	#address-cells = <1>;
+	#size-cells = <0>;
 	spk: speaker_amp@5c {
 		compatible = "richtek,rt5512";
 		#sound-dai-cells = <0>;
@@ -651,6 +653,8 @@
 
 &i2c7 {
 	status = "okay";
+	#address-cells = <1>;
+	#size-cells = <0>;
 
 	sx937x:sx937x@2c {
 		compatible = "Semtech,sx937x";

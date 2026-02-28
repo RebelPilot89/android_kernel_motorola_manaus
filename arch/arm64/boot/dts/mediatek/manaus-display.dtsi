@@ -137,7 +137,7 @@
 		lhbm-enable;
 		port {
 			panel_in2: endpoint {
-				remote-endpoint = <&dsi_out>;
+				remote-endpoint = <&dsi_out2>;
 			};
 		};
 	};
@@ -159,7 +159,7 @@
 		lhbm-enable;
 		port {
 			panel_in3: endpoint {
-				remote-endpoint = <&dsi_out>;
+				remote-endpoint = <&dsi_out3>;
 			};
 		};
 	};
@@ -180,7 +180,21 @@
 		lhbm-enable;
 		port {
 			panel_in4: endpoint {
-				remote-endpoint = <&dsi_out>;
+				remote-endpoint = <&dsi_out4>;
+			};
+		};
+	};
+
+	ports {
+		port {
+			dsi_out2: endpoint@1 {
+				remote-endpoint = <&panel_in2>;
+			};
+			dsi_out3: endpoint@2 {
+				remote-endpoint = <&panel_in3>;
+			};
+			dsi_out4: endpoint@3 {
+				remote-endpoint = <&panel_in4>;
 			};
 		};
 	};

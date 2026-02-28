@@ -43,6 +43,8 @@
 		compatible = "mediatek,aw36518";
 		reg = <0x63>;
 		#cooling-cells = <2>;
+		#address-cells = <1>;
+		#size-cells = <0>;
 		status = "okay";
 		flash@0{
 			reg = <0>;
