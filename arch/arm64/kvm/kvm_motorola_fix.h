@@ -210,34 +210,34 @@
 #define ICH_HCR_EOIcount_SHIFT 27
 #endif
 #ifndef ICH_LR_STATE
-#define ICH_LR_STATE (3ULL << 28)
+#define ICH_LR_STATE (3ULL << 62)
 #endif
 #ifndef ICH_LR_PENDING_BIT
-#define ICH_LR_PENDING_BIT (1ULL << 28)
+#define ICH_LR_PENDING_BIT (1ULL << 62)
 #endif
 #ifndef ICH_LR_ACTIVE_BIT
-#define ICH_LR_ACTIVE_BIT (1ULL << 29)
+#define ICH_LR_ACTIVE_BIT (1ULL << 63)
 #endif
 #ifndef ICH_LR_GROUP
-#define ICH_LR_GROUP (1ULL << 30)
+#define ICH_LR_GROUP (1ULL << 60)
 #endif
 #ifndef ICH_LR_HW
-#define ICH_LR_HW (1ULL << 31)
+#define ICH_LR_HW (1ULL << 61)
 #endif
 #ifndef ICH_LR_EOI
-#define ICH_LR_EOI (1ULL << 19)
+#define ICH_LR_EOI (1ULL << 41)
 #endif
 #ifndef ICH_LR_VIRTUAL_ID_MASK
-#define ICH_LR_VIRTUAL_ID_MASK (0x3ffULL << 0)
+#define ICH_LR_VIRTUAL_ID_MASK ((1ULL << 32) - 1)
 #endif
 #ifndef ICH_LR_PHYS_ID_SHIFT
-#define ICH_LR_PHYS_ID_SHIFT 10
+#define ICH_LR_PHYS_ID_SHIFT 32
 #endif
 #ifndef ICH_LR_PHYS_ID_MASK
 #define ICH_LR_PHYS_ID_MASK (0x3ffULL << ICH_LR_PHYS_ID_SHIFT)
 #endif
 #ifndef ICH_LR_PRIORITY_SHIFT
-#define ICH_LR_PRIORITY_SHIFT 23
+#define ICH_LR_PRIORITY_SHIFT 48
 #endif
 #ifndef ICH_LR_PRIORITY_MASK
 #define ICH_LR_PRIORITY_MASK (0xffULL << ICH_LR_PRIORITY_SHIFT)
@@ -280,10 +280,10 @@
 #define ICH_VMCR_FIQ_EN_MASK (1U << ICH_VMCR_FIQ_EN_SHIFT)
 #endif
 #ifndef ICH_VMCR_PMR_SHIFT
-#define ICH_VMCR_PMR_SHIFT 27
+#define ICH_VMCR_PMR_SHIFT 24
 #endif
 #ifndef ICH_VMCR_PMR_MASK
-#define ICH_VMCR_PMR_MASK (0x1fU << ICH_VMCR_PMR_SHIFT)
+#define ICH_VMCR_PMR_MASK (0xffU << ICH_VMCR_PMR_SHIFT)
 #endif
 #ifndef ICH_VMCR_BPR0_SHIFT
 #define ICH_VMCR_BPR0_SHIFT 21
