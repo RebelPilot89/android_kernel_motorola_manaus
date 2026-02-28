@@ -9,6 +9,7 @@
 #include <linux/kobject.h>
 #include <linux/module.h>
 #include <linux/netdevice.h>
+#include <linux/slab.h>
 #include <linux/sysfs.h>
 #include <linux/timer.h>
 #include <linux/types.h>
@@ -275,9 +276,14 @@ static enum hrtimer_restart thermal_trace_work(struct hrtimer *timer)
 {
 	ktime_t ktime;
 	int i;
-	struct headroom_info hr_info[NR_CPUS];
+	struct headroom_info *hr_info;
+	int cpu_count = num_possible_cpus();
 
 	if (!thermal_csram_base)
+		goto skip;
+
+	hr_info = kcalloc(cpu_count, sizeof(*hr_info), GFP_ATOMIC);
+	if (!hr_info)
 		goto skip;
 
 	/* parse hr info */
@@ -305,11 +311,17 @@ static enum hrtimer_restart thermal_trace_work(struct hrtimer *timer)
 	get_gpu_info();
 	get_apu_info();
 
+	if (cpu_count < 8) {
+		kfree(hr_info);
+		goto skip;
+	}
+
 	trace_cpu_hr_info_0(&hr_info[0], &hr_info[1], &hr_info[2], &hr_info[3]);
 	trace_cpu_hr_info_1(&hr_info[4], &hr_info[5], &hr_info[6], &hr_info[7]);
 	trace_thermal_cpu(&cpu_info);
 	trace_thermal_gpu(&gpu_info);
 	trace_thermal_apu(&apu_info);
+	kfree(hr_info);
 
 skip:
 	ktime = ktime_set(0, thermal_trace_data.hr_period);

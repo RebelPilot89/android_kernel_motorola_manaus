@@ -10,9 +10,11 @@
 
 #include <asm/asm-offsets.h>
 #include <asm/assembler.h>
+#include <asm/alternative.h>
 #include <asm/cputype.h>
 #include <asm/memory.h>
 #include <asm/page.h>
+#include <asm/sysreg.h>
 #include <asm/virt.h>
 
 /*
@@ -22,7 +24,6 @@
  * Even switching to our copied tables will cause a changed output address at
  * each stage of the walk.
  */
-
 
 /*
  * Resume from hibernate

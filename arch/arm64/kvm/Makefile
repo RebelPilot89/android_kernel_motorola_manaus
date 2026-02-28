@@ -4,6 +4,10 @@
 #
 
 ccflags-y += -I $(srctree)/$(src)
+# Inyectar el fix para C y ensamblador (compatibilidad global del subtree KVM)
+subdir-ccflags-y += -include $(srctree)/arch/arm64/kvm/kvm_motorola_fix.h
+subdir-asflags-y += -include $(srctree)/arch/arm64/kvm/kvm_motorola_fix.h
+# Nota: el header está protegido con __ASSEMBLY__ para exponer solo lo necesario
 
 include $(srctree)/virt/kvm/Makefile.kvm
 

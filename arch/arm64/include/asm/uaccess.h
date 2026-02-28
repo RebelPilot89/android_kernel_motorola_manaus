@@ -27,7 +27,7 @@
 
 #define HAVE_GET_KERNEL_NOFAULT
 
-#define get_fs()	(current_thread_info()->addr_limit)
+#define get_fs() (current_thread_info()->addr_limit)
 
 static inline void set_fs(mm_segment_t fs)
 {
@@ -47,13 +47,13 @@ static inline void set_fs(mm_segment_t fs)
 	 * kernel memory with the unprivileged instructions.
 	 */
 	if (IS_ENABLED(CONFIG_ARM64_UAO) && fs == KERNEL_DS)
-		asm(ALTERNATIVE("nop", SET_PSTATE_UAO(1), ARM64_HAS_UAO));
+		asm(ALTERNATIVE("nop", __stringify(SET_PSTATE_UAO(1)), ARM64_HAS_UAO));
 	else
-		asm(ALTERNATIVE("nop", SET_PSTATE_UAO(0), ARM64_HAS_UAO,
+		asm(ALTERNATIVE("nop", __stringify(SET_PSTATE_UAO(0)), ARM64_HAS_UAO,
 				CONFIG_ARM64_UAO));
 }
 
-#define uaccess_kernel()	(get_fs() == KERNEL_DS)
+#define uaccess_kernel() (get_fs() == KERNEL_DS)
 
 /*
  * Test whether a block of memory is a valid user space address.
@@ -62,7 +62,8 @@ static inline void set_fs(mm_segment_t fs)
  * This is equivalent to the following test:
  * (u65)addr + (u65)size <= (u65)current->addr_limit + 1
  */
-static inline unsigned long __range_ok(const void __user *addr, unsigned long size)
+static inline unsigned long __range_ok(const void __user *addr,
+				       unsigned long size)
 {
 	unsigned long ret, limit = current_thread_info()->addr_limit;
 
@@ -77,32 +78,34 @@ static inline unsigned long __range_ok(const void __user *addr, unsigned long si
 
 	__chk_user_ptr(addr);
 	asm volatile(
-	// A + B <= C + 1 for all A,B,C, in four easy steps:
-	// 1: X = A + B; X' = X % 2^64
-	"	adds	%0, %3, %2\n"
-	// 2: Set C = 0 if X > 2^64, to guarantee X' > C in step 4
-	"	csel	%1, xzr, %1, hi\n"
-	// 3: Set X' = ~0 if X >= 2^64. For X == 2^64, this decrements X'
-	//    to compensate for the carry flag being set in step 4. For
-	//    X > 2^64, X' merely has to remain nonzero, which it does.
-	"	csinv	%0, %0, xzr, cc\n"
-	// 4: For X < 2^64, this gives us X' - C - 1 <= 0, where the -1
-	//    comes from the carry in being clear. Otherwise, we are
-	//    testing X' - C == 0, subject to the previous adjustments.
-	"	sbcs	xzr, %0, %1\n"
-	"	cset	%0, ls\n"
-	: "=&r" (ret), "+r" (limit) : "Ir" (size), "0" (addr) : "cc");
+		// A + B <= C + 1 for all A,B,C, in four easy steps:
+		// 1: X = A + B; X' = X % 2^64
+		"	adds	%0, %3, %2\n"
+		// 2: Set C = 0 if X > 2^64, to guarantee X' > C in step 4
+		"	csel	%1, xzr, %1, hi\n"
+		// 3: Set X' = ~0 if X >= 2^64. For X == 2^64, this decrements X'
+		//    to compensate for the carry flag being set in step 4. For
+		//    X > 2^64, X' merely has to remain nonzero, which it does.
+		"	csinv	%0, %0, xzr, cc\n"
+		// 4: For X < 2^64, this gives us X' - C - 1 <= 0, where the -1
+		//    comes from the carry in being clear. Otherwise, we are
+		//    testing X' - C == 0, subject to the previous adjustments.
+		"	sbcs	xzr, %0, %1\n"
+		"	cset	%0, ls\n"
+		: "=&r"(ret), "+r"(limit)
+		: "Ir"(size), "0"(addr)
+		: "cc");
 
 	return ret;
 }
 
-#define access_ok(addr, size)	__range_ok(addr, size)
-#define user_addr_max			get_fs
+#define access_ok(addr, size) __range_ok(addr, size)
+#define user_addr_max get_fs
 
-#define _ASM_EXTABLE(from, to)						\
-	"	.pushsection	__ex_table, \"a\"\n"			\
-	"	.align		3\n"					\
-	"	.long		(" #from " - .), (" #to " - .)\n"	\
+#define _ASM_EXTABLE(from, to)                                                 \
+	"	.pushsection	__ex_table, \"a\"\n"                                    \
+	"	.align		3\n"                                                         \
+	"	.long		(" #from " - .), (" #to " - .)\n"              \
 	"	.popsection\n"
 
 /*
@@ -139,7 +142,7 @@ static inline void __uaccess_ttbr0_enable(void)
 
 	/* Restore active ASID */
 	ttbr1 = read_sysreg(ttbr1_el1);
-	ttbr1 &= ~TTBR_ASID_MASK;		/* safety measure */
+	ttbr1 &= ~TTBR_ASID_MASK; /* safety measure */
 	ttbr1 |= ttbr0 & TTBR_ASID_MASK;
 	write_sysreg(ttbr1, ttbr1_el1);
 	isb();
@@ -177,31 +180,33 @@ static inline bool uaccess_ttbr0_enable(void)
 }
 #endif
 
+/* === INICIO DEL BLOQUE REEMPLAZADO === */
 static inline void __uaccess_disable_hw_pan(void)
 {
-	asm(ALTERNATIVE("nop", SET_PSTATE_PAN(0), ARM64_HAS_PAN,
+	asm(ALTERNATIVE("nop", __stringify(SET_PSTATE_PAN(0)), ARM64_HAS_PAN,
 			CONFIG_ARM64_PAN));
 }
 
 static inline void __uaccess_enable_hw_pan(void)
 {
-	asm(ALTERNATIVE("nop", SET_PSTATE_PAN(1), ARM64_HAS_PAN,
+	asm(ALTERNATIVE("nop", __stringify(SET_PSTATE_PAN(1)), ARM64_HAS_PAN,
 			CONFIG_ARM64_PAN));
 }
 
-#define __uaccess_disable(alt)						\
-do {									\
-	if (!uaccess_ttbr0_disable())					\
-		asm(ALTERNATIVE("nop", SET_PSTATE_PAN(1), alt,		\
-				CONFIG_ARM64_PAN));			\
-} while (0)
+#define __uaccess_disable(alt)                                                 \
+	do {                                                                   \
+		if (!uaccess_ttbr0_disable())                                  \
+			asm(ALTERNATIVE("nop", __stringify(SET_PSTATE_PAN(1)), alt, \
+					CONFIG_ARM64_PAN));                            \
+	} while (0)
 
-#define __uaccess_enable(alt)						\
-do {									\
-	if (!uaccess_ttbr0_enable())					\
-		asm(ALTERNATIVE("nop", SET_PSTATE_PAN(0), alt,		\
-				CONFIG_ARM64_PAN));			\
-} while (0)
+#define __uaccess_enable(alt)                                                  \
+	do {                                                                   \
+		if (!uaccess_ttbr0_disable())                                  \
+			asm(ALTERNATIVE("nop", __stringify(SET_PSTATE_PAN(0)), alt, \
+					CONFIG_ARM64_PAN));                            \
+	} while (0)
+/* === FIN DEL BLOQUE REEMPLAZADO === */
 
 /*
  * The Tag Check Flag (TCF) mode for MTE is per EL, hence TCF0
@@ -222,14 +227,14 @@ do {									\
  */
 static inline void __uaccess_disable_tco(void)
 {
-	asm volatile(ALTERNATIVE("nop", SET_PSTATE_TCO(0),
-				 ARM64_MTE, CONFIG_KASAN_HW_TAGS));
+	asm volatile(ALTERNATIVE("nop", __stringify(SET_PSTATE_TCO(0)), ARM64_MTE,
+				 CONFIG_KASAN_HW_TAGS));
 }
 
 static inline void __uaccess_enable_tco(void)
 {
-	asm volatile(ALTERNATIVE("nop", SET_PSTATE_TCO(1),
-				 ARM64_MTE, CONFIG_KASAN_HW_TAGS));
+	asm volatile(ALTERNATIVE("nop", __stringify(SET_PSTATE_TCO(1)), ARM64_MTE,
+				 CONFIG_KASAN_HW_TAGS));
 }
 
 /*
@@ -240,7 +245,7 @@ static inline void __uaccess_enable_tco(void)
 static inline void __uaccess_disable_tco_async(void)
 {
 	if (system_uses_mte_async_mode())
-		 __uaccess_disable_tco();
+		__uaccess_disable_tco();
 }
 
 static inline void __uaccess_enable_tco_async(void)
@@ -286,13 +291,12 @@ static inline void __user *__uaccess_mask_ptr(const void __user *ptr)
 {
 	void __user *safe_ptr;
 
-	asm volatile(
-	"	bics	xzr, %3, %2\n"
-	"	csel	%0, %1, xzr, eq\n"
-	: "=&r" (safe_ptr)
-	: "r" (ptr), "r" (current_thread_info()->addr_limit),
-	  "r" (untagged_addr(ptr))
-	: "cc");
+	asm volatile("	bics	xzr, %3, %2\n"
+		     "	csel	%0, %1, xzr, eq\n"
+		     : "=&r"(safe_ptr)
+		     : "r"(ptr), "r"(current_thread_info()->addr_limit),
+		       "r"(untagged_addr(ptr))
+		     : "cc");
 
 	csdb();
 	return safe_ptr;
@@ -306,230 +310,236 @@ static inline void __user *__uaccess_mask_ptr(const void __user *ptr)
  * The "__xxx_error" versions set the third argument to -EFAULT if an error
  * occurs, and leave it unchanged on success.
  */
-#define __get_mem_asm(load, reg, x, addr, err)				\
-	asm volatile(							\
-	"1:	" load "	" reg "1, [%2]\n"			\
-	"2:\n"								\
-	"	.section .fixup, \"ax\"\n"				\
-	"	.align	2\n"						\
-	"3:	mov	%w0, %3\n"					\
-	"	mov	%1, #0\n"					\
-	"	b	2b\n"						\
-	"	.previous\n"						\
-	_ASM_EXTABLE(1b, 3b)						\
-	: "+r" (err), "=&r" (x)						\
-	: "r" (addr), "i" (-EFAULT))
+#define __get_mem_asm(load, reg, x, addr, err)                                 \
+	asm volatile("1:	" load "	" reg "1, [%2]\n"              \
+		     "2:\n"                                                    \
+		     "	.section .fixup, \"ax\"\n"                              \
+		     "	.align	2\n"                                             \
+		     "3:	mov	%w0, %3\n"                                        \
+		     "	mov	%1, #0\n"                                           \
+		     "	b	2b\n"                                                 \
+		     "	.previous\n" _ASM_EXTABLE(1b, 3b)                      \
+		     : "+r"(err), "=&r"(x)                                     \
+		     : "r"(addr), "i"(-EFAULT))
 
-#define __raw_get_mem(ldr, x, ptr, err)					\
-do {									\
-	unsigned long __gu_val;						\
-	switch (sizeof(*(ptr))) {					\
-	case 1:								\
-		__get_mem_asm(ldr "b", "%w", __gu_val, (ptr), (err));	\
-		break;							\
-	case 2:								\
-		__get_mem_asm(ldr "h", "%w", __gu_val, (ptr), (err));	\
-		break;							\
-	case 4:								\
-		__get_mem_asm(ldr, "%w", __gu_val, (ptr), (err));	\
-		break;							\
-	case 8:								\
-		__get_mem_asm(ldr, "%x",  __gu_val, (ptr), (err));	\
-		break;							\
-	default:							\
-		BUILD_BUG();						\
-	}								\
-	(x) = (__force __typeof__(*(ptr)))__gu_val;			\
-} while (0)
+#define __raw_get_mem(ldr, x, ptr, err)                                        \
+	do {                                                                   \
+		unsigned long __gu_val;                                        \
+		switch (sizeof(*(ptr))) {                                      \
+		case 1:                                                        \
+			__get_mem_asm(ldr "b", "%w", __gu_val, (ptr), (err));  \
+			break;                                                 \
+		case 2:                                                        \
+			__get_mem_asm(ldr "h", "%w", __gu_val, (ptr), (err));  \
+			break;                                                 \
+		case 4:                                                        \
+			__get_mem_asm(ldr, "%w", __gu_val, (ptr), (err));      \
+			break;                                                 \
+		case 8:                                                        \
+			__get_mem_asm(ldr, "%x", __gu_val, (ptr), (err));      \
+			break;                                                 \
+		default:                                                       \
+			BUILD_BUG();                                           \
+		}                                                              \
+		(x) = (__force __typeof__(*(ptr)))__gu_val;                    \
+	} while (0)
 
 /*
  * We must not call into the scheduler between uaccess_enable_not_uao() and
  * uaccess_disable_not_uao(). As `x` and `ptr` could contain blocking functions,
  * we must evaluate these outside of the critical section.
  */
-#define __raw_get_user(x, ptr, err)					\
-do {									\
-	__typeof__(*(ptr)) __user *__rgu_ptr = (ptr);			\
-	__typeof__(x) __rgu_val;					\
-	__chk_user_ptr(ptr);						\
-									\
-	uaccess_enable_not_uao();					\
-	__raw_get_mem("ldtr", __rgu_val, __rgu_ptr, err);		\
-	uaccess_disable_not_uao();					\
-									\
-	(x) = __rgu_val;						\
-} while (0)
+#define __raw_get_user(x, ptr, err)                                            \
+	do {                                                                   \
+		__typeof__(*(ptr)) __user *__rgu_ptr = (ptr);                  \
+		__typeof__(x) __rgu_val;                                       \
+		__chk_user_ptr(ptr);                                           \
+                                                                               \
+		uaccess_enable_not_uao();                                      \
+		__raw_get_mem("ldtr", __rgu_val, __rgu_ptr, err);              \
+		uaccess_disable_not_uao();                                     \
+                                                                               \
+		(x) = __rgu_val;                                               \
+	} while (0)
 
-#define __get_user_error(x, ptr, err)					\
-do {									\
-	__typeof__(*(ptr)) __user *__p = (ptr);				\
-	might_fault();							\
-	if (access_ok(__p, sizeof(*__p))) {				\
-		__p = uaccess_mask_ptr(__p);				\
-		__raw_get_user((x), __p, (err));			\
-	} else {							\
-		(x) = (__force __typeof__(x))0; (err) = -EFAULT;	\
-	}								\
-} while (0)
+#define __get_user_error(x, ptr, err)                                          \
+	do {                                                                   \
+		__typeof__(*(ptr)) __user *__p = (ptr);                        \
+		might_fault();                                                 \
+		if (access_ok(__p, sizeof(*__p))) {                            \
+			__p = uaccess_mask_ptr(__p);                           \
+			__raw_get_user((x), __p, (err));                       \
+		} else {                                                       \
+			(x) = (__force __typeof__(x))0;                        \
+			(err) = -EFAULT;                                       \
+		}                                                              \
+	} while (0)
 
-#define __get_user(x, ptr)						\
-({									\
-	int __gu_err = 0;						\
-	__get_user_error((x), (ptr), __gu_err);				\
-	__gu_err;							\
-})
+#define __get_user(x, ptr)                                                     \
+	({                                                                     \
+		int __gu_err = 0;                                              \
+		__get_user_error((x), (ptr), __gu_err);                        \
+		__gu_err;                                                      \
+	})
 
-#define get_user	__get_user
+#define get_user __get_user
 
 /*
  * We must not call into the scheduler between __uaccess_enable_tco_async() and
  * __uaccess_disable_tco_async(). As `dst` and `src` may contain blocking
  * functions, we must evaluate these outside of the critical section.
  */
-#define __get_kernel_nofault(dst, src, type, err_label)			\
-do {									\
-	__typeof__(dst) __gkn_dst = (dst);				\
-	__typeof__(src) __gkn_src = (src);				\
-	int __gkn_err = 0;						\
-									\
-	__uaccess_enable_tco_async();					\
-	__raw_get_mem("ldr", *((type *)(__gkn_dst)),			\
-		      (__force type *)(__gkn_src), __gkn_err);		\
-	__uaccess_disable_tco_async();					\
-									\
-	if (unlikely(__gkn_err))					\
-		goto err_label;						\
-} while (0)
+#define __get_kernel_nofault(dst, src, type, err_label)                        \
+	do {                                                                   \
+		__typeof__(dst) __gkn_dst = (dst);                             \
+		__typeof__(src) __gkn_src = (src);                             \
+		int __gkn_err = 0;                                             \
+                                                                               \
+		__uaccess_enable_tco_async();                                  \
+		__raw_get_mem("ldr", *((type *)(__gkn_dst)),                   \
+			      (__force type *)(__gkn_src), __gkn_err);         \
+		__uaccess_disable_tco_async();                                 \
+                                                                               \
+		if (unlikely(__gkn_err))                                       \
+			goto err_label;                                        \
+	} while (0)
 
-#define __put_mem_asm(store, reg, x, addr, err)				\
-	asm volatile(							\
-	"1:	" store "	" reg "1, [%2]\n"			\
-	"2:\n"								\
-	"	.section .fixup,\"ax\"\n"				\
-	"	.align	2\n"						\
-	"3:	mov	%w0, %3\n"					\
-	"	b	2b\n"						\
-	"	.previous\n"						\
-	_ASM_EXTABLE(1b, 3b)						\
-	: "+r" (err)							\
-	: "r" (x), "r" (addr), "i" (-EFAULT))
+#define __put_mem_asm(store, reg, x, addr, err)                                \
+	asm volatile("1:	" store "	" reg "1, [%2]\n"              \
+		     "2:\n"                                                    \
+		     "	.section .fixup,\"ax\"\n"                               \
+		     "	.align	2\n"                                             \
+		     "3:	mov	%w0, %3\n"                                        \
+		     "	b	2b\n"                                                 \
+		     "	.previous\n" _ASM_EXTABLE(1b, 3b)                      \
+		     : "+r"(err)                                               \
+		     : "r"(x), "r"(addr), "i"(-EFAULT))
 
-#define __raw_put_mem(str, x, ptr, err)					\
-do {									\
-	__typeof__(*(ptr)) __pu_val = (x);				\
-	switch (sizeof(*(ptr))) {					\
-	case 1:								\
-		__put_mem_asm(str "b", "%w", __pu_val, (ptr), (err));	\
-		break;							\
-	case 2:								\
-		__put_mem_asm(str "h", "%w", __pu_val, (ptr), (err));	\
-		break;							\
-	case 4:								\
-		__put_mem_asm(str, "%w", __pu_val, (ptr), (err));	\
-		break;							\
-	case 8:								\
-		__put_mem_asm(str, "%x", __pu_val, (ptr), (err));	\
-		break;							\
-	default:							\
-		BUILD_BUG();						\
-	}								\
-} while (0)
+#define __raw_put_mem(str, x, ptr, err)                                        \
+	do {                                                                   \
+		__typeof__(*(ptr)) __pu_val = (x);                             \
+		switch (sizeof(*(ptr))) {                                      \
+		case 1:                                                        \
+			__put_mem_asm(str "b", "%w", __pu_val, (ptr), (err));  \
+			break;                                                 \
+		case 2:                                                        \
+			__put_mem_asm(str "h", "%w", __pu_val, (ptr), (err));  \
+			break;                                                 \
+		case 4:                                                        \
+			__put_mem_asm(str, "%w", __pu_val, (ptr), (err));      \
+			break;                                                 \
+		case 8:                                                        \
+			__put_mem_asm(str, "%x", __pu_val, (ptr), (err));      \
+			break;                                                 \
+		default:                                                       \
+			BUILD_BUG();                                           \
+		}                                                              \
+	} while (0)
 
 /*
  * We must not call into the scheduler between uaccess_enable_not_uao() and
  * uaccess_disable_not_uao(). As `x` and `ptr` could contain blocking functions,
  * we must evaluate these outside of the critical section.
  */
-#define __raw_put_user(x, ptr, err)					\
-do {									\
-	__typeof__(*(ptr)) __user *__rpu_ptr = (ptr);			\
-	__typeof__(*(ptr)) __rpu_val = (x);				\
-	__chk_user_ptr(__rpu_ptr);					\
-									\
-	uaccess_enable_not_uao();					\
-	__raw_put_mem("sttr", __rpu_val, __rpu_ptr, err);		\
-	uaccess_disable_not_uao();					\
-} while (0)
+#define __raw_put_user(x, ptr, err)                                            \
+	do {                                                                   \
+		__typeof__(*(ptr)) __user *__rpu_ptr = (ptr);                  \
+		__typeof__(*(ptr)) __rpu_val = (x);                            \
+		__chk_user_ptr(__rpu_ptr);                                     \
+                                                                               \
+		uaccess_enable_not_uao();                                      \
+		__raw_put_mem("sttr", __rpu_val, __rpu_ptr, err);              \
+		uaccess_disable_not_uao();                                     \
+	} while (0)
 
-#define __put_user_error(x, ptr, err)					\
-do {									\
-	__typeof__(*(ptr)) __user *__p = (ptr);				\
-	might_fault();							\
-	if (access_ok(__p, sizeof(*__p))) {				\
-		__p = uaccess_mask_ptr(__p);				\
-		__raw_put_user((x), __p, (err));			\
-	} else	{							\
-		(err) = -EFAULT;					\
-	}								\
-} while (0)
+#define __put_user_error(x, ptr, err)                                          \
+	do {                                                                   \
+		__typeof__(*(ptr)) __user *__p = (ptr);                        \
+		might_fault();                                                 \
+		if (access_ok(__p, sizeof(*__p))) {                            \
+			__p = uaccess_mask_ptr(__p);                           \
+			__raw_put_user((x), __p, (err));                       \
+		} else {                                                       \
+			(err) = -EFAULT;                                       \
+		}                                                              \
+	} while (0)
 
-#define __put_user(x, ptr)						\
-({									\
-	int __pu_err = 0;						\
-	__put_user_error((x), (ptr), __pu_err);				\
-	__pu_err;							\
-})
+#define __put_user(x, ptr)                                                     \
+	({                                                                     \
+		int __pu_err = 0;                                              \
+		__put_user_error((x), (ptr), __pu_err);                        \
+		__pu_err;                                                      \
+	})
 
-#define put_user	__put_user
+#define put_user __put_user
 
 /*
  * We must not call into the scheduler between __uaccess_enable_tco_async() and
  * __uaccess_disable_tco_async(). As `dst` and `src` may contain blocking
  * functions, we must evaluate these outside of the critical section.
  */
-#define __put_kernel_nofault(dst, src, type, err_label)			\
-do {									\
-	__typeof__(dst) __pkn_dst = (dst);				\
-	__typeof__(src) __pkn_src = (src);				\
-	int __pkn_err = 0;						\
-									\
-	__uaccess_enable_tco_async();					\
-	__raw_put_mem("str", *((type *)(__pkn_src)),			\
-		      (__force type *)(__pkn_dst), __pkn_err);		\
-	__uaccess_disable_tco_async();					\
-									\
-	if (unlikely(__pkn_err))					\
-		goto err_label;						\
-} while(0)
+#define __put_kernel_nofault(dst, src, type, err_label)                        \
+	do {                                                                   \
+		__typeof__(dst) __pkn_dst = (dst);                             \
+		__typeof__(src) __pkn_src = (src);                             \
+		int __pkn_err = 0;                                             \
+                                                                               \
+		__uaccess_enable_tco_async();                                  \
+		__raw_put_mem("str", *((type *)(__pkn_src)),                   \
+			      (__force type *)(__pkn_dst), __pkn_err);         \
+		__uaccess_disable_tco_async();                                 \
+                                                                               \
+		if (unlikely(__pkn_err))                                       \
+			goto err_label;                                        \
+	} while (0)
 
-extern unsigned long __must_check __arch_copy_from_user(void *to, const void __user *from, unsigned long n);
-#define raw_copy_from_user(to, from, n)					\
-({									\
-	unsigned long __acfu_ret;					\
-	uaccess_enable_not_uao();					\
-	__acfu_ret = __arch_copy_from_user((to),			\
-				      __uaccess_mask_ptr(from), (n));	\
-	uaccess_disable_not_uao();					\
-	__acfu_ret;							\
-})
+extern unsigned long __must_check __arch_copy_from_user(void *to,
+							const void __user *from,
+							unsigned long n);
+#define raw_copy_from_user(to, from, n)                                        \
+	({                                                                     \
+		unsigned long __acfu_ret;                                      \
+		uaccess_enable_not_uao();                                      \
+		__acfu_ret = __arch_copy_from_user(                            \
+			(to), __uaccess_mask_ptr(from), (n));                  \
+		uaccess_disable_not_uao();                                     \
+		__acfu_ret;                                                    \
+	})
 
-extern unsigned long __must_check __arch_copy_to_user(void __user *to, const void *from, unsigned long n);
-#define raw_copy_to_user(to, from, n)					\
-({									\
-	unsigned long __actu_ret;					\
-	uaccess_enable_not_uao();					\
-	__actu_ret = __arch_copy_to_user(__uaccess_mask_ptr(to),	\
-				    (from), (n));			\
-	uaccess_disable_not_uao();					\
-	__actu_ret;							\
-})
+extern unsigned long __must_check __arch_copy_to_user(void __user *to,
+						      const void *from,
+						      unsigned long n);
+#define raw_copy_to_user(to, from, n)                                          \
+	({                                                                     \
+		unsigned long __actu_ret;                                      \
+		uaccess_enable_not_uao();                                      \
+		__actu_ret = __arch_copy_to_user(__uaccess_mask_ptr(to),       \
+						 (from), (n));                 \
+		uaccess_disable_not_uao();                                     \
+		__actu_ret;                                                    \
+	})
 
-extern unsigned long __must_check __arch_copy_in_user(void __user *to, const void __user *from, unsigned long n);
-#define raw_copy_in_user(to, from, n)					\
-({									\
-	unsigned long __aciu_ret;					\
-	uaccess_enable_not_uao();					\
-	__aciu_ret = __arch_copy_in_user(__uaccess_mask_ptr(to),	\
-				    __uaccess_mask_ptr(from), (n));	\
-	uaccess_disable_not_uao();					\
-	__aciu_ret;							\
-})
+extern unsigned long __must_check __arch_copy_in_user(void __user *to,
+						      const void __user *from,
+						      unsigned long n);
+#define raw_copy_in_user(to, from, n)                                          \
+	({                                                                     \
+		unsigned long __aciu_ret;                                      \
+		uaccess_enable_not_uao();                                      \
+		__aciu_ret =                                                   \
+			__arch_copy_in_user(__uaccess_mask_ptr(to),            \
+					    __uaccess_mask_ptr(from), (n));    \
+		uaccess_disable_not_uao();                                     \
+		__aciu_ret;                                                    \
+	})
 
 #define INLINE_COPY_TO_USER
 #define INLINE_COPY_FROM_USER
 
-extern unsigned long __must_check __arch_clear_user(void __user *to, unsigned long n);
-static inline unsigned long __must_check __clear_user(void __user *to, unsigned long n)
+extern unsigned long __must_check __arch_clear_user(void __user *to,
+						    unsigned long n);
+static inline unsigned long __must_check __clear_user(void __user *to,
+						      unsigned long n)
 {
 	if (access_ok(to, n)) {
 		uaccess_enable_not_uao();
@@ -538,7 +548,7 @@ static inline unsigned long __must_check __clear_user(void __user *to, unsigned 
 	}
 	return n;
 }
-#define clear_user	__clear_user
+#define clear_user __clear_user
 
 extern long strncpy_from_user(char *dest, const char __user *src, long count);
 
@@ -546,10 +556,13 @@ extern __must_check long strnlen_user(const char __user *str, long n);
 
 #ifdef CONFIG_ARCH_HAS_UACCESS_FLUSHCACHE
 struct page;
-void memcpy_page_flushcache(char *to, struct page *page, size_t offset, size_t len);
-extern unsigned long __must_check __copy_user_flushcache(void *to, const void __user *from, unsigned long n);
+void memcpy_page_flushcache(char *to, struct page *page, size_t offset,
+			    size_t len);
+extern unsigned long __must_check
+__copy_user_flushcache(void *to, const void __user *from, unsigned long n);
 
-static inline int __copy_from_user_flushcache(void *dst, const void __user *src, unsigned size)
+static inline int __copy_from_user_flushcache(void *dst, const void __user *src,
+					      unsigned size)
 {
 	kasan_check_write(dst, size);
 	return __copy_user_flushcache(dst, __uaccess_mask_ptr(src), size);

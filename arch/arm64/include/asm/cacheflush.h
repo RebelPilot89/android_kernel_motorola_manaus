@@ -77,6 +77,8 @@ extern void dcache_inval_poc(unsigned long start, unsigned long end);
 extern void dcache_clean_poc(unsigned long start, unsigned long end);
 extern void dcache_clean_pop(unsigned long start, unsigned long end);
 extern void dcache_clean_pou(unsigned long start, unsigned long end);
+extern void __flush_dcache_area(void *addr, size_t len);
+extern long __flush_cache_user_range(unsigned long start, unsigned long end);
 extern long caches_clean_inval_user_pou(unsigned long start, unsigned long end);
 extern void sync_icache_aliases(unsigned long start, unsigned long end);
 
@@ -137,6 +139,12 @@ static __always_inline void icache_inval_all_pou(void)
 
 	asm("ic	ialluis");
 	dsb(ish);
+}
+
+static __always_inline void __flush_icache_all(void)
+{
+	icache_inval_all_pou();
+	kick_all_cpus_sync();
 }
 
 #include <asm-generic/cacheflush.h>

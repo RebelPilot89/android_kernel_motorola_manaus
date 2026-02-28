@@ -11,6 +11,10 @@
 #include <linux/kvm_host.h>
 #include <linux/types.h>
 
+#ifndef ID_AA64MMFR0_EL1_PARANGE_MAX
+#define ID_AA64MMFR0_EL1_PARANGE_MAX ID_AA64MMFR0_EL1_PARANGE_52
+#endif
+
 #define KVM_PGTABLE_MAX_LEVELS		4U
 
 /*

@@ -7,6 +7,7 @@
 #include "common.h"
 #include "eas_plus.h"
 #include "eas_trace.h"
+#include <linux/slab.h>
 #include <linux/sort.h>
 #if IS_ENABLED(CONFIG_MTK_THERMAL_INTERFACE)
 #include <thermal_interface.h>
@@ -451,11 +452,16 @@ int select_idle_cpu_from_domains(struct task_struct *p,
 int select_bigger_idle_cpu(struct task_struct *p)
 {
 	struct root_domain *rd = cpu_rq(smp_processor_id())->rd;
-	struct perf_domain *pd, *prefer_pds[NR_CPUS];
+	struct perf_domain *pd;
+	struct perf_domain **prefer_pds;
 	int cpu = task_cpu(p), bigger_idle_cpu = -1;
 	int i = 0;
 	long max_capacity = capacity_orig_of(cpu);
 	long capacity;
+
+	prefer_pds = kcalloc(nr_cpu_ids, sizeof(*prefer_pds), GFP_ATOMIC);
+	if (!prefer_pds)
+		return -1;
 
 	rcu_read_lock();
 	pd = rcu_dereference(rd->pd);
@@ -472,6 +478,7 @@ int select_bigger_idle_cpu(struct task_struct *p)
 		bigger_idle_cpu = select_idle_cpu_from_domains(p, prefer_pds, i);
 
 	rcu_read_unlock();
+	kfree(prefer_pds);
 	return bigger_idle_cpu;
 }
 

@@ -9,10 +9,20 @@
 
 #include <linux/arm_ffa.h>
 #include <linux/bitfield.h>
+#include <linux/bitops.h>
 #include <linux/memblock.h>
 #include <linux/scatterlist.h>
 #include <asm/kvm_pgtable.h>
 #include <asm/sysreg.h>
+
+/* * TRUCO DE RESCATE: Definimos ARM64_FEATURE_MASK aquí mismo.
+ * Se coloca antes de sysreg-defs para evitar cualquier conflicto de orden.
+ */
+#ifndef ARM64_FEATURE_MASK
+#define ARM64_FEATURE_MASK(field) \
+	GENMASK_ULL(field##_SHIFT + 3, field##_SHIFT)
+#endif
+
 #ifdef __clang__
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wmacro-redefined"
@@ -21,7 +31,6 @@
 #ifdef __clang__
 #pragma clang diagnostic pop
 #endif
-
 /*
  * Stores the sve state for the host in protected mode.
  */

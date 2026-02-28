@@ -15,6 +15,7 @@
 
 #include <asm/asm_pointer_auth.h>
 #include <asm/assembler.h>
+#include <asm/gpr-num.h>
 #include <asm/sysreg.h>    /* ensure register constants available */
 #include <asm/memory.h>
 #include <asm/boot.h>
@@ -36,6 +37,50 @@
 #include <asm/virt.h>
 
 #include "efi-header.S"
+
+/* SYS_* mínimos para el arranque EL2 cuando faltan en headers del vendor */
+#define __HEAD_SYS_REG(op0, op1, crn, crm, op2) \
+	((((op0) & 3) << 14) | (((op1) & 7) << 11) | \
+	 (((crn) & 15) << 7) | (((crm) & 15) << 3) | (((op2) & 7) << 0))
+
+#undef SYS_SCTLR_EL12
+#define SYS_SCTLR_EL12			__HEAD_SYS_REG(3, 5, 1, 0, 0)
+#ifndef SYS_PMBIDR_EL1
+#define SYS_PMBIDR_EL1			__HEAD_SYS_REG(3, 0, 9, 10, 7)
+#endif
+#ifndef SYS_PMSCR_EL2
+#define SYS_PMSCR_EL2			__HEAD_SYS_REG(3, 4, 9, 9, 0)
+#endif
+#ifndef SYS_TRBIDR_EL1
+#define SYS_TRBIDR_EL1			__HEAD_SYS_REG(3, 0, 9, 11, 7)
+#endif
+#ifndef SYS_ICC_SRE_EL2
+#define SYS_ICC_SRE_EL2			__HEAD_SYS_REG(3, 4, 12, 9, 5)
+#endif
+#ifndef SYS_ICH_HCR_EL2
+#define SYS_ICH_HCR_EL2			__HEAD_SYS_REG(3, 4, 12, 11, 0)
+#endif
+#ifndef SYS_LORC_EL1
+#define SYS_LORC_EL1			__HEAD_SYS_REG(3, 0, 10, 4, 3)
+#endif
+#ifndef SYS_ZCR_EL2
+#define SYS_ZCR_EL2			__HEAD_SYS_REG(3, 4, 1, 2, 0)
+#endif
+#ifndef SYS_PMBIDR_EL1_P_SHIFT
+#define SYS_PMBIDR_EL1_P_SHIFT		4
+#endif
+#ifndef SYS_PMSCR_EL2_PA_SHIFT
+#define SYS_PMSCR_EL2_PA_SHIFT		4
+#endif
+#ifndef SYS_PMSCR_EL2_PCT_SHIFT
+#define SYS_PMSCR_EL2_PCT_SHIFT		6
+#endif
+#ifndef TRBIDR_PROG
+#define TRBIDR_PROG			(1 << 0)
+#endif
+#ifndef ID_AA64DFR0_TRBE_SHIFT
+#define ID_AA64DFR0_TRBE_SHIFT		44
+#endif
 
 /* Fallback boot flag if not provided elsewhere */
 #ifndef BOOT_CPU_FLAG_E2H
@@ -176,7 +221,7 @@ SYM_FUNC_END(clear_page_tables)
  *	vstart:	virtual address of start of range
  *	vend:	virtual address of end of range - we map [vstart, vend]
  *	shift:	shift used to transform virtual address into index
- *	order:  #imm 2log(number of entries in page table)
+ *	order:	2log(number of entries in page table)
  *	istart:	index in table corresponding to vstart
  *	iend:	index in table corresponding to vend
  *	count:	On entry: how many extra entries were required in previous level, scales
@@ -187,9 +232,9 @@ SYM_FUNC_END(clear_page_tables)
  * Returns:	istart, iend, count
  */
 	.macro compute_indices, vstart, vend, shift, order, istart, iend, count
-	ubfx	\istart, \vstart, \shift, \order
-	ubfx	\iend, \vend, \shift, \order
-	add	\iend, \iend, \count, lsl \order
+	ubfm	\istart, \vstart, #\shift, #(\shift + \order - 1)
+	ubfm	\iend, \vend, #\shift, #(\shift + \order - 1)
+	add	\iend, \iend, \count, lsl #\order
 	sub	\count, \iend, \istart
 	.endm
 
@@ -221,32 +266,32 @@ SYM_FUNC_END(clear_page_tables)
 	.ifnb	\extra_shift
 	tst	\vend, #~((1 << (\extra_shift)) - 1)
 	b.eq	.L_\@
-	compute_indices \vstart, \vend, #\extra_shift, #(PAGE_SHIFT - 3), \istart, \iend, \count
+	compute_indices \vstart, \vend, \extra_shift, (PAGE_SHIFT - 3), \istart, \iend, \count
 	mov \sv, \rtbl
 	populate_entries \tbl, \rtbl, \istart, \iend, #PMD_TYPE_TABLE, #PAGE_SIZE, \tmp
 	mov \tbl, \sv
 	.endif
 .L_\@:
-	compute_indices \vstart, \vend, #PGDIR_SHIFT, #\order, \istart, \iend, \count
+	compute_indices \vstart, \vend, PGDIR_SHIFT, \order, \istart, \iend, \count
 	mov \sv, \rtbl
 	populate_entries \tbl, \rtbl, \istart, \iend, #PMD_TYPE_TABLE, #PAGE_SIZE, \tmp
 	mov \tbl, \sv
 
 #if SWAPPER_PGTABLE_LEVELS > 3
-	compute_indices \vstart, \vend, #PUD_SHIFT, #(PAGE_SHIFT - 3), \istart, \iend, \count
+	compute_indices \vstart, \vend, PUD_SHIFT, (PAGE_SHIFT - 3), \istart, \iend, \count
 	mov \sv, \rtbl
 	populate_entries \tbl, \rtbl, \istart, \iend, #PMD_TYPE_TABLE, #PAGE_SIZE, \tmp
 	mov \tbl, \sv
 #endif
 
 #if SWAPPER_PGTABLE_LEVELS > 2
-	compute_indices \vstart, \vend, #SWAPPER_TABLE_SHIFT, #(PAGE_SHIFT - 3), \istart, \iend, \count
+	compute_indices \vstart, \vend, SWAPPER_TABLE_SHIFT, (PAGE_SHIFT - 3), \istart, \iend, \count
 	mov \sv, \rtbl
 	populate_entries \tbl, \rtbl, \istart, \iend, #PMD_TYPE_TABLE, #PAGE_SIZE, \tmp
 	mov \tbl, \sv
 #endif
 
-	compute_indices \vstart, \vend, #SWAPPER_BLOCK_SHIFT, #(PAGE_SHIFT - 3), \istart, \iend, \count
+	compute_indices \vstart, \vend, SWAPPER_BLOCK_SHIFT, (PAGE_SHIFT - 3), \istart, \iend, \count
 	bic \rtbl, \phys, #SWAPPER_BLOCK_SIZE - 1
 	populate_entries \tbl, \rtbl, \istart, \iend, \flags, #SWAPPER_BLOCK_SIZE, \tmp
 	.endm

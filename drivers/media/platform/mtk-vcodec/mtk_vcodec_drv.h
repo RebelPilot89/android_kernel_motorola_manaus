@@ -466,6 +466,9 @@ struct mtk_vcodec_ctx {
 	struct mtk_dec_params dec_params;
 	enum mtk_encode_param param_change;
 	struct mtk_enc_params enc_params;
+	struct venc_enc_param venc_vcp_prm;
+	struct venc_enc_param venc_start_prm;
+	struct venc_enc_param venc_change_prm;
 
 	const struct vdec_common_if *dec_if;
 	const struct venc_common_if *enc_if;

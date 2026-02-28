@@ -16,6 +16,50 @@
 #include <asm/sysreg.h>
 #include <linux/irqchip/arm-gic-v3.h>
 
+#ifndef __EL2_SETUP_SYS_REG
+#define __EL2_SETUP_SYS_REG(op0, op1, crn, crm, op2) \
+	((((op0) & 3) << 14) | (((op1) & 7) << 11) | \
+	 (((crn) & 15) << 7) | (((crm) & 15) << 3) | (((op2) & 7) << 0))
+#endif
+
+#ifndef SYS_PMBIDR_EL1
+#define SYS_PMBIDR_EL1			__EL2_SETUP_SYS_REG(3, 0, 9, 10, 7)
+#endif
+#ifndef SYS_PMSCR_EL2
+#define SYS_PMSCR_EL2			__EL2_SETUP_SYS_REG(3, 4, 9, 9, 0)
+#endif
+#ifndef SYS_TRBIDR_EL1
+#define SYS_TRBIDR_EL1			__EL2_SETUP_SYS_REG(3, 0, 9, 11, 7)
+#endif
+#ifndef SYS_ICC_SRE_EL2
+#define SYS_ICC_SRE_EL2			__EL2_SETUP_SYS_REG(3, 4, 12, 9, 5)
+#endif
+#ifndef SYS_ICH_HCR_EL2
+#define SYS_ICH_HCR_EL2			__EL2_SETUP_SYS_REG(3, 4, 12, 11, 0)
+#endif
+#ifndef SYS_LORC_EL1
+#define SYS_LORC_EL1			__EL2_SETUP_SYS_REG(3, 0, 10, 4, 3)
+#endif
+#ifndef SYS_ZCR_EL2
+#define SYS_ZCR_EL2			__EL2_SETUP_SYS_REG(3, 4, 1, 2, 0)
+#endif
+
+#ifndef SYS_PMBIDR_EL1_P_SHIFT
+#define SYS_PMBIDR_EL1_P_SHIFT		4
+#endif
+#ifndef SYS_PMSCR_EL2_PA_SHIFT
+#define SYS_PMSCR_EL2_PA_SHIFT		4
+#endif
+#ifndef SYS_PMSCR_EL2_PCT_SHIFT
+#define SYS_PMSCR_EL2_PCT_SHIFT		6
+#endif
+#ifndef TRBIDR_PROG
+#define TRBIDR_PROG			(1 << 0)
+#endif
+#ifndef ID_AA64DFR0_TRBE_SHIFT
+#define ID_AA64DFR0_TRBE_SHIFT		44
+#endif
+
 .macro __init_el2_sctlr
 	mov_q	x0, INIT_SCTLR_EL2_MMU_OFF
 	msr	sctlr_el2, x0
@@ -45,12 +89,12 @@
 	cmp	x0, #1
 	b.lt	.Lskip_pmu_\@			// Skip if no PMU present
 	mrs	x0, pmcr_el0			// Disable debug access traps
-	ubfx	x0, x0, #11, #5			// to EL2 and allow access to
+	ubfm	x0, x0, #11, #15			// to EL2 and allow access to
 .Lskip_pmu_\@:
 	csel	x2, xzr, x0, lt			// all PMU counters from EL1
 
 	/* Statistical profiling */
-	ubfx	x0, x1, #ID_AA64DFR0_PMSVER_SHIFT, #4
+	ubfm	x0, x1, #ID_AA64DFR0_PMSVER_SHIFT, #(ID_AA64DFR0_PMSVER_SHIFT + 3)
 	cbz	x0, .Lskip_spe_\@		// Skip if SPE not present
 
 	mrs_s	x0, SYS_PMBIDR_EL1              // If SPE available at EL2,
@@ -66,7 +110,7 @@
 
 .Lskip_spe_\@:
 	/* Trace buffer */
-	ubfx	x0, x1, #ID_AA64DFR0_TRBE_SHIFT, #4
+	ubfm	x0, x1, #ID_AA64DFR0_TRBE_SHIFT, #(ID_AA64DFR0_TRBE_SHIFT + 3)
 	cbz	x0, .Lskip_trace_\@		// Skip if TraceBuffer is not present
 
 	mrs_s	x0, SYS_TRBIDR_EL1
@@ -84,7 +128,7 @@
 /* LORegions */
 .macro __init_el2_lor
 	mrs	x1, id_aa64mmfr1_el1
-	ubfx	x0, x1, #ID_AA64MMFR1_LOR_SHIFT, 4
+	ubfm	x0, x1, #ID_AA64MMFR1_LOR_SHIFT, #(ID_AA64MMFR1_LOR_SHIFT + 3)
 	cbz	x0, .Lskip_lor_\@
 	msr_s	SYS_LORC_EL1, xzr
 .Lskip_lor_\@:
@@ -98,7 +142,7 @@
 /* GICv3 system register access */
 .macro __init_el2_gicv3
 	mrs	x0, id_aa64pfr0_el1
-	ubfx	x0, x0, #ID_AA64PFR0_GIC_SHIFT, #4
+	ubfm	x0, x0, #ID_AA64PFR0_GIC_SHIFT, #(ID_AA64PFR0_GIC_SHIFT + 3)
 	cbz	x0, .Lskip_gicv3_\@
 
 	mrs_s	x0, SYS_ICC_SRE_EL2
@@ -133,7 +177,7 @@
 /* SVE register access */
 .macro __init_el2_nvhe_sve
 	mrs	x1, id_aa64pfr0_el1
-	ubfx	x1, x1, #ID_AA64PFR0_SVE_SHIFT, #4
+	ubfm	x1, x1, #ID_AA64PFR0_SVE_SHIFT, #(ID_AA64PFR0_SVE_SHIFT + 3)
 	cbz	x1, .Lskip_sve_\@
 
 	bic	x0, x0, #CPTR_EL2_TZ		// Also disable SVE traps

@@ -1,0 +1,8 @@
+make[1]: se entra en el directorio '/home/rebelpilot89/manaus-kernel/out'
+  GEN     Makefile
+  REMOVE  arch/arm64/include/generated/asm/cpucaps.h arch/arm64/include/generated/asm/sysreg-defs.h
+  GEN     arch/arm64/include/generated/asm/cpucaps.h
+  GEN     arch/arm64/include/generated/asm/sysreg-defs.h
+  CALL    ../scripts/atomic/check-atomics.sh
+  CC      arch/arm64/kernel/asm-offsets.s
+make[1]: se sale del directorio '/home/rebelpilot89/manaus-kernel/out'

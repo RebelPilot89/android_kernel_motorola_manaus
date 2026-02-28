@@ -23,6 +23,14 @@
 #include <asm/cpufeature.h>
 #include <asm/virt.h>
 
+/* Fix para Motorola: Definiciones de compatibilidad KVM */
+#ifndef SCTLR_ELx_M
+#define SCTLR_ELx_M (1UL << 0)
+#endif
+#ifndef SCTLR_ELx_EE
+#define SCTLR_ELx_EE (1UL << 25)
+#endif
+
 #define CURRENT_EL_SP_EL0_VECTOR 0x0
 #define CURRENT_EL_SP_ELx_VECTOR 0x200
 #define LOWER_EL_AArch64_VECTOR 0x400

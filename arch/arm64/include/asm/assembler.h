@@ -118,6 +118,15 @@ alternative_else
 alternative_endif
 	.endm
 
+	.macro break_before_make_ttbr_switch, zero_page, new_ttbr, tmp1, tmp2
+	msr	ttbr1_el1, \zero_page
+	isb
+	tlbi	vmalle1
+	dsb	nsh
+	msr	ttbr1_el1, \new_ttbr
+	isb
+	.endm
+
 /*
  * NOP sequence
  */
@@ -445,6 +454,52 @@ USER(\label, ic	ivau, \tmp2)			// invalidate I line PoU
 	b.lo	9997b
 	dsb	ish
 	isb
+	.endm
+
+/*
+ * User copy helpers required by arch/arm64/lib/copy_template.S.
+ * Kept as plain unprivileged accesses for LLVM IAS compatibility.
+ */
+	.macro ldrb1, reg, ptr, val
+	ldtrb	\reg, [\ptr]
+	add	\ptr, \ptr, \val
+	.endm
+
+	.macro strb1, reg, ptr, val
+	sttrb	\reg, [\ptr]
+	add	\ptr, \ptr, \val
+	.endm
+
+	.macro ldrh1, reg, ptr, val
+	ldtrh	\reg, [\ptr]
+	add	\ptr, \ptr, \val
+	.endm
+
+	.macro strh1, reg, ptr, val
+	sttrh	\reg, [\ptr]
+	add	\ptr, \ptr, \val
+	.endm
+
+	.macro ldr1, reg, ptr, val
+	ldtr	\reg, [\ptr]
+	add	\ptr, \ptr, \val
+	.endm
+
+	.macro str1, reg, ptr, val
+	sttr	\reg, [\ptr]
+	add	\ptr, \ptr, \val
+	.endm
+
+	.macro ldp1, reg1, reg2, ptr, val
+	ldtr	\reg1, [\ptr]
+	ldtr	\reg2, [\ptr, #8]
+	add	\ptr, \ptr, \val
+	.endm
+
+	.macro stp1, reg1, reg2, ptr, val
+	sttr	\reg1, [\ptr]
+	sttr	\reg2, [\ptr, #8]
+	add	\ptr, \ptr, \val
 	.endm
 
 /*

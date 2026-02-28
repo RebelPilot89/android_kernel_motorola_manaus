@@ -31,6 +31,10 @@
 #include <asm/debug-monitors.h>
 #include <asm/processor.h>
 
+#ifndef __ASSEMBLY__
+#include "../../../kvm_motorola_fix_c.h"
+#endif
+
 struct kvm_exception_table_entry {
 	int insn, fixup;
 };
@@ -94,18 +98,18 @@ static inline void __activate_traps_common(struct kvm_vcpu *vcpu)
 	vcpu->arch.mdcr_el2_host = read_sysreg(mdcr_el2);
 	write_sysreg(vcpu->arch.mdcr_el2, mdcr_el2);
 
-	#ifdef ARM64_SME
+#ifdef ARM64_SME
 	if (cpus_have_final_cap(ARM64_SME)) {
 		sysreg_clear_set_s(SYS_HFGRTR_EL2,
 				   HFGxTR_EL2_nSMPRI_EL1_MASK |
-				   HFGxTR_EL2_nTPIDR2_EL0_MASK,
+					   HFGxTR_EL2_nTPIDR2_EL0_MASK,
 				   0);
 		sysreg_clear_set_s(SYS_HFGWTR_EL2,
 				   HFGxTR_EL2_nSMPRI_EL1_MASK |
-				   HFGxTR_EL2_nTPIDR2_EL0_MASK,
+					   HFGxTR_EL2_nTPIDR2_EL0_MASK,
 				   0);
 	}
-	#endif
+#endif
 }
 
 static inline void __deactivate_traps_common(struct kvm_vcpu *vcpu)
@@ -120,16 +124,16 @@ static inline void __deactivate_traps_common(struct kvm_vcpu *vcpu)
 		write_sysreg(ctxt_sys_reg(hctxt, PMUSERENR_EL0), pmuserenr_el0);
 	}
 
-	#ifdef ARM64_SME
+#ifdef ARM64_SME
 	if (cpus_have_final_cap(ARM64_SME)) {
 		sysreg_clear_set_s(SYS_HFGRTR_EL2, 0,
 				   HFGxTR_EL2_nSMPRI_EL1_MASK |
-				   HFGxTR_EL2_nTPIDR2_EL0_MASK);
+					   HFGxTR_EL2_nTPIDR2_EL0_MASK);
 		sysreg_clear_set_s(SYS_HFGWTR_EL2, 0,
 				   HFGxTR_EL2_nSMPRI_EL1_MASK |
-				   HFGxTR_EL2_nTPIDR2_EL0_MASK);
+					   HFGxTR_EL2_nTPIDR2_EL0_MASK);
 	}
-	#endif
+#endif
 }
 
 static inline void ___activate_traps(struct kvm_vcpu *vcpu)
@@ -167,8 +171,7 @@ static inline bool __populate_fault_info(struct kvm_vcpu *vcpu)
 static inline void __hyp_sve_restore_guest(struct kvm_vcpu *vcpu)
 {
 	sve_cond_update_zcr_vq(vcpu_sve_max_vq(vcpu) - 1, SYS_ZCR_EL2);
-	__sve_restore_state(vcpu_sve_pffr(vcpu),
-			    &vcpu->arch.ctxt.fp_regs.fpsr);
+	__sve_restore_state(vcpu_sve_pffr(vcpu), &vcpu->arch.ctxt.fp_regs.fpsr);
 	write_sysreg_el1(__vcpu_sys_reg(vcpu, ZCR_EL1), SYS_ZCR);
 }
 
@@ -302,7 +305,8 @@ static inline bool kvm_hyp_handle_fpsimd(struct kvm_vcpu *vcpu, u64 *exit_code)
 	isb();
 
 	/* Write out the host state if it's in the registers */
-	if (is_protected_kvm_enabled() && vcpu->arch.fp_state == FP_STATE_HOST_OWNED)
+	if (is_protected_kvm_enabled() &&
+	    vcpu->arch.fp_state == FP_STATE_HOST_OWNED)
 		kvm_hyp_handle_fpsimd_host(vcpu);
 
 	/* Restore the guest state */
@@ -394,14 +398,14 @@ static inline bool esr_is_ptrauth_trap(u64 esr)
 	return false;
 }
 
-#define __ptrauth_save_key(ctxt, key)					\
-	do {								\
-	u64 __val;                                                      \
-	__val = read_sysreg_s(SYS_ ## key ## KEYLO_EL1);                \
-	ctxt_sys_reg(ctxt, key ## KEYLO_EL1) = __val;                   \
-	__val = read_sysreg_s(SYS_ ## key ## KEYHI_EL1);                \
-	ctxt_sys_reg(ctxt, key ## KEYHI_EL1) = __val;                   \
-} while(0)
+#define __ptrauth_save_key(ctxt, key)                                          \
+	do {                                                                   \
+		u64 __val;                                                     \
+		__val = read_sysreg_s(SYS_##key##KEYLO_EL1);                   \
+		ctxt_sys_reg(ctxt, key##KEYLO_EL1) = __val;                    \
+		__val = read_sysreg_s(SYS_##key##KEYHI_EL1);                   \
+		ctxt_sys_reg(ctxt, key##KEYHI_EL1) = __val;                    \
+	} while (0)
 
 DECLARE_PER_CPU(struct kvm_cpu_context, kvm_hyp_ctxt);
 
@@ -462,10 +466,11 @@ static inline bool kvm_hyp_handle_memory_fault(struct kvm_vcpu *vcpu,
 
 	return false;
 }
-#define kvm_hyp_handle_iabt_low		kvm_hyp_handle_memory_fault
-#define kvm_hyp_handle_watchpt_low	kvm_hyp_handle_memory_fault
+#define kvm_hyp_handle_iabt_low kvm_hyp_handle_memory_fault
+#define kvm_hyp_handle_watchpt_low kvm_hyp_handle_memory_fault
 
-static inline bool kvm_hyp_handle_dabt_low(struct kvm_vcpu *vcpu, u64 *exit_code)
+static inline bool kvm_hyp_handle_dabt_low(struct kvm_vcpu *vcpu,
+					   u64 *exit_code)
 {
 	if (kvm_hyp_handle_memory_fault(vcpu, exit_code))
 		return true;
@@ -475,8 +480,7 @@ static inline bool kvm_hyp_handle_dabt_low(struct kvm_vcpu *vcpu, u64 *exit_code
 
 		valid = kvm_vcpu_trap_get_fault_type(vcpu) == FSC_FAULT &&
 			kvm_vcpu_dabt_isvalid(vcpu) &&
-			!kvm_vcpu_abt_issea(vcpu) &&
-			!kvm_vcpu_abt_iss1tw(vcpu);
+			!kvm_vcpu_abt_issea(vcpu) && !kvm_vcpu_abt_iss1tw(vcpu);
 
 		if (valid) {
 			int ret = __vgic_v2_perform_cpuif_access(vcpu);
@@ -511,22 +515,23 @@ static inline bool kvm_hyp_handle_exit(struct kvm_vcpu *vcpu, u64 *exit_code,
 	return false;
 }
 
-static inline void synchronize_vcpu_pstate(struct kvm_vcpu *vcpu, u64 *exit_code)
+static inline void synchronize_vcpu_pstate(struct kvm_vcpu *vcpu,
+					   u64 *exit_code)
 {
-	/*
+/*
 	 * Check for the conditions of Cortex-A510's #2077057. When these occur
 	 * SPSR_EL2 can't be trusted, but isn't needed either as it is
 	 * unchanged from the value in vcpu_gp_regs(vcpu)->pstate.
 	 * Are we single-stepping the guest, and took a PAC exception from the
 	 * active-not-pending state?
 	 */
-	#ifdef ARM64_WORKAROUND_2077057
-	if (cpus_have_final_cap(ARM64_WORKAROUND_2077057)		&&
-	    vcpu->guest_debug & KVM_GUESTDBG_SINGLESTEP			&&
-	    *vcpu_cpsr(vcpu) & DBG_SPSR_SS				&&
+#ifdef ARM64_WORKAROUND_2077057
+	if (cpus_have_final_cap(ARM64_WORKAROUND_2077057) &&
+	    vcpu->guest_debug & KVM_GUESTDBG_SINGLESTEP &&
+	    *vcpu_cpsr(vcpu) & DBG_SPSR_SS &&
 	    ESR_ELx_EC(read_sysreg_el2(SYS_ESR)) == ESR_ELx_EC_PAC)
 		write_sysreg_el2(*vcpu_cpsr(vcpu), SYS_SPSR);
-	#endif
+#endif
 
 	vcpu->arch.ctxt.regs.pstate = read_sysreg_el2(SYS_SPSR);
 }

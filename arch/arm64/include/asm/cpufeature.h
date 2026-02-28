@@ -84,6 +84,10 @@ struct arm64_ftr_reg {
 	struct arm64_ftr_override *override;
 };
 
+extern struct arm64_ftr_override id_aa64mmfr1_override;
+extern struct arm64_ftr_override id_aa64pfr1_override;
+extern struct arm64_ftr_override id_aa64isar1_override;
+
 extern struct arm64_ftr_reg arm64_ftr_reg_ctrel0;
 u64 __read_sysreg_by_encoding(u32 sys_id);
 

@@ -12,6 +12,10 @@
 #include <asm/kvm_hyp.h>
 #include <asm/kvm_mmu.h>
 
+#ifndef SYS_PAR_EL1_F
+#define SYS_PAR_EL1_F (1UL << 0)
+#endif
+
 static inline bool __translate_far_to_hpfar(u64 far, u64 *hpfar)
 {
 	u64 par, tmp;

@@ -110,47 +110,47 @@ static bool mtk_venc_is_vcu(void)
 #if IS_ENABLED(CONFIG_MTK_TINYSYS_VCP_SUPPORT)
 static void set_venc_vcp_data(struct mtk_vcodec_ctx *ctx, enum vcp_reserve_mem_id_t id)
 {
-	struct venc_enc_param enc_prm;
+	struct venc_enc_param *enc_prm = &ctx->venc_vcp_prm;
 
-	memset(&enc_prm, 0, sizeof(enc_prm));
-	memset(enc_prm.set_vcp_buf, '\0', 1024);
+	memset(enc_prm, 0, sizeof(*enc_prm));
+	memset(enc_prm->set_vcp_buf, '\0', sizeof(enc_prm->set_vcp_buf));
 
 	if (id == VENC_SET_PROP_MEM_ID) {
 
-		sprintf(enc_prm.set_vcp_buf, "%s", mtk_venc_property);
-		mtk_v4l2_debug(3, "[%d] mtk_venc_property %s", ctx->id, enc_prm.set_vcp_buf);
+		sprintf(enc_prm->set_vcp_buf, "%s", mtk_venc_property);
+		mtk_v4l2_debug(3, "[%d] mtk_venc_property %s", ctx->id, enc_prm->set_vcp_buf);
 		mtk_v4l2_debug(3, "[%d] mtk_venc_property_prev %s",
 					ctx->id, mtk_venc_property_prev);
 
 		// set vcp log every time
 		if (/* strcmp(mtk_venc_property_prev, enc_prm.set_vcp_buf) != 0 && */
-			strlen(enc_prm.set_vcp_buf) != 0) {
+			strlen(enc_prm->set_vcp_buf) != 0) {
 
 			if (venc_if_set_param(ctx,
 				VENC_SET_PARAM_PROPERTY,
-				&enc_prm) != 0) {
+				enc_prm) != 0) {
 				mtk_v4l2_err("Error!! Cannot set venc property");
 				return;
 			}
-			strcpy(mtk_venc_property_prev, enc_prm.set_vcp_buf);
+			strcpy(mtk_venc_property_prev, enc_prm->set_vcp_buf);
 		}
 	} else if (id == VENC_VCP_LOG_INFO_ID) {
 
-		sprintf(enc_prm.set_vcp_buf, "%s", mtk_venc_vcp_log);
-		mtk_v4l2_debug(3, "[%d] mtk_venc_vcp_log %s", ctx->id, enc_prm.set_vcp_buf);
+		sprintf(enc_prm->set_vcp_buf, "%s", mtk_venc_vcp_log);
+		mtk_v4l2_debug(3, "[%d] mtk_venc_vcp_log %s", ctx->id, enc_prm->set_vcp_buf);
 		mtk_v4l2_debug(3, "[%d] mtk_venc_vcp_log_prev %s", ctx->id, mtk_venc_vcp_log_prev);
 
 		// set vcp log every time
 		if (/* strcmp(mtk_venc_vcp_log_prev, enc_prm.set_vcp_buf) != 0 && */
-			strlen(enc_prm.set_vcp_buf) != 0) {
+			strlen(enc_prm->set_vcp_buf) != 0) {
 
 			if (venc_if_set_param(ctx,
 				VENC_SET_PARAM_VCP_LOG_INFO,
-				&enc_prm) != 0) {
+				enc_prm) != 0) {
 				mtk_v4l2_err("Error!! Cannot set venc vcp log info");
 				return;
 			}
-			strcpy(mtk_venc_vcp_log_prev, enc_prm.set_vcp_buf);
+			strcpy(mtk_venc_vcp_log_prev, enc_prm->set_vcp_buf);
 		}
 	}
 }
@@ -2125,7 +2125,7 @@ static void vb2ops_venc_buf_queue(struct vb2_buffer *vb)
 static int vb2ops_venc_start_streaming(struct vb2_queue *q, unsigned int count)
 {
 	struct mtk_vcodec_ctx *ctx = vb2_get_drv_priv(q);
-	struct venc_enc_param param;
+	struct venc_enc_param *param = &ctx->venc_start_prm;
 	int ret;
 	int i;
 
@@ -2147,20 +2147,20 @@ static int vb2ops_venc_start_streaming(struct vb2_queue *q, unsigned int count)
 			return 0;
 	}
 
-	memset(&param, 0, sizeof(param));
-	mtk_venc_set_param(ctx, &param);
-	ret = venc_if_set_param(ctx, VENC_SET_PARAM_ENC, &param);
+	memset(param, 0, sizeof(*param));
+	mtk_venc_set_param(ctx, param);
+	ret = venc_if_set_param(ctx, VENC_SET_PARAM_ENC, param);
 
 	mtk_v4l2_debug(0,
 	"fmt 0x%x, P/L %d/%d, w/h %d/%d, buf %d/%d, fps/bps %d/%d(%d), gop %d, ip# %d opr %d async %d grid size %d/%d b#%d, slbc %d maxqp %d minqp %d",
-	param.input_yuv_fmt, param.profile,
-	param.level, param.width, param.height,
-	param.buf_width, param.buf_height,
-	param.frm_rate, param.bitrate, param.bitratemode,
-	param.gop_size, param.intra_period,
-	param.operationrate, ctx->async_mode,
-	(param.heif_grid_size>>16), param.heif_grid_size&0xffff,
-	param.num_b_frame, param.slbc_ready, param.max_qp, param.min_qp);
+	param->input_yuv_fmt, param->profile,
+	param->level, param->width, param->height,
+	param->buf_width, param->buf_height,
+	param->frm_rate, param->bitrate, param->bitratemode,
+	param->gop_size, param->intra_period,
+	param->operationrate, ctx->async_mode,
+	(param->heif_grid_size>>16), param->heif_grid_size&0xffff,
+	param->num_b_frame, param->slbc_ready, param->max_qp, param->min_qp);
 
 	if (ret) {
 		mtk_v4l2_err("venc_if_set_param failed=%d", ret);
@@ -2371,12 +2371,14 @@ static int mtk_venc_encode_header(void *priv)
 
 static int mtk_venc_param_change(struct mtk_vcodec_ctx *ctx)
 {
-	struct venc_enc_param enc_prm;
+	struct venc_enc_param *enc_prm_ptr = &ctx->venc_change_prm;
 	struct vb2_v4l2_buffer *vb2_v4l2 = v4l2_m2m_next_src_buf(ctx->m2m_ctx);
 	struct mtk_video_enc_buf *mtk_buf =
 		container_of(vb2_v4l2, struct mtk_video_enc_buf, vb);
 
 	int ret = 0;
+
+#define enc_prm (*enc_prm_ptr)
 
 	memset(&enc_prm, 0, sizeof(enc_prm));
 	if (mtk_buf->param_change == MTK_ENCODE_PARAM_NONE)
@@ -2655,6 +2657,7 @@ static int mtk_venc_param_change(struct mtk_vcodec_ctx *ctx)
 		return -1;
 	}
 
+	#undef enc_prm
 	return 0;
 }
 

@@ -116,6 +116,7 @@ alternative_cb_end
 void kvm_update_va_mask(struct alt_instr *alt, __le32 *origptr, __le32 *updptr,
 			int nr_inst);
 void kvm_compute_layout(void);
+void kvm_apply_hyp_relocations(void);
 
 #ifndef __hyp_pa
 #define __hyp_pa(x) (((phys_addr_t)(x)) + hyp_physvirt_offset)

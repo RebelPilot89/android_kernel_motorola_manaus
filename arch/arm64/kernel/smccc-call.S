@@ -8,7 +8,7 @@
 #include <asm/asm-offsets.h>
 #include <asm/assembler.h>
 #include <asm/thread_info.h>
-//#include <asm/alternative.h>
+#include <asm/alternative.h>
 
 	.pushsection ".rodata", "a"
 	.align 3

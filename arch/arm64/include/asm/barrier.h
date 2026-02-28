@@ -34,9 +34,11 @@
 #define __tsb_csync() asm volatile("hint #18" : : : "memory")
 #define csdb() asm volatile("hint #20" : : : "memory")
 
-#define spec_bar()                                                             \
-	asm volatile(ALTERNATIVE("dsb nsh\nisb\n", SB_BARRIER_INSN "nop\n",    \
-				 ARM64_HAS_SB))
+#define SB_BARRIER_INSN " .inst 0xd50322ff " /* Instrucción SB para ARMv8.5+ */
+
+/* Simplificación para evitar errores de expansión en LLVM_IAS */
+#undef spec_bar
+#define spec_bar() asm volatile("dsb nsh\nisb" : : : "memory")
 
 #ifdef CONFIG_ARM64_PSEUDO_NMI
 #define pmr_sync()                                                             \

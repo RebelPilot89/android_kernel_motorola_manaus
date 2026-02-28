@@ -774,9 +774,9 @@ static const struct arm64_ftr_bits ftr_raz[] = {
 #define ARM64_FTR_REG(id, table)                                               \
 	__ARM64_FTR_REG_OVERRIDE(#id, id, table, &no_override)
 
-static struct arm64_ftr_override id_aa64mmfr1_override = { 0, 0 };
-static struct arm64_ftr_override id_aa64pfr1_override = { 0, 0 };
-static struct arm64_ftr_override id_aa64isar1_override = { 0, 0 };
+struct arm64_ftr_override id_aa64mmfr1_override = { 0, 0 };
+struct arm64_ftr_override id_aa64pfr1_override = { 0, 0 };
+struct arm64_ftr_override id_aa64isar1_override = { 0, 0 };
 
 static const struct __ftr_reg_entry {
 	u32 sys_id;

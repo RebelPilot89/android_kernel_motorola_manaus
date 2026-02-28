@@ -19,7 +19,8 @@
 	.macro	multitag_transfer_size, reg, tmp
 	/* read GMID_EL1; llvm-ias prefers direct register names */
 	mrs	\reg, GMID_EL1
-	ubfx	\reg, \reg, #SYS_GMID_EL1_BS_SHIFT, #SYS_GMID_EL1_BS_SIZE
+	/* Extract BS field (bits [3:0]) without SYS_GMID_* immediates */
+	and	\reg, \reg, #0xf
 	mov	\tmp, #4
 	lsl	\reg, \tmp, \reg
 	.endm

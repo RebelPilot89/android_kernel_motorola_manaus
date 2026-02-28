@@ -102,12 +102,12 @@
  *
  * The decision process for determining the results are:
  *
- *                CPU*: | arm32      | arm64      |
- * ELF:                 |            |            |
+ *                CPU*: | arm32      | arm64      |
+ * ELF:                 |            |            |
  * ---------------------|------------|------------|
- * missing PT_GNU_STACK | exec-all   | exec-none  |
- * PT_GNU_STACK == RWX  | exec-stack | exec-stack |
- * PT_GNU_STACK == RW   | exec-none  | exec-none  |
+ * missing PT_GNU_STACK | exec-all   | exec-none  |
+ * PT_GNU_STACK == RWX  | exec-stack | exec-stack |
+ * PT_GNU_STACK == RW   | exec-none  | exec-none  |
  *
  *  exec-all  : all PROT_READ user mappings are executable, except when
  *              backed by files on a noexec-filesystem.

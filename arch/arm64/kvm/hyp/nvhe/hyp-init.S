@@ -3,6 +3,9 @@
  * Copyright (C) 2012,2013 - ARM Ltd
  * Author: Marc Zyngier <marc.zyngier@arm.com>
  */
+#ifndef SCTLR_ELx_M
+#define SCTLR_ELx_M 1
+#endif
 
 #include <linux/arm-smccc.h>
 #include <linux/linkage.h>
@@ -16,6 +19,44 @@
 #include <asm/pgtable-hwdef.h>
 #include <asm/sysreg.h>
 #include <asm/virt.h>
+
+/* Rescate de Registros mediante codificación directa para LLVM_IAS */
+#ifndef SYS_HFGWTR_EL2
+#define SYS_HFGWTR_EL2     s3_4_c1_c1_1
+#endif
+#ifndef SYS_HFGRTR_EL2
+#define SYS_HFGRTR_EL2     s3_4_c1_c1_0
+#endif
+#ifndef SYS_PMBIDR_EL1
+#define SYS_PMBIDR_EL1     s3_0_c9_c10_7
+#endif
+#ifndef SYS_PMSCR_EL2
+#define SYS_PMSCR_EL2      s3_4_c9_c9_0
+#endif
+#ifndef SYS_TRBIDR_EL1
+#define SYS_TRBIDR_EL1     s3_0_c9_c11_7
+#endif
+#ifndef SYS_ICC_SRE_EL2
+#define SYS_ICC_SRE_EL2    s3_4_c12_c9_5
+#endif
+#ifndef SYS_ICH_HCR_EL2
+#define SYS_ICH_HCR_EL2    s3_4_c12_c11_0
+#endif
+#ifndef SYS_ZCR_EL2
+#define SYS_ZCR_EL2        s3_4_c1_c2_0
+#endif
+
+/* Constantes de bits para debug */
+#ifndef ID_AA64DFR0_TRBE_SHIFT
+#define ID_AA64DFR0_TRBE_SHIFT    44
+#endif
+#ifndef TRBIDR_PROG
+#define TRBIDR_PROG               (1 << 0)
+#endif
+#ifndef SYS_PMBIDR_EL1_P_SHIFT
+#define SYS_PMBIDR_EL1_P_SHIFT    0
+#endif
+
 
 	.text
 	.pushsection	.idmap.text, "ax"
@@ -253,7 +294,7 @@ SYM_FUNC_START(__pkvm_init_switch_pgd)
 	/* Turn the MMU off */
 	pre_disable_mmu_workaround
 	mrs	x2, sctlr_el2
-	bic	x3, x2, #SCTLR_ELx_M
+	bic	x3, x2, #1
 	msr	sctlr_el2, x3
 	isb
 
