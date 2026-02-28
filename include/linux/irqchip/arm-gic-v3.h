@@ -601,6 +601,65 @@
 #define ICC_SGI1R_AFFINITY_3_SHIFT	48
 #define ICC_SGI1R_AFFINITY_3_MASK	(0xffULL << ICC_SGI1R_AFFINITY_3_SHIFT)
 
+/*
+ * Hypervisor interface registers (ICH_*) for GICv3 virtual CPU interface.
+ * ICH_LR<n>_EL2 are 64-bit; ICH_HCR_EL2, ICH_VMCR_EL2, ICH_VTR_EL2 are 32-bit.
+ */
+
+/* ICH_HCR_EL2 bits */
+#define ICH_HCR_EN		(1 << 0)
+#define ICH_HCR_UIE		(1 << 1)
+#define ICH_HCR_LRENPIE		(1 << 2)
+#define ICH_HCR_NPIE		(1 << 3)
+#define ICH_HCR_TC		(1 << 10)
+#define ICH_HCR_TALL0		(1 << 11)
+#define ICH_HCR_TALL1		(1 << 12)
+#define ICH_HCR_TDIR		(1 << 14)
+#define ICH_HCR_EOIcount_SHIFT	27
+#define ICH_HCR_EOIcount_MASK	(0x1f << ICH_HCR_EOIcount_SHIFT)
+
+/* ICH_LR<n>_EL2 bits (64-bit List Registers) */
+#define ICH_LR_VIRTUAL_ID_MASK	((1ULL << 32) - 1)
+#define ICH_LR_PHYS_ID_SHIFT	32
+#define ICH_LR_PHYS_ID_MASK	(0x3ffULL << ICH_LR_PHYS_ID_SHIFT)
+#define ICH_LR_EOI		(1ULL << 41)
+#define ICH_LR_PRIORITY_SHIFT	48
+#define ICH_LR_PRIORITY_MASK	(0xffULL << ICH_LR_PRIORITY_SHIFT)
+#define ICH_LR_GROUP		(1ULL << 60)
+#define ICH_LR_HW		(1ULL << 61)
+#define ICH_LR_STATE		(3ULL << 62)
+#define ICH_LR_PENDING_BIT	(1ULL << 62)
+#define ICH_LR_ACTIVE_BIT	(1ULL << 63)
+
+/* ICH_VMCR_EL2 bits */
+#define ICH_VMCR_ENG0_SHIFT	0
+#define ICH_VMCR_ENG0_MASK	(1 << ICH_VMCR_ENG0_SHIFT)
+#define ICH_VMCR_ENG1_SHIFT	1
+#define ICH_VMCR_ENG1_MASK	(1 << ICH_VMCR_ENG1_SHIFT)
+#define ICH_VMCR_ACK_CTL_SHIFT	2
+#define ICH_VMCR_ACK_CTL_MASK	(1 << ICH_VMCR_ACK_CTL_SHIFT)
+#define ICH_VMCR_FIQ_EN_SHIFT	3
+#define ICH_VMCR_FIQ_EN_MASK	(1 << ICH_VMCR_FIQ_EN_SHIFT)
+#define ICH_VMCR_CBPR_SHIFT	4
+#define ICH_VMCR_CBPR_MASK	(1 << ICH_VMCR_CBPR_SHIFT)
+#define ICH_VMCR_EOIM_SHIFT	9
+#define ICH_VMCR_EOIM_MASK	(1 << ICH_VMCR_EOIM_SHIFT)
+#define ICH_VMCR_BPR1_SHIFT	18
+#define ICH_VMCR_BPR1_MASK	(7 << ICH_VMCR_BPR1_SHIFT)
+#define ICH_VMCR_BPR0_SHIFT	21
+#define ICH_VMCR_BPR0_MASK	(7 << ICH_VMCR_BPR0_SHIFT)
+#define ICH_VMCR_PMR_SHIFT	24
+#define ICH_VMCR_PMR_MASK	(0xff << ICH_VMCR_PMR_SHIFT)
+
+/* ICH_VTR_EL2 bits */
+#define ICH_VTR_TDS_MASK	(1 << 19)
+#define ICH_VTR_A3V_MASK	(1 << 21)
+#define ICH_VTR_SEIS_MASK	(1 << 22)
+#define ICH_VTR_ID_BITS_SHIFT	23
+#define ICH_VTR_ID_BITS_MASK	(7 << ICH_VTR_ID_BITS_SHIFT)
+#define ICH_VTR_PRI_BITS_SHIFT	29
+#define ICH_VTR_PRI_BITS_MASK	(7 << ICH_VTR_PRI_BITS_SHIFT)
+
 #include <asm/arch_gicv3.h>
 
 #ifndef __ASSEMBLY__
