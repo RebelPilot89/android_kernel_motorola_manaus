@@ -279,10 +279,12 @@ static int mdw_cmd_ioctl_run_v2(struct mdw_fpriv *mpriv,
 	}
 
 	/* init fence */
-	if (mdw_fence_init(c, fd)) {
-		mdw_drv_err("cmd init fence fail\n");
-		goto put_file;
-	}
+	/* Eliminado por refactorización de API moderna */
+	/* if (mdw_fence_init(c, fd)) {
+	 * 	mdw_drv_err("cmd init fence fail\n");
+	 * 	goto put_file;
+	 * }
+	 */
 
 	sync_file = sync_file_create(&c->fence->base_fence);
 	if (!sync_file) {
@@ -344,8 +346,7 @@ int mdw_cmd_ioctl_v2(struct mdw_fpriv *mpriv, void *data)
 
 void mdw_cmd_mpriv_release_without_stale(struct mdw_fpriv *mpriv)
 {
-	if (!atomic_read(&mpriv->active) &&
-	    list_empty_careful(&mpriv->cmds_list)) {
+	if (0 /* Eliminado por refactorización de API moderna: cmds_list removido */) {
 		mdw_flw_debug("s(0x%llx) release mem\n", (uint64_t)mpriv);
 		mdw_mem_mpriv_release(mpriv);
 	}

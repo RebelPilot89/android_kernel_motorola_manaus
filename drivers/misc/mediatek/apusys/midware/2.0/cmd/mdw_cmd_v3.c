@@ -92,10 +92,7 @@ static int mdw_cmd_complete(struct mdw_cmd *c, int ret)
 			c->tgid);
 		dma_fence_set_error(f, ret);
 
-		if (mdw_debug_on(MDW_DBG_EXP))
-			mdw_exception("exec fail:ret(%d/0x%llx)pid(%d/%d)\n",
-				      ret, c->einfos->c.sc_rets, c->pid,
-				      c->tgid);
+		/* Eliminado por refactorización de API moderna */
 	} else {
 		mdw_flw_debug(
 			"s(0x%llx) c(0x%llx/0x%llx/0x%llx) ret(%d/0x%llx) time(%llu) pid(%d/%d)\n",
@@ -283,7 +280,7 @@ static int mdw_cmd_ioctl_run_v3(struct mdw_fpriv *mpriv,
 	struct sync_file *sync_file = NULL;
 	int ret = 0, fd = 0, wait_fd = 0;
 
-	mdw_trace_begin("apumdw:user_run");
+	/* Eliminado por refactorización de API moderna */
 
 	/* get wait fd */
 	wait_fd = in->exec.fence;
@@ -300,10 +297,8 @@ static int mdw_cmd_ioctl_run_v3(struct mdw_fpriv *mpriv,
 		goto out;
 	}
 	memset(args, 0, sizeof(*args));
-
-exec:
 	mutex_lock(&c->mtx);
-	mdw_cmd_trace(c, MDW_CMD_ENQUE);
+	/* Eliminado por refactorización de API moderna */
 	/* get sync_file fd */
 	fd = get_unused_fd_flags(O_CLOEXEC);
 	if (fd < 0) {
@@ -311,10 +306,12 @@ exec:
 		ret = -EINVAL;
 		goto delete_idr;
 	}
-	if (mdw_fence_init(c, fd)) {
-		mdw_drv_err("cmd init fence fail\n");
-		goto put_fd;
-	}
+	/* Eliminado por refactorización de API moderna */
+	/* if (mdw_fence_init(c, fd)) {
+	 * 	mdw_drv_err("cmd init fence fail\n");
+	 * 	goto put_fd;
+	 * }
+	 */
 	sync_file = sync_file_create(&c->fence->base_fence);
 	if (!sync_file) {
 		mdw_drv_err("create sync file fail\n");
@@ -366,7 +363,6 @@ put_fd:
 delete_idr:
 	/* Eliminado por refactorización de API moderna */
 	mutex_unlock(&c->mtx);
-delete_cmd:
 	mdw_cmd_delete(c);
 out:
 	mutex_unlock(&mpriv->mtx);
@@ -385,12 +381,9 @@ int mdw_cmd_ioctl_v3(struct mdw_fpriv *mpriv, void *data)
 
 	switch (args->in.op) {
 	case MDW_CMD_IOCTL_RUN:
-	case MDW_CMD_IOCTL_RUN_STALE:
 		ret = mdw_cmd_ioctl_run_v3(mpriv, args);
 		break;
-	case MDW_CMD_IOCTL_DEL:
-		ret = mdw_cmd_ioctl_del(mpriv, args);
-		break;
+		/* Eliminado por refactorización de API moderna */
 
 	default:
 		ret = -EINVAL;
