@@ -2,6 +2,8 @@
 //
 // Copyright (c) 2021 MediaTek Inc.
 &i2c6 {
+	#address-cells = <1>;
+	#size-cells = <0>;
 	wl2864c: wl2864c@29 {
 		status = "ok";
 		compatible = "wl2864c";

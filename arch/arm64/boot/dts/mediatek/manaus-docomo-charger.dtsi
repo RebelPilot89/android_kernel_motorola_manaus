@@ -321,6 +321,8 @@
 
 &i2c0 {
 	status = "okay";
+	#address-cells = <1>;
+	#size-cells = <0>;
 
 	bq25960_standalone:bq25960-standalone@65 {
 		status = "okay";
