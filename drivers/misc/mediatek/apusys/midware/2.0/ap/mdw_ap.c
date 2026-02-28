@@ -7,7 +7,7 @@
 #include "mdw_cmn.h"
 #include "mdw_ap.h"
 #include "mdw_ap_tag.h"
-#include "mdw_dmy.h"
+#include "dummy/mdw_dmy.h"
 
 static int mdw_ap_sw_init(struct mdw_device *mdev)
 {
@@ -30,7 +30,7 @@ static int mdw_ap_sw_init(struct mdw_device *mdev)
 		d->type = t->type;
 		if (t->array[0]->dev) {
 			memcpy(d->meta, t->array[0]->dev->meta_data,
-				sizeof(d->meta));
+			       sizeof(d->meta));
 		}
 
 		mdev->dinfos[i] = d;
@@ -117,8 +117,8 @@ static int mdw_ap_run_cmd(struct mdw_fpriv *mpriv, struct mdw_cmd *c)
 	return mdw_ap_cmd_exec(c);
 }
 
-static int mdw_ap_set_power(struct mdw_device *mdev,
-	uint32_t type, uint32_t idx, uint32_t boost)
+static int mdw_ap_set_power(struct mdw_device *mdev, uint32_t type,
+			    uint32_t idx, uint32_t boost)
 {
 	struct mdw_dev_info *d = NULL;
 
@@ -129,8 +129,8 @@ static int mdw_ap_set_power(struct mdw_device *mdev,
 	return d->pwr_on(d, boost, MDW_RSC_SET_PWR_TIMEOUT);
 }
 
-static int mdw_ap_ucmd(struct mdw_device *mdev,
-	uint32_t type, void *vaddr, uint32_t size)
+static int mdw_ap_ucmd(struct mdw_device *mdev, uint32_t type, void *vaddr,
+		       uint32_t size)
 {
 	struct mdw_dev_info *d = NULL;
 
@@ -141,8 +141,8 @@ static int mdw_ap_ucmd(struct mdw_device *mdev,
 	return d->ucmd(d, (uint64_t)vaddr, 0, size);
 }
 
-static int mdw_ap_set_param(struct mdw_device *mdev,
-	enum mdw_info_type type, uint32_t val)
+static int mdw_ap_set_param(struct mdw_device *mdev, enum mdw_info_type type,
+			    uint32_t val)
 {
 	int ret = 0;
 
@@ -161,7 +161,7 @@ static int mdw_ap_set_param(struct mdw_device *mdev,
 }
 
 static uint32_t mdw_ap_get_info(struct mdw_device *mdev,
-	enum mdw_info_type type)
+				enum mdw_info_type type)
 {
 	struct mdw_queue *mq = NULL;
 	uint32_t ret = 0;
