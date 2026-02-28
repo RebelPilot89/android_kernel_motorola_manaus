@@ -4,6 +4,7 @@
  */
 
 #include <linux/gfp.h>
+#include <linux/slab.h>
 #include <linux/kmemleak.h>
 #include <drm/drm_crtc_helper.h>
 #include <drm/drm_fb_helper.h>
@@ -23,8 +24,13 @@
 #include "mtk_log.h"
 #include "mtk_drm_mmp.h"
 
-#define to_drm_private(x) container_of(x, struct mtk_drm_private, fb_helper)
 #define ALIGN_TO_32(x) ALIGN_TO(x, 32)
+
+struct mtk_drm_fbdev {
+	struct drm_fb_helper helper;
+};
+
+#define to_mtk_drm_fbdev(x) container_of(x, struct mtk_drm_fbdev, helper)
 
 struct fb_info *debug_info;
 
@@ -209,10 +215,17 @@ int pan_display_test(int frame_num, int bpp)
 static int mtk_drm_fbdev_mmap(struct fb_info *info, struct vm_area_struct *vma)
 {
 	struct drm_fb_helper *helper = info->par;
-	struct mtk_drm_private *private = helper->dev->dev_private;
+	struct drm_gem_object *obj;
+
+	if (!helper || !helper->fb)
+		return -ENODEV;
+
+	obj = mtk_fb_get_gem_obj(helper->fb);
+	if (!obj)
+		return -ENODEV;
 
 	debug_info = info;
-	return mtk_drm_gem_mmap_buf(private->fbdev_bo, vma);
+	return mtk_drm_gem_mmap_buf(obj, vma);
 }
 #endif
 
@@ -231,71 +244,6 @@ static struct fb_ops mtk_fbdev_ops = {
 #endif
 	.fb_ioctl = mtk_drm_fb_ioctl,
 };
-
-bool mtk_drm_lcm_is_connect(void)
-{
-	struct device_node *chosen_node;
-
-	chosen_node = of_find_node_by_path("/chosen");
-	if (chosen_node) {
-		struct tag_videolfb *videolfb_tag = NULL;
-		unsigned long size = 0;
-
-		videolfb_tag = (struct tag_videolfb *)of_get_property(
-			chosen_node,
-			"atag,videolfb", (int *)&size);
-		if (videolfb_tag)
-			return videolfb_tag->islcmfound;
-
-		DDPINFO("[DT][videolfb] videolfb_tag not found\n");
-	} else {
-		DDPINFO("[DT][videolfb] of_chosen not found\n");
-	}
-
-	return false;
-}
-
-int _parse_tag_videolfb(unsigned int *vramsize, phys_addr_t *fb_base,
-			unsigned int *fps)
-{
-#ifdef CONFIG_MTK_DISP_NO_LK
-		return -1;
-#else
-	struct device_node *chosen_node;
-
-	*fps = 6000;
-	chosen_node = of_find_node_by_path("/chosen");
-	if (chosen_node) {
-		struct tag_videolfb *videolfb_tag = NULL;
-		unsigned long size = 0;
-
-		videolfb_tag = (struct tag_videolfb *)of_get_property(
-			chosen_node, "atag,videolfb", (int *)&size);
-		if (videolfb_tag) {
-			*vramsize = videolfb_tag->vram;
-			*fb_base = videolfb_tag->fb_base;
-			*fps = videolfb_tag->fps;
-			if (*fps == 0)
-				*fps = 6000;
-			return 0;
-		}
-
-		DDPINFO("[DT][videolfb] videolfb_tag not found\n");
-		goto found;
-	} else {
-		DDPINFO("[DT][videolfb] of_chosen not found\n");
-	}
-	return -1;
-
-found:
-	DDPINFO("[DT][videolfb] fb_base    = 0x%lx\n", (unsigned long)*fb_base);
-	DDPINFO("[DT][videolfb] vram       = 0x%x (%d)\n", *vramsize,
-		*vramsize);
-	DDPINFO("[DT][videolfb] fps	   = %d\n", *fps);
-
-	return 0;
-#endif
-}
 
 int free_fb_buf(void)
 {
@@ -327,7 +275,6 @@ static int mtk_fbdev_probe(struct drm_fb_helper *helper,
 			   struct drm_fb_helper_surface_size *sizes)
 {
 	struct drm_device *dev = helper->dev;
-	struct mtk_drm_private *private = helper->dev->dev_private;
 	struct drm_mode_fb_cmd2 mode = {0};
 	struct mtk_drm_gem_obj *mtk_gem;
 	struct fb_info *info;
@@ -369,8 +316,6 @@ static int mtk_fbdev_probe(struct drm_fb_helper *helper,
 		kmemleak_ignore(mtk_gem);
 	}
 
-	private->fbdev_bo = &mtk_gem->base;
-
 	info = drm_fb_helper_alloc_fbi(helper);
 	if (IS_ERR(info)) {
 		err = PTR_ERR(info);
@@ -379,7 +324,7 @@ static int mtk_fbdev_probe(struct drm_fb_helper *helper,
 		goto err_gem_free_object;
 	}
 
-	fb = mtk_drm_framebuffer_create(dev, &mode, private->fbdev_bo);
+	fb = mtk_drm_framebuffer_create(dev, &mode, &mtk_gem->base);
 	if (IS_ERR(fb)) {
 		err = PTR_ERR(fb);
 		dev_err(dev->dev, "failed to allocate DRM framebuffer, %d\n",
@@ -454,13 +399,19 @@ static int mtk_drm_fb_add_one_connector(struct drm_device *dev,
 
 int mtk_fbdev_init(struct drm_device *dev)
 {
-	struct mtk_drm_private *priv = dev->dev_private;
-	struct drm_fb_helper *helper = &priv->fb_helper;
+	struct mtk_drm_fbdev *fbdev;
+	struct drm_fb_helper *helper;
 	int ret;
 
 	DDPMSG("%s+\n", __func__);
 	if (!dev->mode_config.num_crtc || !dev->mode_config.num_connector)
 		return -EINVAL;
+
+	fbdev = kzalloc(sizeof(*fbdev), GFP_KERNEL);
+	if (!fbdev)
+		return -ENOMEM;
+
+	helper = &fbdev->helper;
 
 	drm_fb_helper_prepare(dev, helper, &mtk_drm_fb_helper_funcs);
 
@@ -468,7 +419,7 @@ int mtk_fbdev_init(struct drm_device *dev)
 	if (ret) {
 		dev_err(dev->dev, "failed to initialize DRM FB helper, %d\n",
 			ret);
-		goto fini;
+		goto err_free;
 	}
 
 	ret = mtk_drm_fb_add_one_connector(dev, helper);
@@ -489,14 +440,21 @@ int mtk_fbdev_init(struct drm_device *dev)
 
 fini:
 	drm_fb_helper_fini(helper);
+	err_free:
+	kfree(fbdev);
 
 	return ret;
 }
 
 void mtk_fbdev_fini(struct drm_device *dev)
 {
-	struct mtk_drm_private *priv = dev->dev_private;
-	struct drm_fb_helper *helper = &priv->fb_helper;
+	struct drm_fb_helper *helper = dev->fb_helper;
+	struct mtk_drm_fbdev *fbdev;
+
+	if (!helper)
+		return;
+
+	fbdev = to_mtk_drm_fbdev(helper);
 
 	drm_fb_helper_unregister_fbi(helper);
 
@@ -506,4 +464,6 @@ void mtk_fbdev_fini(struct drm_device *dev)
 	}
 
 	drm_fb_helper_fini(helper);
+	dev->fb_helper = NULL;
+	kfree(fbdev);
 }

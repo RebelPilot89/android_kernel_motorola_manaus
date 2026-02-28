@@ -1,161 +1,108 @@
 # SPDX-License-Identifier: GPL-2.0-only
-#
-# NOTE! Don't add files that are generated in specific
-# subdirectories here. Add them in the ".gitignore" file
-# in that subdirectory instead.
-#
-# NOTE! Please use 'git ls-files -i --exclude-standard'
-# command after changing this file, to see if there are
-# any tracked files which get ignored after the change.
-#
-# Normal rules (sorted alphabetically)
-#
-.*
+
+# NOTA: No agregues archivos generados en subdirectorios aquí.
+# Usa el archivo ".gitignore" en esos subdirectorios para reglas específicas.
+
+# Archivos ocultos básicos que SÍ deben permitirse:
+!.gitignore
+!.gitattributes
+!.mailmap
+!.clang-format
+!.cocciconfig
+!.get_maintainer.ignore
+
+# Asegura que la carpeta .github y sus archivos de configuración NO se ignoren
+!.github/
+# (así puedes tener .github/copilot-instructions.md y más configuraciones)
+
+# Objetos y binarios
 *.a
-*.asn1.[ch]
 *.bin
-*.bz2
-*.c.[012]*.*
-*.dt.yaml
+*.o
+*.so
+*.ko
+*.elf
+*.mod
+*.patch
 *.dtb
 *.dtb.S
 *.dwo
-*.elf
-*.gcno
 *.gz
-*.i
-*.ko
-*.lex.c
-*.ll
-*.lst
+*.bz2
 *.lz4
 *.lzma
 *.lzo
-*.mod
-*.mod.c
-*.o
-*.o.*
-*.patch
-*.s
-*.so
-*.so.dbg
-*.su
-*.symtypes
-*.symversions
-*.tab.[ch]
-*.tar
 *.xz
 *.zst
-Module.symvers
-modules.builtin
-modules.order
+*.orig
+*.su
 
-#
-# Top-level generic files
-#
+# Archivos de compilación y dependencias
+*.c.[012]*.*
+*.gcno
+*.symtypes
+*.symversions
+*.patch
+*.lex.c
+*.ll
+*.lst
+*.mod.c
+*.o.*
+*.tab.[ch]
+*.tar
+
+# Otros generados
 /tags
 /TAGS
 /linux
 /modules-only.symvers
-/vmlinux
-/vmlinux.32
-/vmlinux.symvers
-/vmlinux-gdb.py
-/vmlinuz
+/vmlinux*
 /System.map
 /Module.markers
-/modules.builtin.modinfo
+/modules.builtin*
 /modules.nsdeps
-
-#
-# RPM spec file (make rpm-pkg)
-#
 /*.spec
-
-#
-# Debian directory (make deb-pkg)
-#
 /debian/
-
-#
-# Snap directory (make snap-pkg)
-#
 /snap/
-
-#
-# tar directory (make tar*-pkg)
-#
 /tar-install/
-
-#
-# We don't want to ignore the following even if they are dot-files
-#
-!.clang-format
-!.cocciconfig
-!.get_maintainer.ignore
-!.gitattributes
-!.gitignore
-!.mailmap
-
-#
-# Generated include files
-#
 /include/config/
 /include/generated/
 /include/ksym/
 /arch/*/include/generated/
-
-# stgit generated dirs
 patches-*
-
-# quilt's files
 patches
 series
-
-# cscope files
 cscope.*
 ncscope.*
-
-# gnu global files
 GPATH
 GRTAGS
 GSYMS
 GTAGS
-
-# id-utils files
 ID
-
-*.orig
-*~
-\#*#
-
-#
-# Leavings from module signing
-#
 extra_certificates
 signing_key.pem
 signing_key.priv
 signing_key.x509
 x509.genkey
 
-# Kconfig presets
+# Kconfig presets y outputs
 /all.config
 /alldef.config
 /allmod.config
 /allno.config
 /allrandom.config
 /allyes.config
-
-# Kconfig savedefconfig output
 /defconfig
 
-# Kdevelop4
+# Kdevelop4 files, Clang DB, Sphinx, etc
 *.kdev4
-
-# Clang's compilation database file
 /compile_commands.json
-
-# Documentation toolchain
 sphinx_*/
+
+# Archivos y logs que has agregado tú
 Guia de solucion de errores
 build.log
+.vscode/
+drivers/kernelsu/userspace/ksud/.cargo/
+# Ignora carpetas .github en subcarpetas
+drivers/*/.github/

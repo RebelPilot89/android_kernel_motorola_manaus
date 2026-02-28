@@ -58,7 +58,8 @@ mtk-mml-objs += mtk-mml-mmp.o
 endif
 
 ifneq ($(wildcard $(srctree)/$(src)/mtk-mml-tp-mt6893.c),)
-obj-$(CONFIG_MTK_MML) += mtk-mml-mt6893.o
+# MT6879 target: disable mt6893 topology object to avoid duplicate globals
+# obj-$(CONFIG_MTK_MML) += mtk-mml-mt6893.o
 mtk-mml-mt6893-objs := mtk-mml-tp-mt6893.o
 endif
 ifneq ($(wildcard $(srctree)/$(src)/mtk-mml-tp-mt6983.c),)

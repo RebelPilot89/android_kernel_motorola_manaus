@@ -151,7 +151,7 @@ static void tp_parse_path(struct mml_dev *mml, struct mml_topology_path *path,
 		if (eng == MML_MMLSYS) {
 			path->mmlsys = path->nodes[i].comp;
 			path->mmlsys_idx = i;
-			path->sys_en[mml_sys_frame] = true;
+			/* path->sys_en[mml_sys_frame] = true; */
 			continue;
 		} else if (eng == MML_MUTEX) {
 			path->mutex = path->nodes[i].comp;

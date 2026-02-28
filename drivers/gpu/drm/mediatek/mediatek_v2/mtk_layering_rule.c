@@ -17,7 +17,7 @@
 #include <linux/slab.h>
 
 #if defined(CONFIG_MTK_DRAMC)
-#include "mtk_dramc.h"
+#include <soc/mediatek/dramc.h>
 #endif
 #include "mtk_layering_rule.h"
 #include "mtk_log.h"

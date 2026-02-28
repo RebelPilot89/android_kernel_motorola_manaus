@@ -1,0 +1,13 @@
+# clang-format ignore file - prevents automatic formatting of sensitive files
+# These files contain ARM64 assembly macros that break when reformatted
+
+# KVM assembly macros - critical for hypervisor operation
+arch/arm64/include/asm/kvm_asm.h
+
+# System register macros - critical for low-level kernel operation
+arch/arm64/include/asm/sysreg.h
+
+# Assembly files in general should not be formatted
+arch/arm64/kernel/*.S
+arch/arm64/kvm/hyp/*.S
+arch/arm64/mm/*.S
