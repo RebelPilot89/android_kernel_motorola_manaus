@@ -134,7 +134,7 @@ static int get_apu_iova(struct sapu_mem_info *mem_info, dma_addr_t *dma_addr)
 		goto datamem_dmabuf_put;
 	}
 
-	sgt = dma_buf_map_attachment_unlocked(attach, DMA_BIDIRECTIONAL);
+	sgt = dma_buf_map_attachment(attach, DMA_BIDIRECTIONAL);
 	if (IS_ERR(sgt)) {
 		pr_info("%s map failed, detach and return\n", __func__);
 		ret = -EINVAL;
@@ -145,7 +145,7 @@ static int get_apu_iova(struct sapu_mem_info *mem_info, dma_addr_t *dma_addr)
 
 	pr_info("%s dma_addr=%llx\n", __func__, *dma_addr);
 
-	dma_buf_unmap_attachment_unlocked(attach, sgt, DMA_BIDIRECTIONAL);
+	dma_buf_unmap_attachment(attach, sgt, DMA_BIDIRECTIONAL);
 datamem_dmabuf_detach:
 	dma_buf_detach(mem_dmabuf, attach);
 datamem_dmabuf_put:

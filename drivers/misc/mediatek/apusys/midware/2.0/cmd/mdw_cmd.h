@@ -13,22 +13,20 @@
 #define MDW_CMD_IDR_MAX (64)
 
 /* stale cmd timeout */
-#define MDW_STALE_CMD_TIMEOUT (5*1000) //ms
+#define MDW_STALE_CMD_TIMEOUT (5 * 1000) //ms
 
 /* poll cmd */
-#define MDW_POLL_TIMEOUT (4*1000) //us
-#define MDW_POLLTIME_SLEEP_TH(x) (x*65/100) //us
+#define MDW_POLL_TIMEOUT (4 * 1000) //us
+#define MDW_POLLTIME_SLEEP_TH(x) (x * 65 / 100) //us
 
 /* cmd deubg */
-#define mdw_cmd_show(c, f) \
-	f("cmd(0x%llx/0x%llx/0x%llx/0x%llx/%d/%u)param(%u/%u/%u/%u/"\
-	"%u/%u/%u/%u/%u/%llu)subcmds(%u/%pK/%u/%u)pid(%d/%d)(%d)\n", \
-	(uint64_t) c->mpriv, c->uid, c->kid, c->rvid, c->id, kref_read(&c->ref), \
-	c->priority, c->hardlimit, c->softlimit, \
-	c->power_save, c->power_plcy, c->power_dtime, \
-	c->app_type, c->inference_ms, c->tolerance_ms, c->is_dtime_set, \
-	c->num_subcmds, c->cmdbufs, c->num_cmdbufs, c->size_cmdbufs, \
-	c->pid, c->tgid, task_pid_nr(current))
+#define mdw_cmd_show(c, f)                                                                                    \
+	f("cmd(0x%llx/0x%llx/0x%llx/0x%llx)param(%u/%u/%u/%u/%u/%u/%u)subcmds(%u/%pK/%u/%u)pid(%d/%d)(%d)\n", \
+	  (uint64_t)c->mpriv, c->uid, c->kid, c->rvid, c->priority,                                           \
+	  c->hardlimit, c->softlimit, c->power_save, c->power_plcy,                                           \
+	  c->power_dtime, c->app_type, c->num_subcmds, c->cmdbufs,                                            \
+	  c->num_cmdbufs, c->size_cmdbufs, c->pid, c->tgid,                                                   \
+	  task_pid_nr(current))
 
 /* cmd ioctl */
 int mdw_cmd_ioctl_v2(struct mdw_fpriv *mpriv, void *data);
