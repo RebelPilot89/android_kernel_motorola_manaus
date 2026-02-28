@@ -45,6 +45,8 @@
 };
 
 &i2c2 {
+	#address-cells = <1>;
+	#size-cells = <0>;
 	camera_af_main_three@0e {
 		compatible = "mediatek,gt9772b";
 		reg = <0x0e>;
@@ -69,6 +71,8 @@
 };
 
 &i2c4 {
+	#address-cells = <1>;
+	#size-cells = <0>;
 	camera_af_main_two@0d {
 		compatible = "mediatek,gt9772a";
 		reg = <0x0d>;
@@ -93,10 +97,14 @@
 };
 
 &i2c6 {
+	#address-cells = <1>;
+	#size-cells = <0>;
 	lm3644:lm3644@63 {
 		compatible = "mediatek,lm3644";
 		reg = <0x63>;
 		#cooling-cells = <2>;
+		#address-cells = <1>;
+		#size-cells = <0>;
 		pinctrl-names = "default", "hwen_high", "hwen_low";
 		pinctrl-0 = <&lm3644_pins_default>;
 		pinctrl-1 = <&lm3644_pins_hwen_high>;
@@ -128,6 +136,8 @@
 };
 
 &i2c8 {
+	#address-cells = <1>;
+	#size-cells = <0>;
 	camera_af_main@72 {
 		compatible = "mediatek,lc898229";
 		reg = <0x72>;
