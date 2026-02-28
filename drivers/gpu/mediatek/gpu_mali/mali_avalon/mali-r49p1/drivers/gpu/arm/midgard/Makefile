@@ -230,6 +230,15 @@ ifeq ($(BUILD_RULE),OOT)
     endif ## mt6991 ##
 endif
 
+# Force real HW path for manaus/mt6879 integration.
+ifeq ($(MTK_PLATFORM_VERSION),mt6879)
+    CONFIG_MALI_REAL_HW := y
+endif
+
+ifeq ($(CONFIG_MTK_GPU_MT6879_SUPPORT),y)
+    CONFIG_MALI_REAL_HW := y
+endif
+
 # make $(src) as absolute path if it is not already, by prefixing $(srctree)
 # This is to prevent any build issue due to wrong path.
 

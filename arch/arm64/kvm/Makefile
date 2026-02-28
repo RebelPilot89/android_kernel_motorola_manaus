@@ -4,10 +4,6 @@
 #
 
 ccflags-y += -I $(srctree)/$(src)
-# Inyectar el fix para C y ensamblador (compatibilidad global del subtree KVM)
-subdir-ccflags-y += -include $(srctree)/arch/arm64/kvm/kvm_motorola_fix.h
-subdir-asflags-y += -include $(srctree)/arch/arm64/kvm/kvm_motorola_fix.h
-# Nota: el header está protegido con __ASSEMBLY__ para exponer solo lo necesario
 
 include $(srctree)/virt/kvm/Makefile.kvm
 
@@ -31,6 +27,7 @@ kvm-$(CONFIG_KVM_ARM_PROTECTED_STATE) += pkvm.o
 kvm-$(CONFIG_KVM_ARM_ANDROID_ERRATUM_PGTABLE) += android_erratum_pgtable.o
 
 kvm-$(CONFIG_TRACING) += hyp_events.o hyp_trace.o
+kvm-y += pkvm_compat.o
 
 always-y := hyp_constants.h hyp-constants.s
 

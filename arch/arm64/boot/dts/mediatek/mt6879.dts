@@ -281,9 +281,7 @@
 		clocks = <&imp_iic_wrap_en_clk CLK_IMPEN_AP_CLOCK_I2C5>,
 			<&pericfg_ao_clk CLK_PERAOP_APDMA>;
 		clock-names = "main", "dma";
-		clock-div = <1>;
-		#address-cells = <1>;
-		#size-cells = <0>;
+		clock-div = <1>;		
 	};
 	
 	i2c6: i2c@11e02000 {
@@ -297,8 +295,6 @@
 			<&pericfg_ao_clk CLK_PERAOP_APDMA>;
 		clock-names = "main", "dma";
 		clock-div = <1>;
-		#address-cells = <1>;
-		#size-cells = <0>;
 	};
 	i2c7: i2c@11ed2000 {
 		compatible = "mediatek,mt6983-i2c";
