@@ -16,3 +16,18 @@ Estamos transformando un Motorola Edge 40 Neo (codename: manaus) en un servidor 
 - Si generas un parche (backport), documenta de qué rama/versión upstream (ej. Android Common Kernel 5.15, Xiaomi MTK) lo tomaste.
 - Cuando habilites flags en `manaus_defconfig`, agrégalos en el lugar adecuado o al final del archivo con un comentario que explique por qué es útil para contenedores, KVM o IA.
 
+  # Entorno de Compilación (Toolchain y Reglas Estrictas)
+El kernel se compila EXCLUSIVAMENTE con Neutron Clang 23 (LLVM 23.0.0git). 
+NO usamos GCC ni binutils antiguos. 
+
+El entorno de exportación exacto que utilizamos es:
+- `LLVM=1` y `LLVM_IAS=1` (usamos el ensamblador integrado de LLVM).
+- `CC=clang`, `LD=ld.lld`, `AR=llvm-ar`, `NM=llvm-nm`
+- Variables exportadas: `ARCH=arm64`, `CLANG_TRIPLE=aarch64-linux-gnu-`, `CROSS_COMPILE=aarch64-linux-gnu-`, `CROSS_COMPILE_COMPAT=arm-linux-gnueabi-`
+
+**Reglas para código en C y Ensamblador (.S):**
+1. **Sintaxis estricta:** Cualquier parche en C o ensamblador debe ser 100% compatible con Clang 23 y LLVM_IAS.
+2. **Evitar GCC-ismos:** No utilices flags de compilador propios de GCC ni macros que Clang advierta o rechace.
+3. **LTO y CFI:** Asume que el kernel puede usar LTO (Thin o Full) y CFI (Control Flow Integrity). Las funciones estáticas en línea (static inline) y el casteo de punteros a funciones deben ser limpios para no romper CFI.
+4. **Warnings de Clang:** Si sugieres un parche, asegúrate de que no generará advertencias de tipo `-Werror`, `-Wuninitialized`, o `-Wformat` bajo Clang.
+
