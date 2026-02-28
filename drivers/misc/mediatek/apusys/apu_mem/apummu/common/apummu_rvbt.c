@@ -7,9 +7,9 @@
 #include <linux/printk.h>
 #include "apummu_boot.h"
 
-#define TBL_SRAM_SIZE			(0x3C00)
-#define TBL_SIZE			(0x118)
-#define TBL_NUM				(TBL_SRAM_SIZE / TBL_SIZE)
+#define TBL_SRAM_SIZE (0x3C00)
+#define TBL_SIZE (0x118)
+#define TBL_NUM (TBL_SRAM_SIZE / TBL_SIZE)
 
 enum rsv_vsid {
 	RSV_VSID_UPRV = 0,
@@ -22,26 +22,28 @@ enum rsv_vsid {
 	RSV_VSID_MAX
 };
 
-#define VSID_RSV_LAST			(TBL_NUM - 1)
-#define VSID_RSV_CE			(VSID_RSV_LAST - RSV_VSID_CE)
-#define VSID_RSV_MVPU0			(VSID_RSV_LAST - RSV_VSID_MVPU0)
-#define VSID_RSV_MDLA			(VSID_RSV_LAST - RSV_VSID_MDLA)
-#define VSID_RSV_GPU			(VSID_RSV_LAST - RSV_VSID_GPU)
-#define VSID_RSV_APMCU			(VSID_RSV_LAST - RSV_VSID_APMCU)
-#define VSID_RSV_LOGGER			(VSID_RSV_LAST - RSV_VSID_LOGGER)
-#define VSID_RSV_UPRV			(VSID_RSV_LAST - RSV_VSID_UPRV)
+#define VSID_RSV_LAST (TBL_NUM - 1)
+#define VSID_RSV_CE (VSID_RSV_LAST - RSV_VSID_CE)
+#define VSID_RSV_MVPU0 (VSID_RSV_LAST - RSV_VSID_MVPU0)
+#define VSID_RSV_MDLA (VSID_RSV_LAST - RSV_VSID_MDLA)
+#define VSID_RSV_GPU (VSID_RSV_LAST - RSV_VSID_GPU)
+#define VSID_RSV_APMCU (VSID_RSV_LAST - RSV_VSID_APMCU)
+#define VSID_RSV_LOGGER (VSID_RSV_LAST - RSV_VSID_LOGGER)
+#define VSID_RSV_UPRV (VSID_RSV_LAST - RSV_VSID_UPRV)
 
-#define VSID_RSV_START			(VSID_RSV_CE)
-#define VSID_RSV_END			(VSID_RSV_UPRV + 1)
-#define VSID_RSV_NUM			(VSID_RSV_END - VSID_RSV_START)
+#define VSID_RSV_START (VSID_RSV_CE)
+#define VSID_RSV_END (VSID_RSV_UPRV + 1)
+#define VSID_RSV_NUM (VSID_RSV_END - VSID_RSV_START)
 
-#define CMU_TOP_BASE			0x19067000
-#define UPRV_TCU_BASE			0x19060000
-#define EXTM_TCU_BASE			0x19061000
+#define CMU_TOP_BASE 0x19067000
+#define UPRV_TCU_BASE 0x19060000
+#define EXTM_TCU_BASE 0x19061000
 
-#define inf_printf(fmt, args...)	pr_info("[ammu][inf] " fmt, ##args)
-#define dbg_printf(fmt, args...)	pr_info("[ammu][dbg][%s] " fmt, __func__, ##args)
-#define err_printf(fmt, args...)	pr_info("[ammu][err][%s] " fmt, __func__, ##args)
+#define inf_printf(fmt, args...) pr_info("[ammu][inf] " fmt, ##args)
+#define dbg_printf(fmt, args...)                                               \
+	pr_info("[ammu][dbg][%s] " fmt, __func__, ##args)
+#define err_printf(fmt, args...)                                               \
+	pr_info("[ammu][err][%s] " fmt, __func__, ##args)
 
 enum {
 	APUMMU_THD_ID_APMCU_NORMAL = 1,
@@ -53,12 +55,11 @@ static void __iomem *cmut_base;
 static void __iomem *uprv_base;
 static void __iomem *extm_base;
 
-
-static int __ioremap(void)
+static int apummu_ioremap(void)
 {
 	int ret;
 
-	cmut_base = ioremap(CMU_TOP_BASE,  0x7000);
+	cmut_base = ioremap(CMU_TOP_BASE, 0x7000);
 	if (!cmut_base) {
 		ret = -ENOMEM;
 		goto exit;
@@ -86,7 +87,7 @@ exit:
 	return ret;
 }
 
-static void __iounmap(void)
+static void apummu_iounmap(void)
 {
 	iounmap(extm_base);
 	iounmap(uprv_base);
@@ -95,7 +96,7 @@ static void __iounmap(void)
 
 static u32 tbl_offset(u32 vsid)
 {
-#define DESC_SRAM	0x1400
+#define DESC_SRAM 0x1400
 
 	u32 val;
 
@@ -106,7 +107,7 @@ static u32 tbl_offset(u32 vsid)
 	 *   vsid table for index 1
 	 *   ...
 	 */
-	val  = DESC_SRAM;
+	val = DESC_SRAM;
 	val += vsid * TBL_SIZE;
 
 	return val;
@@ -125,7 +126,7 @@ static u32 seg_offset(u32 vsid, u32 seg_idx)
 	 * 0x0090
 	 *   segment 9
 	 */
-	val  = tbl_offset(vsid) + 0x0000;
+	val = tbl_offset(vsid) + 0x0000;
 	val += seg_idx * 0x10;
 
 	return val;
@@ -133,7 +134,7 @@ static u32 seg_offset(u32 vsid, u32 seg_idx)
 
 static u32 tbl_address(u32 vsid)
 {
-#define DESC_SRAM_START	0x0400
+#define DESC_SRAM_START 0x0400
 
 	u32 val;
 
@@ -144,7 +145,7 @@ static u32 tbl_address(u32 vsid)
 	 *   vsid table for index 1
 	 *   ...
 	 */
-	val  = DESC_SRAM_START;
+	val = DESC_SRAM_START;
 	val += vsid * TBL_SIZE;
 
 	return val;
@@ -161,7 +162,7 @@ static u32 page_offset(u32 vsid, u32 page_sel)
 	 *   page array 1
 	 * ...
 	 */
-	val  = tbl_offset(vsid) + 0x00A0;
+	val = tbl_offset(vsid) + 0x00A0;
 	val += (page_sel - 3) * 0x18;
 
 	return val;
@@ -169,7 +170,7 @@ static u32 page_offset(u32 vsid, u32 page_sel)
 
 static int sram_config(void)
 {
-#define DESC_INDEX	0x1000
+#define DESC_INDEX 0x1000
 
 	u32 i;
 
@@ -217,7 +218,7 @@ static int sram_config(void)
 
 static int ammu_enable(void)
 {
-#define CMU_CON		0x0000
+#define CMU_CON 0x0000
 
 	u32 ofs, val;
 
@@ -230,8 +231,8 @@ static int ammu_enable(void)
 	 *   [03:03]: CMU_DCM_en
 	 *   [04:04]: sw_slp_prot_en_override
 	 */
-	ofs  = CMU_CON;
-	val  = ioread32(cmut_base + ofs);
+	ofs = CMU_CON;
+	val = ioread32(cmut_base + ofs);
 	val |= 0x1;
 	iowrite32(val, cmut_base + ofs);
 
@@ -253,8 +254,8 @@ exit:
 	return ret;
 }
 
-static int add_seg(u32 vsid, u32 seg_idx, u32 in_adr, u32 map_adr,
-	u32 page_len, u32 domain, u32 ns)
+static int add_seg(u32 vsid, u32 seg_idx, u32 in_adr, u32 map_adr, u32 page_len,
+		   u32 domain, u32 ns)
 {
 	u32 seg, val;
 
@@ -267,9 +268,9 @@ static int add_seg(u32 vsid, u32 seg_idx, u32 in_adr, u32 map_adr,
 	 *   [05:03]: Page select
 	 *   [31:10]: Input address [33:12]
 	 */
-	val  = (page_len & 0x7) <<  0;
-	val |= (0x0)            <<  3;
-	val |= (in_adr >> 12)   << 10;
+	val = (page_len & 0x7) << 0;
+	val |= (0x0) << 3;
+	val |= (in_adr >> 12) << 10;
 	iowrite32(val, cmut_base + seg + 0x0000);
 
 	/**
@@ -279,9 +280,9 @@ static int add_seg(u32 vsid, u32 seg_idx, u32 in_adr, u32 map_adr,
 	 *   [09:02]: smmu_sid
 	 *   [31:10]: Mapped address base [33:12]
 	 */
-	val  = (0x0)           <<  0;
-	val |= (0x1)           <<  1;
-	val |= (0x0)           <<  2;
+	val = (0x0) << 0;
+	val |= (0x1) << 1;
+	val |= (0x0) << 2;
 	val |= (map_adr >> 12) << 10;
 	iowrite32(val, cmut_base + seg + 0x0004);
 
@@ -290,7 +291,7 @@ static int add_seg(u32 vsid, u32 seg_idx, u32 in_adr, u32 map_adr,
 	 *   [00:00]: NS
 	 *   [16:13]: Domain
 	 */
-	val  = (ns ? 1 : 0)   <<  0;
+	val = (ns ? 1 : 0) << 0;
 	val |= (domain & 0xf) << 13;
 	iowrite32(val, cmut_base + seg + 0x0008);
 
@@ -298,7 +299,7 @@ static int add_seg(u32 vsid, u32 seg_idx, u32 in_adr, u32 map_adr,
 	 * 0x000C
 	 *   [31:31]: segment vld
 	 */
-	val  = 0x1 << 31;
+	val = 0x1 << 31;
 	iowrite32(val, cmut_base + seg + 0x000C);
 
 	return 0;
@@ -306,8 +307,8 @@ static int add_seg(u32 vsid, u32 seg_idx, u32 in_adr, u32 map_adr,
 
 static int enable_vsid(u32 vsid)
 {
-#define VSID_ENABLE	0x0050
-#define VSID_VALID	0x00B0
+#define VSID_ENABLE 0x0050
+#define VSID_VALID 0x00B0
 
 	u32 ofs, val;
 
@@ -343,11 +344,13 @@ static int add_rv_map(u32 map_adr)
 	u32 domain = 7, ns = 1;
 	int ret;
 
-	ret = add_seg(VSID_RSV_UPRV, 0, 0, map_adr, eAPUMMU_PAGE_LEN_1MB, domain, ns);
+	ret = add_seg(VSID_RSV_UPRV, 0, 0, map_adr, eAPUMMU_PAGE_LEN_1MB,
+		      domain, ns);
 	if (ret)
 		goto exit;
 
-	ret = add_seg(VSID_RSV_UPRV, 1, 0, 0, eAPUMMU_PAGE_LEN_512MB, domain, ns);
+	ret = add_seg(VSID_RSV_UPRV, 1, 0, 0, eAPUMMU_PAGE_LEN_512MB, domain,
+		      ns);
 	if (ret)
 		goto exit;
 
@@ -379,11 +382,11 @@ static int bind_vsid(void *base, u32 vsid, u32 thread)
 	 * thread_to_vsid_cid_mapping_table1
 	 * ...
 	 */
-	ofs  = thread * 4;
-	val  = (0x1)         <<  0;
-	val |= (0x0)         <<  1;
-	val |= (vsid & 0xff) <<  3;
-	val |= (0x0)         << 11;
+	ofs = thread * 4;
+	val = (0x1) << 0;
+	val |= (0x0) << 1;
+	val |= (vsid & 0xff) << 3;
+	val |= (0x0) << 11;
 	iowrite32(val, base + ofs);
 
 	return 0;
@@ -406,12 +409,14 @@ exit:
 	return ret;
 }
 
-static int add_logger_map(u32 in_adr, u32 map_adr, enum eAPUMMUPAGESIZE page_size)
+static int add_logger_map(u32 in_adr, u32 map_adr,
+			  enum eAPUMMUPAGESIZE page_size)
 {
 	u32 domain = 7, ns = 1;
 	int ret;
 
-	ret = add_seg(VSID_RSV_LOGGER, 0, in_adr, map_adr, page_size, domain, ns);
+	ret = add_seg(VSID_RSV_LOGGER, 0, in_adr, map_adr, page_size, domain,
+		      ns);
 	if (ret)
 		goto exit;
 
@@ -441,7 +446,7 @@ exit:
 
 static int virtual_engine_thread(void)
 {
-#define D2T_MAP_TBL0	0x0040
+#define D2T_MAP_TBL0 0x0040
 
 	u32 ofs, val;
 
@@ -465,12 +470,14 @@ static int virtual_engine_thread(void)
 	return 0;
 }
 
-static int add_apmcu_map(u32 in_adr, u32 map_adr, enum eAPUMMUPAGESIZE page_size)
+static int add_apmcu_map(u32 in_adr, u32 map_adr,
+			 enum eAPUMMUPAGESIZE page_size)
 {
 	u32 domain = 7, ns = 1;
 	int ret;
 
-	ret = add_seg(VSID_RSV_APMCU, 0, in_adr, map_adr, page_size, domain, ns);
+	ret = add_seg(VSID_RSV_APMCU, 0, in_adr, map_adr, page_size, domain,
+		      ns);
 	if (ret)
 		goto exit;
 
@@ -499,12 +506,14 @@ exit:
 }
 
 static int mt6899_rv_boot(u32 uP_seg_output, u8 uP_hw_thread,
-	u32 logger_seg_output, enum eAPUMMUPAGESIZE logger_page_size,
-	u32 XPU_seg_output, enum eAPUMMUPAGESIZE XPU_page_size)
+			  u32 logger_seg_output,
+			  enum eAPUMMUPAGESIZE logger_page_size,
+			  u32 XPU_seg_output,
+			  enum eAPUMMUPAGESIZE XPU_page_size)
 {
 	int ret;
 
-	ret = __ioremap();
+	ret = apummu_ioremap();
 	if (ret)
 		goto exit;
 
@@ -526,7 +535,8 @@ static int mt6899_rv_boot(u32 uP_seg_output, u8 uP_hw_thread,
 	if (ret)
 		goto umap;
 
-	ret = add_logger_map(logger_seg_output, logger_seg_output, logger_page_size);
+	ret = add_logger_map(logger_seg_output, logger_seg_output,
+			     logger_page_size);
 	if (ret)
 		goto umap;
 
@@ -547,7 +557,7 @@ static int mt6899_rv_boot(u32 uP_seg_output, u8 uP_hw_thread,
 	if (ret)
 		goto umap;
 umap:
-	__iounmap();
+	apummu_iounmap();
 exit:
 	return ret;
 }
@@ -557,4 +567,3 @@ const struct mtk_apu_ammudata mt6899_ammudata = {
 		.rv_boot = mt6899_rv_boot,
 	},
 };
-

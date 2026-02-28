@@ -10,23 +10,23 @@
 #include <linux/bitops.h>
 
 /* error code */
-#define EWAIT_RELEASE		1 /* wait for release */
-#define ENOT_AVAILABLE		2 /* not available for now */
-#define EREQ_DONE		3 /* already requested */
-#define EREQ_MASKED		4 /* req madk bit set */
-#define EDISABLED		5 /* req madk bit set */
+#define EWAIT_RELEASE 1 /* wait for release */
+#define ENOT_AVAILABLE 2 /* not available for now */
+#define EREQ_DONE 3 /* already requested */
+#define EREQ_MASKED 4 /* req madk bit set */
+#define EDISABLED 5 /* req madk bit set */
 
 /* call back return value */
-#define CB_DONE			0 /* no need to use*/
-#define CB_OK			1 /* ready to use/release */
+#define CB_DONE 0 /* no need to use*/
+#define CB_OK 1 /* ready to use/release */
 
 /* slot status */
-#define SLOT_AVAILABLE		0 /* slot available*/
-#define SLOT_NOT_FOUND		1 /* slot not found */
-#define SLOT_USED		2 /* slot used */
+#define SLOT_AVAILABLE 0 /* slot available*/
+#define SLOT_NOT_FOUND 1 /* slot not found */
+#define SLOT_USED 2 /* slot used */
 
 /* sid status */
-#define SID_NOT_FOUND		0xffff
+#define SID_NOT_FOUND 0xffff
 
 /* need to modify slbc_uid_str  */
 enum slbc_uid {
@@ -53,6 +53,14 @@ enum slbc_uid {
 	UID_MAX,
 };
 
+#ifndef UID_APU
+#define UID_APU UID_SH_APU
+#endif
+
+#ifndef UID_AOV_APU
+#define UID_AOV_APU UID_AOV
+#endif
+
 #define UID_MM_BITS_1 (BIT(UID_MM_DISP) | BIT(UID_MM_MDP))
 #define BIT_IN_MM_BITS_1(x) ((x) & UID_MM_BITS_1)
 
@@ -76,7 +84,7 @@ enum slbc_force {
 	FR_MAX,
 };
 
-#define ACP_ONLY_BIT	2
+#define ACP_ONLY_BIT 2
 enum slbc_flag {
 	FG_SECURE = BIT(0),
 	FG_POWER = BIT(1),
@@ -96,6 +104,7 @@ struct slbc_data {
 	unsigned int type;
 	ssize_t size;
 	unsigned int flag;
+	unsigned int timeout;
 	int ret;
 	/* below used by slbc driver */
 	void __iomem *paddr;
@@ -108,17 +117,16 @@ struct slbc_data {
 	struct slbc_data *private;
 };
 
-#define ui_to_slbc_data(d, ui) \
-	do { \
-		(d)->uid = ((ui) >> 24 & 0xff); \
-		(d)->type = ((ui) >> 16 & 0xff); \
-		(d)->flag = ((ui) >> 8 & 0xff); \
+#define ui_to_slbc_data(d, ui)                                                 \
+	do {                                                                   \
+		(d)->uid = ((ui) >> 24 & 0xff);                                \
+		(d)->type = ((ui) >> 16 & 0xff);                               \
+		(d)->flag = ((ui) >> 8 & 0xff);                                \
 	} while (0)
 
-#define slbc_data_to_ui(d) \
-	((((d)->uid) & 0xff) << 24 | \
-	(((d)->type) & 0xff) << 16 | \
-	(((d)->flag) & 0xff) << 8)
+#define slbc_data_to_ui(d)                                                     \
+	((((d)->uid) & 0xff) << 24 | (((d)->type) & 0xff) << 16 |              \
+	 (((d)->flag) & 0xff) << 8)
 
 struct slbc_ops {
 	struct list_head node;
@@ -142,35 +150,54 @@ extern void slbc_update_mm_bw(unsigned int bw);
 extern void slbc_update_mic_num(unsigned int num);
 extern void slbc_update_inner(unsigned int inner);
 extern void slbc_update_outer(unsigned int outer);
+
+static inline int slbc_status(struct slbc_data *d)
+{
+	(void)d;
+	return -1;
+}
 #else
-__attribute__ ((weak)) int slbc_request(struct slbc_data *d)
+__attribute__((weak)) int slbc_request(struct slbc_data *d)
 {
 	return -EDISABLED;
 };
-__attribute__ ((weak)) int slbc_release(struct slbc_data *d)
+__attribute__((weak)) int slbc_release(struct slbc_data *d)
 {
 	return -EDISABLED;
 };
-__attribute__ ((weak)) int slbc_power_on(struct slbc_data *d)
+__attribute__((weak)) int slbc_power_on(struct slbc_data *d)
 {
 	return -EDISABLED;
 };
-__attribute__ ((weak)) int slbc_power_off(struct slbc_data *d)
+__attribute__((weak)) int slbc_power_off(struct slbc_data *d)
 {
 	return -EDISABLED;
 };
-__attribute__ ((weak)) int slbc_secure_on(struct slbc_data *d)
+__attribute__((weak)) int slbc_secure_on(struct slbc_data *d)
 {
 	return -EDISABLED;
 };
-__attribute__ ((weak)) int slbc_secure_off(struct slbc_data *d)
+__attribute__((weak)) int slbc_secure_off(struct slbc_data *d)
 {
 	return -EDISABLED;
 };
-__attribute__ ((weak)) void slbc_update_mm_bw(unsigned int bw) {}
-__attribute__ ((weak)) void slbc_update_mic_num(unsigned int num) {}
-__attribute__ ((weak)) void slbc_update_inner(unsigned int inner) {}
-__attribute__ ((weak)) void slbc_update_outer(unsigned int outer) {}
+__attribute__((weak)) void slbc_update_mm_bw(unsigned int bw)
+{
+}
+__attribute__((weak)) void slbc_update_mic_num(unsigned int num)
+{
+}
+__attribute__((weak)) void slbc_update_inner(unsigned int inner)
+{
+}
+__attribute__((weak)) void slbc_update_outer(unsigned int outer)
+{
+}
+static inline int slbc_status(struct slbc_data *d)
+{
+	(void)d;
+	return -EDISABLED;
+}
 #endif /* CONFIG_MTK_SLBC */
 
 #endif /* _SLBC_OPS_H_ */

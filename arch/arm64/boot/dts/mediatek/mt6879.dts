@@ -273,6 +273,8 @@
 	};
 	i2c5: i2c@11ed1000 {
 		compatible = "mediatek,mt6983-i2c";
+		#address-cells = <1>;
+		#size-cells = <0>;
 		reg = <0 0x11ed1000 0 0x1000>,
 			<0 0x11300400 0 0x80>;
 		interrupts = <GIC_SPI 149 IRQ_TYPE_LEVEL_HIGH 0>;
@@ -283,8 +285,11 @@
 		#address-cells = <1>;
 		#size-cells = <0>;
 	};
+	
 	i2c6: i2c@11e02000 {
 		compatible = "mediatek,mt6983-i2c";
+		#address-cells = <1>;
+		#size-cells = <0>;
 		reg = <0 0x11e02000 0 0x1000>,
 			<0 0x11300480 0 0x80>;
 		interrupts = <GIC_SPI 150 IRQ_TYPE_LEVEL_HIGH 0>;

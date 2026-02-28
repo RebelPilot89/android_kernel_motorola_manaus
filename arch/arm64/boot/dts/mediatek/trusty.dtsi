@@ -6,7 +6,6 @@
 / {
 	trusty {
 		compatible = "android,trusty-smc-v1";
-		ranges;
 		#address-cells = <2>;
 		#size-cells = <2>;
 		tee-id = <0>;
@@ -36,7 +35,6 @@
 
 	nebula {
 		compatible = "android,nebula-smc-v1";
-		ranges;
 		#address-cells = <2>;
 		#size-cells = <2>;
 		tee-id = <1>;
@@ -56,3 +54,4 @@
 		};
 	};
 };
+

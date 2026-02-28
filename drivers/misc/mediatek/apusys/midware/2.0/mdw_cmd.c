@@ -12,15 +12,13 @@
 #include "mdw_mem.h"
 #include "mdw_mem_pool.h"
 
-#define mdw_cmd_show(c, f) \
-	f("cmd(0x%llx/0x%llx/0x%llx/0x%llx)param(%u/%u/%u/%u/"\
-	"%u/%u/%u)subcmds(%u/%p/%u/%u)pid(%d/%d)(%d)\n", \
-	(uint64_t) c->mpriv, c->uid, c->kid, c->rvid, \
-	c->priority, c->hardlimit, c->softlimit, \
-	c->power_save, c->power_plcy, c->power_dtime, \
-	c->app_type, c->num_subcmds, c->cmdbufs, \
-	c->num_cmdbufs, c->size_cmdbufs, \
-	c->pid, c->tgid, current->pid)
+#define mdw_cmd_show(c, f)                                                     \
+	f("cmd(0x%llx/0x%llx/0x%llx/0x%llx)param(%u/%u/%u/%u/"                 \
+	  "%u/%u/%u)subcmds(%u/%p/%u/%u)pid(%d/%d)(%d)\n",                     \
+	  (uint64_t)c->mpriv, c->uid, c->kid, c->rvid, c->priority,            \
+	  c->hardlimit, c->softlimit, c->power_save, c->power_plcy,            \
+	  c->power_dtime, c->app_type, c->num_subcmds, c->cmdbufs,             \
+	  c->num_cmdbufs, c->size_cmdbufs, c->pid, c->tgid, current->pid)
 
 static void mdw_cmd_put_cmdbufs(struct mdw_fpriv *mpriv, struct mdw_cmd *c)
 {
@@ -31,12 +29,12 @@ static void mdw_cmd_put_cmdbufs(struct mdw_fpriv *mpriv, struct mdw_cmd *c)
 		return;
 
 	mdw_trace_begin("put cbs|c(0x%llx) num_subcmds(%u) num_cmdbufs(%u)",
-		c->kid, c->num_subcmds, c->num_cmdbufs);
+			c->kid, c->num_subcmds, c->num_cmdbufs);
 
 	/* flush cmdbufs and execinfos */
 	if (mdw_mem_invalidate(mpriv, c->cmdbufs))
 		mdw_drv_warn("s(0x%llx)c(0x%llx) invalidate cmdbufs(%u) fail\n",
-			(uint64_t)mpriv, c->kid, c->cmdbufs->size);
+			     (uint64_t)mpriv, c->kid, c->cmdbufs->size);
 
 	for (i = 0; i < c->num_subcmds; i++) {
 		ksubcmd = &c->ksubcmds[i];
@@ -47,18 +45,18 @@ static void mdw_cmd_put_cmdbufs(struct mdw_fpriv *mpriv, struct mdw_cmd *c)
 			}
 
 			mdw_trace_begin("cbs copy out|sc(0x%llx-%u) cb-#%u/%u",
-				c->kid, i, j, ksubcmd->ori_cbs[j]->size);
+					c->kid, i, j,
+					ksubcmd->ori_cbs[j]->size);
 
 			/* cmdbuf copy out */
 			if (ksubcmd->cmdbufs[j].direction != MDW_CB_IN) {
 				memcpy(ksubcmd->ori_cbs[j]->vaddr,
-					(void *)ksubcmd->kvaddrs[j],
-					ksubcmd->ori_cbs[j]->size);
+				       (void *)ksubcmd->kvaddrs[j],
+				       ksubcmd->ori_cbs[j]->size);
 			}
 
 			mdw_trace_end("cbs copy out|sc(0x%llx-%u) cb-#%u/%u",
-				c->kid, i, j,
-				ksubcmd->ori_cbs[j]->size);
+				      c->kid, i, j, ksubcmd->ori_cbs[j]->size);
 
 			/* put mem */
 			mdw_mem_put(mpriv, ksubcmd->ori_cbs[j]);
@@ -70,7 +68,7 @@ static void mdw_cmd_put_cmdbufs(struct mdw_fpriv *mpriv, struct mdw_cmd *c)
 	c->cmdbufs = NULL;
 
 	mdw_trace_end("put cbs|c(0x%llx) num_subcmds(%u) num_cmdbufs(%u)",
-		c->kid, c->num_subcmds, c->num_cmdbufs);
+		      c->kid, c->num_subcmds, c->num_cmdbufs);
 }
 
 static int mdw_cmd_get_cmdbufs(struct mdw_fpriv *mpriv, struct mdw_cmd *c)
@@ -82,26 +80,28 @@ static int mdw_cmd_get_cmdbufs(struct mdw_fpriv *mpriv, struct mdw_cmd *c)
 	struct apusys_cmdbuf *acbs = NULL;
 
 	mdw_trace_begin("get cbs|c(0x%llx) num_subcmds(%u) num_cmdbufs(%u)",
-		c->kid, c->num_subcmds, c->num_cmdbufs);
+			c->kid, c->num_subcmds, c->num_cmdbufs);
 
 	if (!c->size_cmdbufs || c->cmdbufs)
 		goto out;
 
 	c->cmdbufs = mdw_mem_pool_alloc(&mpriv->cmd_buf_pool, c->size_cmdbufs,
-		MDW_DEFAULT_ALIGN);
+					MDW_DEFAULT_ALIGN);
 	if (!c->cmdbufs) {
-		mdw_drv_err("s(0x%llx)c(0x%llx) alloc buffer for duplicate fail\n",
-		(uint64_t) mpriv, c->kid);
+		mdw_drv_err(
+			"s(0x%llx)c(0x%llx) alloc buffer for duplicate fail\n",
+			(uint64_t)mpriv, c->kid);
 		ret = -ENOMEM;
 		goto out;
 	}
 
 	/* alloc mem for duplicated cmdbuf */
 	for (i = 0; i < c->num_subcmds; i++) {
-		mdw_cmd_debug("sc(0x%llx-%u) #cmdbufs(%u)\n",
-			c->kid, i, c->ksubcmds[i].info->num_cmdbufs);
+		mdw_cmd_debug("sc(0x%llx-%u) #cmdbufs(%u)\n", c->kid, i,
+			      c->ksubcmds[i].info->num_cmdbufs);
 
-		acbs = kcalloc(c->ksubcmds[i].info->num_cmdbufs, sizeof(*acbs), GFP_KERNEL);
+		acbs = kcalloc(c->ksubcmds[i].info->num_cmdbufs, sizeof(*acbs),
+			       GFP_KERNEL);
 		if (!acbs)
 			goto free_cmdbufs;
 
@@ -114,39 +114,38 @@ static int mdw_cmd_get_cmdbufs(struct mdw_fpriv *mpriv, struct mdw_cmd *c)
 				ofs = MDW_ALIGN(ofs, MDW_DEFAULT_ALIGN);
 
 			mdw_cmd_debug("sc(0x%llx-%u) cb#%u offset(%u)\n",
-				c->kid, i, j, ofs);
+				      c->kid, i, j, ofs);
 
 			/* get mem from handle */
 			m = mdw_mem_get(mpriv, ksubcmd->cmdbufs[j].handle);
 			if (!m) {
-				mdw_drv_err("sc(0x%llx-%u) cb#%u(%llu) get fail\n",
+				mdw_drv_err(
+					"sc(0x%llx-%u) cb#%u(%llu) get fail\n",
 					c->kid, i, j,
 					ksubcmd->cmdbufs[j].handle);
 				goto free_cmdbufs;
 			}
 			/* check mem boundary */
 			if (m->vaddr == NULL ||
-				ksubcmd->cmdbufs[j].size != m->size) {
-				mdw_drv_err("sc(0x%llx-%u) cb#%u invalid range(%p/%u/%u)\n",
+			    ksubcmd->cmdbufs[j].size != m->size) {
+				mdw_drv_err(
+					"sc(0x%llx-%u) cb#%u invalid range(%p/%u/%u)\n",
 					c->kid, i, j, m->vaddr,
-					ksubcmd->cmdbufs[j].size,
-					m->size);
+					ksubcmd->cmdbufs[j].size, m->size);
 				goto free_cmdbufs;
 			}
 
 			mdw_trace_begin("cbs copy in|sc(0x%llx-%u) cb-#%u/%u",
-				c->kid, i, j,
-				ksubcmd->cmdbufs[j].size);
+					c->kid, i, j, ksubcmd->cmdbufs[j].size);
 
 			/* cmdbuf copy in */
 			if (ksubcmd->cmdbufs[j].direction != MDW_CB_OUT) {
-				memcpy(c->cmdbufs->vaddr + ofs,
-					m->vaddr,
-					ksubcmd->cmdbufs[j].size);
+				memcpy(c->cmdbufs->vaddr + ofs, m->vaddr,
+				       ksubcmd->cmdbufs[j].size);
 			}
 
 			mdw_trace_end("cbs copy in|sc(0x%llx-%u) cb-#%u/%u",
-				c->kid, i, j, ksubcmd->cmdbufs[j].size);
+				      c->kid, i, j, ksubcmd->cmdbufs[j].size);
 
 			/* record buffer info */
 			ksubcmd->ori_cbs[j] = m;
@@ -156,18 +155,17 @@ static int mdw_cmd_get_cmdbufs(struct mdw_fpriv *mpriv, struct mdw_cmd *c)
 				(uint64_t)(c->cmdbufs->device_va + ofs);
 			ofs += ksubcmd->cmdbufs[j].size;
 
-			mdw_cmd_debug("sc(0x%llx-%u) cb#%u (0x%llx/0x%llx/%u)\n",
-				c->kid, i, j,
-				ksubcmd->kvaddrs[j],
-				ksubcmd->daddrs[j],
-				ksubcmd->cmdbufs[j].size);
+			mdw_cmd_debug(
+				"sc(0x%llx-%u) cb#%u (0x%llx/0x%llx/%u)\n",
+				c->kid, i, j, ksubcmd->kvaddrs[j],
+				ksubcmd->daddrs[j], ksubcmd->cmdbufs[j].size);
 
 			acbs[j].kva = (void *)ksubcmd->kvaddrs[j];
 			acbs[j].size = ksubcmd->cmdbufs[j].size;
 		}
 
-		ret = mdw_dev_validation(mpriv, ksubcmd->info->type,
-			acbs, ksubcmd->info->num_cmdbufs);
+		ret = mdw_dev_validation(mpriv, ksubcmd->info->type, acbs,
+					 ksubcmd->info->num_cmdbufs);
 		kfree(acbs);
 		acbs = NULL;
 		if (ret)
@@ -176,7 +174,7 @@ static int mdw_cmd_get_cmdbufs(struct mdw_fpriv *mpriv, struct mdw_cmd *c)
 	/* flush cmdbufs */
 	if (mdw_mem_flush(mpriv, c->cmdbufs))
 		mdw_drv_warn("s(0x%llx) c(0x%llx) flush cmdbufs(%u) fail\n",
-			(uint64_t)mpriv, c->kid, c->cmdbufs->size);
+			     (uint64_t)mpriv, c->kid, c->cmdbufs->size);
 
 	ret = 0;
 	goto out;
@@ -187,12 +185,12 @@ free_cmdbufs:
 out:
 	mdw_cmd_debug("ret(%d)\n", ret);
 	mdw_trace_end("get cbs|c(0x%llx) num_subcmds(%u) num_cmdbufs(%u)",
-		c->kid, c->num_subcmds, c->num_cmdbufs);
+		      c->kid, c->num_subcmds, c->num_cmdbufs);
 	return ret;
 }
 
 static unsigned int mdw_cmd_create_infos(struct mdw_fpriv *mpriv,
-	struct mdw_cmd *c)
+					 struct mdw_cmd *c)
 {
 	unsigned int i = 0, j = 0, total_size = 0, tmp_size = 0;
 	struct mdw_subcmd_exec_info *sc_einfo = NULL;
@@ -210,42 +208,46 @@ static unsigned int mdw_cmd_create_infos(struct mdw_fpriv *mpriv,
 
 	for (i = 0; i < c->num_subcmds; i++) {
 		c->ksubcmds[i].info = &c->subcmds[i];
-		mdw_cmd_debug("subcmd(%u)(%u/%u/%u/%u/%u/%u/%u/%u/0x%llx)\n",
-			i, c->subcmds[i].type,
-			c->subcmds[i].suggest_time, c->subcmds[i].vlm_usage,
-			c->subcmds[i].vlm_ctx_id, c->subcmds[i].vlm_force,
-			c->subcmds[i].boost, c->subcmds[i].pack_id,
-			c->subcmds[i].num_cmdbufs, c->subcmds[i].cmdbufs);
+		mdw_cmd_debug("subcmd(%u)(%u/%u/%u/%u/%u/%u/%u/%u/0x%llx)\n", i,
+			      c->subcmds[i].type, c->subcmds[i].suggest_time,
+			      c->subcmds[i].vlm_usage, c->subcmds[i].vlm_ctx_id,
+			      c->subcmds[i].vlm_force, c->subcmds[i].boost,
+			      c->subcmds[i].pack_id, c->subcmds[i].num_cmdbufs,
+			      c->subcmds[i].cmdbufs);
 
 		/* kva for oroginal buffer */
-		c->ksubcmds[i].ori_cbs = kcalloc(c->subcmds[i].num_cmdbufs,
-			sizeof(c->ksubcmds[i].ori_cbs), GFP_KERNEL);
+		c->ksubcmds[i].ori_cbs =
+			kcalloc(c->subcmds[i].num_cmdbufs,
+				sizeof(c->ksubcmds[i].ori_cbs), GFP_KERNEL);
 		if (!c->ksubcmds[i].ori_cbs)
 			goto free_cmdbufs;
 
 		/* record kva for duplicate */
-		c->ksubcmds[i].kvaddrs = kcalloc(c->subcmds[i].num_cmdbufs,
-			sizeof(*c->ksubcmds[i].kvaddrs), GFP_KERNEL);
+		c->ksubcmds[i].kvaddrs =
+			kcalloc(c->subcmds[i].num_cmdbufs,
+				sizeof(*c->ksubcmds[i].kvaddrs), GFP_KERNEL);
 		if (!c->ksubcmds[i].kvaddrs)
 			goto free_cmdbufs;
 
 		/* record dva for cmdbufs */
-		c->ksubcmds[i].daddrs = kcalloc(c->subcmds[i].num_cmdbufs,
-			sizeof(*c->ksubcmds[i].daddrs), GFP_KERNEL);
+		c->ksubcmds[i].daddrs =
+			kcalloc(c->subcmds[i].num_cmdbufs,
+				sizeof(*c->ksubcmds[i].daddrs), GFP_KERNEL);
 		if (!c->ksubcmds[i].daddrs)
 			goto free_cmdbufs;
 
 		/* allocate for subcmd cmdbuf */
-		c->ksubcmds[i].cmdbufs = kcalloc(c->subcmds[i].num_cmdbufs,
-			sizeof(*c->ksubcmds[i].cmdbufs), GFP_KERNEL);
+		c->ksubcmds[i].cmdbufs =
+			kcalloc(c->subcmds[i].num_cmdbufs,
+				sizeof(*c->ksubcmds[i].cmdbufs), GFP_KERNEL);
 		if (!c->ksubcmds[i].cmdbufs)
 			goto free_cmdbufs;
 
 		/* copy cmdbuf info */
 		if (copy_from_user(c->ksubcmds[i].cmdbufs,
-			(void __user *)c->subcmds[i].cmdbufs,
-			c->subcmds[i].num_cmdbufs *
-			sizeof(*c->ksubcmds[i].cmdbufs))) {
+				   (void __user *)c->subcmds[i].cmdbufs,
+				   c->subcmds[i].num_cmdbufs *
+					   sizeof(*c->ksubcmds[i].cmdbufs))) {
 			goto free_cmdbufs;
 		}
 
@@ -256,15 +258,19 @@ static unsigned int mdw_cmd_create_infos(struct mdw_fpriv *mpriv,
 			c->num_cmdbufs++;
 			/* alignment */
 			if (c->ksubcmds[i].cmdbufs[j].align) {
-				tmp_size = MDW_ALIGN(total_size,
+				tmp_size = MDW_ALIGN(
+					total_size,
 					c->ksubcmds[i].cmdbufs[j].align);
 			} else {
-				tmp_size = MDW_ALIGN(total_size, MDW_DEFAULT_ALIGN);
+				tmp_size = MDW_ALIGN(total_size,
+						     MDW_DEFAULT_ALIGN);
 			}
 			if (tmp_size < total_size) {
-				mdw_drv_err("cmdbuf(%u,%u) size align overflow(%u/%u/%u)\n",
+				mdw_drv_err(
+					"cmdbuf(%u,%u) size align overflow(%u/%u/%u)\n",
 					i, j, total_size,
-					c->ksubcmds[i].cmdbufs[j].align, tmp_size);
+					c->ksubcmds[i].cmdbufs[j].align,
+					tmp_size);
 				goto free_cmdbufs;
 			}
 			total_size = tmp_size;
@@ -272,9 +278,11 @@ static unsigned int mdw_cmd_create_infos(struct mdw_fpriv *mpriv,
 			/* accumulator */
 			tmp_size = total_size + c->ksubcmds[i].cmdbufs[j].size;
 			if (tmp_size < total_size) {
-				mdw_drv_err("cmdbuf(%u,%u) size overflow(%u/%u/%u)\n",
+				mdw_drv_err(
+					"cmdbuf(%u,%u) size overflow(%u/%u/%u)\n",
 					i, j, total_size,
-					c->ksubcmds[i].cmdbufs[j].size, tmp_size);
+					c->ksubcmds[i].cmdbufs[j].size,
+					tmp_size);
 				goto free_cmdbufs;
 			}
 			total_size = tmp_size;
@@ -282,8 +290,8 @@ static unsigned int mdw_cmd_create_infos(struct mdw_fpriv *mpriv,
 	}
 	c->size_cmdbufs = total_size;
 
-	mdw_cmd_debug("sc(0x%llx) cb_num(%u) total size(%u)\n",
-		c->kid, c->num_cmdbufs, c->size_cmdbufs);
+	mdw_cmd_debug("sc(0x%llx) cb_num(%u) total size(%u)\n", c->kid,
+		      c->num_cmdbufs, c->size_cmdbufs);
 
 	ret = mdw_cmd_get_cmdbufs(mpriv, c);
 	if (ret)
@@ -339,10 +347,9 @@ static void mdw_cmd_delete_infos(struct mdw_fpriv *mpriv, struct mdw_cmd *c)
 	}
 }
 
-void mdw_cmd_mpriv_release(struct mdw_fpriv *mpriv)
+static void mdw_cmd_mpriv_release_local(struct mdw_fpriv *mpriv)
 {
-	if (!atomic_read(&mpriv->active) &&
-		list_empty_careful(&mpriv->cmds)) {
+	if (!atomic_read(&mpriv->active) && list_empty_careful(&mpriv->cmds)) {
 		mdw_flw_debug("s(0x%llx) release mem\n", (uint64_t)mpriv);
 		mdw_mem_mpriv_release(mpriv);
 	}
@@ -356,8 +363,7 @@ static const char *mdw_fence_get_driver_name(struct dma_fence *fence)
 
 static const char *mdw_fence_get_timeline_name(struct dma_fence *fence)
 {
-	struct mdw_fence *f =
-		container_of(fence, struct mdw_fence, base_fence);
+	struct mdw_fence *f = container_of(fence, struct mdw_fence, base_fence);
 
 	return dev_name(f->mdev->misc_dev->this_device);
 }
@@ -377,11 +383,11 @@ static void mdw_fence_release(struct dma_fence *fence)
 }
 
 static const struct dma_fence_ops mdw_fence_ops = {
-	.get_driver_name =  mdw_fence_get_driver_name,
-	.get_timeline_name =  mdw_fence_get_timeline_name,
-	.enable_signaling =  mdw_fence_enable_signaling,
+	.get_driver_name = mdw_fence_get_driver_name,
+	.get_timeline_name = mdw_fence_get_timeline_name,
+	.enable_signaling = mdw_fence_enable_signaling,
 	.wait = dma_fence_default_wait,
-	.release =  mdw_fence_release,
+	.release = mdw_fence_release,
 };
 
 //--------------------------------------------
@@ -397,8 +403,8 @@ static int mdw_fence_init(struct mdw_cmd *c)
 
 	c->fence->mdev = c->mpriv->mdev;
 	spin_lock_init(&c->fence->lock);
-	dma_fence_init(&c->fence->base_fence, &mdw_fence_ops,
-		&c->fence->lock, 0, 0);
+	dma_fence_init(&c->fence->base_fence, &mdw_fence_ops, &c->fence->lock,
+		       0, 0);
 
 	return ret;
 }
@@ -406,20 +412,22 @@ static int mdw_fence_init(struct mdw_cmd *c)
 static int mdw_cmd_sanity_check(struct mdw_cmd *c)
 {
 	if (c->priority >= MDW_PRIORITY_MAX ||
-		c->num_subcmds > MDW_SUBCMD_MAX) {
+	    c->num_subcmds > MDW_SUBCMD_MAX) {
 		mdw_drv_err("s(0x%llx)cmd invalid(0x%llx/0x%llx)(%u/%u)\n",
-			(uint64_t)c->mpriv, c->uid, c->kid,
-			c->priority, c->num_subcmds);
+			    (uint64_t)c->mpriv, c->uid, c->kid, c->priority,
+			    c->num_subcmds);
 		return -EINVAL;
 	}
 
-	if (c->exec_infos->size != sizeof(struct mdw_cmd_exec_info) +
-		c->num_subcmds * sizeof(struct mdw_subcmd_exec_info)) {
-		mdw_drv_err("s(0x%llx)cmd invalid(0x%llx/0x%llx) einfo(%u/%u)\n",
-			(uint64_t)c->mpriv, c->uid, c->kid,
-			c->exec_infos->size,
+	if (c->exec_infos->size !=
+	    sizeof(struct mdw_cmd_exec_info) +
+		    c->num_subcmds * sizeof(struct mdw_subcmd_exec_info)) {
+		mdw_drv_err(
+			"s(0x%llx)cmd invalid(0x%llx/0x%llx) einfo(%u/%u)\n",
+			(uint64_t)c->mpriv, c->uid, c->kid, c->exec_infos->size,
 			sizeof(struct mdw_cmd_exec_info) +
-			c->num_subcmds * sizeof(struct mdw_subcmd_exec_info));
+				c->num_subcmds *
+					sizeof(struct mdw_subcmd_exec_info));
 		return -EINVAL;
 	}
 
@@ -441,10 +449,11 @@ static int mdw_cmd_adj_check(struct mdw_cmd *c)
 				continue;
 
 			if (!c->adj_matrix[i * c->num_subcmds + j] ||
-				!c->adj_matrix[i + j * c->num_subcmds])
+			    !c->adj_matrix[i + j * c->num_subcmds])
 				continue;
 
-			mdw_drv_err("s(0x%llx)c(0x%llx/0x%llx) adj matrix(%u/%u) fail\n",
+			mdw_drv_err(
+				"s(0x%llx)c(0x%llx/0x%llx) adj matrix(%u/%u) fail\n",
 				(uint64_t)c->mpriv, c->uid, c->kid, i, j);
 			return -EINVAL;
 		}
@@ -460,13 +469,12 @@ static int mdw_cmd_sc_sanity_check(struct mdw_cmd *c)
 	/* subcmd info */
 	for (i = 0; i < c->num_subcmds; i++) {
 		if (c->subcmds[i].type >= MDW_DEV_MAX ||
-			c->subcmds[i].vlm_ctx_id >= MDW_SUBCMD_MAX ||
-			c->subcmds[i].boost > MDW_BOOST_MAX ||
-			c->subcmds[i].pack_id >= MDW_SUBCMD_MAX) {
-			mdw_drv_err("subcmd(%u) invalid (%u/%u/%u/%u)\n",
-				i, c->subcmds[i].type,
-				c->subcmds[i].boost,
-				c->subcmds[i].pack_id);
+		    c->subcmds[i].vlm_ctx_id >= MDW_SUBCMD_MAX ||
+		    c->subcmds[i].boost > MDW_BOOST_MAX ||
+		    c->subcmds[i].pack_id >= MDW_SUBCMD_MAX) {
+			mdw_drv_err("subcmd(%u) invalid (%u/%u/%u/%u)\n", i,
+				    c->subcmds[i].type, c->subcmds[i].boost,
+				    c->subcmds[i].pack_id);
 			return -EINVAL;
 		}
 	}
@@ -486,12 +494,12 @@ static int mdw_cmd_run(struct mdw_fpriv *mpriv, struct mdw_cmd *c)
 	ret = mdev->dev_funcs->run_cmd(mpriv, c);
 	if (ret) {
 		mdw_drv_err("s(0x%llx) run cmd(0x%llx) fail(%d)\n",
-			(uint64_t) c->mpriv, c->kid, ret);
+			    (uint64_t)c->mpriv, c->kid, ret);
 
 		dma_fence_set_error(&c->fence->base_fence, ret);
 	} else {
-		mdw_flw_debug("s(0x%llx) cmd(0x%llx) run\n",
-			(uint64_t)c->mpriv, c->kid);
+		mdw_flw_debug("s(0x%llx) cmd(0x%llx) run\n", (uint64_t)c->mpriv,
+			      c->kid);
 	}
 
 	mutex_unlock(&c->mtx);
@@ -509,7 +517,7 @@ static void mdw_cmd_delete(struct mdw_cmd *c)
 	mutex_lock(&mpriv->mtx);
 	mdw_cmd_delete_infos(c->mpriv, c);
 	list_del(&c->u_item);
-	mdw_cmd_mpriv_release(c->mpriv);
+	mdw_cmd_mpriv_release_local(c->mpriv);
 	mutex_unlock(&mpriv->mtx);
 	mdw_mem_put(c->mpriv, c->exec_infos);
 	dma_fence_signal(f);
@@ -529,13 +537,14 @@ static void mdw_cmd_check_rets(struct mdw_cmd *c, int ret)
 	/* extract fail subcmd */
 	do {
 		idx = find_next_bit((unsigned long *)&c->einfos->c.sc_rets,
-			c->num_subcmds, idx);
+				    c->num_subcmds, idx);
 		if (idx >= c->num_subcmds)
 			break;
 
-		mdw_drv_warn("sc(0x%llx-#%u) type(%u) softlimit(%u) boost(%u) fail\n",
-			c->kid, idx, c->subcmds[idx].type,
-			c->softlimit, c->subcmds[idx].boost);
+		mdw_drv_warn(
+			"sc(0x%llx-#%u) type(%u) softlimit(%u) boost(%u) fail\n",
+			c->kid, idx, c->subcmds[idx].type, c->softlimit,
+			c->subcmds[idx].boost);
 		if (c->subcmds[idx].type == APUSYS_DEVICE_EDMA)
 			is_dma++;
 
@@ -545,8 +554,8 @@ static void mdw_cmd_check_rets(struct mdw_cmd *c, int ret)
 	/* trigger exception if dma */
 	if (is_dma) {
 		dma_exception("s(0x%llx)pid(%d/%d)c(0x%llx)fail(%d/0x%llx)\n",
-			(uint64_t)c->mpriv, c->pid, c->tgid,
-			c->kid, ret, c->einfos->c.sc_rets);
+			      (uint64_t)c->mpriv, c->pid, c->tgid, c->kid, ret,
+			      c->einfos->c.sc_rets);
 	}
 }
 
@@ -559,10 +568,10 @@ static int mdw_cmd_complete(struct mdw_cmd *c, int ret)
 		(c->end_ts.tv_sec - c->start_ts.tv_sec) * 1000000;
 	c->einfos->c.total_us +=
 		((c->end_ts.tv_nsec - c->start_ts.tv_nsec) / 1000);
-	mdw_flw_debug("s(0x%llx) c(0x%llx/0x%llx/0x%llx) ret(%d) sc_rets(0x%llx) complete, pid(%d/%d)(%d)\n",
-		(uint64_t)c->mpriv, c->uid, c->kid, c->rvid,
-		ret, c->einfos->c.sc_rets,
-		c->pid, c->tgid, current->pid);
+	mdw_flw_debug(
+		"s(0x%llx) c(0x%llx/0x%llx/0x%llx) ret(%d) sc_rets(0x%llx) complete, pid(%d/%d)(%d)\n",
+		(uint64_t)c->mpriv, c->uid, c->kid, c->rvid, ret,
+		c->einfos->c.sc_rets, c->pid, c->tgid, current->pid);
 
 	/* check subcmds return value */
 	if (c->einfos->c.sc_rets) {
@@ -574,16 +583,18 @@ static int mdw_cmd_complete(struct mdw_cmd *c, int ret)
 	c->einfos->c.ret = ret;
 
 	if (ret) {
-		mdw_drv_err("s(0x%llx) c(0x%llx/0x%llx/0x%llx) ret(%d/0x%llx) time(%llu) pid(%d/%d)\n",
-			(uint64_t)c->mpriv, c->uid, c->kid, c->rvid,
-			ret, c->einfos->c.sc_rets,
-			c->einfos->c.total_us, c->pid, c->tgid);
+		mdw_drv_err(
+			"s(0x%llx) c(0x%llx/0x%llx/0x%llx) ret(%d/0x%llx) time(%llu) pid(%d/%d)\n",
+			(uint64_t)c->mpriv, c->uid, c->kid, c->rvid, ret,
+			c->einfos->c.sc_rets, c->einfos->c.total_us, c->pid,
+			c->tgid);
 		dma_fence_set_error(&c->fence->base_fence, ret);
 	} else {
-		mdw_flw_debug("s(0x%llx) c(0x%llx/0x%llx/0x%llx) ret(%d/0x%llx) time(%llu) pid(%d/%d)\n",
-			(uint64_t)c->mpriv, c->uid, c->kid, c->rvid,
-			ret, c->einfos->c.sc_rets,
-			c->einfos->c.total_us, c->pid, c->tgid);
+		mdw_flw_debug(
+			"s(0x%llx) c(0x%llx/0x%llx/0x%llx) ret(%d/0x%llx) time(%llu) pid(%d/%d)\n",
+			(uint64_t)c->mpriv, c->uid, c->kid, c->rvid, ret,
+			c->einfos->c.sc_rets, c->einfos->c.total_us, c->pid,
+			c->tgid);
 	}
 
 	mutex_unlock(&c->mtx);
@@ -594,8 +605,7 @@ static int mdw_cmd_complete(struct mdw_cmd *c, int ret)
 
 static void mdw_cmd_trigger_func(struct work_struct *wk)
 {
-	struct mdw_cmd *c =
-		container_of(wk, struct mdw_cmd, t_wk);
+	struct mdw_cmd *c = container_of(wk, struct mdw_cmd, t_wk);
 
 	if (c->wait_fence) {
 		dma_fence_wait(c->wait_fence, false);
@@ -603,12 +613,12 @@ static void mdw_cmd_trigger_func(struct work_struct *wk)
 	}
 
 	mdw_flw_debug("s(0x%llx) c(0x%llx) wait fence done, start run\n",
-		(uint64_t)c->mpriv, c->kid);
+		      (uint64_t)c->mpriv, c->kid);
 	mdw_cmd_run(c->mpriv, c);
 }
 
 static struct mdw_cmd *mdw_cmd_create(struct mdw_fpriv *mpriv,
-	union mdw_cmd_args *args)
+				      union mdw_cmd_args *args)
 {
 	struct mdw_cmd_in *in = (struct mdw_cmd_in *)args;
 	struct mdw_cmd *c = NULL;
@@ -660,7 +670,7 @@ static struct mdw_cmd *mdw_cmd_create(struct mdw_fpriv *mpriv,
 	if (!c->subcmds)
 		goto put_execinfos;
 	if (copy_from_user(c->subcmds, (void __user *)in->exec.subcmd_infos,
-		c->num_subcmds * sizeof(*c->subcmds))) {
+			   c->num_subcmds * sizeof(*c->subcmds))) {
 		mdw_drv_err("copy subcmds fail\n");
 		goto free_subcmds;
 	}
@@ -669,25 +679,27 @@ static struct mdw_cmd *mdw_cmd_create(struct mdw_fpriv *mpriv,
 		goto free_subcmds;
 	}
 
-	c->ksubcmds = kzalloc(c->num_subcmds * sizeof(*c->ksubcmds),
-		GFP_KERNEL);
+	c->ksubcmds =
+		kzalloc(c->num_subcmds * sizeof(*c->ksubcmds), GFP_KERNEL);
 	if (!c->ksubcmds)
 		goto free_subcmds;
 
 	/* adj matrix */
-	c->adj_matrix = kzalloc(c->num_subcmds *
-		c->num_subcmds * sizeof(uint8_t), GFP_KERNEL);
+	c->adj_matrix = kzalloc(
+		c->num_subcmds * c->num_subcmds * sizeof(uint8_t), GFP_KERNEL);
 	if (!c->adj_matrix)
 		goto free_ksubcmds;
-	if (copy_from_user(c->adj_matrix, (void __user *)in->exec.adj_matrix,
-		(c->num_subcmds * c->num_subcmds * sizeof(uint8_t)))) {
+	if (copy_from_user(
+		    c->adj_matrix, (void __user *)in->exec.adj_matrix,
+		    (c->num_subcmds * c->num_subcmds * sizeof(uint8_t)))) {
 		mdw_drv_err("copy adj matrix fail\n");
 		goto free_adj;
 	}
 	if (g_mdw_klog & MDW_DBG_CMD) {
-		print_hex_dump(KERN_INFO, "[apusys] adj matrix: ",
-			DUMP_PREFIX_OFFSET, 16, 1, c->adj_matrix,
-			c->num_subcmds * c->num_subcmds, 0);
+		print_hex_dump(KERN_INFO,
+			       "[apusys] adj matrix: ", DUMP_PREFIX_OFFSET, 16,
+			       1, c->adj_matrix,
+			       c->num_subcmds * c->num_subcmds, 0);
 	}
 	if (mdw_cmd_adj_check(c))
 		goto free_adj;
@@ -764,11 +776,12 @@ static int mdw_cmd_ioctl_run(struct mdw_fpriv *mpriv, union mdw_cmd_args *args)
 	}
 
 	/* check wait fence from other module */
-	mdw_flw_debug("s(0x%llx)c(0x%llx) wait fence(%d)\n",
-			(uint64_t)c->mpriv, c->kid, wait_fd);
+	mdw_flw_debug("s(0x%llx)c(0x%llx) wait fence(%d)\n", (uint64_t)c->mpriv,
+		      c->kid, wait_fd);
 	c->wait_fence = sync_file_get_fence(wait_fd);
 	if (!c->wait_fence) {
-		mdw_flw_debug("s(0x%llx)c(0x%llx) no wait fence, trigger directly\n",
+		mdw_flw_debug(
+			"s(0x%llx)c(0x%llx) no wait fence, trigger directly\n",
 			(uint64_t)c->mpriv, c->kid);
 		ret = mdw_cmd_run(mpriv, c);
 	} else {

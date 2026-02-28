@@ -3,8 +3,8 @@
  * Copyright (c) 2020 MediaTek Inc.
  */
 
-#include <linux/module.h>  /* Needed by all modules */
-#include <linux/kernel.h>  /* Needed for KERN_ALERT */
+#include <linux/module.h> /* Needed by all modules */
+#include <linux/kernel.h> /* Needed for KERN_ALERT */
 #include <linux/cdev.h>
 #include <linux/device.h>
 #include <linux/delay.h>
@@ -59,7 +59,7 @@ static int reviser_release(struct inode *, struct file *);
 static int reviser_memory_func(void *arg);
 static int reviser_init_para(struct reviser_dev_info *rdv);
 static int reviser_get_addr(struct platform_device *pdev, void **reg, int num,
-		unsigned int *base, unsigned int *size);
+			    unsigned int *base, unsigned int *size);
 static int reviser_map_dts(struct platform_device *pdev);
 static int reviser_unmap_dts(struct platform_device *pdev);
 static int reviser_create_node(struct platform_device *pdev);
@@ -71,7 +71,7 @@ static int reviser_memory_func(void *arg)
 {
 	struct reviser_dev_info *rdv;
 
-	rdv = (struct reviser_dev_info *) arg;
+	rdv = (struct reviser_dev_info *)arg;
 
 	if (reviser_dram_remap_init(rdv)) {
 		LOG_ERR("Could not set memory for reviser\n");
@@ -88,7 +88,7 @@ static int reviser_rprmsg_memory_func(void *arg)
 	int ret = 0;
 	uint32_t i;
 
-	rdv = (struct reviser_dev_info *) arg;
+	rdv = (struct reviser_dev_info *)arg;
 
 	ret = reviser_remote_handshake(rdv, NULL);
 	if (ret) {
@@ -103,20 +103,20 @@ static int reviser_rprmsg_memory_func(void *arg)
 	}
 
 	for (i = 0; i < rdv->plat.dram_max; i++) {
-		ret = reviser_remote_set_hw_default_iova(rdv, i, rdv->plat.dram[i]);
+		ret = reviser_remote_set_hw_default_iova(rdv, i,
+							 rdv->plat.dram[i]);
 		if (ret) {
-			LOG_ERR("reviser_remote_set_hw_default_iova fail %d\n", ret);
+			LOG_ERR("reviser_remote_set_hw_default_iova fail %d\n",
+				ret);
 			goto out;
 		}
 	}
 
 	LOG_INFO("reviser memory init\n");
 
-
 out:
 	return ret;
 }
-
 
 int reviser_set_init_info(struct mtk_apu *apu)
 {
@@ -131,20 +131,19 @@ int reviser_set_init_info(struct mtk_apu *apu)
 		return -EINVAL;
 	}
 
-	rv_info = (struct reviser_init_info *)
-		   get_apu_config_user_ptr(apu->conf_buf, eREVISER_INIT_INFO);
+	rv_info = (struct reviser_init_info *)get_apu_config_user_ptr(
+		apu->conf_buf, eREVISER_INIT_INFO);
 
 	memset((void *)rv_info, 0, sizeof(struct reviser_init_info));
 
-//	if (reviser_dram_remap_init(rdv)) {
-//		LOG_ERR("Could not set memory for reviser\n");
-//		return -ENOMEM;
-//	}
+	//	if (reviser_dram_remap_init(rdv)) {
+	//		LOG_ERR("Could not set memory for reviser\n");
+	//		return -ENOMEM;
+	//	}
 
 	rv_info->boundary = rdv->plat.boundary;
 	for (i = 0; i < rdv->plat.dram_max; i++)
 		rv_info->dram[i] = rdv->plat.dram[i];
-
 
 	LOG_INFO("reviser info init\n");
 
@@ -163,7 +162,6 @@ static void reviser_power_on_cb(void *para)
 	spin_lock_irqsave(&g_rdv->lock.lock_power, flags);
 	g_rdv->power.power = true;
 	spin_unlock_irqrestore(&g_rdv->lock.lock_power, flags);
-
 
 	reviser_mgt_set_int(g_rdv, 1);
 
@@ -202,21 +200,18 @@ static void reviser_power_off_cb(void *para)
 	LOG_INFO("reviser power-off callback Done\n");
 }
 
-
 static const struct file_operations reviser_fops = {
 	.open = reviser_open,
 	.release = reviser_release,
 };
-
-
 
 static int reviser_open(struct inode *inode, struct file *filp)
 {
 	struct reviser_dev_info *rdv;
 
 	DEBUG_TAG;
-	rdv = container_of(inode->i_cdev,
-			struct reviser_dev_info, reviser_cdev);
+	rdv = container_of(inode->i_cdev, struct reviser_dev_info,
+			   reviser_cdev);
 
 	filp->private_data = rdv;
 	LOG_DBG_RVR_FLW("rdv  %p\n", rdv);
@@ -237,7 +232,6 @@ static int reviser_init_para(struct reviser_dev_info *rdv)
 	mutex_init(&rdv->lock.mutex_remap);
 	mutex_init(&rdv->lock.mutex_power);
 
-
 	init_waitqueue_head(&rdv->lock.wait_ctx);
 	init_waitqueue_head(&rdv->lock.wait_tcm);
 	spin_lock_init(&rdv->lock.lock_power);
@@ -247,7 +241,7 @@ static int reviser_init_para(struct reviser_dev_info *rdv)
 }
 
 static int reviser_get_addr(struct platform_device *pdev, void **reg, int num,
-		unsigned int *base, unsigned int *size)
+			    unsigned int *base, unsigned int *size)
 {
 	struct resource *res;
 
@@ -261,7 +255,8 @@ static int reviser_get_addr(struct platform_device *pdev, void **reg, int num,
 		*base = res->start;
 		*size = 0;
 		*reg = NULL;
-		dev_info(&pdev->dev,
+		dev_info(
+			&pdev->dev,
 			"(num = %d) at 0x%08lx map 0x%08lx base:0x%08x size:0x%08x\n",
 			num, (unsigned long __force)res->start,
 			(unsigned long __force)res->end, *base, *size);
@@ -270,17 +265,17 @@ static int reviser_get_addr(struct platform_device *pdev, void **reg, int num,
 
 	*reg = ioremap(res->start, res->end - res->start + 1);
 	if (*reg == 0) {
-		dev_info(&pdev->dev,
-			"could not allocate iomem (num = %d)\n", num);
+		dev_info(&pdev->dev, "could not allocate iomem (num = %d)\n",
+			 num);
 		return -EIO;
 	}
 
 	*base = res->start;
 	*size = res->end - res->start + 1;
 	dev_info(&pdev->dev,
-		"(num = %d) at 0x%08lx map 0x%08lx base:0x%08x size:0x%08x\n",
-		num, (unsigned long __force)res->start,
-		(unsigned long __force)res->end, *base, *size);
+		 "(num = %d) at 0x%08lx map 0x%08lx base:0x%08x size:0x%08x\n",
+		 num, (unsigned long __force)res->start,
+		 (unsigned long __force)res->end, *base, *size);
 	return 0;
 }
 static int reviser_map_dts(struct platform_device *pdev)
@@ -298,14 +293,14 @@ static int reviser_map_dts(struct platform_device *pdev)
 		return -EINVAL;
 	}
 
-	if (reviser_get_addr(pdev, &rdv->rsc.ctrl.base, 0,
-			&rdv->rsc.ctrl.addr, &rdv->rsc.ctrl.size)) {
+	if (reviser_get_addr(pdev, &rdv->rsc.ctrl.base, 0, &rdv->rsc.ctrl.addr,
+			     &rdv->rsc.ctrl.size)) {
 		LOG_ERR("invalid address\n");
 		ret = -ENODEV;
 		goto out;
 	}
-	if (reviser_get_addr(pdev, &rdv->rsc.vlm.base, 1,
-			&rdv->rsc.vlm.addr, &rdv->rsc.vlm.size)) {
+	if (reviser_get_addr(pdev, &rdv->rsc.vlm.base, 1, &rdv->rsc.vlm.addr,
+			     &rdv->rsc.vlm.size)) {
 		LOG_ERR("invalid address\n");
 		ret = -ENODEV;
 		goto free_ctrl;
@@ -314,10 +309,9 @@ static int reviser_map_dts(struct platform_device *pdev)
 	rdv->plat.vlm_size = rdv->rsc.vlm.size;
 	rdv->plat.vlm_bank_max = rdv->plat.vlm_size / rdv->plat.bank_size;
 
-
-	ret = reviser_get_addr(pdev, &rdv->rsc.pool[REVSIER_POOL_TCM].base,
-			2, &rdv->rsc.pool[REVSIER_POOL_TCM].addr,
-			&rdv->rsc.pool[REVSIER_POOL_TCM].size);
+	ret = reviser_get_addr(pdev, &rdv->rsc.pool[REVSIER_POOL_TCM].base, 2,
+			       &rdv->rsc.pool[REVSIER_POOL_TCM].addr,
+			       &rdv->rsc.pool[REVSIER_POOL_TCM].size);
 	if (ret && (ret != -ENOMEM)) {
 		LOG_ERR("invalid address\n");
 		ret = -ENODEV;
@@ -328,15 +322,16 @@ static int reviser_map_dts(struct platform_device *pdev)
 	}
 
 	rdv->plat.vlm_bank_max = rdv->plat.vlm_size / rdv->plat.bank_size;
-	rdv->plat.pool_addr[REVSIER_POOL_TCM] = rdv->rsc.pool[REVSIER_POOL_TCM].addr;
-	rdv->plat.pool_size[REVSIER_POOL_TCM] = rdv->rsc.pool[REVSIER_POOL_TCM].size;
+	rdv->plat.pool_addr[REVSIER_POOL_TCM] =
+		rdv->rsc.pool[REVSIER_POOL_TCM].addr;
+	rdv->plat.pool_size[REVSIER_POOL_TCM] =
+		rdv->rsc.pool[REVSIER_POOL_TCM].size;
 	rdv->plat.pool_bank_max[REVSIER_POOL_TCM] =
-			rdv->plat.pool_size[REVSIER_POOL_TCM] / rdv->plat.bank_size;
+		rdv->plat.pool_size[REVSIER_POOL_TCM] / rdv->plat.bank_size;
 	rdv->plat.pool_max++;
 
-
-	if (reviser_get_addr(pdev, &rdv->rsc.isr.base, 3,
-			&rdv->rsc.isr.addr, &rdv->rsc.isr.size)) {
+	if (reviser_get_addr(pdev, &rdv->rsc.isr.base, 3, &rdv->rsc.isr.addr,
+			     &rdv->rsc.isr.size)) {
 		LOG_ERR("invalid address\n");
 		ret = -ENODEV;
 		goto free_tcm;
@@ -345,16 +340,16 @@ static int reviser_map_dts(struct platform_device *pdev)
 	rdv->rsc.dram.addr = rdv->plat.dram[0];
 	LOG_DBG_RVR_FLW("rdv->rsc.dram.addr %x\n", rdv->rsc.dram.addr);
 
-	if (of_property_read_u32(pdev->dev.of_node,
-			"boundary", &rdv->plat.boundary)) {
+	if (of_property_read_u32(pdev->dev.of_node, "boundary",
+				 &rdv->plat.boundary)) {
 		LOG_ERR("Invalid boundary %d\n", ret);
 
 		goto free_int;
 	}
 	LOG_DBG_RVR_FLW("boundary: %08xh\n", rdv->plat.boundary);
 
-	if (of_property_read_u32(pdev->dev.of_node,
-			"default-dram", &dram_offset)) {
+	if (of_property_read_u32(pdev->dev.of_node, "default-dram",
+				 &dram_offset)) {
 		LOG_ERR("Invalid dram_offset %d\n", ret);
 		goto free_int;
 	}
@@ -364,16 +359,16 @@ static int reviser_map_dts(struct platform_device *pdev)
 	else
 		rdv->plat.fix_dram = 0;
 
-	slb_node = of_find_compatible_node(
-			NULL, NULL, "mediatek,mtk-slbc");
+	slb_node = of_find_compatible_node(NULL, NULL, "mediatek,mtk-slbc");
 	if (slb_node) {
-		of_property_read_u32(slb_node,
-					"apu", &slb_size);
+		of_property_read_u32(slb_node, "apu", &slb_size);
 		rdv->rsc.pool[REVSIER_POOL_SLBS].size = slb_size;
 		rdv->plat.pool_type[REVSIER_POOL_SLBS] = REVISER_MEM_TYPE_SLBS;
-		rdv->plat.pool_size[REVSIER_POOL_SLBS] = rdv->rsc.pool[REVSIER_POOL_SLBS].size;
+		rdv->plat.pool_size[REVSIER_POOL_SLBS] =
+			rdv->rsc.pool[REVSIER_POOL_SLBS].size;
 		rdv->plat.pool_max++;
-		LOG_INFO("APU-slb size: 0x%x\n", rdv->plat.pool_size[REVSIER_POOL_SLBS]);
+		LOG_INFO("APU-slb size: 0x%x\n",
+			 rdv->plat.pool_size[REVSIER_POOL_SLBS]);
 	}
 
 	return ret;
@@ -389,7 +384,6 @@ free_ctrl:
 	iounmap(rdv->rsc.ctrl.base);
 out:
 	return ret;
-
 }
 static int reviser_unmap_dts(struct platform_device *pdev)
 {
@@ -408,7 +402,6 @@ static int reviser_unmap_dts(struct platform_device *pdev)
 	iounmap(rdv->rsc.ctrl.base);
 
 	return ret;
-
 }
 
 static int reviser_create_node(struct platform_device *pdev)
@@ -423,8 +416,7 @@ static int reviser_create_node(struct platform_device *pdev)
 	}
 
 	/* get major */
-	ret = alloc_chrdev_region(&rdv->reviser_devt,
-			0, 1, APUSYS_DRV_NAME);
+	ret = alloc_chrdev_region(&rdv->reviser_devt, 0, 1, APUSYS_DRV_NAME);
 	if (ret < 0) {
 		LOG_ERR("alloc_chrdev_region failed, %d\n", ret);
 		goto out;
@@ -435,23 +427,22 @@ static int reviser_create_node(struct platform_device *pdev)
 	rdv->reviser_cdev.owner = THIS_MODULE;
 
 	/* Add to system */
-	ret = cdev_add(&rdv->reviser_cdev,
-			rdv->reviser_devt, 1);
+	ret = cdev_add(&rdv->reviser_cdev, rdv->reviser_devt, 1);
 	if (ret < 0) {
 		LOG_ERR("Attach file operation failed, %d\n", ret);
 		goto free_chrdev_region;
 	}
 
 	/* Create class register */
-	reviser_class = class_create(APUSYS_DRV_NAME);
+	reviser_class = class_create(THIS_MODULE, APUSYS_DRV_NAME);
 	if (IS_ERR(reviser_class)) {
 		ret = PTR_ERR(reviser_class);
 		LOG_ERR("Unable to create class, err = %d\n", ret);
 		goto free_cdev_add;
 	}
 
-	dev = device_create(reviser_class, NULL, rdv->reviser_devt,
-				NULL, APUSYS_DEV_NAME);
+	dev = device_create(reviser_class, NULL, rdv->reviser_devt, NULL,
+			    APUSYS_DEV_NAME);
 	if (IS_ERR(dev)) {
 		ret = PTR_ERR(dev);
 		LOG_ERR("Failed to create device: /dev/%s, err = %d",
@@ -544,8 +535,8 @@ static int reviser_probe(struct platform_device *pdev)
 			goto free_map;
 		}
 
-		ret = apu_power_callback_device_register(REVISOR,
-				reviser_power_on_cb, reviser_power_off_cb);
+		ret = apu_power_callback_device_register(
+			REVISOR, reviser_power_on_cb, reviser_power_off_cb);
 		if (ret) {
 			LOG_ERR("apu_power_callback_device_register return error(%d)\n",
 				ret);
@@ -555,7 +546,6 @@ static int reviser_probe(struct platform_device *pdev)
 
 		apu_power_device_register(REVISER, pdev);
 	}
-
 
 	if (reviser_table_init(rdv)) {
 		LOG_ERR("table init fail\n");
@@ -577,8 +567,6 @@ static int reviser_probe(struct platform_device *pdev)
 	//reviser_power_on(rdv);
 
 	rdv->init_done = true;
-
-
 
 	LOG_INFO("probe done\n");
 
@@ -619,8 +607,6 @@ static int reviser_remove(struct platform_device *pdev)
 	return 0;
 }
 
-
-
 static struct platform_driver reviser_driver = {
 	.probe = reviser_probe,
 	.remove = reviser_remove,
@@ -630,8 +616,8 @@ static struct platform_driver reviser_driver = {
 	},
 };
 
-static int reviser_rpmsg_cb(struct rpmsg_device *rpdev, void *data,
-				 int len, void *priv, u32 src)
+static int reviser_rpmsg_cb(struct rpmsg_device *rpdev, void *data, int len,
+			    void *priv, u32 src)
 {
 	int ret = 0;
 
@@ -667,8 +653,6 @@ static int reviser_rpmsg_probe(struct rpmsg_device *rpdev)
 
 	dev_set_drvdata(&rpdev->dev, rdv);
 
-
-
 	/* Workaround for power all on mode*/
 	//reviser_power_on(rdv);
 
@@ -685,8 +669,10 @@ static void reviser_rpmsg_remove(struct rpmsg_device *rpdev)
 }
 
 static const struct of_device_id reviser_rpmsg_of_match[] = {
-	{ .compatible = "mediatek,apu-reviser-rpmsg", },
-	{ },
+	{
+		.compatible = "mediatek,apu-reviser-rpmsg",
+	},
+	{},
 };
 
 static struct rpmsg_driver reviser_rpmsg_driver = {
@@ -704,7 +690,6 @@ int reviser_init(struct apusys_core_info *info)
 	int ret = 0;
 	//struct device *dev = NULL;
 
-
 	DEBUG_TAG;
 
 	g_apusys = info;
@@ -716,21 +701,16 @@ int reviser_init(struct apusys_core_info *info)
 		return -ENODEV;
 	}
 
-
 	if (register_rpmsg_driver(&reviser_rpmsg_driver)) {
 		LOG_ERR("failed to register RMPSG driver");
 		return -ENODEV;
 	}
 
-
 	return ret;
 }
-
 
 void reviser_exit(void)
 {
 	unregister_rpmsg_driver(&reviser_rpmsg_driver);
 	platform_driver_unregister(&reviser_driver);
 }
-
-

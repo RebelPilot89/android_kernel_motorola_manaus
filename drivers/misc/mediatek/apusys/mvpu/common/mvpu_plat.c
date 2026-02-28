@@ -6,6 +6,7 @@
 #include <linux/of.h>
 #include <linux/kernel.h>
 #include <linux/device.h>
+#include <linux/module.h>
 #include <linux/platform_device.h>
 
 #include "mvpu_plat.h"
@@ -30,48 +31,28 @@ struct mvpu_platdata *g_mvpu_platdata;
 int mvpu_drv_loglv;
 
 static const struct of_device_id mvpu_of_match[] = {
+	{ .compatible = "mediatek, mt6897-mvpu",
+	  .data = &mvpu_mt6897_platdata },
+	{ .compatible = "mediatek, mt6886-mvpu",
+	  .data = &mvpu_mt6886_platdata },
+	{ .compatible = "mediatek, mt6895-mvpu",
+	  .data = &mvpu_mt6895_platdata },
+	{ .compatible = "mediatek, mt6879-mvpu",
+	  .data = &mvpu_mt6879_platdata },
+	{ .compatible = "mediatek, mt6899-mvpu",
+	  .data = &mvpu_mt6899_platdata },
+	{ .compatible = "mediatek, mt6983-mvpu",
+	  .data = &mvpu_mt6983_platdata },
+	{ .compatible = "mediatek, mt6985-mvpu",
+	  .data = &mvpu_mt6985_platdata },
+	{ .compatible = "mediatek, mt6989-mvpu",
+	  .data = &mvpu_mt6989_platdata },
+	{ .compatible = "mediatek, mt6991-mvpu",
+	  .data = &mvpu_mt6991_platdata },
+	{ .compatible = "mediatek, mt8139-mvpu",
+	  .data = &mvpu_mt8139_platdata },
 	{
-	.compatible = "mediatek, mt6897-mvpu",
-	.data = &mvpu_mt6897_platdata
-	},
-	{
-	.compatible = "mediatek, mt6886-mvpu",
-	.data = &mvpu_mt6886_platdata
-	},
-	{
-	.compatible = "mediatek, mt6895-mvpu",
-	.data = &mvpu_mt6895_platdata
-	},
-	{
-	.compatible = "mediatek, mt6879-mvpu",
-	.data = &mvpu_mt6879_platdata
-	},
-	{
-	.compatible = "mediatek, mt6899-mvpu",
-	.data = &mvpu_mt6899_platdata
-	},
-	{
-	.compatible = "mediatek, mt6983-mvpu",
-	.data = &mvpu_mt6983_platdata
-	},
-	{
-	.compatible = "mediatek, mt6985-mvpu",
-	.data = &mvpu_mt6985_platdata
-	},
-	{
-	.compatible = "mediatek, mt6989-mvpu",
-	.data = &mvpu_mt6989_platdata
-	},
-	{
-	.compatible = "mediatek, mt6991-mvpu",
-	.data = &mvpu_mt6991_platdata
-	},
-	{
-	.compatible = "mediatek, mt8139-mvpu",
-	.data = &mvpu_mt8139_platdata
-	},
-	{
-	/* end of list */
+		/* end of list */
 	},
 };
 
@@ -93,22 +74,25 @@ int mvpu_platdata_init(struct platform_device *pdev)
 		return 0;
 	}
 
-	platdata = (struct mvpu_platdata *)of_device_get_match_data(dev);
+	platdata = (struct mvpu_platdata *)device_get_match_data(dev);
 
 	if (!platdata) {
-		dev_info(dev, "%s: get of_device_get_match_data fail\n", __func__);
+		dev_info(dev, "%s: get of_device_get_match_data fail\n",
+			 __func__);
 		return -EINVAL;
 	}
 
 	dev_info(dev, "%s: platdata_sw_ver = %d\n", __func__, platdata->sw_ver);
-	dev_info(dev, "%s: sw_preemption_level = %d\n",
-			__func__, platdata->sw_preemption_level);
+	dev_info(dev, "%s: sw_preemption_level = %d\n", __func__,
+		 platdata->sw_preemption_level);
 
 	if (of_property_read_u32(dev->of_node, "version", &dts_ver) == 0)
 		dev_info(dev, "%s: dts_ver = %d\n", __func__, dts_ver);
 
-	if (!of_property_read_u32(dev->of_node, "core_num", &platdata->core_num)) {
-	} else if (!of_property_read_u32(dev->of_node, "core-num", &platdata->core_num)) {
+	if (!of_property_read_u32(dev->of_node, "core_num",
+				  &platdata->core_num)) {
+	} else if (!of_property_read_u32(dev->of_node, "core-num",
+					 &platdata->core_num)) {
 	} else {
 		dev_info(dev, "%s: get core num fail\n", __func__);
 		return -EINVAL;
@@ -116,7 +100,8 @@ int mvpu_platdata_init(struct platform_device *pdev)
 	dev_info(dev, "%s: core-num = %d\n", __func__, platdata->core_num);
 
 	if (platdata->core_num > MAX_CORE_NUM) {
-		dev_info(dev, "%s: invalid core number: %d\n", __func__, platdata->core_num);
+		dev_info(dev, "%s: invalid core number: %d\n", __func__,
+			 platdata->core_num);
 		return -EINVAL;
 	}
 
@@ -131,6 +116,3 @@ int mvpu_platdata_init(struct platform_device *pdev)
 
 	return 0;
 }
-
-
-

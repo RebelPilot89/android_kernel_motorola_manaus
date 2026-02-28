@@ -24,6 +24,15 @@
 #include "apu_ipi.h"
 #include "apu_hw_sema.h"
 
+#ifndef APU_IPI_SCP_NP_RECOVER
+#define APU_IPI_SCP_NP_RECOVER 0
+#endif
+
+#ifndef MTK_APUSYS_KERNEL_OP_APUSYS_RELESE_SCP_HW_SEM
+#define MTK_APUSYS_KERNEL_OP_APUSYS_RELESE_SCP_HW_SEM                          \
+	MTK_APUSYS_KERNEL_OP_APUSYS_RV_SETUP_REVISER
+#endif
+
 static struct mtk_apu *m_apu;
 
 struct aov_rpmsg_device {
@@ -37,23 +46,19 @@ static struct mutex aov_ipi_mtx;
 static void apusys_aov_recovery_remove(struct rpmsg_device *rpdev);
 
 static uint32_t apusys_rv_smc_call(struct device *dev, uint32_t smc_id,
-	uint32_t a2)
+				   uint32_t a2)
 {
 	struct arm_smccc_res res;
 
-	dev_info(dev, "%s: smc call %d\n",
-			__func__, smc_id);
+	dev_info(dev, "%s: smc call %d\n", __func__, smc_id);
 
-	arm_smccc_smc(MTK_SIP_APUSYS_CONTROL, smc_id,
-				a2, 0, 0, 0, 0, 0, &res);
-	if (((int) res.a0) < 0)
-		dev_info(dev, "%s: smc call %d return error(%ld)\n",
-			__func__,
-			smc_id, res.a0);
+	arm_smccc_smc(MTK_SIP_APUSYS_CONTROL, smc_id, a2, 0, 0, 0, 0, 0, &res);
+	if (((int)res.a0) < 0)
+		dev_info(dev, "%s: smc call %d return error(%ld)\n", __func__,
+			 smc_id, res.a0);
 
 	return res.a0;
 }
-
 
 static int aov_recovery_ipi_send(void)
 {
@@ -65,7 +70,7 @@ static int aov_recovery_ipi_send(void)
 
 	mutex_lock(&aov_ipi_mtx);
 
-    /* power on */
+	/* power on */
 	ret = rpmsg_sendto(aov_rpm_dev.ept, NULL, 1, 0);
 	if (ret && ret != -EOPNOTSUPP) {
 		pr_info("%s: rpmsg_sendto(power on) fail(%d)\n", __func__, ret);
@@ -78,13 +83,14 @@ static int aov_recovery_ipi_send(void)
 		/* power off to restore ref cnt */
 		ret = rpmsg_sendto(aov_rpm_dev.ept, NULL, 0, 1);
 		if (ret && ret != -EOPNOTSUPP)
-			pr_info("%s: rpmsg_sendto(power off) fail(%d)\n", __func__, ret);
+			pr_info("%s: rpmsg_sendto(power off) fail(%d)\n",
+				__func__, ret);
 		goto out;
 	}
 
-    /* wait for receiving ack to ensure uP clear irq status done */
-	ret = wait_for_completion_timeout(
-		&aov_rpm_dev.ack, msecs_to_jiffies(100));
+	/* wait for receiving ack to ensure uP clear irq status done */
+	ret = wait_for_completion_timeout(&aov_rpm_dev.ack,
+					  msecs_to_jiffies(100));
 	if (ret == 0) {
 		pr_info("%s: wait for completion timeout\n", __func__);
 		ret = -1;
@@ -101,7 +107,7 @@ out:
 int aov_recovery_cb(void)
 {
 	apusys_rv_smc_call(m_apu->dev,
-					MTK_APUSYS_KERNEL_OP_APUSYS_RELESE_SCP_HW_SEM, 0);
+			   MTK_APUSYS_KERNEL_OP_APUSYS_RELESE_SCP_HW_SEM, 0);
 
 	//blocking wait for ipi ack and LP logger buffer copy done
 	aov_recovery_ipi_send();
@@ -114,8 +120,8 @@ static int aov_recovery_probe(struct rpmsg_device *rpdev)
 {
 	struct device *dev = &rpdev->dev;
 
-	dev_info(dev, "%s: name=%s, src=%d\n",
-		__func__, rpdev->id.name, rpdev->src);
+	dev_info(dev, "%s: name=%s, src=%d\n", __func__, rpdev->id.name,
+		 rpdev->src);
 
 	aov_rpm_dev.ept = rpdev->ept;
 	aov_rpm_dev.rpdev = rpdev;
@@ -123,8 +129,8 @@ static int aov_recovery_probe(struct rpmsg_device *rpdev)
 	return 0;
 }
 
-static int aov_recovery_callback(struct rpmsg_device *rpdev, void *data, int len, void *priv,
-				 u32 src)
+static int aov_recovery_callback(struct rpmsg_device *rpdev, void *data,
+				 int len, void *priv, u32 src)
 {
 	int ret;
 
@@ -133,16 +139,18 @@ static int aov_recovery_callback(struct rpmsg_device *rpdev, void *data, int len
 	/* power off */
 	ret = rpmsg_sendto(aov_rpm_dev.ept, NULL, 0, 1);
 	if (ret && ret != -EOPNOTSUPP)
-		pr_info("%s: rpmsg_sendto(power off) fail(%d)\n", __func__, ret);
+		pr_info("%s: rpmsg_sendto(power off) fail(%d)\n", __func__,
+			ret);
 
 	return 0;
 }
 
 static const struct of_device_id apu_aov_recovery_of_match[] = {
-	{ .compatible = "mediatek,apu-scp-np-recover-rpmsg", },
+	{
+		.compatible = "mediatek,apu-scp-np-recover-rpmsg",
+	},
 	{},
 };
-
 
 static struct rpmsg_driver aov_recovery_driver = {
 	.drv = {
@@ -165,7 +173,8 @@ int aov_recovery_ipi_init(struct platform_device *pdev, struct mtk_apu *apu)
 
 	ret = register_rpmsg_driver(&aov_recovery_driver);
 	if (ret)
-		pr_info("%s Failed to register aov rpmsg driver, ret %d\n", __func__, ret);
+		pr_info("%s Failed to register aov rpmsg driver, ret %d\n",
+			__func__, ret);
 
 	return ret;
 }
@@ -177,5 +186,3 @@ static void apusys_aov_recovery_remove(struct rpmsg_device *rpdev)
 void aov_recovery_exit(void)
 {
 }
-
-

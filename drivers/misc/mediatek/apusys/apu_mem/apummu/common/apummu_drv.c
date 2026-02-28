@@ -3,8 +3,8 @@
  * Copyright (c) 2020 MediaTek Inc.
  */
 
-#include <linux/module.h>  /* Needed by all modules */
-#include <linux/kernel.h>  /* Needed for KERN_ALERT */
+#include <linux/module.h> /* Needed by all modules */
+#include <linux/kernel.h> /* Needed for KERN_ALERT */
 #include <linux/cdev.h>
 #include <linux/device.h>
 #include <linux/delay.h>
@@ -45,7 +45,7 @@
 #define APUSYS_DRV_NAME "apusys_drv_apummu"
 #define APUSYS_DEV_NAME "apusys_apummu"
 
-#define SLB_NODE	(0)
+#define SLB_NODE (0)
 
 /* global variable */
 static struct class *apummu_class;
@@ -70,13 +70,15 @@ struct apu_ipi_apummu_rx_rpmsg_device {
 };
 static struct apu_ipi_apummu_rx_rpmsg_device apu_ipi_apummmu_rx_rpm_dev;
 static const struct of_device_id apu_apummu_rx_rpmsg_of_match[] = {
-	{ .compatible = "mediatek,apu-apummu-rx", },
-	{ },
+	{
+		.compatible = "mediatek,apu-apummu-rx",
+	},
+	{},
 };
 static int apu_ipi_apummu_rx_rpmsg_probe(struct rpmsg_device *rpdev)
 {
-	AMMU_LOG_INFO("%s: name=%s, src=%d\n",
-			__func__, rpdev->id.name, rpdev->src);
+	AMMU_LOG_INFO("%s: name=%s, src=%d\n", __func__, rpdev->id.name,
+		      rpdev->src);
 
 	apu_ipi_apummmu_rx_rpm_dev.ept = rpdev->ept;
 	apu_ipi_apummmu_rx_rpm_dev.rpdev = rpdev;
@@ -86,7 +88,7 @@ static int apu_ipi_apummu_rx_rpmsg_probe(struct rpmsg_device *rpdev)
 	return 0;
 }
 static int apu_ipi_apummu_rx_rpmsg_cb(struct rpmsg_device *rpdev, void *data,
-		int len, void *priv, u32 src)
+				      int len, void *priv, u32 src)
 {
 	struct apummu_rx_data *d = (struct apummu_rx_data *)data;
 
@@ -95,7 +97,8 @@ static int apu_ipi_apummu_rx_rpmsg_cb(struct rpmsg_device *rpdev, void *data,
 		pr_info("%s: received APUMMU_RX_TEST from uP\n", __func__);
 		break;
 	case APUMMU_RX_APUMMU_AEE:
-		AMMU_LOG_ERR("APUMMU error in uP, error_code = %d\n", d->error_code);
+		AMMU_LOG_ERR("APUMMU error in uP, error_code = %d\n",
+			     d->error_code);
 		apusys_ammu_exception("APUMMU error in uP");
 		break;
 	case APUMMU_RX_HSE_AEE:
@@ -111,7 +114,8 @@ static int apu_ipi_apummu_rx_rpmsg_cb(struct rpmsg_device *rpdev, void *data,
 		break;
 	}
 
-	rpmsg_send(apu_ipi_apummmu_rx_rpm_dev.ept, data, sizeof(struct apummu_rx_data));
+	rpmsg_send(apu_ipi_apummmu_rx_rpm_dev.ept, data,
+		   sizeof(struct apummu_rx_data));
 
 	return 0;
 }
@@ -138,7 +142,7 @@ static int apummu_memory_func(void *arg)
 	int ret = 0;
 	struct apummu_dev_info *adv;
 
-	adv = (struct apummu_dev_info *) arg;
+	adv = (struct apummu_dev_info *)arg;
 
 	ret = apummu_dram_remap_alloc(adv);
 	if (ret) {
@@ -162,7 +166,7 @@ static int apummu_rprmsg_memory_func(void *arg)
 	uint32_t i;
 #endif
 
-	adv = (struct apummu_dev_info *) arg;
+	adv = (struct apummu_dev_info *)arg;
 
 	ret = apummu_remote_handshake(adv, NULL);
 	if (ret) {
@@ -178,9 +182,12 @@ static int apummu_rprmsg_memory_func(void *arg)
 	}
 
 	for (i = 0; i < adv->remote.dram_max; i++) {
-		ret = apummu_remote_set_hw_default_iova(adv, i, adv->remote.dram[i]);
+		ret = apummu_remote_set_hw_default_iova(adv, i,
+							adv->remote.dram[i]);
 		if (ret) {
-			AMMU_LOG_ERR("apummu_remote_set_hw_default_iova fail %d\n", ret);
+			AMMU_LOG_ERR(
+				"apummu_remote_set_hw_default_iova fail %d\n",
+				ret);
 			goto out;
 		}
 	}
@@ -192,11 +199,10 @@ out:
 	return ret;
 }
 
-
 int apummu_set_init_info(struct mtk_apu *apu)
 {
 	struct apummu_dev_info *adv;
-	struct apummu_init_info *rv_info;
+	struct reviser_init_info *rv_info;
 	// int i = 0;
 
 	adv = g_adv;
@@ -206,10 +212,10 @@ int apummu_set_init_info(struct mtk_apu *apu)
 		return -EINVAL;
 	}
 
-	rv_info = (struct apummu_init_info *)
-			get_apu_config_user_ptr(apu->conf_buf, eREVISER_INIT_INFO);
+	rv_info = (struct reviser_init_info *)get_apu_config_user_ptr(
+		apu->conf_buf, eREVISER_INIT_INFO);
 
-	memset((void *)rv_info, 0, sizeof(struct apummu_init_info));
+	memset((void *)rv_info, 0, sizeof(struct reviser_init_info));
 
 	/* NOTE: since alloc in runtime, this info may not be right */
 	rv_info->boundary = adv->plat.boundary;
@@ -227,13 +233,11 @@ static const struct file_operations apummu_fops = {
 	.release = apummu_release,
 };
 
-
 static int apummu_open(struct inode *inode, struct file *filp)
 {
 	struct apummu_dev_info *adv;
 
-	adv = container_of(inode->i_cdev,
-			struct apummu_dev_info, apummu_cdev);
+	adv = container_of(inode->i_cdev, struct apummu_dev_info, apummu_cdev);
 
 	filp->private_data = adv;
 	AMMU_LOG_INFO("adv  %p\n", adv);
@@ -266,12 +270,12 @@ static int apummu_map_dts(struct platform_device *pdev)
 	adv->plat.boundary = 0;
 
 #if SLB_NODE
-	slb_node = of_find_compatible_node(
-			NULL, NULL, "mediatek,mtk-slbc");
+	slb_node = of_find_compatible_node(NULL, NULL, "mediatek,mtk-slbc");
 	if (slb_node) {
 		of_property_read_u32(slb_node, "apu", &slb_size);
 		adv->rsc.pool[APUMMU_POOL_SLBS].size = slb_size;
-		AMMU_LOG_INFO("APU-slb size: 0x%x\n", adv->rsc.pool[APUMMU_POOL_SLBS].size);
+		AMMU_LOG_INFO("APU-slb size: 0x%x\n",
+			      adv->rsc.pool[APUMMU_POOL_SLBS].size);
 	}
 #endif
 
@@ -291,8 +295,7 @@ static int apummu_create_node(struct platform_device *pdev)
 	}
 
 	/* get major */
-	ret = alloc_chrdev_region(&adv->apummu_devt,
-			0, 1, APUSYS_DRV_NAME);
+	ret = alloc_chrdev_region(&adv->apummu_devt, 0, 1, APUSYS_DRV_NAME);
 	if (ret < 0) {
 		AMMU_LOG_ERR("alloc_chrdev_region failed, %d\n", ret);
 		goto out;
@@ -303,27 +306,26 @@ static int apummu_create_node(struct platform_device *pdev)
 	adv->apummu_cdev.owner = THIS_MODULE;
 
 	/* Add to system */
-	ret = cdev_add(&adv->apummu_cdev,
-			adv->apummu_devt, 1);
+	ret = cdev_add(&adv->apummu_cdev, adv->apummu_devt, 1);
 	if (ret < 0) {
 		AMMU_LOG_ERR("Attach file operation failed, %d\n", ret);
 		goto free_chrdev_region;
 	}
 
 	/* Create class register */
-	apummu_class = class_create(APUSYS_DRV_NAME);
+	apummu_class = class_create(THIS_MODULE, APUSYS_DRV_NAME);
 	if (IS_ERR(apummu_class)) {
 		ret = PTR_ERR(apummu_class);
 		AMMU_LOG_ERR("Unable to create class, err = %d\n", ret);
 		goto free_cdev_add;
 	}
 
-	dev = device_create(apummu_class, NULL, adv->apummu_devt,
-				NULL, APUSYS_DEV_NAME);
+	dev = device_create(apummu_class, NULL, adv->apummu_devt, NULL,
+			    APUSYS_DEV_NAME);
 	if (IS_ERR(dev)) {
 		ret = PTR_ERR(dev);
 		AMMU_LOG_ERR("Failed to create device: /dev/%s, err = %d",
-			APUSYS_DEV_NAME, ret);
+			     APUSYS_DEV_NAME, ret);
 		goto free_class;
 	}
 
@@ -436,9 +438,9 @@ static int apummu_remove(struct platform_device *pdev)
 	apummu_dbg_destroy(adv);
 	apummu_mgt_destroy();
 	if (mem_task) {
-	#if !(DRAM_FALL_BACK_IN_RUNTIME)
+#if !(DRAM_FALL_BACK_IN_RUNTIME)
 		apummu_dram_remap_free(adv);
-	#endif
+#endif
 		mem_task = NULL;
 	}
 	apummu_delete_node(adv);
@@ -448,7 +450,6 @@ static int apummu_remove(struct platform_device *pdev)
 	AMMU_LOG_INFO("remove done\n");
 	return 0;
 }
-
 
 static int apusys_apummu_resume(struct device *dev)
 {
@@ -461,12 +462,14 @@ static int apusys_apummu_resume(struct device *dev)
 
 	mutex_lock(&g_ammu_table_set.table_lock);
 	if (g_adv->plat.is_general_SLB_support)
-		if (!g_ammu_table_set.is_SLB_alloc
-			&& apummu_suspend_release_flag) {
+		if (!g_ammu_table_set.is_SLB_alloc &&
+		    apummu_suspend_release_flag) {
 			ret = slbc_request(&slb_data);
 			if (ret) {
-				AMMU_LOG_ERR("general SLB alloc fail in resume...\n");
-				apusys_ammu_exception("Alloc SLB fail in resume\n");
+				AMMU_LOG_ERR(
+					"general SLB alloc fail in resume...\n");
+				apusys_ammu_exception(
+					"Alloc SLB fail in resume\n");
 				goto out;
 			}
 
@@ -493,8 +496,10 @@ static int apusys_apummu_suspend(struct device *dev)
 		if (g_ammu_table_set.is_SLB_alloc) {
 			ret = slbc_release(&slb_data);
 			if (ret) {
-				AMMU_LOG_ERR("general SLB free fail in suspend...\n");
-				apusys_ammu_exception("Free SLB fail in suspend\n");
+				AMMU_LOG_ERR(
+					"general SLB free fail in suspend...\n");
+				apusys_ammu_exception(
+					"Free SLB fail in suspend\n");
 				goto out;
 			}
 
@@ -508,7 +513,7 @@ out:
 }
 
 static const struct dev_pm_ops apusys_apummu_pm_cb = {
-	.resume  = apusys_apummu_resume,
+	.resume = apusys_apummu_resume,
 	.suspend = apusys_apummu_suspend,
 };
 
@@ -522,8 +527,8 @@ static struct platform_driver apummu_driver = {
 	},
 };
 
-static int apummu_rpmsg_cb(struct rpmsg_device *rpdev, void *data,
-				 int len, void *priv, u32 src)
+static int apummu_rpmsg_cb(struct rpmsg_device *rpdev, void *data, int len,
+			   void *priv, u32 src)
 {
 	int ret = 0;
 	void *drvinfo;
@@ -582,8 +587,10 @@ static void apummu_rpmsg_remove(struct rpmsg_device *rpdev)
 }
 
 static const struct of_device_id apummu_rpmsg_of_match[] = {
-	{ .compatible = "mediatek,apu-apummu-rpmsg", },
-	{ },
+	{
+		.compatible = "mediatek,apu-apummu-rpmsg",
+	},
+	{},
 };
 
 static struct rpmsg_driver apummu_rpmsg_driver = {

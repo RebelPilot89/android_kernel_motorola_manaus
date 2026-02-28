@@ -36,4 +36,3 @@ void mdw_ap_tag_deinit(void);
 void mdw_ap_tag_show(struct seq_file *s);
 
 #endif
-

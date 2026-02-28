@@ -5,6 +5,7 @@
 
 #include <linux/device.h>
 #include <linux/kernel.h>
+#include <linux/module.h>
 #include <linux/platform_device.h>
 
 #include "apusys_power.h"
@@ -25,7 +26,8 @@ static int mvpu_dma_init(struct platform_device *pdev)
 
 	ret = dma_set_mask_and_coherent(dev, mask);
 	if (ret) {
-		dev_info(dev, "%s: unable to set DMA mask coherent: %d\n", __func__, ret);
+		dev_info(dev, "%s: unable to set DMA mask coherent: %d\n",
+			 __func__, ret);
 		return ret;
 	}
 
@@ -33,7 +35,8 @@ static int mvpu_dma_init(struct platform_device *pdev)
 
 	ret = dma_set_mask(dev, mask);
 	if (ret) {
-		dev_info(dev, "%s: unable to set DMA mask: %d\n", __func__, ret);
+		dev_info(dev, "%s: unable to set DMA mask: %d\n", __func__,
+			 ret);
 		return ret;
 	}
 
@@ -55,7 +58,8 @@ static int mvpu_apusys_register(struct platform_device *pdev)
 
 	ret = apusys_register_device(&mvpu_apusys_dev);
 	if (ret)
-		dev_info(dev, "%s: failed to register apusys (%d)\n", __func__, ret);
+		dev_info(dev, "%s: failed to register apusys (%d)\n", __func__,
+			 ret);
 
 	return ret;
 }
@@ -89,7 +93,8 @@ static int mvpu_probe(struct platform_device *pdev)
 	dev_info(dev, "%s: get plat info pass\n", __func__);
 
 	if (mvpu_apusys_register(pdev)) {
-		dev_info(dev, "%s: apusys dev register fail, defer probe\n", __func__);
+		dev_info(dev, "%s: apusys dev register fail, defer probe\n",
+			 __func__);
 		return -EPROBE_DEFER;
 	}
 	dev_info(dev, "%s: apusys dev register pass\n", __func__);
@@ -102,8 +107,10 @@ static int mvpu_probe(struct platform_device *pdev)
 	}
 	dev_info(dev, "%s: dma init pass\n", __func__);
 
-	if (g_mvpu_platdata->sw_ver == MVPU_SW_VER_MVPU20 || g_mvpu_platdata->sw_ver == MVPU_SW_VER_MVPU25 ||
-		g_mvpu_platdata->sw_ver == MVPU_SW_VER_MVPU25a|| g_mvpu_platdata->sw_ver == MVPU_SW_VER_MVPU25b) {
+	if (g_mvpu_platdata->sw_ver == MVPU_SW_VER_MVPU20 ||
+	    g_mvpu_platdata->sw_ver == MVPU_SW_VER_MVPU25 ||
+	    g_mvpu_platdata->sw_ver == MVPU_SW_VER_MVPU25a ||
+	    g_mvpu_platdata->sw_ver == MVPU_SW_VER_MVPU25b) {
 		if (g_mvpu_platdata->sec_ops->mvpu_sec_init(dev)) {
 			dev_info(dev, "%s: sec init fail\n", __func__);
 			return -EINVAL;
@@ -144,16 +151,14 @@ static int mvpu_remove(struct platform_device *pdev)
 	return 0;
 }
 
-static struct platform_driver mvpu_driver = {
-	.probe = mvpu_probe,
-	.remove = mvpu_remove,
-	.suspend = mvpu_suspend,
-	.resume = mvpu_resume,
-	.driver = {
-		.name = "mtk_mvpu",
-		.owner = THIS_MODULE,
-	}
-};
+static struct platform_driver mvpu_driver = { .probe = mvpu_probe,
+					      .remove = mvpu_remove,
+					      .suspend = mvpu_suspend,
+					      .resume = mvpu_resume,
+					      .driver = {
+						      .name = "mtk_mvpu",
+						      .owner = THIS_MODULE,
+					      } };
 
 int mvpu_init(struct apusys_core_info *info)
 {
@@ -175,4 +180,3 @@ void mvpu_exit(void)
 }
 
 MODULE_IMPORT_NS(DMA_BUF);
-

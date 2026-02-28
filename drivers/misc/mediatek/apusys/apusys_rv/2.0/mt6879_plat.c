@@ -22,25 +22,20 @@
 #include "../apu_hw.h"
 #include "../apu_excep.h"
 
-
 /* for IPI IRQ affinity tuning*/
 static struct cpumask perf_cpus, normal_cpus;
 
-
 static uint32_t apusys_rv_smc_call(struct device *dev, uint32_t smc_id,
-	uint32_t a2)
+				   uint32_t a2)
 {
 	struct arm_smccc_res res;
 
-	dev_info(dev, "%s: smc call %d\n",
-			__func__, smc_id);
+	dev_info(dev, "%s: smc call %d\n", __func__, smc_id);
 
-	arm_smccc_smc(MTK_SIP_APUSYS_CONTROL, smc_id,
-				a2, 0, 0, 0, 0, 0, &res);
-	if (((int) res.a0) < 0)
-		dev_info(dev, "%s: smc call %d return error(%d)\n",
-			__func__,
-			smc_id, res.a0);
+	arm_smccc_smc(MTK_SIP_APUSYS_CONTROL, smc_id, a2, 0, 0, 0, 0, 0, &res);
+	if (((int)res.a0) < 0)
+		dev_info(dev, "%s: smc call %d return error(%d)\n", __func__,
+			 smc_id, res.a0);
 
 	return res.a0;
 }
@@ -55,21 +50,21 @@ static int mt6879_rproc_exit(struct mtk_apu *apu)
 	return 0;
 }
 
-static void apu_setup_reviser(struct mtk_apu *apu, int boundary, int ns, int domain)
+static void apu_setup_reviser(struct mtk_apu *apu, int boundary, int ns,
+			      int domain)
 {
 	struct device *dev = apu->dev;
 	unsigned long flags;
 
 	if (apu->platdata->flags & F_SECURE_BOOT) {
-		apusys_rv_smc_call(dev,
-			MTK_APUSYS_KERNEL_OP_APUSYS_RV_SETUP_REVISER, 0);
+		apusys_rv_smc_call(
+			dev, MTK_APUSYS_KERNEL_OP_APUSYS_RV_SETUP_REVISER, 0);
 	} else {
 		spin_lock_irqsave(&apu->reg_lock, flags);
 		/* setup boundary */
+		iowrite32(0x4 | boundary, apu->apu_sctrl_reviser + USERFW_CTXT);
 		iowrite32(0x4 | boundary,
-			apu->apu_sctrl_reviser + USERFW_CTXT);
-		iowrite32(0x4 | boundary,
-			apu->apu_sctrl_reviser + SECUREFW_CTXT);
+			  apu->apu_sctrl_reviser + SECUREFW_CTXT);
 
 		/* setup iommu ctrl(mmu_ctrl | mmu_en) */
 		if (apu->platdata->flags & F_BYPASS_IOMMU)
@@ -79,57 +74,56 @@ static void apu_setup_reviser(struct mtk_apu *apu, int boundary, int ns, int dom
 
 		/* setup ns/domain */
 		iowrite32(ns << 4 | domain,
-			apu->apu_sctrl_reviser + UP_NORMAL_DOMAIN_NS);
+			  apu->apu_sctrl_reviser + UP_NORMAL_DOMAIN_NS);
 		iowrite32(ns << 4 | domain,
-			apu->apu_sctrl_reviser + UP_PRI_DOMAIN_NS);
+			  apu->apu_sctrl_reviser + UP_PRI_DOMAIN_NS);
 		spin_unlock_irqrestore(&apu->reg_lock, flags);
 
-		apu_drv_debug("%s: UP_IOMMU_CTRL = 0x%x\n",
-			__func__,
-			ioread32(apu->apu_sctrl_reviser + UP_IOMMU_CTRL));
-		apu_drv_debug("%s: UP_NORMAL_DOMAIN_NS = 0x%x\n",
-			__func__,
+		apu_drv_debug("%s: UP_IOMMU_CTRL = 0x%x\n", __func__,
+			      ioread32(apu->apu_sctrl_reviser + UP_IOMMU_CTRL));
+		apu_drv_debug(
+			"%s: UP_NORMAL_DOMAIN_NS = 0x%x\n", __func__,
 			ioread32(apu->apu_sctrl_reviser + UP_NORMAL_DOMAIN_NS));
-		apu_drv_debug("%s: UP_PRI_DOMAIN_NS = 0x%x\n",
-			__func__,
+		apu_drv_debug(
+			"%s: UP_PRI_DOMAIN_NS = 0x%x\n", __func__,
 			ioread32(apu->apu_sctrl_reviser + UP_PRI_DOMAIN_NS));
-		apu_drv_debug("%s: USERFW_CTXT = 0x%x\n",
-			__func__,
-			ioread32(apu->apu_sctrl_reviser + USERFW_CTXT));
-		apu_drv_debug("%s: SECUREFW_CTXT = 0x%x\n",
-			__func__,
-			ioread32(apu->apu_sctrl_reviser + SECUREFW_CTXT));
+		apu_drv_debug("%s: USERFW_CTXT = 0x%x\n", __func__,
+			      ioread32(apu->apu_sctrl_reviser + USERFW_CTXT));
+		apu_drv_debug("%s: SECUREFW_CTXT = 0x%x\n", __func__,
+			      ioread32(apu->apu_sctrl_reviser + SECUREFW_CTXT));
 
 		if ((apu->platdata->flags & F_BYPASS_IOMMU) ||
-			(apu->platdata->flags & F_PRELOAD_FIRMWARE)) {
+		    (apu->platdata->flags & F_PRELOAD_FIRMWARE)) {
 			spin_lock_irqsave(&apu->reg_lock, flags);
 			/* vld=1, partial_enable=1 */
 			iowrite32(0x7,
-				apu->apu_sctrl_reviser + UP_CORE0_VABASE0);
+				  apu->apu_sctrl_reviser + UP_CORE0_VABASE0);
 			/* for 34 bit mva */
-			iowrite32(0x1 | (u32) (apu->code_da >> 2),
-				apu->apu_sctrl_reviser + UP_CORE0_MVABASE0);
+			iowrite32(0x1 | (u32)(apu->code_da >> 2),
+				  apu->apu_sctrl_reviser + UP_CORE0_MVABASE0);
 
 			/* vld=1, partial_enable=1 */
 			iowrite32(0x3,
-				apu->apu_sctrl_reviser + UP_CORE0_VABASE1);
+				  apu->apu_sctrl_reviser + UP_CORE0_VABASE1);
 			/* for 34 bit mva */
-			iowrite32(0x1 | (u32) (apu->code_da >> 2),
-				apu->apu_sctrl_reviser + UP_CORE0_MVABASE1);
+			iowrite32(0x1 | (u32)(apu->code_da >> 2),
+				  apu->apu_sctrl_reviser + UP_CORE0_MVABASE1);
 			spin_unlock_irqrestore(&apu->reg_lock, flags);
 
-			apu_drv_debug("%s: UP_CORE0_VABASE0 = 0x%x\n",
-				__func__,
-				ioread32(apu->apu_sctrl_reviser + UP_CORE0_VABASE0));
+			apu_drv_debug("%s: UP_CORE0_VABASE0 = 0x%x\n", __func__,
+				      ioread32(apu->apu_sctrl_reviser +
+					       UP_CORE0_VABASE0));
 			apu_drv_debug("%s: UP_CORE0_MVABASE0 = 0x%x\n",
-				__func__,
-				ioread32(apu->apu_sctrl_reviser + UP_CORE0_MVABASE0));
-			apu_drv_debug("%s: UP_CORE0_VABASE1 = 0x%x\n",
-				__func__,
-				ioread32(apu->apu_sctrl_reviser + UP_CORE0_VABASE1));
+				      __func__,
+				      ioread32(apu->apu_sctrl_reviser +
+					       UP_CORE0_MVABASE0));
+			apu_drv_debug("%s: UP_CORE0_VABASE1 = 0x%x\n", __func__,
+				      ioread32(apu->apu_sctrl_reviser +
+					       UP_CORE0_VABASE1));
 			apu_drv_debug("%s: UP_CORE0_MVABASE1 = 0x%x\n",
-				__func__,
-				ioread32(apu->apu_sctrl_reviser + UP_CORE0_MVABASE1));
+				      __func__,
+				      ioread32(apu->apu_sctrl_reviser +
+					       UP_CORE0_MVABASE1));
 		}
 	}
 }
@@ -139,8 +133,8 @@ static void apu_setup_devapc(struct mtk_apu *apu)
 	int32_t ret;
 	struct device *dev = apu->dev;
 
-	ret = (int32_t)apusys_rv_smc_call(dev,
-		MTK_APUSYS_KERNEL_OP_DEVAPC_INIT_RCX, 0);
+	ret = (int32_t)apusys_rv_smc_call(
+		dev, MTK_APUSYS_KERNEL_OP_DEVAPC_INIT_RCX, 0);
 
 	dev_info(dev, "%s: %d\n", __func__, ret);
 }
@@ -151,8 +145,8 @@ static void apu_reset_mp(struct mtk_apu *apu)
 	unsigned long flags;
 
 	if (apu->platdata->flags & F_SECURE_BOOT) {
-		apusys_rv_smc_call(dev,
-			MTK_APUSYS_KERNEL_OP_APUSYS_RV_RESET_MP, 0);
+		apusys_rv_smc_call(dev, MTK_APUSYS_KERNEL_OP_APUSYS_RV_RESET_MP,
+				   0);
 	} else {
 		spin_lock_irqsave(&apu->reg_lock, flags);
 		/* reset uP */
@@ -165,8 +159,8 @@ static void apu_reset_mp(struct mtk_apu *apu)
 		/* md32_g2b_cg_en | md32_dbg_en | md32_soft_rstn */
 		iowrite32(0xc01, apu->md32_sysctrl + MD32_SYS_CTRL);
 		spin_unlock_irqrestore(&apu->reg_lock, flags);
-		apu_drv_debug("%s: MD32_SYS_CTRL = 0x%x\n",
-			__func__, ioread32(apu->md32_sysctrl + MD32_SYS_CTRL));
+		apu_drv_debug("%s: MD32_SYS_CTRL = 0x%x\n", __func__,
+			      ioread32(apu->md32_sysctrl + MD32_SYS_CTRL));
 
 		spin_lock_irqsave(&apu->reg_lock, flags);
 		/* md32 clk enable */
@@ -174,10 +168,10 @@ static void apu_reset_mp(struct mtk_apu *apu)
 		/* set up_wake_host_mask0 for wdt/mbox irq */
 		iowrite32(0x1c0001, apu->md32_sysctrl + UP_WAKE_HOST_MASK0);
 		spin_unlock_irqrestore(&apu->reg_lock, flags);
-		apu_drv_debug("%s: MD32_CLK_EN = 0x%x\n",
-			__func__, ioread32(apu->md32_sysctrl + MD32_CLK_EN));
-		apu_drv_debug("%s: UP_WAKE_HOST_MASK0 = 0x%x\n",
-			__func__, ioread32(apu->md32_sysctrl + UP_WAKE_HOST_MASK0));
+		apu_drv_debug("%s: MD32_CLK_EN = 0x%x\n", __func__,
+			      ioread32(apu->md32_sysctrl + MD32_CLK_EN));
+		apu_drv_debug("%s: UP_WAKE_HOST_MASK0 = 0x%x\n", __func__,
+			      ioread32(apu->md32_sysctrl + UP_WAKE_HOST_MASK0));
 	}
 }
 
@@ -193,8 +187,8 @@ static void apu_setup_boot(struct mtk_apu *apu)
 		boot_from_tcm = 0;
 
 	if (apu->platdata->flags & F_SECURE_BOOT) {
-		apusys_rv_smc_call(dev,
-			MTK_APUSYS_KERNEL_OP_APUSYS_RV_SETUP_BOOT, 0);
+		apusys_rv_smc_call(
+			dev, MTK_APUSYS_KERNEL_OP_APUSYS_RV_SETUP_BOOT, 0);
 	} else {
 		/* Set uP boot addr to DRAM.
 		 * If boot from tcm == 1, boot addr will always map to
@@ -202,22 +196,22 @@ static void apu_setup_boot(struct mtk_apu *apu)
 		 */
 		spin_lock_irqsave(&apu->reg_lock, flags);
 		if ((apu->platdata->flags & F_BYPASS_IOMMU) ||
-			(apu->platdata->flags & F_PRELOAD_FIRMWARE))
+		    (apu->platdata->flags & F_PRELOAD_FIRMWARE))
 			iowrite32((u32)apu->code_da,
-				apu->apu_ao_ctl + MD32_BOOT_CTRL);
+				  apu->apu_ao_ctl + MD32_BOOT_CTRL);
 		else
 			iowrite32((u32)CODE_BUF_DA | boot_from_tcm,
-				apu->apu_ao_ctl + MD32_BOOT_CTRL);
+				  apu->apu_ao_ctl + MD32_BOOT_CTRL);
 		spin_unlock_irqrestore(&apu->reg_lock, flags);
-		apu_drv_debug("%s: MD32_BOOT_CTRL = 0x%x\n",
-			__func__, ioread32(apu->apu_ao_ctl + MD32_BOOT_CTRL));
+		apu_drv_debug("%s: MD32_BOOT_CTRL = 0x%x\n", __func__,
+			      ioread32(apu->apu_ao_ctl + MD32_BOOT_CTRL));
 
 		spin_lock_irqsave(&apu->reg_lock, flags);
 		/* set predefined MPU region for cache access */
 		iowrite32(0xAB, apu->apu_ao_ctl + MD32_PRE_DEFINE);
 		spin_unlock_irqrestore(&apu->reg_lock, flags);
-		apu_drv_debug("%s: MD32_PRE_DEFINE = 0x%x\n",
-			__func__, ioread32(apu->apu_ao_ctl + MD32_PRE_DEFINE));
+		apu_drv_debug("%s: MD32_PRE_DEFINE = 0x%x\n", __func__,
+			      ioread32(apu->apu_ao_ctl + MD32_PRE_DEFINE));
 	}
 }
 
@@ -228,8 +222,8 @@ static void apu_start_mp(struct mtk_apu *apu)
 	unsigned long flags;
 
 	if (apu->platdata->flags & F_SECURE_BOOT) {
-		apusys_rv_smc_call(dev,
-			MTK_APUSYS_KERNEL_OP_APUSYS_RV_START_MP, 0);
+		apusys_rv_smc_call(dev, MTK_APUSYS_KERNEL_OP_APUSYS_RV_START_MP,
+				   0);
 	} else {
 		spin_lock_irqsave(&apu->reg_lock, flags);
 		/* Release runstall */
@@ -239,8 +233,8 @@ static void apu_start_mp(struct mtk_apu *apu)
 		if ((apu->platdata->flags & F_SECURE_BOOT) == 0)
 			for (i = 0; i < 20; i++) {
 				dev_info(dev, "apu boot: pc=%08x, sp=%08x\n",
-				ioread32(apu->md32_sysctrl + 0x838),
-						ioread32(apu->md32_sysctrl+0x840));
+					 ioread32(apu->md32_sysctrl + 0x838),
+					 ioread32(apu->md32_sysctrl + 0x840));
 				usleep_range(0, 20);
 			}
 	}
@@ -250,7 +244,7 @@ static int mt6879_rproc_start(struct mtk_apu *apu)
 {
 	int ns = 1; /* Non Secure */
 	int domain = 0;
-	int boundary = (u32) upper_32_bits(apu->code_da);
+	int boundary = (u32)upper_32_bits(apu->code_da);
 
 	apu_setup_devapc(apu);
 
@@ -271,8 +265,8 @@ static int mt6879_rproc_stop(struct mtk_apu *apu)
 
 	/* Hold runstall */
 	if (apu->platdata->flags & F_SECURE_BOOT)
-		apusys_rv_smc_call(dev,
-			MTK_APUSYS_KERNEL_OP_APUSYS_RV_STOP_MP, 0);
+		apusys_rv_smc_call(dev, MTK_APUSYS_KERNEL_OP_APUSYS_RV_STOP_MP,
+				   0);
 	else
 		iowrite32(0x1, apu->apu_ao_ctl + 8);
 
@@ -310,7 +304,6 @@ static int mt6879_apu_power_init(struct mtk_apu *apu)
 	apu->power_dev = &pdev->dev;
 	of_node_put(np);
 
-
 	/* apu iommu 0 */
 	np = of_parse_phandle(dev->of_node, "apu_iommu0", 0);
 	if (!np) {
@@ -331,18 +324,17 @@ static int mt6879_apu_power_init(struct mtk_apu *apu)
 		return -EPROBE_DEFER;
 	}
 
-	dev_info(dev, "%s: get apu_iommu0 device, name=%s\n", __func__, pdev->name);
+	dev_info(dev, "%s: get apu_iommu0 device, name=%s\n", __func__,
+		 pdev->name);
 
 	apu->apu_iommu0 = &pdev->dev;
 	of_node_put(np);
-
 
 	return 0;
 }
 
 static int mt6879_apu_power_on(struct mtk_apu *apu)
 {
-	struct device *dev = apu->dev;
 	int ret, timeout, i = 0;
 
 	/* to force apu top power on synchronously */
@@ -398,8 +390,7 @@ static int mt6879_apu_power_on(struct mtk_apu *apu)
 
 	ret = pm_runtime_get_sync(apu->dev);
 	if (ret < 0) {
-		dev_info(apu->dev,
-			 "%s: call to get_sync(dev) failed, ret=%d\n",
+		dev_info(apu->dev, "%s: call to get_sync(dev) failed, ret=%d\n",
 			 __func__, ret);
 		apusys_rv_aee_warn("APUSYS_RV", "APUSYS_RV_RPM_GET_ERROR");
 		goto error_put_iommu_dev;
@@ -414,23 +405,19 @@ error_put_power_dev:
 	pm_runtime_put_sync(apu->power_dev);
 
 	return ret;
-
 }
 
 static int mt6879_apu_power_off(struct mtk_apu *apu)
 {
-	struct device *dev = apu->dev;
 	int ret, timeout, i = 0;
 
 	ret = pm_runtime_put_sync(apu->dev);
 	if (ret) {
-		dev_info(apu->dev,
-			 "%s: call to put_sync(dev) failed, ret=%d\n",
+		dev_info(apu->dev, "%s: call to put_sync(dev) failed, ret=%d\n",
 			 __func__, ret);
 		apusys_rv_aee_warn("APUSYS_RV", "APUSYS_RV_RPM_PUT_ERROR");
 		return ret;
 	}
-
 
 	/* to notify IOMMU power off */
 	do {
@@ -472,7 +459,6 @@ static int mt6879_apu_power_off(struct mtk_apu *apu)
 	}
 
 	dev_info(apu->dev, "polling iommu off done\n");
-
 
 	/* to force apu top power off synchronously */
 	ret = pm_runtime_put_sync(apu->power_dev);
@@ -562,8 +548,8 @@ static int mt6879_apu_memmap_init(struct mtk_apu *apu)
 		return -ENOMEM;
 	}
 
-	res = platform_get_resource_byname(
-		pdev, IORESOURCE_MEM, "md32_sysctrl");
+	res = platform_get_resource_byname(pdev, IORESOURCE_MEM,
+					   "md32_sysctrl");
 	if (res == NULL) {
 		dev_info(dev, "%s: md32_sysctrl get resource fail\n", __func__);
 		return -ENODEV;
@@ -574,10 +560,11 @@ static int mt6879_apu_memmap_init(struct mtk_apu *apu)
 		return -ENOMEM;
 	}
 
-	res = platform_get_resource_byname(
-		pdev, IORESOURCE_MEM, "md32_debug_apb");
+	res = platform_get_resource_byname(pdev, IORESOURCE_MEM,
+					   "md32_debug_apb");
 	if (res == NULL) {
-		dev_info(dev, "%s: md32_debug_apb get resource fail\n", __func__);
+		dev_info(dev, "%s: md32_debug_apb get resource fail\n",
+			 __func__);
 		return -ENODEV;
 	}
 	apu->md32_debug_apb = devm_ioremap_resource(dev, res);
@@ -597,15 +584,17 @@ static int mt6879_apu_memmap_init(struct mtk_apu *apu)
 		return -ENOMEM;
 	}
 
-	res = platform_get_resource_byname(
-		pdev, IORESOURCE_MEM, "apu_sctrl_reviser");
+	res = platform_get_resource_byname(pdev, IORESOURCE_MEM,
+					   "apu_sctrl_reviser");
 	if (res == NULL) {
-		dev_info(dev, "%s: apu_sctrl_reviser get resource fail\n", __func__);
+		dev_info(dev, "%s: apu_sctrl_reviser get resource fail\n",
+			 __func__);
 		return -ENODEV;
 	}
 	apu->apu_sctrl_reviser = devm_ioremap_resource(dev, res);
 	if (IS_ERR((void const *)apu->apu_sctrl_reviser)) {
-		dev_info(dev, "%s: apu_sctrl_reviser remap base fail\n", __func__);
+		dev_info(dev, "%s: apu_sctrl_reviser remap base fail\n",
+			 __func__);
 		return -ENOMEM;
 	}
 
@@ -625,20 +614,24 @@ static int mt6879_apu_memmap_init(struct mtk_apu *apu)
 		dev_info(dev, "%s: md32_tcm get resource fail\n", __func__);
 		return -ENODEV;
 	}
-	apu->md32_tcm = devm_ioremap_wc(dev, res->start, res->end - res->start + 1);
+	apu->md32_tcm =
+		devm_ioremap_wc(dev, res->start, res->end - res->start + 1);
 	if (IS_ERR((void const *)apu->md32_tcm)) {
 		dev_info(dev, "%s: md32_tcm remap base fail\n", __func__);
 		return -ENOMEM;
 	}
 
-	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "md32_cache_dump");
+	res = platform_get_resource_byname(pdev, IORESOURCE_MEM,
+					   "md32_cache_dump");
 	if (res == NULL) {
-		dev_info(dev, "%s: md32_cache_dump get resource fail\n", __func__);
+		dev_info(dev, "%s: md32_cache_dump get resource fail\n",
+			 __func__);
 		return -ENODEV;
 	}
 	apu->md32_cache_dump = devm_ioremap_resource(dev, res);
 	if (IS_ERR((void const *)apu->md32_cache_dump)) {
-		dev_info(dev, "%s: md32_cache_dump remap base fail\n", __func__);
+		dev_info(dev, "%s: md32_cache_dump remap base fail\n",
+			 __func__);
 		return -ENOMEM;
 	}
 
@@ -665,22 +658,23 @@ static void mt6879_rv_cachedump(struct mtk_apu *apu)
 	unsigned long flags;
 
 	struct apu_coredump *coredump =
-		(struct apu_coredump *) apu->coredump_buf;
+		(struct apu_coredump *)apu->coredump_buf;
 
 	spin_lock_irqsave(&apu->reg_lock, flags);
 	/* set APU_UP_SYS_DBG_EN for cache dump enable through normal APB */
-	iowrite32(ioread32(apu->md32_sysctrl + DBG_BUS_SEL) |
-		APU_UP_SYS_DBG_EN, apu->md32_sysctrl + DBG_BUS_SEL);
+	iowrite32(ioread32(apu->md32_sysctrl + DBG_BUS_SEL) | APU_UP_SYS_DBG_EN,
+		  apu->md32_sysctrl + DBG_BUS_SEL);
 	spin_unlock_irqrestore(&apu->reg_lock, flags);
 
-	for (offset = 0; offset < CACHE_DUMP_SIZE/sizeof(uint32_t); offset++)
-		coredump->cachedump[offset] =
-			ioread32(apu->md32_cache_dump + offset*sizeof(uint32_t));
+	for (offset = 0; offset < CACHE_DUMP_SIZE / sizeof(uint32_t); offset++)
+		coredump->cachedump[offset] = ioread32(
+			apu->md32_cache_dump + offset * sizeof(uint32_t));
 
 	spin_lock_irqsave(&apu->reg_lock, flags);
 	/* clear APU_UP_SYS_DBG_EN */
 	iowrite32(ioread32(apu->md32_sysctrl + DBG_BUS_SEL) &
-		~(APU_UP_SYS_DBG_EN), apu->md32_sysctrl + DBG_BUS_SEL);
+			  ~(APU_UP_SYS_DBG_EN),
+		  apu->md32_sysctrl + DBG_BUS_SEL);
 	spin_unlock_irqrestore(&apu->reg_lock, flags);
 }
 

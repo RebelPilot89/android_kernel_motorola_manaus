@@ -30,23 +30,8 @@ struct mdw_rv_tag {
 	} d;
 };
 
-#if IS_ENABLED(CONFIG_MTK_APUSYS_DEBUG)
 int mdw_rv_tag_init(void);
 void mdw_rv_tag_deinit(void);
 void mdw_rv_tag_show(struct seq_file *s);
-#else
-static inline int mdw_rv_tag_init(void)
-{
-	return 0;
-}
-
-static inline void mdw_rv_tag_deinit(void)
-{
-}
-static inline void mdw_rv_tag_show(struct seq_file *s)
-{
-}
-#endif
 
 #endif
-

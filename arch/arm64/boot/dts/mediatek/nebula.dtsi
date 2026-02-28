@@ -6,7 +6,6 @@
 / {
 	grt_thyp: nebula {
 		compatible = "grt,trusty-smc-v1";
-		ranges;
 		#address-cells = <2>;
 		#size-cells = <2>;
 		status = "okay";

@@ -216,7 +216,7 @@ apusys-objs += pbm/apu_power_budget.o
 
 # mdla
 ccflags-y += -I$(srctree)/$(src)/mdla/
-apusys-objs += $(shell find $(srctree)/$(src)/mdla -name "*.c" | sed 's/\.c/\.o/g')
+apusys-objs += $(patsubst $(srctree)/$(src)/%,%,$(shell find $(srctree)/$(src)/mdla -name "*.c" | sed 's/\.c/\.o/g'))
 
 # vpu
 VPU = vpu/$(APUSYS_VERSION_VPU)
@@ -243,6 +243,7 @@ apusys-objs += devapc/dapc_cfg.o
 
 # apusys rv
 ccflags-y += -I$(srctree)/$(src)/apusys_rv/
+ccflags-y += -I$(srctree)/$(src)/mvpu/
 apusys-objs += apusys_rv/apu_config.o
 apusys-objs += apusys_rv/apu_coredump.o
 apusys-objs += apusys_rv/apu_excep.o
@@ -256,7 +257,9 @@ apusys-objs += apusys_rv/apu_deepidle.o
 apusys-objs += apusys_rv/apu_regdump.o
 apusys-objs += apusys_rv/apu_debug.o
 apusys-objs += apusys_rv/apusys_rv_tag.o
+ifeq ($(CONFIG_MTK_APUSYS_AOV),y)
 apusys-objs += apusys_rv/aov_recovery.o
+endif
 
 ifneq ($(wildcard $(srctree)/$(src)/apusys_rv/2.0/mt6879_plat.c),)
 subdir-ccflags-y += -DMT6879_APUSYS_RV_PLAT_DATA
@@ -264,10 +267,12 @@ apusys-objs += apusys_rv/2.0/mt6879_plat.o
 endif
 
 # apusys ce
+ifeq ($(CONFIG_MTK_APUSYS_CE),y)
 ccflags-y += -I$(srctree)/$(src)/apusys_ce/
 ccflags-y += -I$(srctree)/$(src)/apusys_ce/1.0/
 apusys-objs += apusys_ce/apu_ce_excep.o
 apusys-objs += apusys_ce/1.0/apu_ce_excep_v1.o
+endif
 
 # ipi
 ccflags-y += -I$(srctree)/$(src)/ipi/
@@ -303,6 +308,7 @@ obj-$(CONFIG_MTK_APUSYS_SUPPORT) += sapu/
 apusys-objs += secure_mem/smmu_device.o
 
 # aov
+ifeq ($(CONFIG_MTK_APUSYS_AOV),y)
 ccflags-y += -I$(srctree)/$(src)/aov
 ccflags-y += -I$(srctree)/$(src)/include
 ccflags-y += -I$(srctree)/drivers/misc/mediatek/scp/include
@@ -318,4 +324,5 @@ AOV_SRC += aov/plat/aov_plat.o
 
 obj-$(CONFIG_MTK_APUSYS_SUPPORT) += apu_aov.o
 apu_aov-objs = $(AOV_SRC)
+endif
 
