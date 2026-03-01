@@ -22,8 +22,10 @@ mtk_fm_drv-$(CONFIG_MTK_FM_CHIP_CONNAC2X) += chips/connac2x/pub/connac2x_fm_lib.
 # Headers - Asegurando que incluya tanto el core como el chip
 ccflags-y += -I$(srctree)/$(src)/inc \
              -I$(srctree)/$(src)/core/inc \
+             -I$(srctree)/$(src)/plat/inc \
              -I$(srctree)/$(src)/chips/connac2x/inc \
              -I$(srctree)/$(src)/chips/mt6635/inc \
+             -I$(srctree)/$(src)/../conninfra/include \
              -I$(srctree)/$(src)/../common/include
 
 # Flags de robustecimiento

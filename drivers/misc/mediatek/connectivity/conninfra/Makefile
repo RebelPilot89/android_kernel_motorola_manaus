@@ -74,8 +74,13 @@ mtk_conninfra-objs += $(PLAT_DIR)/consys_hw.o \
 endif
 
 # Includes Críticos
+ccflags-y += -DMTK_WCN_WMT_STP_EXP_SYMBOL_ABSTRACT
+ccflags-y += -DWMT_IDC_SUPPORT=0
+
 ccflags-y += -I$(srctree)/$(src)/include \
              -I$(srctree)/$(src)/$(ADP)/include \
+             -I$(srctree)/$(src)/$(ADP)/connsyslog \
+             -I$(srctree)/$(src)/$(ADP)/coredump \
              -I$(srctree)/$(src)/$(BASE)/include \
              -I$(srctree)/$(src)/$(CONF)/include \
              -I$(srctree)/$(src)/$(DRV)/src \
@@ -87,9 +92,15 @@ ccflags-y += -I$(srctree)/$(src)/include \
              -I$(srctree)/$(src)/$(DRV)/debug_utility/coredump \
              -I$(srctree)/$(src)/$(DRV)/debug_utility/metlog \
              -I$(srctree)/$(src)/conn_drv/connv3/src \
+             -I$(srctree)/$(src)/conn_drv/connv3/core/include \
+             -I$(srctree)/$(src)/conn_drv/connv3/platform/include \
+             -I$(srctree)/$(src)/conn_drv/connv3/debug_utility \
+             -I$(srctree)/$(src)/conn_drv/connv3/debug_utility/include \
              -I$(srctree)/$(src)/../common \
              -I$(srctree)/$(src)/../common/include \
              -I$(srctree)/$(src)/../common/common_main/include \
+             -I$(srctree)/$(src)/../common/common_main/linux/include \
+             -I$(srctree)/$(src)/../common/common_main/platform/include \
              -I$(srctree)/$(src)/../common/debug_utility \
              -I$(srctree)/drivers/misc/mediatek/include/mt-plat \
              -I$(srctree)/drivers/misc/mediatek/modem/common/include \

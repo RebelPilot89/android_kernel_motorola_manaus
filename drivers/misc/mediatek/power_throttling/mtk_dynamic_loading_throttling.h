@@ -22,13 +22,12 @@ enum DLPT_PRIO_TAG {
 typedef void (*dlpt_callback)(int val);
 
 #if IS_ENABLED(CONFIG_MTK_DYNAMIC_LOADING_POWER_THROTTLING)
-void register_dlpt_notify(dlpt_callback dlpt_cb,
-			  enum DLPT_PRIO_TAG prio_val);
+void register_dlpt_notify(dlpt_callback dlpt_cb, enum DLPT_PRIO_TAG prio_val);
 #else
-static int register_dlpt_notify(dlpt_callback dlpt_cb,
-				enum DLPT_PRIO_TAG prio_val)
-{ return 0; }
+static inline void register_dlpt_notify(dlpt_callback dlpt_cb,
+					enum DLPT_PRIO_TAG prio_val)
+{
+}
 #endif
 
-#endif	/* __MTK_DYNAMIC_LOADING_H__ */
-
+#endif /* __MTK_DYNAMIC_LOADING_H__ */

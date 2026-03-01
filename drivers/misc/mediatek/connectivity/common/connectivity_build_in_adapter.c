@@ -10,7 +10,7 @@
 #include "connectivity_build_in_adapter.h"
 
 #include <linux/sched/cputime.h>
-#include <kernel/sched/sched.h>
+#include <linux/sched.h>
 #include <asm/stacktrace.h>
 
 /*device tree mode*/
@@ -39,7 +39,6 @@
 /* MMC */
 #include <linux/mmc/card.h>
 #include <linux/mmc/host.h>
-#include <sdio_ops.h>
 
 #ifdef CONFIG_ARCH_MT6570
 #define CPU_BOOST y
@@ -88,9 +87,9 @@ EXPORT_SYMBOL(connectivity_export_tracing_record_cmdline);
 void connectivity_export_conap_scp_init(unsigned int chip_info,
 					phys_addr_t emi_phy_addr)
 {
-	pr_info("[%s] [%x][%pa] [%x][%pa]", __func__,
-		chip_info, &emi_phy_addr,
-		g_connsys_state_info.chip_info, &g_connsys_state_info.emi_phy_addr);
+	pr_info("[%s] [%x][%pa] [%x][%pa]", __func__, chip_info, &emi_phy_addr,
+		g_connsys_state_info.chip_info,
+		&g_connsys_state_info.emi_phy_addr);
 
 	mutex_lock(&conn_state_notify_mutex);
 	g_connsys_state_info.chip_info = chip_info;
@@ -121,9 +120,12 @@ void connectivity_export_conap_scp_state_change(enum conn_event_type type)
 EXPORT_SYMBOL(connectivity_export_conap_scp_state_change);
 
 /* DFD support */
-static int (*g_conap_scp_cmd_handler)(uint8_t drv_type, uint32_t cmd, uint32_t param);
+static int (*g_conap_scp_cmd_handler)(uint8_t drv_type, uint32_t cmd,
+				      uint32_t param);
 
-void connectivity_register_cmd_handler(int (*cmd_hdlr)(uint8_t drv_type, uint32_t cmd, uint32_t param))
+void connectivity_register_cmd_handler(int (*cmd_hdlr)(uint8_t drv_type,
+						       uint32_t cmd,
+						       uint32_t param))
 {
 	g_conap_scp_cmd_handler = cmd_hdlr;
 }
@@ -135,8 +137,9 @@ void connectivity_unregister_cmd_handler(void)
 }
 EXPORT_SYMBOL(connectivity_unregister_cmd_handler);
 
-void connectivity_export_conap_scp_trigger_cmd(enum conn_hif_dbg_drv_type drv_type,
-						enum conn_hif_dbg_cmd cmd, int param)
+void connectivity_export_conap_scp_trigger_cmd(
+	enum conn_hif_dbg_drv_type drv_type, enum conn_hif_dbg_cmd cmd,
+	int param)
 {
 #if 0
 	if (g_conap_scp_cmd_handler)
@@ -151,7 +154,8 @@ void connectivity_register_dfd_handler(struct conap_dfd_handler *hdlr)
 {
 	if (hdlr == NULL)
 		return;
-	memcpy(&g_conap_scp_dfd_handler, hdlr, sizeof(struct conap_dfd_handler));
+	memcpy(&g_conap_scp_dfd_handler, hdlr,
+	       sizeof(struct conap_dfd_handler));
 }
 EXPORT_SYMBOL(connectivity_register_dfd_handler);
 
@@ -162,10 +166,12 @@ void connectivity_unregister_dfd_handler(void)
 EXPORT_SYMBOL(connectivity_unregister_dfd_handler);
 
 int connectivity_export_conap_scp_trigger_dfd_cmd(uint8_t drv_type,
-					uint32_t reserved_param0, uint32_t reserved_param1)
+						  uint32_t reserved_param0,
+						  uint32_t reserved_param1)
 {
 	if (g_conap_scp_dfd_handler.cmd_hdlr)
-		return (*g_conap_scp_dfd_handler.cmd_hdlr)(drv_type, reserved_param0, reserved_param1);
+		return (*g_conap_scp_dfd_handler.cmd_hdlr)(
+			drv_type, reserved_param0, reserved_param1);
 	return 0;
 }
 EXPORT_SYMBOL(connectivity_export_conap_scp_trigger_dfd_cmd);
@@ -178,7 +184,8 @@ int connectivity_export_conap_scp_clr_dfd_buffer(void)
 }
 EXPORT_SYMBOL(connectivity_export_conap_scp_clr_dfd_buffer);
 
-int connectivity_export_conap_get_dfd_value_info(phys_addr_t *addr, uint32_t *size)
+int connectivity_export_conap_get_dfd_value_info(phys_addr_t *addr,
+						 uint32_t *size)
 {
 	if (g_conap_scp_dfd_handler.clr_buf_hdlr)
 		return (*g_conap_scp_dfd_handler.clr_buf_hdlr)();
@@ -232,18 +239,16 @@ void connectivity_export_mt_ppm_sysboost_core(enum ppm_sysboost_user user,
 EXPORT_SYMBOL(connectivity_export_mt_ppm_sysboost_core);
 
 void connectivity_export_mt_ppm_sysboost_set_core_limit(
-				enum ppm_sysboost_user user,
-				unsigned int cluster,
-				int min_core, int max_core)
+	enum ppm_sysboost_user user, unsigned int cluster, int min_core,
+	int max_core)
 {
 	mt_ppm_sysboost_set_core_limit(user, cluster, min_core, max_core);
 }
 EXPORT_SYMBOL(connectivity_export_mt_ppm_sysboost_set_core_limit);
 
 void connectivity_export_mt_ppm_sysboost_set_freq_limit(
-				enum ppm_sysboost_user user,
-				unsigned int cluster,
-				int min_freq, int max_freq)
+	enum ppm_sysboost_user user, unsigned int cluster, int min_freq,
+	int max_freq)
 {
 	mt_ppm_sysboost_set_freq_limit(user, cluster, min_freq, max_freq);
 }
@@ -315,7 +320,6 @@ void connectivity_export_dump_thread_state(const char *name)
 	static const char stat_nam[] = TASK_STATE_TO_CHAR_STR;
 	struct task_struct *p;
 	int cpu;
-	struct rq *rq;
 	struct task_struct *curr;
 	struct thread_info *ti;
 
@@ -332,11 +336,10 @@ void connectivity_export_dump_thread_state(const char *name)
 
 		if (strncmp(p->comm, name, strlen(name)) != 0)
 			continue;
-		state = p->__state;
+		state = p->state;
 		cpu = task_cpu(p);
-		rq = cpu_rq(cpu);
-		curr = rq->curr;
-		ti = task_thread_info(curr);
+		curr = p;
+		ti = task_thread_info(p);
 		if (state)
 			state = __ffs(state) + 1;
 		pr_info("%d:%-15.15s %c", p->pid, p->comm,

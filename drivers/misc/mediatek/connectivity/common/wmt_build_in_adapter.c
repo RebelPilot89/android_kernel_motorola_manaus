@@ -28,42 +28,42 @@
 #include <linux/interrupt.h>
 #include <linux/ratelimit.h>
 
-#define CONNADP_LOG_LOUD    4
-#define CONNADP_LOG_DBG     3
-#define CONNADP_LOG_INFO    2
-#define CONNADP_LOG_WARN    1
-#define CONNADP_LOG_ERR     0
+#define CONNADP_LOG_LOUD 4
+#define CONNADP_LOG_DBG 3
+#define CONNADP_LOG_INFO 2
+#define CONNADP_LOG_WARN 1
+#define CONNADP_LOG_ERR 0
 
 /*******************************************************************************
  * Connsys adaptation layer logging utility
  ******************************************************************************/
 static unsigned int gConnAdpDbgLvl = CONNADP_LOG_INFO;
 
-#define CONNADP_LOUD_FUNC(fmt, arg...) \
-do { \
-	if (gConnAdpDbgLvl >= CONNADP_LOG_LOUD) \
-		pr_info("[L]%s:"  fmt, __func__, ##arg); \
-} while (0)
-#define CONNADP_DBG_FUNC(fmt, arg...) \
-do { \
-	if (gConnAdpDbgLvl >= CONNADP_LOG_DBG) \
-		pr_info("[D]%s:"  fmt, __func__, ##arg); \
-} while (0)
-#define CONNADP_INFO_FUNC(fmt, arg...)  \
-do { \
-	if (gConnAdpDbgLvl >= CONNADP_LOG_INFO) \
-		pr_info("[I]%s:"  fmt, __func__, ##arg); \
-} while (0)
-#define CONNADP_WARN_FUNC(fmt, arg...) \
-do { \
-	if (gConnAdpDbgLvl >= CONNADP_LOG_WARN) \
-		pr_info("[W]%s:"  fmt, __func__, ##arg); \
-} while (0)
-#define CONNADP_ERR_FUNC(fmt, arg...) \
-do { \
-	if (gConnAdpDbgLvl >= CONNADP_LOG_ERR) \
-		pr_info("[E]%s(%d):"  fmt, __func__, __LINE__, ##arg); \
-} while (0)
+#define CONNADP_LOUD_FUNC(fmt, arg...)                                         \
+	do {                                                                   \
+		if (gConnAdpDbgLvl >= CONNADP_LOG_LOUD)                        \
+			pr_info("[L]%s:" fmt, __func__, ##arg);                \
+	} while (0)
+#define CONNADP_DBG_FUNC(fmt, arg...)                                          \
+	do {                                                                   \
+		if (gConnAdpDbgLvl >= CONNADP_LOG_DBG)                         \
+			pr_info("[D]%s:" fmt, __func__, ##arg);                \
+	} while (0)
+#define CONNADP_INFO_FUNC(fmt, arg...)                                         \
+	do {                                                                   \
+		if (gConnAdpDbgLvl >= CONNADP_LOG_INFO)                        \
+			pr_info("[I]%s:" fmt, __func__, ##arg);                \
+	} while (0)
+#define CONNADP_WARN_FUNC(fmt, arg...)                                         \
+	do {                                                                   \
+		if (gConnAdpDbgLvl >= CONNADP_LOG_WARN)                        \
+			pr_info("[W]%s:" fmt, __func__, ##arg);                \
+	} while (0)
+#define CONNADP_ERR_FUNC(fmt, arg...)                                          \
+	do {                                                                   \
+		if (gConnAdpDbgLvl >= CONNADP_LOG_ERR)                         \
+			pr_info("[E]%s(%d):" fmt, __func__, __LINE__, ##arg);  \
+	} while (0)
 
 /* device node related macro */
 #define CONN_DBG_DEV_NUM 1
@@ -110,13 +110,17 @@ static void conn_dbg_dump_log(char *buf)
 	buf[CONN_DBG_LOG_BUF_SIZE - 1] = '\0';
 	spin_lock_irqsave(&conn_dbg_log_lock, flag);
 	rec = g_conn_dbg_record_p;
-	while(rec != NULL) {
-		if (snprintf(temp, sizeof(temp), "[%llu.%06lu~%llu.%06lu][%llu]",
-			rec->first_sec, rec->first_nsec,
-			rec->last_sec, rec->last_nsec, rec->num) > 0) {
-			strncat(buf, temp, CONN_DBG_LOG_BUF_SIZE - strlen(buf) - 1);
-			strncat(buf, rec->log, CONN_DBG_LOG_BUF_SIZE - strlen(buf) - 1);
-			strncat(buf, "\n", CONN_DBG_LOG_BUF_SIZE - strlen(buf) - 1);
+	while (rec != NULL) {
+		if (snprintf(temp, sizeof(temp),
+			     "[%llu.%06lu~%llu.%06lu][%llu]", rec->first_sec,
+			     rec->first_nsec, rec->last_sec, rec->last_nsec,
+			     rec->num) > 0) {
+			strncat(buf, temp,
+				CONN_DBG_LOG_BUF_SIZE - strlen(buf) - 1);
+			strncat(buf, rec->log,
+				CONN_DBG_LOG_BUF_SIZE - strlen(buf) - 1);
+			strncat(buf, "\n",
+				CONN_DBG_LOG_BUF_SIZE - strlen(buf) - 1);
 		}
 		rec = rec->next;
 	}
@@ -124,24 +128,22 @@ static void conn_dbg_dump_log(char *buf)
 	buf[CONN_DBG_LOG_BUF_SIZE - 1] = '\0';
 }
 
-static ssize_t hw_monitor_show(
-	struct kobject *kobj,
-	struct kobj_attribute *attr,
-	char *buf)
+static ssize_t hw_monitor_show(struct kobject *kobj,
+			       struct kobj_attribute *attr, char *buf)
 {
 	conn_dbg_dump_log(buf);
 	return strlen(buf);
 }
 
 static struct kobject *conn_kobj;
-static struct kobj_attribute hw_monitor_attr
-	= __ATTR(hw_monitor, 0664, hw_monitor_show, NULL);
+static struct kobj_attribute hw_monitor_attr =
+	__ATTR(hw_monitor, 0664, hw_monitor_show, NULL);
 
 static void conn_dbg_get_local_time(u64 *sec, unsigned long *nsec)
 {
 	if (sec != NULL && nsec != NULL) {
 		*sec = local_clock();
-		*nsec = do_div(*sec, 1000000000)/1000;
+		*nsec = do_div(*sec, 1000000000) / 1000;
 	} else
 		pr_info("The input parameters error when get local time\n");
 }
@@ -158,8 +160,9 @@ int conn_dbg_add_log(enum conn_dbg_log_type type, const char *buf)
 	int notify = 0;
 
 	if (type >= CONN_DBG_LOG_TYPE_NUM || buf == NULL ||
-		strnlen(buf, CONN_DBG_MAX_LOG_LEN) == 0) {
-		pr_notice("%s type %d or buf %p is invalid\n", __func__, type, buf);
+	    strnlen(buf, CONN_DBG_MAX_LOG_LEN) == 0) {
+		pr_notice("%s type %d or buf %p is invalid\n", __func__, type,
+			  buf);
 		return -1;
 	}
 
@@ -179,7 +182,8 @@ int conn_dbg_add_log(enum conn_dbg_log_type type, const char *buf)
 	/* create a new record for a new log */
 	if (rec == NULL) {
 		if (conn_dbg_record_num >= CONN_DBG_MAX_REC_NUM) {
-			pr_notice("%s number of log record is over maximum.\n", __func__);
+			pr_notice("%s number of log record is over maximum.\n",
+				  __func__);
 			ret = -3;
 			goto exit;
 		}
@@ -195,7 +199,8 @@ int conn_dbg_add_log(enum conn_dbg_log_type type, const char *buf)
 		if (rec->log == NULL) {
 			kfree(rec);
 			ret = -5;
-			pr_notice("%s failed to allocate log buffer\n", __func__);
+			pr_notice("%s failed to allocate log buffer\n",
+				  __func__);
 			goto exit;
 		}
 		strncpy(rec->log, buf, len);
@@ -218,7 +223,8 @@ int conn_dbg_add_log(enum conn_dbg_log_type type, const char *buf)
 exit:
 	spin_unlock_irqrestore(&conn_dbg_log_lock, flag);
 	if (notify && pConnDbgDev) {
-		ret = kobject_uevent_env(&(pConnDbgDev->kobj), KOBJ_CHANGE, envp);
+		ret = kobject_uevent_env(&(pConnDbgDev->kobj), KOBJ_CHANGE,
+					 envp);
 		pr_info("%s kobject_uevent_env ret = %d\n", __func__, ret);
 	}
 	return ret;
@@ -265,7 +271,7 @@ static void conn_dbg_log_deinit(void)
 }
 
 ssize_t conn_dbg_dev_write(struct file *filp, const char __user *buffer,
-				size_t count, loff_t *f_pos)
+			   size_t count, loff_t *f_pos)
 {
 	if (g_dbg_bridge.write_cb)
 		return g_dbg_bridge.write_cb(filp, buffer, count, f_pos);
@@ -273,8 +279,8 @@ ssize_t conn_dbg_dev_write(struct file *filp, const char __user *buffer,
 	return 0;
 }
 
-ssize_t conn_dbg_dev_read(struct file *filp, char __user *buffer,
-				size_t count, loff_t *f_pos)
+ssize_t conn_dbg_dev_read(struct file *filp, char __user *buffer, size_t count,
+			  loff_t *f_pos)
 {
 	ssize_t ret = 0;
 
@@ -294,7 +300,8 @@ static int conn_dbg_dev_init(void)
 	dev_t dev_id = MKDEV(gConnDbgMajor, 0);
 	int ret = 0;
 
-	ret = register_chrdev_region(dev_id, CONN_DBG_DEV_NUM, CONN_DBG_DRVIER_NAME);
+	ret = register_chrdev_region(dev_id, CONN_DBG_DEV_NUM,
+				     CONN_DBG_DRVIER_NAME);
 	if (ret) {
 		pr_info("%s fail to register chrdev.(%d)\n", __func__, ret);
 		return -1;
@@ -309,15 +316,18 @@ static int conn_dbg_dev_init(void)
 		goto err1;
 	}
 
-	pConnDbgClass = class_create(CONN_DBG_DEVICE_NAME);
+	pConnDbgClass = class_create(THIS_MODULE, CONN_DBG_DEVICE_NAME);
 	if (IS_ERR(pConnDbgClass)) {
-		pr_info("class create fail, error code(%ld)\n", PTR_ERR(pConnDbgClass));
+		pr_info("class create fail, error code(%ld)\n",
+			PTR_ERR(pConnDbgClass));
 		goto err2;
 	}
 
-	pConnDbgDev = device_create(pConnDbgClass, NULL, dev_id, NULL, CONN_DBG_DEVICE_NAME);
+	pConnDbgDev = device_create(pConnDbgClass, NULL, dev_id, NULL,
+				    CONN_DBG_DEVICE_NAME);
 	if (IS_ERR(pConnDbgDev)) {
-		pr_info("device create fail, error code(%ld)\n", PTR_ERR(pConnDbgDev));
+		pr_info("device create fail, error code(%ld)\n",
+			PTR_ERR(pConnDbgDev));
 		goto err3;
 	}
 
@@ -381,7 +391,8 @@ void wmt_export_platform_bridge_unregister(void)
 }
 EXPORT_SYMBOL(wmt_export_platform_bridge_unregister);
 
-void wmt_export_platform_dbg_bridge_register(const struct wmt_platform_dbg_bridge *cb)
+void wmt_export_platform_dbg_bridge_register(
+	const struct wmt_platform_dbg_bridge *cb)
 {
 	if (unlikely(!cb))
 		return;
@@ -437,7 +448,7 @@ void mtk_wcn_cmb_stub_clock_fail_dump(void)
 
 int mtk_wcn_conninfra_reg_readable(void)
 {
-	static DEFINE_RATELIMIT_STATE(_rs, 5*HZ, 1);
+	static DEFINE_RATELIMIT_STATE(_rs, 5 * HZ, 1);
 
 	if (unlikely(!bridge.conninfra_reg_readable_cb)) {
 		if (__ratelimit(&_rs))
@@ -449,7 +460,7 @@ int mtk_wcn_conninfra_reg_readable(void)
 
 int mtk_wcn_conninfra_is_bus_hang(void)
 {
-	static DEFINE_RATELIMIT_STATE(_rs, 5*HZ, 1);
+	static DEFINE_RATELIMIT_STATE(_rs, 5 * HZ, 1);
 
 	if (unlikely(!bridge.conninfra_reg_is_bus_hang_cb)) {
 		if (__ratelimit(&_rs))
@@ -469,12 +480,12 @@ static void mtk_wcn_cmb_sdio_disable_eirq(void);
 static void mtk_wcn_cmb_sdio_register_pm(pm_callback_t pm_cb, void *data);
 
 struct sdio_ops mt_sdio_ops[4] = {
-	{NULL, NULL, NULL, NULL},
-	{NULL, NULL, NULL, NULL},
-	{mtk_wcn_cmb_sdio_request_eirq, mtk_wcn_cmb_sdio_enable_eirq,
-		mtk_wcn_cmb_sdio_disable_eirq, mtk_wcn_cmb_sdio_register_pm},
-	{mtk_wcn_cmb_sdio_request_eirq, mtk_wcn_cmb_sdio_enable_eirq,
-		mtk_wcn_cmb_sdio_disable_eirq, mtk_wcn_cmb_sdio_register_pm}
+	{ NULL, NULL, NULL, NULL },
+	{ NULL, NULL, NULL, NULL },
+	{ mtk_wcn_cmb_sdio_request_eirq, mtk_wcn_cmb_sdio_enable_eirq,
+	  mtk_wcn_cmb_sdio_disable_eirq, mtk_wcn_cmb_sdio_register_pm },
+	{ mtk_wcn_cmb_sdio_request_eirq, mtk_wcn_cmb_sdio_enable_eirq,
+	  mtk_wcn_cmb_sdio_disable_eirq, mtk_wcn_cmb_sdio_register_pm }
 };
 
 static atomic_t sdio_claim_irq_enable_flag;
@@ -500,7 +511,7 @@ static int _mtk_wcn_sdio_irq_flag_set(int flag)
 		atomic_set(&sdio_claim_irq_enable_flag, 0);
 
 	CONNADP_DBG_FUNC("sdio_claim_irq_enable_flag:%d\n",
-			atomic_read(&sdio_claim_irq_enable_flag));
+			 atomic_read(&sdio_claim_irq_enable_flag));
 
 	return atomic_read(&sdio_claim_irq_enable_flag);
 }
@@ -532,18 +543,19 @@ static void mtk_wcn_cmb_sdio_request_eirq(msdc_sdio_irq_handler_t irq_handler,
 	mtk_wcn_cmb_sdio_eirq_data = data;
 	mtk_wcn_cmb_sdio_eirq_handler = irq_handler;
 
-	node = (struct device_node *)of_find_compatible_node(NULL, NULL,
-					"mediatek,connectivity-combo");
+	node = (struct device_node *)of_find_compatible_node(
+		NULL, NULL, "mediatek,connectivity-combo");
 	if (node) {
-		wifi_irq = irq_of_parse_and_map(node, 0);/* get wifi eint num */
+		wifi_irq =
+			irq_of_parse_and_map(node, 0); /* get wifi eint num */
 		ret = request_irq(wifi_irq, mtk_wcn_cmb_sdio_eirq_handler_stub,
-				IRQF_TRIGGER_LOW, "WIFI-eint", NULL);
+				  IRQF_TRIGGER_LOW, "WIFI-eint", NULL);
 		CONNADP_DBG_FUNC("WIFI EINT irq %d !!\n", wifi_irq);
 
 		if (ret)
 			CONNADP_WARN_FUNC("WIFI EINT LINE NOT AVAILABLE!!\n");
 		else
-			mtk_wcn_cmb_sdio_disable_eirq();/*state:power off*/
+			mtk_wcn_cmb_sdio_disable_eirq(); /*state:power off*/
 	} else
 		CONNADP_WARN_FUNC("can't find connectivity compatible node\n");
 
