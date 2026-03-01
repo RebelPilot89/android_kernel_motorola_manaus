@@ -8,7 +8,7 @@ BASE := base
 CONF := conf
 DRV  := conn_drv/connv2
 DRV3 := conn_drv/connv3
-DBG  := $(DRV)/debug_utility
+CONNV2_DBG  := $(DRV)/debug_utility
 CMN  := ../common
 
 # Construcción del objeto principal
@@ -31,12 +31,12 @@ mtk_conninfra-objs += $(DRV)/src/conninfra.o \
                       $(DRV)/core/conninfra_core.o
 
 # ConnV2 Debug Utilities
-mtk_conninfra-objs += $(DBG)/conninfra_dbg.o \
-                      $(DBG)/connsyslog/connsyslog.o \
-                      $(DBG)/connsyslog/ring_emi.o \
-                      $(DBG)/coredump/connsys_coredump.o \
-                      $(DBG)/coredump/coredump_mng.o \
-                      $(DBG)/metlog/metlog.o
+mtk_conninfra-objs += $(CONNV2_DBG)/conninfra_dbg.o \
+                      $(CONNV2_DBG)/connsyslog/connsyslog.o \
+                      $(CONNV2_DBG)/connsyslog/ring_emi.o \
+                      $(CONNV2_DBG)/coredump/connsys_coredump.o \
+                      $(CONNV2_DBG)/coredump/coredump_mng.o \
+                      $(CONNV2_DBG)/metlog/metlog.o
 
 # ConnV3 Driver
 mtk_conninfra-objs += $(DRV3)/src/connv3_drv.o \

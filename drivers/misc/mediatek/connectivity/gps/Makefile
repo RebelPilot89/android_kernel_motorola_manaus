@@ -52,6 +52,7 @@ mtk_gps_drv-y += data_link/gps_dl_context.o
 mtk_gps_drv-y += data_link/gps_each_link.o
 
 mtk_gps_drv-y += data_link/lib/gps_dl_dma_buf.o
+mtk_gps_drv-y += data_link/lib/gps_dl_dma_buf_lock.o
 mtk_gps_drv-y += data_link/lib/gps_dl_lib_misc.o
 mtk_gps_drv-y += data_link/lib/gps_dl_hist_rec.o
 mtk_gps_drv-y += data_link/lib/gps_dl_hist_rec2.o
@@ -88,6 +89,8 @@ mtk_gps_drv-y += data_link/link/gps_dl_subsys_reset.o
 mtk_gps_drv-y += data_link/linux/gps_data_link_devices.o
 mtk_gps_drv-y += data_link/linux/gps_each_device.o
 mtk_gps_drv-y += data_link/linux/gps_dl_linux.o
+mtk_gps_drv-y += data_link/linux/gps_dl_linux_clock_mng.o
+mtk_gps_drv-y += data_link/linux/gps_dl_iomem_dump.o
 mtk_gps_drv-y += data_link/linux/gps_dl_linux_plat_drv.o
 mtk_gps_drv-y += data_link/linux/gps_dl_linux_reserved_mem.o
 mtk_gps_drv-y += data_link/linux/gps_dl_linux_reserved_mem_v2.o

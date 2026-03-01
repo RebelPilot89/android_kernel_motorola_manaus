@@ -10,10 +10,13 @@ else
 obj-$(CONFIG_MTK_CONN_COMMON)  += common/
 endif
 
-# 2. Hardware de Radio (Front-End)
+# 2. Power Throttling (siempre necesario con ConnInfra)
+obj-$(CONFIG_MTK_CONN_INFRA)   += power_throttling/
+
+# 3. Hardware de Radio (Front-End)
 obj-$(CONFIG_MTK_CONNFEM)      += connfem/
 
-# 3. Subsistemas de Radio (Orden de dependencia)
+# 4. Subsistemas de Radio (Orden de dependencia)
 obj-$(CONFIG_MTK_WLAN_DEVICE)  += wlan/
 obj-$(CONFIG_MTK_CONN_BT)      += bt/
 obj-$(CONFIG_MTK_GPS)          += gps/

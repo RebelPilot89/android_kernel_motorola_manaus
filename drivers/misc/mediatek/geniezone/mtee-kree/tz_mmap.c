@@ -19,6 +19,7 @@
 #include <linux/mm.h>
 #include <linux/slab.h>
 #include <kree/tz_mod.h>
+#include <kree/system.h>
 
 #define debugFg 0
 
@@ -139,8 +140,6 @@ static void _unmap_user_pages(struct MTIOMMU_PIN_RANGE_T *pinRange)
 	kfree(pages);
 }
 #endif
-
-#include <kree/system.h>
 
 int __weak gz_do_m4u_map(KREE_SHAREDMEM_HANDLE handle,
 			 phys_addr_t pa, uint32_t size, uint32_t region_id)
