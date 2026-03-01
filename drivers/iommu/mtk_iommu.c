@@ -1246,20 +1246,6 @@ static enum peri_iommu get_peri_iommu_id(u32 bus_id)
 		return (enum peri_iommu)bus_id;
 	return PERI_IOMMU_NUM;
 }
-#else
-char *peri_tf_analyse(enum peri_iommu iommu_id, u32 fault_id)
-{
-	pr_info("%s, dbg mode, peri_iommu:%d, fault_id:0x%x\n", __func__,
-		iommu_id, fault_id);
-	return NULL;
-}
-
-enum peri_iommu get_peri_iommu_id(u32 bus_id)
-{
-	if (bus_id < PERI_IOMMU_NUM)
-		return (enum peri_iommu)bus_id;
-	return PERI_IOMMU_NUM;
-}
 #endif /* !IS_ENABLED(CONFIG_MTK_IOMMU_MISC_DBG) */
 
 static void peri_iommu_read_data(void __iomem *base, enum peri_iommu iommu_id)
