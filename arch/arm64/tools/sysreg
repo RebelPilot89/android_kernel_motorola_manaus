@@ -1285,3 +1285,148 @@ EndSysreg
 Sysreg	CNTKCTL_EL12	3	5	14	1	0
 Res0	63:0
 EndSysreg
+
+Sysreg	SCTLR_EL12	3	5	1	0	0
+Res0	63:0
+EndSysreg
+
+Sysreg	TTBR0_EL12	3	5	2	0	0
+Res0	63:0
+EndSysreg
+
+Sysreg	TTBR1_EL12	3	5	2	0	1
+Res0	63:0
+EndSysreg
+
+Sysreg	TRBLIMITR_EL1	3	0	9	11	0
+Res0	63:0
+EndSysreg
+
+Sysreg	TRFCR_EL1	3	0	1	2	1
+Res0	63:0
+EndSysreg
+
+Sysreg	ICH_LR0_EL2	3	4	12	12	0
+Res0	63:0
+EndSysreg
+
+Sysreg	ICH_LR1_EL2	3	4	12	12	1
+Res0	63:0
+EndSysreg
+
+Sysreg	ICH_LR2_EL2	3	4	12	12	2
+Res0	63:0
+EndSysreg
+
+Sysreg	ICH_LR3_EL2	3	4	12	12	3
+Res0	63:0
+EndSysreg
+
+Sysreg	ICH_LR4_EL2	3	4	12	12	4
+Res0	63:0
+EndSysreg
+
+Sysreg	ICH_LR5_EL2	3	4	12	12	5
+Res0	63:0
+EndSysreg
+
+Sysreg	ICH_LR6_EL2	3	4	12	12	6
+Res0	63:0
+EndSysreg
+
+Sysreg	ICH_LR7_EL2	3	4	12	12	7
+Res0	63:0
+EndSysreg
+
+Sysreg	ICH_LR8_EL2	3	4	12	13	0
+Res0	63:0
+EndSysreg
+
+Sysreg	ICH_LR9_EL2	3	4	12	13	1
+Res0	63:0
+EndSysreg
+
+Sysreg	ICH_LR10_EL2	3	4	12	13	2
+Res0	63:0
+EndSysreg
+
+Sysreg	ICH_LR11_EL2	3	4	12	13	3
+Res0	63:0
+EndSysreg
+
+Sysreg	ICH_LR12_EL2	3	4	12	13	4
+Res0	63:0
+EndSysreg
+
+Sysreg	ICH_LR13_EL2	3	4	12	13	5
+Res0	63:0
+EndSysreg
+
+Sysreg	ICH_LR14_EL2	3	4	12	13	6
+Res0	63:0
+EndSysreg
+
+Sysreg	ICH_LR15_EL2	3	4	12	13	7
+Res0	63:0
+EndSysreg
+
+Sysreg	CNTV_CTL_EL0	3	3	14	3	1
+Res0	63:0
+EndSysreg
+
+Sysreg	CNTV_CVAL_EL0	3	3	14	3	2
+Res0	63:0
+EndSysreg
+
+Sysreg	CNTV_CTL_EL02	3	5	14	3	1
+Res0	63:0
+EndSysreg
+
+Sysreg	CNTV_CVAL_EL02	3	5	14	3	2
+Res0	63:0
+EndSysreg
+
+Sysreg	SCTLR_EL2	3	4	1	0	0
+Res0	63:0
+EndSysreg
+
+Sysreg	ICH_AP0R0_EL2	3	4	12	8	4
+Res0	63:0
+EndSysreg
+
+Sysreg	ICH_AP0R1_EL2	3	4	12	8	5
+Res0	63:0
+EndSysreg
+
+Sysreg	ICH_AP0R2_EL2	3	4	12	8	6
+Res0	63:0
+EndSysreg
+
+Sysreg	ICH_AP0R3_EL2	3	4	12	8	7
+Res0	63:0
+EndSysreg
+
+Sysreg	ICH_AP1R0_EL2	3	4	12	9	0
+Res0	63:0
+EndSysreg
+
+Sysreg	ICH_AP1R1_EL2	3	4	12	9	1
+Res0	63:0
+EndSysreg
+
+Sysreg	ICH_AP1R2_EL2	3	4	12	9	2
+Res0	63:0
+EndSysreg
+
+Sysreg	ICH_AP1R3_EL2	3	4	12	9	3
+Res0	63:0
+EndSysreg
+
+
+Sysreg	TPIDR_EL0	3	3	13	0	2
+Res0	63:0
+EndSysreg
+
+Sysreg	TPIDRRO_EL0	3	3	13	0	3
+Res0	63:0
+EndSysreg

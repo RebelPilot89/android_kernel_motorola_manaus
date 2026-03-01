@@ -494,6 +494,189 @@ asm(
 #define __SYSREG_EQ_SYS_ICH_LR15_EL2 ""
 #endif
 
+/* EL1 register .equ definitions for read/write_sysreg_el1() LLVM IAS compatibility */
+#ifdef SYS_SCTLR_EL1
+#define __SYSREG_EQ_SYS_SCTLR_EL1 ".equ SYS_SCTLR_EL1, " __stringify(SYS_SCTLR_EL1) "\n"
+#else
+#define __SYSREG_EQ_SYS_SCTLR_EL1 ""
+#endif
+#ifdef SYS_CPACR_EL1
+#define __SYSREG_EQ_SYS_CPACR_EL1 ".equ SYS_CPACR_EL1, " __stringify(SYS_CPACR_EL1) "\n"
+#else
+#define __SYSREG_EQ_SYS_CPACR_EL1 ""
+#endif
+#ifdef SYS_TTBR0_EL1
+#define __SYSREG_EQ_SYS_TTBR0_EL1 ".equ SYS_TTBR0_EL1, " __stringify(SYS_TTBR0_EL1) "\n"
+#else
+#define __SYSREG_EQ_SYS_TTBR0_EL1 ""
+#endif
+#ifdef SYS_TTBR1_EL1
+#define __SYSREG_EQ_SYS_TTBR1_EL1 ".equ SYS_TTBR1_EL1, " __stringify(SYS_TTBR1_EL1) "\n"
+#else
+#define __SYSREG_EQ_SYS_TTBR1_EL1 ""
+#endif
+#ifdef SYS_TCR_EL1
+#define __SYSREG_EQ_SYS_TCR_EL1 ".equ SYS_TCR_EL1, " __stringify(SYS_TCR_EL1) "\n"
+#else
+#define __SYSREG_EQ_SYS_TCR_EL1 ""
+#endif
+#ifdef SYS_AFSR0_EL1
+#define __SYSREG_EQ_SYS_AFSR0_EL1 ".equ SYS_AFSR0_EL1, " __stringify(SYS_AFSR0_EL1) "\n"
+#else
+#define __SYSREG_EQ_SYS_AFSR0_EL1 ""
+#endif
+#ifdef SYS_AFSR1_EL1
+#define __SYSREG_EQ_SYS_AFSR1_EL1 ".equ SYS_AFSR1_EL1, " __stringify(SYS_AFSR1_EL1) "\n"
+#else
+#define __SYSREG_EQ_SYS_AFSR1_EL1 ""
+#endif
+#ifdef SYS_FAR_EL1
+#define __SYSREG_EQ_SYS_FAR_EL1 ".equ SYS_FAR_EL1, " __stringify(SYS_FAR_EL1) "\n"
+#else
+#define __SYSREG_EQ_SYS_FAR_EL1 ""
+#endif
+#ifdef SYS_MAIR_EL1
+#define __SYSREG_EQ_SYS_MAIR_EL1 ".equ SYS_MAIR_EL1, " __stringify(SYS_MAIR_EL1) "\n"
+#else
+#define __SYSREG_EQ_SYS_MAIR_EL1 ""
+#endif
+#ifdef SYS_VBAR_EL1
+#define __SYSREG_EQ_SYS_VBAR_EL1 ".equ SYS_VBAR_EL1, " __stringify(SYS_VBAR_EL1) "\n"
+#else
+#define __SYSREG_EQ_SYS_VBAR_EL1 ""
+#endif
+#ifdef SYS_CONTEXTIDR_EL1
+#define __SYSREG_EQ_SYS_CONTEXTIDR_EL1 ".equ SYS_CONTEXTIDR_EL1, " __stringify(SYS_CONTEXTIDR_EL1) "\n"
+#else
+#define __SYSREG_EQ_SYS_CONTEXTIDR_EL1 ""
+#endif
+#ifdef SYS_AMAIR_EL1
+#define __SYSREG_EQ_SYS_AMAIR_EL1 ".equ SYS_AMAIR_EL1, " __stringify(SYS_AMAIR_EL1) "\n"
+#else
+#define __SYSREG_EQ_SYS_AMAIR_EL1 ""
+#endif
+#ifdef SYS_CNTKCTL_EL1
+#define __SYSREG_EQ_SYS_CNTKCTL_EL1 ".equ SYS_CNTKCTL_EL1, " __stringify(SYS_CNTKCTL_EL1) "\n"
+#else
+#define __SYSREG_EQ_SYS_CNTKCTL_EL1 ""
+#endif
+#ifdef SYS_TFSR_EL1
+#define __SYSREG_EQ_SYS_TFSR_EL1 ".equ SYS_TFSR_EL1, " __stringify(SYS_TFSR_EL1) "\n"
+#else
+#define __SYSREG_EQ_SYS_TFSR_EL1 ""
+#endif
+#ifdef SYS_ZCR_EL1
+#define __SYSREG_EQ_SYS_ZCR_EL1 ".equ SYS_ZCR_EL1, " __stringify(SYS_ZCR_EL1) "\n"
+#else
+#define __SYSREG_EQ_SYS_ZCR_EL1 ""
+#endif
+#ifdef SYS_ZCR_EL2
+#define __SYSREG_EQ_SYS_ZCR_EL2 ".equ SYS_ZCR_EL2, " __stringify(SYS_ZCR_EL2) "\n"
+#else
+#define __SYSREG_EQ_SYS_ZCR_EL2 ""
+#endif
+
+/* Additional EL12/TRBE register .equ definitions for LLVM IAS compatibility */
+#ifdef SYS_CPACR_EL12
+#define __SYSREG_EQ_SYS_CPACR_EL12 ".equ SYS_CPACR_EL12, " __stringify(SYS_CPACR_EL12) "\n"
+#else
+#define __SYSREG_EQ_SYS_CPACR_EL12 ""
+#endif
+#ifdef SYS_FAR_EL12
+#define __SYSREG_EQ_SYS_FAR_EL12 ".equ SYS_FAR_EL12, " __stringify(SYS_FAR_EL12) "\n"
+#else
+#define __SYSREG_EQ_SYS_FAR_EL12 ""
+#endif
+#ifdef SYS_VBAR_EL12
+#define __SYSREG_EQ_SYS_VBAR_EL12 ".equ SYS_VBAR_EL12, " __stringify(SYS_VBAR_EL12) "\n"
+#else
+#define __SYSREG_EQ_SYS_VBAR_EL12 ""
+#endif
+#ifdef SYS_CNTKCTL_EL12
+#define __SYSREG_EQ_SYS_CNTKCTL_EL12 ".equ SYS_CNTKCTL_EL12, " __stringify(SYS_CNTKCTL_EL12) "\n"
+#else
+#define __SYSREG_EQ_SYS_CNTKCTL_EL12 ""
+#endif
+#ifdef SYS_TFSR_EL12
+#define __SYSREG_EQ_SYS_TFSR_EL12 ".equ SYS_TFSR_EL12, " __stringify(SYS_TFSR_EL12) "\n"
+#else
+#define __SYSREG_EQ_SYS_TFSR_EL12 ""
+#endif
+#ifdef SYS_ZCR_EL12
+#define __SYSREG_EQ_SYS_ZCR_EL12 ".equ SYS_ZCR_EL12, " __stringify(SYS_ZCR_EL12) "\n"
+#else
+#define __SYSREG_EQ_SYS_ZCR_EL12 ""
+#endif
+#ifdef SYS_SPSR_EL12
+#define __SYSREG_EQ_SYS_SPSR_EL12 ".equ SYS_SPSR_EL12, " __stringify(SYS_SPSR_EL12) "\n"
+#else
+#define __SYSREG_EQ_SYS_SPSR_EL12 ""
+#endif
+#ifdef SYS_TRBLIMITR_EL1
+#define __SYSREG_EQ_SYS_TRBLIMITR_EL1 ".equ SYS_TRBLIMITR_EL1, " __stringify(SYS_TRBLIMITR_EL1) "\n"
+#else
+#define __SYSREG_EQ_SYS_TRBLIMITR_EL1 ""
+#endif
+#ifdef SYS_TRFCR_EL1
+#define __SYSREG_EQ_SYS_TRFCR_EL1 ".equ SYS_TRFCR_EL1, " __stringify(SYS_TRFCR_EL1) "\n"
+#else
+#define __SYSREG_EQ_SYS_TRFCR_EL1 ""
+#endif
+
+/* ICH Active Priority Registers .equ definitions for LLVM IAS */
+#ifdef SYS_ICH_AP0R0_EL2
+#define __SYSREG_EQ_SYS_ICH_AP0R0_EL2 ".equ SYS_ICH_AP0R0_EL2, " __stringify(SYS_ICH_AP0R0_EL2) "\n"
+#else
+#define __SYSREG_EQ_SYS_ICH_AP0R0_EL2 ""
+#endif
+#ifdef SYS_ICH_AP0R1_EL2
+#define __SYSREG_EQ_SYS_ICH_AP0R1_EL2 ".equ SYS_ICH_AP0R1_EL2, " __stringify(SYS_ICH_AP0R1_EL2) "\n"
+#else
+#define __SYSREG_EQ_SYS_ICH_AP0R1_EL2 ""
+#endif
+#ifdef SYS_ICH_AP0R2_EL2
+#define __SYSREG_EQ_SYS_ICH_AP0R2_EL2 ".equ SYS_ICH_AP0R2_EL2, " __stringify(SYS_ICH_AP0R2_EL2) "\n"
+#else
+#define __SYSREG_EQ_SYS_ICH_AP0R2_EL2 ""
+#endif
+#ifdef SYS_ICH_AP0R3_EL2
+#define __SYSREG_EQ_SYS_ICH_AP0R3_EL2 ".equ SYS_ICH_AP0R3_EL2, " __stringify(SYS_ICH_AP0R3_EL2) "\n"
+#else
+#define __SYSREG_EQ_SYS_ICH_AP0R3_EL2 ""
+#endif
+#ifdef SYS_ICH_AP1R0_EL2
+#define __SYSREG_EQ_SYS_ICH_AP1R0_EL2 ".equ SYS_ICH_AP1R0_EL2, " __stringify(SYS_ICH_AP1R0_EL2) "\n"
+#else
+#define __SYSREG_EQ_SYS_ICH_AP1R0_EL2 ""
+#endif
+#ifdef SYS_ICH_AP1R1_EL2
+#define __SYSREG_EQ_SYS_ICH_AP1R1_EL2 ".equ SYS_ICH_AP1R1_EL2, " __stringify(SYS_ICH_AP1R1_EL2) "\n"
+#else
+#define __SYSREG_EQ_SYS_ICH_AP1R1_EL2 ""
+#endif
+#ifdef SYS_ICH_AP1R2_EL2
+#define __SYSREG_EQ_SYS_ICH_AP1R2_EL2 ".equ SYS_ICH_AP1R2_EL2, " __stringify(SYS_ICH_AP1R2_EL2) "\n"
+#else
+#define __SYSREG_EQ_SYS_ICH_AP1R2_EL2 ""
+#endif
+#ifdef SYS_ICH_AP1R3_EL2
+#define __SYSREG_EQ_SYS_ICH_AP1R3_EL2 ".equ SYS_ICH_AP1R3_EL2, " __stringify(SYS_ICH_AP1R3_EL2) "\n"
+#else
+#define __SYSREG_EQ_SYS_ICH_AP1R3_EL2 ""
+#endif
+
+/* TPIDR/TPIDRRO .equ entries for LLVM IAS compatibility */
+#ifdef SYS_TPIDR_EL0
+#define __SYSREG_EQ_SYS_TPIDR_EL0 ".equ SYS_TPIDR_EL0, " __stringify(SYS_TPIDR_EL0) "\n"
+#else
+#define __SYSREG_EQ_SYS_TPIDR_EL0 ""
+#endif
+#ifdef SYS_TPIDRRO_EL0
+#define __SYSREG_EQ_SYS_TPIDRRO_EL0 ".equ SYS_TPIDRRO_EL0, " __stringify(SYS_TPIDRRO_EL0) "\n"
+#else
+#define __SYSREG_EQ_SYS_TPIDRRO_EL0 ""
+#endif
+
 #ifndef __SYSREG_S_EQU_INLINE_DEF
 #define __SYSREG_S_EQU_INLINE_DEF
 asm(
@@ -540,6 +723,41 @@ __SYSREG_EQ_SYS_ICH_LR12_EL2
 __SYSREG_EQ_SYS_ICH_LR13_EL2
 __SYSREG_EQ_SYS_ICH_LR14_EL2
 __SYSREG_EQ_SYS_ICH_LR15_EL2
+__SYSREG_EQ_SYS_SCTLR_EL1
+__SYSREG_EQ_SYS_CPACR_EL1
+__SYSREG_EQ_SYS_TTBR0_EL1
+__SYSREG_EQ_SYS_TTBR1_EL1
+__SYSREG_EQ_SYS_TCR_EL1
+__SYSREG_EQ_SYS_AFSR0_EL1
+__SYSREG_EQ_SYS_AFSR1_EL1
+__SYSREG_EQ_SYS_FAR_EL1
+__SYSREG_EQ_SYS_MAIR_EL1
+__SYSREG_EQ_SYS_VBAR_EL1
+__SYSREG_EQ_SYS_CONTEXTIDR_EL1
+__SYSREG_EQ_SYS_AMAIR_EL1
+__SYSREG_EQ_SYS_CNTKCTL_EL1
+__SYSREG_EQ_SYS_TFSR_EL1
+__SYSREG_EQ_SYS_ZCR_EL1
+__SYSREG_EQ_SYS_ZCR_EL2
+__SYSREG_EQ_SYS_CPACR_EL12
+__SYSREG_EQ_SYS_FAR_EL12
+__SYSREG_EQ_SYS_VBAR_EL12
+__SYSREG_EQ_SYS_CNTKCTL_EL12
+__SYSREG_EQ_SYS_TFSR_EL12
+__SYSREG_EQ_SYS_ZCR_EL12
+__SYSREG_EQ_SYS_SPSR_EL12
+__SYSREG_EQ_SYS_TRBLIMITR_EL1
+__SYSREG_EQ_SYS_TRFCR_EL1
+__SYSREG_EQ_SYS_ICH_AP0R0_EL2
+__SYSREG_EQ_SYS_ICH_AP0R1_EL2
+__SYSREG_EQ_SYS_ICH_AP0R2_EL2
+__SYSREG_EQ_SYS_ICH_AP0R3_EL2
+__SYSREG_EQ_SYS_ICH_AP1R0_EL2
+__SYSREG_EQ_SYS_ICH_AP1R1_EL2
+__SYSREG_EQ_SYS_ICH_AP1R2_EL2
+__SYSREG_EQ_SYS_ICH_AP1R3_EL2
+__SYSREG_EQ_SYS_TPIDR_EL0
+__SYSREG_EQ_SYS_TPIDRRO_EL0
 ".endif\n");
 #endif
 #endif
@@ -999,6 +1217,16 @@ __SYSREG_EQ_SYS_ICH_LR15_EL2
 
 #ifndef SET_PSTATE_TCO
 #define SET_PSTATE_TCO(x)	nop
+#endif
+
+#ifndef SET_PSTATE_PAN
+#define SET_PSTATE_PAN(x)	nop
+#endif
+#ifndef SET_PSTATE_UAO
+#define SET_PSTATE_UAO(x)	nop
+#endif
+#ifndef SET_PSTATE_SSBS
+#define SET_PSTATE_SSBS(x)	nop
 #endif
 
 #ifndef SYS_TFSR_EL1_TF0_SHIFT

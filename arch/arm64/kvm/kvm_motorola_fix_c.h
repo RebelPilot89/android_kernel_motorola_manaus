@@ -45,7 +45,9 @@
 #endif
 
 #define ID_AA64DFR0_TRBE_SHIFT 44
+#ifndef TRBIDR_PROG
 #define TRBIDR_PROG (1UL << 0)
+#endif
 
 /* Masks and flags potentially missing on Motorola headers */
 #ifndef HFGxTR_EL2_nSMPRI_EL1_MASK
