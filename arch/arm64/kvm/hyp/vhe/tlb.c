@@ -33,12 +33,12 @@ static void __tlb_switch_to_guest(struct kvm_s2_mmu *mmu,
 		 * in the TCR_EL1 register. We also need to prevent it to
 		 * allocate IPA->PA walks, so we enable the S1 MMU...
 		 */
-		val = cxt->tcr = read_sysreg_el1(SYS_TCR);
+		val = cxt->tcr = read_sysreg(tcr_el1);
 		val |= TCR_EPD1_MASK | TCR_EPD0_MASK;
-		write_sysreg_el1(val, SYS_TCR);
-		val = cxt->sctlr = read_sysreg_el1(SYS_SCTLR);
+		write_sysreg(val, tcr_el1);
+		val = cxt->sctlr = read_sysreg(sctlr_el1);
 		val |= SCTLR_ELx_M;
-		write_sysreg_el1(val, SYS_SCTLR);
+		write_sysreg(val, sctlr_el1);
 	}
 
 	/*
@@ -72,8 +72,8 @@ static void __tlb_switch_to_host(struct tlb_inv_context *cxt)
 
 	if (cpus_have_final_cap(ARM64_WORKAROUND_SPECULATIVE_AT)) {
 		/* Restore the registers to what they were */
-		write_sysreg_el1(cxt->tcr, SYS_TCR);
-		write_sysreg_el1(cxt->sctlr, SYS_SCTLR);
+		write_sysreg(cxt->tcr, tcr_el1);
+		write_sysreg(cxt->sctlr, sctlr_el1);
 	}
 
 	local_irq_restore(cxt->flags);

@@ -65,8 +65,9 @@
 					      ".subsection 1\n"                        \
 					      "663:\n\t" newinstr "\n"                 \
 					      "664:\n\t"                               \
-					      ".org	. - (664b-663b) + (662b-661b)\n\t" \
-					      ".org	. - (662b-661b) + (664b-663b)\n\t" \
+					      ".if (664b-663b) != (662b-661b)\n\t" \
+					      ".error \"ALTERNATIVE size mismatch\"\n\t" \
+					      ".endif\n" \
 					      ".previous\n"                            \
 					      ".endif\n"
 
@@ -106,8 +107,9 @@
 	.popsection
 	.subsection 1
 663:	\insn2
-664:	.org	. - (664b-663b) + (662b-661b)
-	.org	. - (662b-661b) + (664b-663b)
+664:	.if (664b-663b) != (662b-661b)
+	.error "ALTERNATIVE size mismatch"
+	.endif
 	.previous
 	.endif
 .endm
@@ -184,8 +186,9 @@
  */
 .macro alternative_endif
 664:
-	.org	. - (664b-663b) + (662b-661b)
-	.org	. - (662b-661b) + (664b-663b)
+	.if (664b-663b) != (662b-661b)
+	.error "ALTERNATIVE size mismatch"
+	.endif
 	.if .Lasm_alt_mode==0
 	.previous
 	.endif

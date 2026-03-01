@@ -141,6 +141,17 @@ asm(
 #define SYS_ICC_PMR_EL1			sys_reg(3, 0, 4, 6, 0)
 #define SYS_RNDR_EL0			sys_reg(3, 3, 2, 4, 0)
 
+/* Auto-generated register definitions (from arch/arm64/tools/sysreg via gen-sysreg.awk).
+ * Must be included BEFORE the #ifndef fallbacks below so the generated file
+ * takes precedence and the fallbacks only activate for any remaining gaps. */
+#if defined(__has_include)
+#if __has_include(<asm/sysreg-defs.h>)
+#include <asm/sysreg-defs.h>
+#endif
+#else
+#include <asm/sysreg-defs.h>
+#endif
+
 /* EL1 translation/fault registers required by KVM hypervisor */
 #ifndef SYS_TTBR0_EL1
 #define SYS_TTBR0_EL1			sys_reg(3, 0, 2, 0, 0)
@@ -319,14 +330,7 @@ asm(
 #define SYS_APDBKEYLO_EL1		sys_reg(3, 0, 2, 2, 2)
 #define SYS_APDBKEYHI_EL1		sys_reg(3, 0, 2, 2, 3)
 
-/* 5. Inclusión del generado (Motorola) - Capa 3 */
-#if defined(__has_include)
-#if __has_include(<asm/sysreg-defs.h>)
-#include <asm/sysreg-defs.h>
-#endif
-#else
-#include <asm/sysreg-defs.h>
-#endif
+/* sysreg-defs.h is now included early (before #ifndef fallbacks) above. */
 
 #ifndef __ASSEMBLY__
 #ifdef SYS_SPSR_EL2
