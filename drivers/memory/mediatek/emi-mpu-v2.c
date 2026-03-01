@@ -250,11 +250,15 @@ static irqreturn_t emimpu_violation_irq(int irq, void *dev_id)
 		 * purpose.
 		 */
 		if (mpu->md_handler) {
-			char *md_str = kmalloc(MTK_EMI_MAX_CMD_LEN + 13, GFP_ATOMIC);
+			/* sizeof includes the null terminator for the prefix */
+			static const char prefix[] = "emi-mpu-v2.c";
+			size_t buf_len = MTK_EMI_MAX_CMD_LEN + sizeof(prefix);
+			char *md_str = kmalloc(buf_len, GFP_ATOMIC);
 
 			if (md_str) {
-				strncpy(md_str, "emi-mpu-v2.c", 13);
-				strncat(md_str, mpu->vio_msg, MTK_EMI_MAX_CMD_LEN - 1);
+				strncpy(md_str, prefix, sizeof(prefix));
+				strncat(md_str, mpu->vio_msg,
+					buf_len - sizeof(prefix) - 1);
 				mpu->md_handler(md_str);
 				kfree(md_str);
 			} else {

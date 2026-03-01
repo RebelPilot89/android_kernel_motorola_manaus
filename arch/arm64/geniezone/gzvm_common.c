@@ -17,12 +17,15 @@
  */
 int gzvm_err_to_errno(unsigned long err)
 {
-	int ret = (int)err;
-
-	if (!ret)
+	/*
+	 * GenieZone error codes are small negative integers (see ERR_* defines
+	 * in gzvm_drv.h).  Guard against a stray large unsigned value before
+	 * the cast so the switch below works correctly.
+	 */
+	if (err == 0)
 		return 0;
 
-	switch (ret) {
+	switch ((int)err) {
 	case ERR_NO_MEMORY:
 		return -ENOMEM;
 	case ERR_INVALID_ARGS:

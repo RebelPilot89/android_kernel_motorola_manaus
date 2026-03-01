@@ -622,6 +622,8 @@ void mtk_trans_gain_to_gamma(struct drm_crtc *crtc,
 				mtk_crtc_user_cmd(crtc, default_comp,
 					SET_GAMMALUT, (void *)data);
 				kfree(data);
+			} else {
+				DDPPR_ERR("%s: OOM, skip 8-bit gamma LUT\n", __func__);
 			}
 		}
 
@@ -635,6 +637,8 @@ void mtk_trans_gain_to_gamma(struct drm_crtc *crtc,
 				mtk_crtc_user_cmd(crtc, default_comp,
 					SET_12BIT_GAMMALUT, (void *)data);
 				kfree(data);
+			} else {
+				DDPPR_ERR("%s: OOM, skip 12-bit gamma LUT\n", __func__);
 			}
 		}
 
