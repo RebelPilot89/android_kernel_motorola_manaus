@@ -139,3 +139,16 @@ static void _unmap_user_pages(struct MTIOMMU_PIN_RANGE_T *pinRange)
 	kfree(pages);
 }
 #endif
+
+#include <kree/system.h>
+
+int __weak gz_do_m4u_map(KREE_SHAREDMEM_HANDLE handle,
+			 phys_addr_t pa, uint32_t size, uint32_t region_id)
+{
+	return 0;
+}
+
+int __weak gz_do_m4u_umap(KREE_SHAREDMEM_HANDLE handle)
+{
+	return 0;
+}

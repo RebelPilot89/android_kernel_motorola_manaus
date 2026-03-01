@@ -7,6 +7,9 @@ ADP  := adaptor
 BASE := base
 CONF := conf
 DRV  := conn_drv/connv2
+DRV3 := conn_drv/connv3
+DBG  := $(DRV)/debug_utility
+CMN  := ../common
 
 # Construcción del objeto principal
 mtk_conninfra-objs := $(ADP)/conninfra_dev.o \
@@ -26,6 +29,23 @@ mtk_conninfra-objs += $(CONF)/conninfra_conf.o
 mtk_conninfra-objs += $(DRV)/src/conninfra.o \
                       $(DRV)/src/connv2_drv.o \
                       $(DRV)/core/conninfra_core.o
+
+# ConnV2 Debug Utilities
+mtk_conninfra-objs += $(DBG)/conninfra_dbg.o \
+                      $(DBG)/connsyslog/connsyslog.o \
+                      $(DBG)/connsyslog/ring_emi.o \
+                      $(DBG)/coredump/connsys_coredump.o \
+                      $(DBG)/coredump/coredump_mng.o \
+                      $(DBG)/metlog/metlog.o
+
+# ConnV3 Driver
+mtk_conninfra-objs += $(DRV3)/src/connv3_drv.o \
+                      $(DRV3)/src/connv3.o
+
+# Common adapters (needed when CONFIG_MTK_CONN_INFRA=y, common/ is excluded)
+mtk_conninfra-objs += $(CMN)/wmt_build_in_adapter.o \
+                      $(CMN)/connectivity_build_in_adapter.o \
+                      $(CMN)/debug_utility/connsys_debug_utility.o
 
 # Soporte de Plataforma (Aquí es donde entra tu hardware)
 # Nota: Si tu SoC usa la carpeta mt6886, lo incluimos así:
@@ -47,7 +67,10 @@ mtk_conninfra-objs += $(PLAT_DIR)/consys_hw.o \
                       $(PLAT_DIR)/mt6886/mt6886_consys_reg.o \
                       $(PLAT_DIR)/mt6886/mt6886_consys_reg_atf.o \
                       $(PLAT_DIR)/mt6886/mt6886_debug_gen.o \
-                      $(PLAT_DIR)/mt6886/mt6886_pmic.o
+                      $(PLAT_DIR)/mt6886/mt6886_pmic.o \
+                      $(PLAT_DIR)/mt6886/mt6886_coredump.o \
+                      $(PLAT_DIR)/mt6886/mt6886_emi_atf.o \
+                      $(PLAT_DIR)/mt6886/mt6886_coredump_atf.o
 endif
 
 # Includes Críticos
@@ -59,8 +82,15 @@ ccflags-y += -I$(srctree)/$(src)/include \
              -I$(srctree)/$(src)/$(DRV)/core/include \
              -I$(srctree)/$(src)/$(DRV)/platform/include \
              -I$(srctree)/$(src)/$(DRV)/platform/mt6886/include \
+             -I$(srctree)/$(src)/$(DRV)/debug_utility/include \
+             -I$(srctree)/$(src)/$(DRV)/debug_utility/connsyslog \
+             -I$(srctree)/$(src)/$(DRV)/debug_utility/coredump \
+             -I$(srctree)/$(src)/$(DRV)/debug_utility/metlog \
              -I$(srctree)/$(src)/conn_drv/connv3/src \
              -I$(srctree)/$(src)/../common \
+             -I$(srctree)/$(src)/../common/include \
+             -I$(srctree)/$(src)/../common/common_main/include \
+             -I$(srctree)/$(src)/../common/debug_utility \
              -I$(srctree)/drivers/misc/mediatek/include/mt-plat \
              -I$(srctree)/drivers/misc/mediatek/modem/common/include \
              -I$(srctree)/drivers/gpu/drm/mediatek/mediatek_v2

@@ -8,7 +8,13 @@ mtk_fm_drv-objs := core/fm_main.o \
                    core/fm_module.o \
                    core/fm_utils.o \
                    core/fm_cmd.o \
-                   core/fm_link.o
+                   core/fm_link.o \
+                   core/fm_eint.o \
+                   core/fm_patch.o \
+                   core/fm_reg_utils.o
+
+# Platform interface (conn_infra for CONNAC2X)
+mtk_fm_drv-$(CONFIG_MTK_FM_CHIP_CONNAC2X) += plat/conn_infra.o
 
 # Soporte específico para MT6879 (CONNAC2X)
 mtk_fm_drv-$(CONFIG_MTK_FM_CHIP_CONNAC2X) += chips/connac2x/pub/connac2x_fm_lib.o
