@@ -1,5 +1,5 @@
 
- /*
+/*
   * Goodix Touchscreen Driver
   *
   * Copyright (C) 2019 - 2020 Goodix, Inc.
@@ -11,77 +11,77 @@
 #include "goodix_ts_core.h"
 
 /* name */
-#define TS_DRIVER_NAME				"GT9896S"
-#define TS_DT_COMPATIBLE			"goodix,gt9896s"
+#define TS_DRIVER_NAME "GT9896S"
+#define TS_DT_COMPATIBLE "goodix,gt9896s"
 
 /* reg */
-#define TS_REG_REMOVE_HOLD			0x2014
-#define TS_REG_SET_SPI_ARGS			0x3082
+#define TS_REG_REMOVE_HOLD 0x2014
+#define TS_REG_SET_SPI_ARGS 0x3082
 //TODO:to modify later
-#define TS_REG_ESD_TICK_R			0x3103
+#define TS_REG_ESD_TICK_R 0x3103
 
 /* cmd */
-#define COMMAND_SLEEP				0x05
-#define COMMAND_END_SEND_CFG_YS		0x7D
-#define COMMAND_START_SEND_CFG		0x80
-#define COMMAND_SEND_SMALL_CFG		0x81
-#define COMMAND_SEND_CFG_PREPARE_OK	0x82
-#define COMMAND_END_SEND_CFG		0x83
-#define COMMAND_READ_CFG_PREPARE_OK	0x85
-#define COMMAND_START_READ_CFG		0x86
+#define COMMAND_SLEEP 0x05
+#define COMMAND_END_SEND_CFG_YS 0x7D
+#define COMMAND_START_SEND_CFG 0x80
+#define COMMAND_SEND_SMALL_CFG 0x81
+#define COMMAND_SEND_CFG_PREPARE_OK 0x82
+#define COMMAND_END_SEND_CFG 0x83
+#define COMMAND_READ_CFG_PREPARE_OK 0x85
+#define COMMAND_START_READ_CFG 0x86
 
-#define CMD_ACK_BUF_OVERFLOW		0x01
-#define CMD_ACK_CHECKSUM_ERROR		0x02
-#define CMD_ACK_BUSY				0x04
-#define CMD_ACK_OK					0x80
-#define CMD_ACK_IDLE				0xFF
+#define CMD_ACK_BUF_OVERFLOW 0x01
+#define CMD_ACK_CHECKSUM_ERROR 0x02
+#define CMD_ACK_BUSY 0x04
+#define CMD_ACK_OK 0x80
+#define CMD_ACK_IDLE 0xFF
 
 /* flag */
-#define SPI_FLAG_WR		0xF0
-#define SPI_FLAG_RD		0xF1
-#define MASK_8BIT 		0xFF
+#define SPI_FLAG_WR 0xF0
+#define SPI_FLAG_RD 0xF1
+#define MASK_8BIT 0xFF
 
 /* value */
-#define REQUEST_HANDLED					0x00
-#define REQUEST_CONFIG					0x01
-#define REQUEST_BAKREF					0x02
-#define REQUEST_RESET					0x03
-#define REQUEST_RELOADFW				0x05
-#define REQUEST_IDLE					0xff
+#define REQUEST_HANDLED 0x00
+#define REQUEST_CONFIG 0x01
+#define REQUEST_BAKREF 0x02
+#define REQUEST_RESET 0x03
+#define REQUEST_RELOADFW 0x05
+#define REQUEST_IDLE 0xff
 
-#define TS_CMD_CFG_ERR					0x7E
-#define TS_CMD_CFG_OK					0x7F
-#define	TS_CMD_REG_READY				0xFF
+#define TS_CMD_CFG_ERR 0x7E
+#define TS_CMD_CFG_OK 0x7F
+#define TS_CMD_REG_READY 0xFF
 
-#define TS_SET_SPI_ARGS_VALUE			0x0F
-#define GOODIX_ESD_TICK_WRITE_DATA_YS	0xAA
+#define TS_SET_SPI_ARGS_VALUE 0x0F
+#define GOODIX_ESD_TICK_WRITE_DATA_YS 0xAA
 
 /* times*/
-#define TS_WAIT_CMD_FREE_RETRY_TIMES	10
-#define TS_WAIT_CFG_READY_RETRY_TIMES	30
-#define TS_RESET_IC_INIT_RETRY_TIMES	10
+#define TS_WAIT_CMD_FREE_RETRY_TIMES 10
+#define TS_WAIT_CFG_READY_RETRY_TIMES 30
+#define TS_RESET_IC_INIT_RETRY_TIMES 10
 
 /* length*/
-#define TS_CFG_HEAD_LEN_YS		5
-#define IRQ_HEAD_LEN_YS			8
-#define IRQ_HEAD_LEN_NOR		2
-#define GOODIX_SPI_BUFF_MAX_SIZE	(8 * 1024 + 16)
+#define TS_CFG_HEAD_LEN_YS 5
+#define IRQ_HEAD_LEN_YS 8
+#define IRQ_HEAD_LEN_NOR 2
+#define GOODIX_SPI_BUFF_MAX_SIZE (8 * 1024 + 16)
 
 /*others*/
-#define TYPE_STYLUS					1
-#define TYPE_TOUCH					2
-#define TYPE_STYLUS_HOVER			3
-#define TS_CFG_DATA_EQUAL_FLASH		99
+#define TYPE_STYLUS 1
+#define TYPE_TOUCH 2
+#define TYPE_STYLUS_HOVER 3
+#define TS_CFG_DATA_EQUAL_FLASH 99
 
-#define BYTES_PER_COORD				8
-#define TS_CFG_BAG_NUM_INDEX		2
+#define BYTES_PER_COORD 8
+#define TS_CFG_BAG_NUM_INDEX 2
 
 /*struction & enum*/
 enum TS_SEND_CFG_REPLY {
-	TS_CFG_REPLY_PKGS_ERR   = 0x01,
+	TS_CFG_REPLY_PKGS_ERR = 0x01,
 	TS_CFG_REPLY_CHKSUM_ERR = 0x02,
-	TS_CFG_REPLY_DATA_ERR   = 0x03,
-	TS_CFG_REPLY_DATA_EQU   = 0x07,
+	TS_CFG_REPLY_DATA_ERR = 0x03,
+	TS_CFG_REPLY_DATA_EQU = 0x07,
 };
 
 /*for config & firmware*/
@@ -112,7 +112,7 @@ static int gt9896s_parse_dt_display(struct gt9896s_ts_board_data *board_data)
 		}
 		ts_info("find touch panel node!");
 		r = of_property_read_u32(node, "lcm-width",
-				 &board_data->panel_max_x);
+					 &board_data->panel_max_x);
 		if (r)
 			ts_info("parse lcm-width from dt fail!");
 
@@ -122,7 +122,7 @@ static int gt9896s_parse_dt_display(struct gt9896s_ts_board_data *board_data)
 			ts_info("parse lcm-height from dt fail!");
 
 		r = of_property_read_u32(node, "lcm-fake-width",
-				 &board_data->input_max_x);
+					 &board_data->input_max_x);
 		if (r)
 			ts_info("parse lcm-fake-width from dt fail!");
 
@@ -131,26 +131,25 @@ static int gt9896s_parse_dt_display(struct gt9896s_ts_board_data *board_data)
 		if (r)
 			ts_info("parse lcm-fake-height from dt fail!");
 
-		r = of_property_read_string(node, "lcm-name",
-				&gt9896s_lcm_buf);
+		r = of_property_read_string(node, "lcm-name", &gt9896s_lcm_buf);
 		if (r < 0) {
 			ts_info("read lcm-name failed!");
 		}
 		//check if the lcm-name is supported
 		if ((strcmp("nt36672e_fhdp_dphy_vdo_jdi_120hz",
-			gt9896s_lcm_buf) != 0) &&
-			(strcmp("nt36672e_fhdp_cphy_vdo_jdi_120hz",
-			gt9896s_lcm_buf) != 0) &&
-			(strcmp("nt36672e_fhdp_dphy_vdo_jdi_144hz",
-			gt9896s_lcm_buf) != 0) &&
-			(strcmp("nt36672e_fhdp_dphy_vdo_jdi_60hz",
-			gt9896s_lcm_buf) != 0) &&
-			(strcmp("td4330_fhdp_dphy_vdo_truly",
-			gt9896s_lcm_buf) != 0) &&
-			(strcmp("td4330_fhdp_dphy_cmd_truly",
-			gt9896s_lcm_buf) != 0) &&
-			(strcmp("ft8756_fhdp_dphy_vdo_truly",
-			gt9896s_lcm_buf) != 0)) {
+			    gt9896s_lcm_buf) != 0) &&
+		    (strcmp("nt36672e_fhdp_cphy_vdo_jdi_120hz",
+			    gt9896s_lcm_buf) != 0) &&
+		    (strcmp("nt36672e_fhdp_dphy_vdo_jdi_144hz",
+			    gt9896s_lcm_buf) != 0) &&
+		    (strcmp("nt36672e_fhdp_dphy_vdo_jdi_60hz",
+			    gt9896s_lcm_buf) != 0) &&
+		    (strcmp("td4330_fhdp_dphy_vdo_truly", gt9896s_lcm_buf) !=
+		     0) &&
+		    (strcmp("td4330_fhdp_dphy_cmd_truly", gt9896s_lcm_buf) !=
+		     0) &&
+		    (strcmp("ft8756_fhdp_dphy_vdo_truly", gt9896s_lcm_buf) !=
+		     0)) {
 			ts_info("lcm-name is not supported by gt9896s!");
 			return -EINVAL;
 		}
@@ -168,7 +167,7 @@ static int gt9896s_parse_dt_display(struct gt9896s_ts_board_data *board_data)
  * return: 0 - no error, <0 error
  */
 static int gt9896s_parse_dt_resolution(struct device_node *node,
-		struct gt9896s_ts_board_data *board_data)
+				       struct gt9896s_ts_board_data *board_data)
 {
 	int r, err;
 
@@ -187,7 +186,7 @@ static int gt9896s_parse_dt_resolution(struct device_node *node,
 		if (r)
 			err = -ENOENT;
 		r = of_property_read_u32(node, "goodix,input-max-y",
-					&board_data->input_max_y);
+					 &board_data->input_max_y);
 		if (r)
 			err = -ENOENT;
 	}
@@ -197,14 +196,11 @@ static int gt9896s_parse_dt_resolution(struct device_node *node,
 	if (r)
 		err = -ENOENT;
 
-	board_data->swap_axis = of_property_read_bool(node,
-			"goodix,swap-axis");
+	board_data->swap_axis = of_property_read_bool(node, "goodix,swap-axis");
 
-	board_data->x2x = of_property_read_bool(node,
-			"goodix,x2x");
+	board_data->x2x = of_property_read_bool(node, "goodix,x2x");
 
-	board_data->y2y = of_property_read_bool(node,
-			"goodix,y2y");
+	board_data->y2y = of_property_read_bool(node, "goodix,y2y");
 
 	return 0;
 }
@@ -216,7 +212,7 @@ static int gt9896s_parse_dt_resolution(struct device_node *node,
  * return: 0 - no error, <0 error
  */
 static int gt9896s_parse_dt(struct device_node *node,
-	struct gt9896s_ts_board_data *board_data)
+			    struct gt9896s_ts_board_data *board_data)
 {
 	struct property *prop;
 	const char *name_tmp;
@@ -246,7 +242,7 @@ static int gt9896s_parse_dt(struct device_node *node,
 
 	/* get irq trigger type property*/
 	r = of_property_read_u32(node, "goodix,irq-flags",
-			&board_data->irq_flags);
+				 &board_data->irq_flags);
 	if (r) {
 		ts_err("invalid irq-flags");
 		return -EINVAL;
@@ -254,11 +250,11 @@ static int gt9896s_parse_dt(struct device_node *node,
 
 	if (gt9896s_find_touch_node != 1) {
 		r = of_property_read_string(node, "goodix,firmware-version",
-				&gt9896s_firmware_buf);
+					    &gt9896s_firmware_buf);
 		if (r < 0)
 			ts_err("Invalid firmware version in dts : %d", r);
 		r = of_property_read_string(node, "goodix,config-version",
-				&gt9896s_config_buf);
+					    &gt9896s_config_buf);
 		if (r < 0) {
 			ts_err("Invalid config version in dts : %d", r);
 			return -EINVAL;
@@ -271,8 +267,8 @@ static int gt9896s_parse_dt(struct device_node *node,
 	if (!r) {
 		ts_info("avdd name form dt: %s", name_tmp);
 		if (strlen(name_tmp) < sizeof(board_data->avdd_name))
-			strlcpy(board_data->avdd_name,
-				name_tmp, sizeof(board_data->avdd_name));
+			strlcpy(board_data->avdd_name, name_tmp,
+				sizeof(board_data->avdd_name));
 		else
 			ts_info("invalied avdd name length: %ld > %ld",
 				strlen(name_tmp),
@@ -280,7 +276,7 @@ static int gt9896s_parse_dt(struct device_node *node,
 	}
 
 	r = of_property_read_u32(node, "goodix,power-on-delay-us",
-				&board_data->power_on_delay_us);
+				 &board_data->power_on_delay_us);
 	if (!r) {
 		/* 1000ms is too large, maybe you have pass a wrong value */
 		if (board_data->power_on_delay_us > 1000 * 1000) {
@@ -290,7 +286,7 @@ static int gt9896s_parse_dt(struct device_node *node,
 	}
 
 	r = of_property_read_u32(node, "goodix,power-off-delay-us",
-				&board_data->power_off_delay_us);
+				 &board_data->power_off_delay_us);
 	if (!r) {
 		/* 1000ms is too large, maybe you have pass */
 		if (board_data->power_off_delay_us > 1000 * 1000) {
@@ -316,10 +312,9 @@ static int gt9896s_parse_dt(struct device_node *node,
 
 		board_data->panel_max_key = prop->length / sizeof(u32);
 		board_data->tp_key_num = prop->length / sizeof(u32);
-		r = of_property_read_u32_array(node,
-				"goodix,panel-key-map",
-				&board_data->panel_key_map[0],
-				board_data->panel_max_key);
+		r = of_property_read_u32_array(node, "goodix,panel-key-map",
+					       &board_data->panel_key_map[0],
+					       board_data->panel_max_key);
 		if (r) {
 			ts_err("failed get key map, %d", r);
 			return r;
@@ -327,14 +322,14 @@ static int gt9896s_parse_dt(struct device_node *node,
 	}
 
 	/*get pen-enable switch and pen keys, must after "key map"*/
-	board_data->pen_enable = of_property_read_bool(node,
-					"goodix,pen-enable");
+	board_data->pen_enable =
+		of_property_read_bool(node, "goodix,pen-enable");
 	if (board_data->pen_enable)
 		ts_info("goodix pen enabled");
 
-	ts_info("***key:%d, %d, %d, %d",
-		board_data->panel_key_map[0], board_data->panel_key_map[1],
-		board_data->panel_key_map[2], board_data->panel_key_map[3]);
+	ts_info("***key:%d, %d, %d, %d", board_data->panel_key_map[0],
+		board_data->panel_key_map[1], board_data->panel_key_map[2],
+		board_data->panel_key_map[3]);
 
 	ts_debug("[DT]x:%d, y:%d, w:%d, p:%d", board_data->panel_max_x,
 		 board_data->panel_max_y, board_data->panel_max_w,
@@ -353,7 +348,7 @@ static int gt9896s_parse_dt(struct device_node *node,
  * return: 0 - read ok, < 0 - spi transter error
  */
 int gt9896s_spi_read(struct gt9896s_ts_device *dev, unsigned int addr,
-	unsigned char *data, unsigned int len)
+		     unsigned char *data, unsigned int len)
 {
 	struct spi_device *spi = dev->spi_dev;
 	u8 *rx_buf = dev->rx_buff;
@@ -397,7 +392,7 @@ int gt9896s_spi_read(struct gt9896s_ts_device *dev, unsigned int addr,
  * return: 0 - write ok; < 0 - spi transter error.
  */
 int gt9896s_spi_write(struct gt9896s_ts_device *dev, unsigned int addr,
-		unsigned char *data, unsigned int len)
+		      unsigned char *data, unsigned int len)
 {
 	struct spi_device *spi = dev->spi_dev;
 	u8 *tx_buf = dev->tx_buff;
@@ -442,14 +437,17 @@ int gt9896s_reset_ic_init(struct gt9896s_ts_device *ts_dev)
 	reg_val = TS_SET_SPI_ARGS_VALUE;
 	for (retry = 0; retry < TS_RESET_IC_INIT_RETRY_TIMES; retry++) {
 		/* write spi args*/
-		ret = gt9896s_spi_write(ts_dev, TS_REG_SET_SPI_ARGS, &reg_val, 1);
+		ret = gt9896s_spi_write(ts_dev, TS_REG_SET_SPI_ARGS, &reg_val,
+					1);
 		if (ret) {
-			ts_err("spi write spi tranfer args failed, ret %d", ret);
+			ts_err("spi write spi tranfer args failed, ret %d",
+			       ret);
 			goto exit;
 		}
 
 		/* read back & check spi args*/
-		ret = gt9896s_spi_read(ts_dev, TS_REG_SET_SPI_ARGS, &ack_val, 1);
+		ret = gt9896s_spi_read(ts_dev, TS_REG_SET_SPI_ARGS, &ack_val,
+				       1);
 		if (ret) {
 			ts_err("spi read spi tranfer args failed, ret %d", ret);
 			goto exit;
@@ -471,7 +469,8 @@ int gt9896s_reset_ic_init(struct gt9896s_ts_device *ts_dev)
 	reg_val = 0x0;
 	for (retry = 0; retry < TS_RESET_IC_INIT_RETRY_TIMES; retry++) {
 		/* spi write to remove hold*/
-		ret = gt9896s_spi_write(ts_dev, TS_REG_REMOVE_HOLD, &reg_val, 1);
+		ret = gt9896s_spi_write(ts_dev, TS_REG_REMOVE_HOLD, &reg_val,
+					1);
 		if (ret) {
 			ts_err("spi write to remove GIO force to hold CPU failed");
 			goto exit;
@@ -489,7 +488,7 @@ int gt9896s_reset_ic_init(struct gt9896s_ts_device *ts_dev)
 			break;
 		} else {
 			ts_err("failed to remove GIO force to hold CPU success, retry %d",
-					retry);
+			       retry);
 		}
 	}
 	if (TS_RESET_IC_INIT_RETRY_TIMES == retry) {
@@ -524,8 +523,8 @@ static int gt9896s_ts_dev_prepare(struct gt9896s_ts_device *ts_dev)
 }
 
 static void gt9896s_cmd_init(struct gt9896s_ts_device *dev,
-			    struct gt9896s_ts_cmd *ts_cmd,
-			    u8 cmds, u16 cmd_data, u32 reg_addr)
+			     struct gt9896s_ts_cmd *ts_cmd, u8 cmds,
+			     u16 cmd_data, u32 reg_addr)
 {
 	u16 checksum = 0;
 	ts_cmd->initialized = false;
@@ -538,8 +537,7 @@ static void gt9896s_cmd_init(struct gt9896s_ts_device *dev,
 		ts_cmd->cmds[0] = cmds;
 		ts_cmd->cmds[1] = (cmd_data >> 8) & 0xFF;
 		ts_cmd->cmds[2] = cmd_data & 0xFF;
-		checksum = ts_cmd->cmds[0] + ts_cmd->cmds[1] +
-			ts_cmd->cmds[2];
+		checksum = ts_cmd->cmds[0] + ts_cmd->cmds[1] + ts_cmd->cmds[2];
 		ts_cmd->cmds[3] = (checksum >> 8) & 0xFF;
 		ts_cmd->cmds[4] = checksum & 0xFF;
 		ts_cmd->initialized = true;
@@ -555,7 +553,8 @@ static void gt9896s_cmd_init(struct gt9896s_ts_device *dev,
  * @cmd: pointer to command struct which cotain command data
  * Returns 0 - succeed,<0 - failed
  */
-int gt9896s_send_command(struct gt9896s_ts_device *dev, struct gt9896s_ts_cmd *cmd)
+int gt9896s_send_command(struct gt9896s_ts_device *dev,
+			 struct gt9896s_ts_cmd *cmd)
 {
 	int ret;
 
@@ -565,12 +564,12 @@ int gt9896s_send_command(struct gt9896s_ts_device *dev, struct gt9896s_ts_cmd *c
 	ret = gt9896s_spi_write(dev, cmd->cmd_reg, cmd->cmds, cmd->length);
 	if (ret < 0)
 		ts_err("spi write to send command 0x%X failed,ret %d",
-				cmd->cmds[0], ret);
+		       cmd->cmds[0], ret);
 	return ret;
 }
 
 static int gt9896s_read_version(struct gt9896s_ts_device *dev,
-		struct gt9896s_ts_version *version)
+				struct gt9896s_ts_version *version)
 {
 	u8 buffer[GOODIX_PID_MAX_LEN + 1];
 	u8 temp_buf[256];
@@ -589,40 +588,42 @@ static int gt9896s_read_version(struct gt9896s_ts_device *dev,
 	/*check reg info valid*/
 	if (!dev->reg.pid || !dev->reg.sensor_id || !dev->reg.vid) {
 		ts_err("reg is NULL, pid:0x%04x, vid:0x%04x, sensor_id:0x%04x",
-			dev->reg.pid, dev->reg.vid, dev->reg.sensor_id);
+		       dev->reg.pid, dev->reg.vid, dev->reg.sensor_id);
 		return -EINVAL;
 	}
 
 	if (!pid_read_len || pid_read_len > GOODIX_PID_MAX_LEN ||
 	    !vid_read_len || vid_read_len > GOODIX_VID_MAX_LEN) {
 		ts_err("invalied pid vid length, pid_len:%d, vid_len:%d",
-			pid_read_len, vid_read_len);
+		       pid_read_len, vid_read_len);
 		return -EINVAL;
 	}
 
 	/*check checksum*/
 	if (dev->reg.version_base && dev->reg.version_len < sizeof(temp_buf)) {
-		r = gt9896s_spi_read(dev, dev->reg.version_base,
-				temp_buf, dev->reg.version_len);
+		r = gt9896s_spi_read(dev, dev->reg.version_base, temp_buf,
+				     dev->reg.version_len);
 		if (r < 0) {
 			ts_err("Read version base failed, reg:0x%02x, len:%d",
-				dev->reg.version_base, dev->reg.version_len);
+			       dev->reg.version_base, dev->reg.version_len);
 			if (version)
 				version->valid = false;
 			goto exit;
 		}
 
 		if (dev->ic_type == IC_TYPE_YELLOWSTONE_SPI)
-			checksum = checksum_u8_ys(temp_buf, dev->reg.version_len);
+			checksum =
+				checksum_u8_ys(temp_buf, dev->reg.version_len);
 		if (checksum) {
 			ts_err("checksum error:0x%02x, base:0x%02x, len:%d",
 			       checksum, dev->reg.version_base,
 			       dev->reg.version_len);
 			ts_err("%*ph", (int)(dev->reg.version_len / 2),
 			       temp_buf);
-			ts_err("%*ph", (int)(dev->reg.version_len -
-						dev->reg.version_len / 2),
-				&temp_buf[dev->reg.version_len / 2]);
+			ts_err("%*ph",
+			       (int)(dev->reg.version_len -
+				     dev->reg.version_len / 2),
+			       &temp_buf[dev->reg.version_len / 2]);
 
 			if (version)
 				version->valid = false;
@@ -681,11 +682,11 @@ exit:
 }
 
 static int gt9896s_wait_cfg_cmd_ready(struct gt9896s_ts_device *dev,
-			u8 right_cmd, u8 send_cmd)
+				      u8 right_cmd, u8 send_cmd)
 {
 	int try_times = 0;
 	u8 cmd_flag = 0;
-	u8 cmd_buf[3] = {0};
+	u8 cmd_buf[3] = { 0 };
 	u16 command_reg = dev->reg.command;
 	struct gt9896s_ts_cmd ts_cmd;
 
@@ -701,8 +702,8 @@ static int gt9896s_wait_cfg_cmd_ready(struct gt9896s_ts_device *dev,
 		if (cmd_flag == right_cmd) {
 			return 0;
 		} else if (cmd_flag != send_cmd) {
-			ts_err("failed cmd_reg:0x%X, 0x%X, 0x%X",
-			       cmd_buf[0], cmd_buf[1], cmd_buf[2]);
+			ts_err("failed cmd_reg:0x%X, 0x%X, 0x%X", cmd_buf[0],
+			       cmd_buf[1], cmd_buf[2]);
 			if (gt9896s_send_command(dev, &ts_cmd)) {
 				ts_err("Resend cmd 0x%02X FAILED", send_cmd);
 				return -EINVAL;
@@ -715,17 +716,18 @@ static int gt9896s_wait_cfg_cmd_ready(struct gt9896s_ts_device *dev,
 }
 
 static int _do_gt9896s_send_config(struct gt9896s_ts_device *dev,
-		struct gt9896s_ts_config *config)
+				   struct gt9896s_ts_config *config)
 {
 	int r = 0;
 	int try_times = 0;
-	u8 buf[3] = {0};
+	u8 buf[3] = { 0 };
 	u16 command_reg = dev->reg.command;
 	u16 cfg_reg = dev->reg.cfg_addr;
 	struct gt9896s_ts_cmd ts_cmd;
 
 	/*1. Inquire command_reg until it's free*/
-	for (try_times = 0; try_times < TS_WAIT_CMD_FREE_RETRY_TIMES; try_times++) {
+	for (try_times = 0; try_times < TS_WAIT_CMD_FREE_RETRY_TIMES;
+	     try_times++) {
 		if (!gt9896s_spi_read(dev, command_reg, buf, 1) &&
 		    buf[0] == TS_CMD_REG_READY)
 			break;
@@ -738,8 +740,8 @@ static int _do_gt9896s_send_config(struct gt9896s_ts_device *dev,
 	}
 
 	/*2. send "start write cfg" command*/
-	gt9896s_cmd_init(dev, &ts_cmd, COMMAND_START_SEND_CFG,
-			 0, dev->reg.command);
+	gt9896s_cmd_init(dev, &ts_cmd, COMMAND_START_SEND_CFG, 0,
+			 dev->reg.command);
 	if (gt9896s_send_command(dev, &ts_cmd)) {
 		ts_err("failed send cfg, COMMAND_START_SEND_CFG ERROR");
 		r = -EINVAL;
@@ -748,7 +750,7 @@ static int _do_gt9896s_send_config(struct gt9896s_ts_device *dev,
 
 	/*3. wait ic set command_reg to 0x82*/
 	if (gt9896s_wait_cfg_cmd_ready(dev, COMMAND_SEND_CFG_PREPARE_OK,
-				      COMMAND_START_SEND_CFG)) {
+				       COMMAND_START_SEND_CFG)) {
 		ts_err("failed send cfg, reg:0x%04x is not 0x82", command_reg);
 		r = -EINVAL;
 		goto exit;
@@ -762,8 +764,8 @@ static int _do_gt9896s_send_config(struct gt9896s_ts_device *dev,
 	}
 
 	/*5. send "end send cfg" command*/
-	gt9896s_cmd_init(dev, &ts_cmd, COMMAND_END_SEND_CFG,
-			 0, dev->reg.command);
+	gt9896s_cmd_init(dev, &ts_cmd, COMMAND_END_SEND_CFG, 0,
+			 dev->reg.command);
 	if (gt9896s_send_command(dev, &ts_cmd)) {
 		ts_err("failed send cfg, COMMAND_END_SEND_CFG ERROR");
 		r = -EINVAL;
@@ -783,8 +785,8 @@ static int _do_gt9896s_send_config(struct gt9896s_ts_device *dev,
 		ts_info("send config result: %*ph", 3, buf);
 
 		/* set 0x7D to end send config process */
-		gt9896s_cmd_init(dev, &ts_cmd, COMMAND_END_SEND_CFG_YS,
-				 0, dev->reg.command);
+		gt9896s_cmd_init(dev, &ts_cmd, COMMAND_END_SEND_CFG_YS, 0,
+				 dev->reg.command);
 		if (gt9896s_send_command(dev, &ts_cmd)) {
 			ts_err("failed send cfg end cmd");
 			r = -EINVAL;
@@ -818,7 +820,7 @@ exit:
 }
 
 static int gt9896s_send_config(struct gt9896s_ts_device *dev,
-		struct gt9896s_ts_config *config)
+			       struct gt9896s_ts_config *config)
 {
 	int r = 0;
 
@@ -870,8 +872,8 @@ static int gt9896s_read_config_ys(struct gt9896s_ts_device *dev, u8 *buf)
 	sub_bags = buf[TS_CFG_BAG_NUM_INDEX];
 	checksum = checksum_u8_ys(buf, TS_CFG_HEAD_LEN_YS);
 	if (checksum) {
-		ts_err("Config head checksum err:0x%x,data:%*ph",
-				checksum, TS_CFG_HEAD_LEN_YS, buf);
+		ts_err("Config head checksum err:0x%x,data:%*ph", checksum,
+		       TS_CFG_HEAD_LEN_YS, buf);
 		ret = -EINVAL;
 		goto err_out;
 	}
@@ -881,21 +883,22 @@ static int gt9896s_read_config_ys(struct gt9896s_ts_device *dev, u8 *buf)
 		/* read sub head [0]: sub bag num, [1]: sub bag length */
 		ret = gt9896s_spi_read(dev, cfg_addr + offset, buf + offset, 2);
 		if (ret) {
-			ts_err("spi read failed, addr 0x%X, ret %d", cfg_addr + offset, ret);
+			ts_err("spi read failed, addr 0x%X, ret %d",
+			       cfg_addr + offset, ret);
 			goto err_out;
 		}
 
 		/* get sub bag length */
 		subbag_len = buf[offset + 1];
-		ts_debug("sub bag num:%u,sub bag length:%u",
-			 buf[offset], subbag_len);
+		ts_debug("sub bag num:%u,sub bag length:%u", buf[offset],
+			 subbag_len);
 
 		/* read sub bag data */
 		ret = gt9896s_spi_read(dev, cfg_addr + offset + 2,
-				      buf + offset + 2, subbag_len + 2);
+				       buf + offset + 2, subbag_len + 2);
 		if (ret) {
 			ts_err("spi read failed, addr 0x%X, ret %d",
-					cfg_addr + offset + 2, ret);
+			       cfg_addr + offset + 2, ret);
 			goto err_out;
 		}
 
@@ -907,8 +910,8 @@ static int gt9896s_read_config_ys(struct gt9896s_ts_device *dev, u8 *buf)
 			goto err_out;
 		}
 		offset += subbag_len + 4;
-		ts_debug("sub bag %d, data:%*ph",
-			 buf[offset], buf[offset + 1] + 4, buf + offset);
+		ts_debug("sub bag %d, data:%*ph", buf[offset],
+			 buf[offset + 1] + 4, buf + offset);
 	}
 	ret = offset;
 
@@ -917,8 +920,7 @@ err_out:
 }
 
 /* success return config_len, <= 0 failed */
-static int gt9896s_read_config(struct gt9896s_ts_device *dev,
-			      u8 *config_data)
+static int gt9896s_read_config(struct gt9896s_ts_device *dev, u8 *config_data)
 {
 	struct gt9896s_ts_cmd ts_cmd;
 	u8 cmd_flag;
@@ -946,14 +948,14 @@ static int gt9896s_read_config(struct gt9896s_ts_device *dev,
 		usleep_range(10000, 11000);
 	}
 	if (cmd_flag != TS_CMD_REG_READY) {
-		ts_err("Wait for IC ready IDEL state timeout:addr 0x%x\n", cmd_reg);
+		ts_err("Wait for IC ready IDEL state timeout:addr 0x%x\n",
+		       cmd_reg);
 		r = -EAGAIN;
 		goto exit;
 	}
 
 	/* 0x86 read config command */
-	gt9896s_cmd_init(dev, &ts_cmd, COMMAND_START_READ_CFG,
-			 0, cmd_reg);
+	gt9896s_cmd_init(dev, &ts_cmd, COMMAND_START_READ_CFG, 0, cmd_reg);
 	r = gt9896s_send_command(dev, &ts_cmd);
 	if (r) {
 		ts_err("Failed send read config command");
@@ -962,7 +964,7 @@ static int gt9896s_read_config(struct gt9896s_ts_device *dev,
 
 	/* wait for config data ready */
 	if (gt9896s_wait_cfg_cmd_ready(dev, COMMAND_READ_CFG_PREPARE_OK,
-				      COMMAND_START_READ_CFG)) {
+				       COMMAND_START_READ_CFG)) {
 		ts_err("Wait for config data ready timeout");
 		r = -EAGAIN;
 		goto exit;
@@ -994,7 +996,7 @@ exit:
  */
 int gt9896s_hw_reset(struct gt9896s_ts_device *dev)
 {
-	u8 data[2] = {0x00};
+	u8 data[2] = { 0x00 };
 	int r = 0;
 
 	ts_info("HW reset");
@@ -1041,7 +1043,7 @@ static int gt9896s_request_handler(struct gt9896s_ts_device *dev)
 	r = gt9896s_spi_read(dev, dev->reg.fw_request, buffer, 1);
 	if (r < 0) {
 		ts_debug("spi read fw_request failed, addr 0x%X, r %d",
-					dev->reg.fw_request, r);
+			 dev->reg.fw_request, r);
 		return r;
 	}
 
@@ -1051,26 +1053,27 @@ static int gt9896s_request_handler(struct gt9896s_ts_device *dev)
 		r = gt9896s_send_config(dev, &(dev->normal_cfg));
 		if (r != 0)
 			ts_info("request config, send config faild");
-	break;
+		break;
 	case REQUEST_BAKREF:
 		ts_info("HW request bakref");
-	break;
+		break;
 	case REQUEST_RESET:
 		ts_info("HW requset reset");
 		r = gt9896s_hw_reset(dev);
 		if (r != 0)
 			ts_info("request reset, reset faild");
-	break;
+		break;
 	case REQUEST_RELOADFW:
 		ts_info("HW request reload fw");
-		gt9896s_do_fw_update(UPDATE_MODE_FORCE|UPDATE_MODE_SRC_REQUEST);
-	break;
+		gt9896s_do_fw_update(UPDATE_MODE_FORCE |
+				     UPDATE_MODE_SRC_REQUEST);
+		break;
 	case REQUEST_IDLE:
 		ts_info("HW request idle");
-	break;
+		break;
 	default:
 		ts_info("Unknown hw request:%d", buffer[0]);
-	break;
+		break;
 	}
 
 	buffer[0] = 0x00;
@@ -1079,7 +1082,7 @@ static int gt9896s_request_handler(struct gt9896s_ts_device *dev)
 }
 
 static void gt9896s_swap_coords(struct gt9896s_ts_device *dev,
-		unsigned int *coor_x, unsigned int *coor_y)
+				unsigned int *coor_x, unsigned int *coor_y)
 {
 	unsigned int temp;
 	struct gt9896s_ts_board_data *bdata = &dev->board_data;
@@ -1097,7 +1100,8 @@ static void gt9896s_swap_coords(struct gt9896s_ts_device *dev,
 }
 
 static void gt9896s_parse_finger_ys(struct gt9896s_ts_device *dev,
-	struct gt9896s_touch_data *touch_data, unsigned char *buf, int touch_num)
+				    struct gt9896s_touch_data *touch_data,
+				    unsigned char *buf, int touch_num)
 {
 	unsigned int id = 0, x = 0, y = 0, w = 0;
 	static u32 pre_finger_map;
@@ -1137,19 +1141,20 @@ static void gt9896s_parse_finger_ys(struct gt9896s_ts_device *dev,
 }
 
 static void gt9896s_parse_pen_ys(struct gt9896s_ts_device *dev,
-	struct gt9896s_pen_data *pen_data, unsigned char *buf, int touch_num)
+				 struct gt9896s_pen_data *pen_data,
+				 unsigned char *buf, int touch_num)
 {
 	ts_info("unsupported");
 }
 
 static int gt9896s_touch_handler_ys(struct gt9896s_ts_device *dev,
-		struct gt9896s_ts_event *ts_event,
-		u8 *pre_buf, u32 pre_buf_len)
+				    struct gt9896s_ts_event *ts_event,
+				    u8 *pre_buf, u32 pre_buf_len)
 {
 	struct gt9896s_touch_data *touch_data = &ts_event->touch_data;
 	struct gt9896s_pen_data *pen_data = &ts_event->pen_data;
-	static u8 buffer[IRQ_HEAD_LEN_YS +
-			 BYTES_PER_COORD * GOODIX_MAX_TOUCH + 2];
+	static u8 buffer[IRQ_HEAD_LEN_YS + BYTES_PER_COORD * GOODIX_MAX_TOUCH +
+			 2];
 	int touch_num = 0, r = -EINVAL;
 	u8 point_type = 0;
 	u16 chksum = 0;
@@ -1172,7 +1177,8 @@ static int gt9896s_touch_handler_ys(struct gt9896s_ts_device *dev,
 	/* read all coor data */
 	if (unlikely(touch_num > 1)) {
 		r = gt9896s_spi_read(dev, dev->reg.coor + pre_buf_len,
-				&buffer[pre_buf_len], (touch_num - 1) * BYTES_PER_COORD);
+				     &buffer[pre_buf_len],
+				     (touch_num - 1) * BYTES_PER_COORD);
 		if (unlikely(r < 0))
 			goto exit_clean_sta;
 	}
@@ -1190,9 +1196,10 @@ static int gt9896s_touch_handler_ys(struct gt9896s_ts_device *dev,
 
 	/* get touch type */
 	if (touch_num > 0)
-		point_type = buffer[(touch_num - 1) * BYTES_PER_COORD + IRQ_HEAD_LEN_YS];
+		point_type = buffer[(touch_num - 1) * BYTES_PER_COORD +
+				    IRQ_HEAD_LEN_YS];
 	if (touch_num >= 1 &&
-		(point_type == TYPE_STYLUS_HOVER || point_type == TYPE_STYLUS)) {
+	    (point_type == TYPE_STYLUS_HOVER || point_type == TYPE_STYLUS)) {
 		/* cur type is pen */
 		if (pre_finger_num) {
 			ts_event->event_type = EVENT_TOUCH;
@@ -1211,7 +1218,8 @@ static int gt9896s_touch_handler_ys(struct gt9896s_ts_device *dev,
 			pre_pen_num = 0;
 		} else {
 			ts_event->event_type = EVENT_TOUCH;
-			gt9896s_parse_finger_ys(dev, touch_data, buffer, touch_num);
+			gt9896s_parse_finger_ys(dev, touch_data, buffer,
+						touch_num);
 			pre_finger_num = touch_num;
 		}
 	}
@@ -1225,7 +1233,7 @@ exit_clean_sta:
 }
 
 static int gt9896s_event_handler(struct gt9896s_ts_device *dev,
-		struct gt9896s_ts_event *ts_event)
+				 struct gt9896s_ts_event *ts_event)
 {
 	int pre_read_len = 0;
 	u8 pre_buf[32];
@@ -1240,14 +1248,15 @@ static int gt9896s_event_handler(struct gt9896s_ts_device *dev,
 	r = gt9896s_spi_read(dev, dev->reg.coor, pre_buf, pre_read_len);
 	if (unlikely(r < 0)) {
 		ts_debug("spi read coor head failed, addr 0x%x, len %d, r %d",
-				dev->reg.coor, pre_read_len, r);
+			 dev->reg.coor, pre_read_len, r);
 		return r;
 	}
 
 	/* check coor head checksum */
 	if (dev->ic_type == IC_TYPE_YELLOWSTONE_SPI &&
 	    checksum_u8_ys(pre_buf, IRQ_HEAD_LEN_YS)) {
-		ts_debug("irq head checksum error %*ph", IRQ_HEAD_LEN_YS, pre_buf);
+		ts_debug("irq head checksum error %*ph", IRQ_HEAD_LEN_YS,
+			 pre_buf);
 		return -EINVAL;
 	}
 
@@ -1256,14 +1265,14 @@ static int gt9896s_event_handler(struct gt9896s_ts_device *dev,
 	if (likely((event_sta & GOODIX_TOUCH_EVENT) == GOODIX_TOUCH_EVENT)) {
 		/* handle touch event */
 		if (dev->ic_type == IC_TYPE_YELLOWSTONE_SPI)
-			gt9896s_touch_handler_ys(dev, ts_event, pre_buf, pre_read_len);
+			gt9896s_touch_handler_ys(dev, ts_event, pre_buf,
+						 pre_read_len);
 	} else if (unlikely((event_sta & GOODIX_REQUEST_EVENT) ==
-			     GOODIX_REQUEST_EVENT)) {
+			    GOODIX_REQUEST_EVENT)) {
 		/* handle request event */
 		ts_event->event_type = EVENT_REQUEST;
 		gt9896s_request_handler(dev);
-	} else if ((event_sta & GOODIX_GESTURE_EVENT) ==
-		   GOODIX_GESTURE_EVENT) {
+	} else if ((event_sta & GOODIX_GESTURE_EVENT) == GOODIX_GESTURE_EVENT) {
 		/* handle gesture event */
 		ts_debug("Gesture event");
 	} else {
@@ -1364,23 +1373,27 @@ static int gt9896s_spi_remove(struct spi_device *spi)
 	if (gt9896s_pdev) {
 		platform_device_unregister(gt9896s_pdev);
 		gt9896s_pdev = NULL;
-	ts_info("GT9896S SPI remove");
+		ts_info("GT9896S SPI remove");
 	}
 
 	ts_info("GT9896S SPI");
 	return 0;
 }
 
-
 #ifdef CONFIG_OF
 static const struct of_device_id spi_matches[] = {
-	{.compatible = TS_DT_COMPATIBLE,},
+	{
+		.compatible = TS_DT_COMPATIBLE,
+	},
+	{
+		.compatible = "goodix,gt9916S",
+	},
 	{},
 };
 #endif
 
 static const struct spi_device_id spi_id_table[] = {
-	{TS_DRIVER_NAME, 0},
+	{ TS_DRIVER_NAME, 0 },
 	{},
 };
 
@@ -1414,13 +1427,13 @@ static int gt9896s_spi_probe(struct spi_device *spi)
 	ts_info("%s IN", __func__);
 
 	/* init spi_device */
-	spi->mode            = SPI_MODE_0;
-	spi->bits_per_word   = 8;
-	spi->max_speed_hz    = 6 * 1000 * 1000;
+	spi->mode = SPI_MODE_0;
+	spi->bits_per_word = 8;
+	spi->max_speed_hz = 6 * 1000 * 1000;
 
 	/* init ts device data */
-	ts_device = devm_kzalloc(&spi->dev,
-		sizeof(struct gt9896s_ts_device), GFP_KERNEL);
+	ts_device = devm_kzalloc(&spi->dev, sizeof(struct gt9896s_ts_device),
+				 GFP_KERNEL);
 	if (!ts_device)
 		return -ENOMEM;
 
@@ -1444,65 +1457,72 @@ static int gt9896s_spi_probe(struct spi_device *spi)
 			ts_info("%s OUT, lcm not support", __func__);
 			return r;
 		}
-		r = gt9896s_parse_dt(spi->dev.of_node,
-				    &ts_device->board_data);
+		r = gt9896s_parse_dt(spi->dev.of_node, &ts_device->board_data);
 		if (r < 0) {
 			ts_err("failed parse device info form dts, %d", r);
 			r = -EINVAL;
 			goto err_spi_buf;
 		}
 		if (gt9896s_find_touch_node == 1) {
-			if (strcmp("ft8756_fhdp_dphy_vdo_truly", gt9896s_lcm_buf) == 0) {
-				if (ts_device->board_data.panel_max_x == 1080
-					&& ts_device->board_data.panel_max_y == 2300) {
+			if (strcmp("ft8756_fhdp_dphy_vdo_truly",
+				   gt9896s_lcm_buf) == 0) {
+				if (ts_device->board_data.panel_max_x == 1080 &&
+				    ts_device->board_data.panel_max_y == 2300) {
 					strlcpy(panel_config_buf,
 						"gt9896s_cfg_6893v02", 20);
 					strlcpy(panel_firmware_buf,
 						"gt9896s_firmware_6893v02", 25);
-				} else if (ts_device->board_data.panel_max_x == 1080
-					&& ts_device->board_data.panel_max_y == 2280) {
+				} else if (ts_device->board_data.panel_max_x ==
+						   1080 &&
+					   ts_device->board_data.panel_max_y ==
+						   2280) {
 					strlcpy(panel_config_buf,
 						"gt9896s_cfg_6893v01", 20);
 					strlcpy(panel_firmware_buf,
 						"gt9896s_firmware_6893v01", 25);
 				} else {
-					ts_info("%s, fault firmware!", gt9896s_lcm_buf);
+					ts_info("%s, fault firmware!",
+						gt9896s_lcm_buf);
 				}
 			} else if ((strcmp("td4330_fhdp_dphy_vdo_truly",
-					gt9896s_lcm_buf) == 0) ||
-					(strcmp("td4330_fhdp_dphy_cmd_truly",
-					gt9896s_lcm_buf) == 0)) {
-				if (ts_device->board_data.panel_max_x == 1080
-					&& ts_device->board_data.panel_max_y == 2280) {
+					   gt9896s_lcm_buf) == 0) ||
+				   (strcmp("td4330_fhdp_dphy_cmd_truly",
+					   gt9896s_lcm_buf) == 0)) {
+				if (ts_device->board_data.panel_max_x == 1080 &&
+				    ts_device->board_data.panel_max_y == 2280) {
 					strlcpy(panel_config_buf,
 						"gt9896s_cfg_6893v05", 20);
 					strlcpy(panel_firmware_buf,
 						"gt9896s_firmware_6893v05", 25);
-				} else if (ts_device->board_data.panel_max_x == 1080
-					&& ts_device->board_data.panel_max_y == 2300) {
+				} else if (ts_device->board_data.panel_max_x ==
+						   1080 &&
+					   ts_device->board_data.panel_max_y ==
+						   2300) {
 					strlcpy(panel_config_buf,
 						"gt9896s_cfg_6893v02", 20);
 					strlcpy(panel_firmware_buf,
 						"gt9896s_firmware_6893v02", 25);
 				} else {
-					ts_info("%s, fault firmware!", gt9896s_lcm_buf);
+					ts_info("%s, fault firmware!",
+						gt9896s_lcm_buf);
 				}
 			} else if ((strcmp("nt36672e_fhdp_dphy_vdo_jdi_120hz",
-					gt9896s_lcm_buf) == 0) ||
-					(strcmp("nt36672e_fhdp_cphy_vdo_jdi_120hz",
-					gt9896s_lcm_buf) == 0) ||
-					(strcmp("nt36672e_fhdp_dphy_vdo_jdi_144hz",
-					gt9896s_lcm_buf) == 0) ||
-					(strcmp("nt36672e_fhdp_dphy_vdo_jdi_60hz",
-					gt9896s_lcm_buf) == 0)) {
-				if (ts_device->board_data.panel_max_x == 1080
-					&& ts_device->board_data.panel_max_y == 2400) {
+					   gt9896s_lcm_buf) == 0) ||
+				   (strcmp("nt36672e_fhdp_cphy_vdo_jdi_120hz",
+					   gt9896s_lcm_buf) == 0) ||
+				   (strcmp("nt36672e_fhdp_dphy_vdo_jdi_144hz",
+					   gt9896s_lcm_buf) == 0) ||
+				   (strcmp("nt36672e_fhdp_dphy_vdo_jdi_60hz",
+					   gt9896s_lcm_buf) == 0)) {
+				if (ts_device->board_data.panel_max_x == 1080 &&
+				    ts_device->board_data.panel_max_y == 2400) {
 					strlcpy(panel_config_buf,
 						"gt9896s_cfg_6893v04", 20);
 					strlcpy(panel_firmware_buf,
 						"gt9896s_firmware_6893v04", 25);
 				} else {
-					ts_info("%s, fault firmware!", gt9896s_lcm_buf);
+					ts_info("%s, fault firmware!",
+						gt9896s_lcm_buf);
 				}
 			}
 		}
