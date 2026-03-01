@@ -336,6 +336,9 @@ static int mt6879_apu_power_init(struct mtk_apu *apu)
 static int mt6879_apu_power_on(struct mtk_apu *apu)
 {
 	int ret, timeout, i = 0;
+#if IS_ENABLED(CONFIG_MTK_AEE_FEATURE)
+	struct device *dev = apu->dev;
+#endif
 
 	/* to force apu top power on synchronously */
 	ret = pm_runtime_get_sync(apu->power_dev);
@@ -410,6 +413,9 @@ error_put_power_dev:
 static int mt6879_apu_power_off(struct mtk_apu *apu)
 {
 	int ret, timeout, i = 0;
+#if IS_ENABLED(CONFIG_MTK_AEE_FEATURE)
+	struct device *dev = apu->dev;
+#endif
 
 	ret = pm_runtime_put_sync(apu->dev);
 	if (ret) {

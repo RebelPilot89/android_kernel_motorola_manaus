@@ -972,6 +972,24 @@ void kvm_put_kvm_no_destroy(struct kvm *kvm)
 }
 EXPORT_SYMBOL_GPL(kvm_put_kvm_no_destroy);
 
+void kvm_destroy_vcpus(struct kvm *kvm)
+{
+	struct kvm_vcpu *vcpu;
+	int idx;
+
+	kvm_for_each_vcpu (idx, vcpu, kvm) {
+		if (!vcpu)
+			continue;
+
+		kvm->vcpus[idx] = NULL;
+		kvm_vcpu_destroy(vcpu);
+	}
+
+	atomic_set(&kvm->online_vcpus, 0);
+	kvm->created_vcpus = 0;
+}
+EXPORT_SYMBOL_GPL(kvm_destroy_vcpus);
+
 static int kvm_vm_release(struct inode *inode, struct file *filp)
 {
 	struct kvm *kvm = filp->private_data;

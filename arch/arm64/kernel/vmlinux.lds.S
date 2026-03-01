@@ -90,6 +90,18 @@
 
 #include "image.h"
 
+#ifndef INIT_IDMAP_DIR_SIZE
+#define INIT_IDMAP_DIR_SIZE (INIT_DIR_SIZE + IDMAP_DIR_SIZE)
+#endif
+
+#ifndef RESERVED_SWAPPER_OFFSET
+#define RESERVED_SWAPPER_OFFSET PAGE_SIZE
+#endif
+
+#ifndef TRAMP_SWAPPER_OFFSET
+#define TRAMP_SWAPPER_OFFSET (2 * PAGE_SIZE)
+#endif
+
 OUTPUT_ARCH(aarch64)
 ENTRY(_text)
 

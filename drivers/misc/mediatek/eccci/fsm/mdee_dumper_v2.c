@@ -33,6 +33,8 @@ static void ccci_aed_v2(struct ccci_fsm_ee *mdee, unsigned int dump_flag,
 	char *buff; /*[AED_STR_LEN]; */
 #if IS_ENABLED(CONFIG_MTK_AEE_FEATURE)
 	char buf_fail[] = "Fail alloc mem for exception\n";
+	void *md_img_addr = NULL;
+	int md_img_len = 0;
 #endif
 	char *img_inf = NULL;
 	struct mdee_dumper_v2 *dumper = mdee->dumper_obj;

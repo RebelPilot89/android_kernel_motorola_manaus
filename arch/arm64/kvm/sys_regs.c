@@ -2830,6 +2830,61 @@ int kvm_arm_sys_reg_set_reg(struct kvm_vcpu *vcpu,
 	return ret;
 }
 
+int kvm_sys_reg_get_user(struct kvm_vcpu *vcpu, const struct kvm_one_reg *reg,
+			 const struct sys_reg_desc table[], unsigned int num)
+{
+	u64 __user *uaddr = (u64 __user *)(unsigned long)reg->addr;
+	const struct sys_reg_desc *r;
+
+	r = id_to_sys_reg_desc(vcpu, reg->id, table, num);
+	if (!r)
+		return -ENOENT;
+
+	if (r->get_user) {
+		u64 val;
+		int ret = (r->get_user)(vcpu, r, &val);
+
+		if (ret)
+			return ret;
+		return put_user(val, uaddr);
+	}
+
+	if (!r->reg)
+		return -ENOENT;
+
+	return put_user(__vcpu_sys_reg(vcpu, r->reg), uaddr);
+}
+
+int kvm_sys_reg_set_user(struct kvm_vcpu *vcpu, const struct kvm_one_reg *reg,
+			 const struct sys_reg_desc table[], unsigned int num)
+{
+	u64 __user *uaddr = (u64 __user *)(unsigned long)reg->addr;
+	const struct sys_reg_desc *r;
+	u64 val;
+	int ret;
+
+	r = id_to_sys_reg_desc(vcpu, reg->id, table, num);
+	if (!r)
+		return -ENOENT;
+
+	if (get_user(val, uaddr))
+		return -EFAULT;
+
+	if (r->set_user)
+		ret = r->set_user(vcpu, r, val);
+	else
+		ret = 0;
+
+	if (ret)
+		return ret;
+
+	if (!r->reg)
+		return 0;
+
+	__vcpu_sys_reg(vcpu, r->reg) = val;
+	return 0;
+}
+
 static unsigned int num_demux_regs(void)
 {
 	unsigned int i, count = 0;

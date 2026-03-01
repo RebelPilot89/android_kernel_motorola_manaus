@@ -25,71 +25,71 @@
 #include <linux/soc/mediatek/devapc_public.h>
 #endif
 
-#define CMDQ_MBOX_NUM			2
-#define CMDQ_HW_MAX			2
-#define CMDQ_RECORD_NUM			512
-#define CMDQ_FIRST_ERR_SIZE		524288	/* 512k */
+#define CMDQ_MBOX_NUM 2
+#define CMDQ_HW_MAX 2
+#define CMDQ_RECORD_NUM 512
+#define CMDQ_FIRST_ERR_SIZE 524288 /* 512k */
 
-#define CMDQ_CURR_IRQ_STATUS		0x10
-#define CMDQ_CURR_LOADED_THR		0x18
-#define CMDQ_THR_EXEC_CYCLES		0x34
-#define CMDQ_THR_TIMEOUT_TIMER		0x38
+#define CMDQ_CURR_IRQ_STATUS 0x10
+#define CMDQ_CURR_LOADED_THR 0x18
+#define CMDQ_THR_EXEC_CYCLES 0x34
+#define CMDQ_THR_TIMEOUT_TIMER 0x38
 
-#define GCE_DBG_CTL			0x3000
-#define GCE_DBG0			0x3004
-#define GCE_DBG2			0x300C
-#define GCE_DBG3			0x3010
+#define GCE_DBG_CTL 0x3000
+#define GCE_DBG0 0x3004
+#define GCE_DBG2 0x300C
+#define GCE_DBG3 0x3010
 
-#define util_time_to_us(start, end, duration)	\
-{	\
-	u64 _duration = end - start;	\
-	do_div(_duration, 1000);	\
-	duration = (s32)_duration;	\
-}
+#define util_time_to_us(start, end, duration)                                  \
+	{                                                                      \
+		u64 _duration = end - start;                                   \
+		do_div(_duration, 1000);                                       \
+		duration = (s32)_duration;                                     \
+	}
 
 struct cmdq_util_error {
-	spinlock_t	lock;
-	atomic_t	enable;
-	char		*buffer;
-	u32		length;
-	u64		nsec;
-	char		caller[TASK_COMM_LEN]; // TODO
+	spinlock_t lock;
+	atomic_t enable;
+	char *buffer;
+	u32 length;
+	u64 nsec;
+	char caller[TASK_COMM_LEN]; // TODO
 };
 
 struct cmdq_util_dentry {
-	struct dentry	*status;
-	struct dentry	*record;
-	struct dentry	*log_feature;
-	u8		bit_feature;
+	struct dentry *status;
+	struct dentry *record;
+	struct dentry *log_feature;
+	u8 bit_feature;
 };
 
 struct cmdq_record {
 	unsigned long pkt;
-	s32 priority;	/* task priority (not thread priority) */
+	s32 priority; /* task priority (not thread priority) */
 	s8 id;
-	s32 thread;	/* allocated thread */
+	s32 thread; /* allocated thread */
 	s32 reorder;
 	u32 size;
-	bool is_secure;	/* true for secure task */
+	bool is_secure; /* true for secure task */
 
-	u64 submit;	/* epoch time of IOCTL/Kernel API call */
-	u64 trigger;	/* epoch time of enable HW thread */
+	u64 submit; /* epoch time of IOCTL/Kernel API call */
+	u64 trigger; /* epoch time of enable HW thread */
 	/* epoch time of start waiting for task completion */
 	u64 wait;
-	u64 irq;	/* epoch time of IRQ event */
-	u64 done;	/* epoch time of sw leaving wait and task finish */
+	u64 irq; /* epoch time of IRQ event */
+	u64 done; /* epoch time of sw leaving wait and task finish */
 
-	unsigned long start;	/* buffer start address */
-	unsigned long end;	/* command end address */
-	u64 last_inst;	/* last instruction, jump addr */
+	unsigned long start; /* buffer start address */
+	unsigned long end; /* command end address */
+	u64 last_inst; /* last instruction, jump addr */
 
-	u32 exec_begin;	/* task execute time in hardware thread */
-	u32 exec_end;	/* task execute time in hardware thread */
+	u32 exec_begin; /* task execute time in hardware thread */
+	u32 exec_end; /* task execute time in hardware thread */
 };
 
 struct cmdq_util {
-	struct cmdq_util_error	err;
-	struct cmdq_util_dentry	fs;
+	struct cmdq_util_error err;
+	struct cmdq_util_dentry fs;
 	struct cmdq_record record[CMDQ_RECORD_NUM];
 	u16 record_idx;
 	void *cmdq_mbox[CMDQ_MBOX_NUM];
@@ -99,14 +99,14 @@ struct cmdq_util {
 	const char *first_err_mod[CMDQ_HW_MAX];
 	struct cmdq_client *prebuilt_clt[CMDQ_HW_MAX];
 };
-static struct cmdq_util	util;
+static struct cmdq_util util;
 
 static DEFINE_MUTEX(cmdq_record_mutex);
 static DEFINE_MUTEX(cmdq_dump_mutex);
 struct cmdq_util_controller_fp controller_fp = {
 	.track_ctrl = cmdq_util_track_ctrl,
 };
-struct cmdq_util_helper_fp helper_fp = {
+static struct cmdq_util_helper_fp helper_fp = {
 	.is_feature_en = cmdq_util_is_feature_en,
 	.dump_lock = cmdq_util_dump_lock,
 	.dump_unlock = cmdq_util_dump_unlock,
@@ -130,18 +130,21 @@ void cmdq_util_set_fp(struct cmdq_util_platform_fp *cust_cmdq_platform)
 	controller_fp.thread_ddr_module = cmdq_platform->thread_ddr_module;
 	helper_fp.hw_name = cmdq_platform->util_hw_name;
 	helper_fp.event_module_dispatch = cmdq_platform->event_module_dispatch;
-	helper_fp.thread_module_dispatch = cmdq_platform->thread_module_dispatch;
+	helper_fp.thread_module_dispatch =
+		cmdq_platform->thread_module_dispatch;
 	for (i = 0; i < util.mbox_cnt; i++)
 		cmdq_mbox_set_hw_id(util.cmdq_mbox[i]);
 }
 EXPORT_SYMBOL(cmdq_util_set_fp);
 
-const char *cmdq_util_event_module_dispatch(phys_addr_t gce_pa, const u16 event, s32 thread)
+const char *cmdq_util_event_module_dispatch(phys_addr_t gce_pa, const u16 event,
+					    s32 thread)
 {
 	const char *mod = NULL;
 
 	if (cmdq_platform->event_module_dispatch)
-		mod = cmdq_platform->event_module_dispatch(gce_pa, event, thread);
+		mod = cmdq_platform->event_module_dispatch(gce_pa, event,
+							   thread);
 	else
 		cmdq_err("%s event_module_dispatch is NULL ", __func__);
 	return mod;
@@ -245,17 +248,17 @@ s32 cmdq_util_error_save_lst(const char *format, va_list args)
 
 	spin_lock_irqsave(&util.err.lock, flags);
 	size = vsnprintf(util.err.buffer + util.err.length,
-		CMDQ_FIRST_ERR_SIZE - util.err.length, format, args);
+			 CMDQ_FIRST_ERR_SIZE - util.err.length, format, args);
 	if (size >= CMDQ_FIRST_ERR_SIZE - util.err.length)
-		cmdq_log("size:%d over buf size:%d",
-			size, CMDQ_FIRST_ERR_SIZE - util.err.length);
+		cmdq_log("size:%d over buf size:%d", size,
+			 CMDQ_FIRST_ERR_SIZE - util.err.length);
 	util.err.length += size;
 	spin_unlock_irqrestore(&util.err.lock, flags);
 
 	if (util.err.length >= CMDQ_FIRST_ERR_SIZE) {
 		cmdq_util_error_disable();
 		cmdq_err("util.err.length:%u is over CMDQ_FIRST_ERR_SIZE:%u",
-			util.err.length, CMDQ_FIRST_ERR_SIZE);
+			 util.err.length, CMDQ_FIRST_ERR_SIZE);
 	}
 	return 0;
 }
@@ -279,14 +282,14 @@ EXPORT_SYMBOL(cmdq_util_error_save);
 
 static int cmdq_util_status_print(struct seq_file *seq, void *data)
 {
-	u64		sec = util.err.nsec;
-	unsigned long	nsec = do_div(sec, 1000000000);
-	u32		i;
+	u64 sec = util.err.nsec;
+	unsigned long nsec = do_div(sec, 1000000000);
+	u32 i;
 
 	if (util.err.length) {
 		seq_printf(seq,
-			"[cmdq] first error kernel time:[%5llu.%06lu]\n",
-			sec, nsec);
+			   "[cmdq] first error kernel time:[%5llu.%06lu]\n",
+			   sec, nsec);
 		seq_printf(seq, "%s", util.err.buffer);
 	}
 
@@ -308,7 +311,8 @@ static int cmdq_util_record_print(struct seq_file *seq, void *data)
 	mutex_lock(&cmdq_record_mutex);
 
 	seq_puts(seq, "index,pkt,task priority,sec,size,gce,thread,");
-	seq_puts(seq,
+	seq_puts(
+		seq,
 		"submit,acq_time(us),irq_time(us),begin_wait(us),exec_time(us),total_time(us),start,end,jump,");
 	seq_puts(seq, "exec begin,exec end,hw_time(us),\n");
 
@@ -322,9 +326,9 @@ static int cmdq_util_record_print(struct seq_file *seq, void *data)
 		if (!rec->pkt)
 			continue;
 
-		seq_printf(seq, "%u,%#lx,%d,%d,%u,%hhd,%d,",
-			idx, rec->pkt, rec->priority, (int)rec->is_secure,
-			rec->size, rec->id, rec->thread);
+		seq_printf(seq, "%u,%#lx,%d,%d,%u,%hhd,%d,", idx, rec->pkt,
+			   rec->priority, (int)rec->is_secure, rec->size,
+			   rec->id, rec->thread);
 
 		submit_sec = rec->submit;
 		submit_rem = do_div(submit_sec, 1000000000);
@@ -334,19 +338,18 @@ static int cmdq_util_record_print(struct seq_file *seq, void *data)
 		util_time_to_us(rec->submit, rec->wait, begin_wait);
 		util_time_to_us(rec->trigger, rec->done, exec_time);
 		util_time_to_us(rec->submit, rec->done, total_time);
-		seq_printf(seq,
-			"%llu.%06lu,%u,%u,%u,%u,%u,%#lx,%#lx,%#llx,",
-			submit_sec, submit_rem / 1000, acq_time, irq_time,
-			begin_wait, exec_time, total_time,
-			rec->start, rec->end, rec->last_inst);
+		seq_printf(seq, "%llu.%06lu,%u,%u,%u,%u,%u,%#lx,%#lx,%#llx,",
+			   submit_sec, submit_rem / 1000, acq_time, irq_time,
+			   begin_wait, exec_time, total_time, rec->start,
+			   rec->end, rec->last_inst);
 
 		hw_time = rec->exec_end > rec->exec_begin ?
-			rec->exec_end - rec->exec_begin :
-			~rec->exec_begin + 1 + rec->exec_end;
+				  rec->exec_end - rec->exec_begin :
+				  ~rec->exec_begin + 1 + rec->exec_end;
 		hw_time_rem = (u32)CMDQ_TICK_TO_US(hw_time);
 
-		seq_printf(seq, "%u,%u,%u.%06lu,\n",
-			rec->exec_begin, rec->exec_end, hw_time, hw_time_rem);
+		seq_printf(seq, "%u,%u,%u.%06lu,\n", rec->exec_begin,
+			   rec->exec_end, hw_time, hw_time_rem);
 	}
 
 	mutex_unlock(&cmdq_record_mutex);
@@ -382,8 +385,8 @@ static const struct file_operations cmdq_util_record_fops = {
 
 static int cmdq_util_log_feature_get(void *data, u64 *val)
 {
-	cmdq_msg("data:%p val:%#llx bit_feature:%#x",
-		data, *val, util.fs.bit_feature);
+	cmdq_msg("data:%p val:%#llx bit_feature:%#x", data, *val,
+		 util.fs.bit_feature);
 	return util.fs.bit_feature;
 }
 
@@ -391,26 +394,26 @@ int cmdq_util_log_feature_set(void *data, u64 val)
 {
 	if (val == CMDQ_LOG_FEAT_NUM) {
 		util.fs.bit_feature = 0;
-		cmdq_msg("data:%p val:%#llx bit_feature:%#x reset",
-			data, val, util.fs.bit_feature);
+		cmdq_msg("data:%p val:%#llx bit_feature:%#x reset", data, val,
+			 util.fs.bit_feature);
 		return 0;
 	}
 
 	if (val >= CMDQ_LOG_FEAT_NUM) {
-		cmdq_err("data:%p val:%#llx cannot be over %#x",
-			data, val, CMDQ_LOG_FEAT_NUM);
+		cmdq_err("data:%p val:%#llx cannot be over %#x", data, val,
+			 CMDQ_LOG_FEAT_NUM);
 		return -EINVAL;
 	}
 
 	util.fs.bit_feature |= (1 << val);
-	cmdq_msg("data:%p val:%#llx bit_feature:%#x",
-		data, val, util.fs.bit_feature);
+	cmdq_msg("data:%p val:%#llx bit_feature:%#x", data, val,
+		 util.fs.bit_feature);
 	return 0;
 }
 EXPORT_SYMBOL(cmdq_util_log_feature_set);
 
-DEFINE_SIMPLE_ATTRIBUTE(cmdq_util_log_feature_fops,
-	cmdq_util_log_feature_get, cmdq_util_log_feature_set, "%llu");
+DEFINE_SIMPLE_ATTRIBUTE(cmdq_util_log_feature_fops, cmdq_util_log_feature_get,
+			cmdq_util_log_feature_set, "%llu");
 
 /* sync with request in atf */
 enum cmdq_smc_request {
@@ -423,7 +426,7 @@ enum cmdq_smc_request {
 	CMDQ_MMINFRA_CMD,
 };
 
-static atomic_t cmdq_dbg_ctrl[CMDQ_HW_MAX] = {ATOMIC_INIT(0)};
+static atomic_t cmdq_dbg_ctrl[CMDQ_HW_MAX] = { ATOMIC_INIT(0) };
 
 void cmdq_util_prebuilt_set_client(const u16 hwid, struct cmdq_client *client)
 {
@@ -440,8 +443,8 @@ void cmdq_util_enable_disp_va(void)
 	struct arm_smccc_res res;
 
 	cmdq_msg("%s", __func__);
-	arm_smccc_smc(MTK_SIP_CMDQ_CONTROL, CMDQ_ENABLE_DISP_VA,
-		0, 0, 0, 0, 0, 0, &res);
+	arm_smccc_smc(MTK_SIP_CMDQ_CONTROL, CMDQ_ENABLE_DISP_VA, 0, 0, 0, 0, 0,
+		      0, &res);
 }
 EXPORT_SYMBOL(cmdq_util_enable_disp_va);
 
@@ -450,8 +453,8 @@ void cmdq_util_prebuilt_init(const u16 mod)
 	struct arm_smccc_res res;
 
 	cmdq_log("%s: mod:%u", __func__, mod);
-	arm_smccc_smc(MTK_SIP_CMDQ_CONTROL, CMDQ_PREBUILT_INIT, mod,
-		0, 0, 0, 0, 0, &res);
+	arm_smccc_smc(MTK_SIP_CMDQ_CONTROL, CMDQ_PREBUILT_INIT, mod, 0, 0, 0, 0,
+		      0, &res);
 }
 EXPORT_SYMBOL(cmdq_util_prebuilt_init);
 
@@ -460,8 +463,8 @@ void cmdq_util_prebuilt_enable(const u16 hwid)
 	struct arm_smccc_res res;
 
 	cmdq_log("%s: hwid:%u", __func__, hwid);
-	arm_smccc_smc(MTK_SIP_CMDQ_CONTROL, CMDQ_PREBUILT_ENABLE, hwid,
-		0, 0, 0, 0, 0, &res);
+	arm_smccc_smc(MTK_SIP_CMDQ_CONTROL, CMDQ_PREBUILT_ENABLE, hwid, 0, 0, 0,
+		      0, 0, &res);
 }
 EXPORT_SYMBOL(cmdq_util_prebuilt_enable);
 
@@ -470,21 +473,22 @@ void cmdq_util_prebuilt_disable(const u16 hwid)
 	struct arm_smccc_res res;
 
 	cmdq_log("%s: hwid:%u", __func__, hwid);
-	arm_smccc_smc(MTK_SIP_CMDQ_CONTROL, CMDQ_PREBUILT_DISABLE, hwid,
-		0, 0, 0, 0, 0, &res);
+	arm_smccc_smc(MTK_SIP_CMDQ_CONTROL, CMDQ_PREBUILT_DISABLE, hwid, 0, 0,
+		      0, 0, 0, &res);
 }
 EXPORT_SYMBOL(cmdq_util_prebuilt_disable);
 
 void cmdq_util_prebuilt_dump(const u16 hwid, const u16 event)
 {
 	struct arm_smccc_res res;
-	const u16 mod = (event - CMDQ_TOKEN_PREBUILT_MDP_WAIT) /
+	const u16 mod =
+		(event - CMDQ_TOKEN_PREBUILT_MDP_WAIT) /
 		(CMDQ_TOKEN_PREBUILT_MML_WAIT - CMDQ_TOKEN_PREBUILT_MDP_WAIT);
 
 	cmdq_msg("%s: hwid:%hu event:%hu mod:%hu", __func__, hwid, event, mod);
 
-	arm_smccc_smc(MTK_SIP_CMDQ_CONTROL, CMDQ_PREBUILT_DUMP, mod, event,
-		0, 0, 0, 0, &res);
+	arm_smccc_smc(MTK_SIP_CMDQ_CONTROL, CMDQ_PREBUILT_DUMP, mod, event, 0,
+		      0, 0, 0, &res);
 }
 EXPORT_SYMBOL(cmdq_util_prebuilt_dump);
 
@@ -494,18 +498,19 @@ void cmdq_util_mminfra_cmd(const u8 type)
 
 	cmdq_log("%s: type:%hu", __func__, type);
 
-	arm_smccc_smc(MTK_SIP_CMDQ_CONTROL, CMDQ_MMINFRA_CMD, type, 0,
-		0, 0, 0, 0, &res);
+	arm_smccc_smc(MTK_SIP_CMDQ_CONTROL, CMDQ_MMINFRA_CMD, type, 0, 0, 0, 0,
+		      0, &res);
 }
 EXPORT_SYMBOL(cmdq_util_mminfra_cmd);
 
 void cmdq_util_enable_dbg(u32 id)
 {
-	if ((id < CMDQ_HW_MAX) && (atomic_cmpxchg(&cmdq_dbg_ctrl[id], 0, 1) == 0)) {
+	if ((id < CMDQ_HW_MAX) &&
+	    (atomic_cmpxchg(&cmdq_dbg_ctrl[id], 0, 1) == 0)) {
 		struct arm_smccc_res res;
 
-		arm_smccc_smc(MTK_SIP_CMDQ_CONTROL, CMDQ_ENABLE_DEBUG, id,
-			0, 0, 0, 0, 0, &res);
+		arm_smccc_smc(MTK_SIP_CMDQ_CONTROL, CMDQ_ENABLE_DEBUG, id, 0, 0,
+			      0, 0, 0, &res);
 	}
 }
 EXPORT_SYMBOL(cmdq_util_enable_dbg);
@@ -533,8 +538,8 @@ void cmdq_util_track(struct cmdq_pkt *pkt)
 
 	if (cl && cl->chan) {
 		record->thread = cmdq_mbox_chan_id(cl->chan);
-		record->id = cmdq_util_get_hw_id((u32)cmdq_mbox_get_base_pa(
-			cl->chan));
+		record->id = cmdq_util_get_hw_id(
+			(u32)cmdq_mbox_get_base_pa(cl->chan));
 	} else {
 		record->thread = -1;
 		record->id = -1;
@@ -553,11 +558,11 @@ void cmdq_util_track(struct cmdq_pkt *pkt)
 		record->start = CMDQ_BUF_ADDR(buf);
 
 		buf = list_last_entry(&pkt->buf, typeof(*buf), list_entry);
-		offset = CMDQ_CMD_BUFFER_SIZE - (pkt->buf_size -
-			pkt->cmd_buf_size);
+		offset = CMDQ_CMD_BUFFER_SIZE -
+			 (pkt->buf_size - pkt->cmd_buf_size);
 		record->end = CMDQ_BUF_ADDR(buf) + offset;
-		record->last_inst = *(u64 *)(buf->va_base + offset -
-			CMDQ_INST_SIZE);
+		record->last_inst =
+			*(u64 *)(buf->va_base + offset - CMDQ_INST_SIZE);
 
 		perf = cmdq_pkt_get_perf_ret(pkt);
 		if (perf) {
@@ -632,7 +637,7 @@ EXPORT_SYMBOL(cmdq_util_get_first_err_mod);
 
 int cmdq_util_init(void)
 {
-	struct dentry	*dir;
+	struct dentry *dir;
 	bool exists = false;
 
 	cmdq_msg("%s begin", __func__);
@@ -654,27 +659,28 @@ int cmdq_util_init(void)
 	} else
 		exists = true;
 
-	util.fs.status = debugfs_create_file(
-		"cmdq-status", 0444, dir, &util, &cmdq_util_status_fops);
+	util.fs.status = debugfs_create_file("cmdq-status", 0444, dir, &util,
+					     &cmdq_util_status_fops);
 	if (IS_ERR(util.fs.status)) {
 		cmdq_err("debugfs_create_file cmdq-status failed:%ld",
-			PTR_ERR(util.fs.status));
+			 PTR_ERR(util.fs.status));
 		return PTR_ERR(util.fs.status);
 	}
 
-	util.fs.record = debugfs_create_file(
-		"cmdq-record", 0444, dir, &util, &cmdq_util_record_fops);
+	util.fs.record = debugfs_create_file("cmdq-record", 0444, dir, &util,
+					     &cmdq_util_record_fops);
 	if (IS_ERR(util.fs.record)) {
 		cmdq_err("debugfs_create_file cmdq-record failed:%ld",
-			PTR_ERR(util.fs.record));
+			 PTR_ERR(util.fs.record));
 		return PTR_ERR(util.fs.record);
 	}
 
-	util.fs.log_feature = debugfs_create_file("cmdq-log-feature",
-		0444, dir, &util, &cmdq_util_log_feature_fops);
+	util.fs.log_feature =
+		debugfs_create_file("cmdq-log-feature", 0444, dir, &util,
+				    &cmdq_util_log_feature_fops);
 	if (IS_ERR(util.fs.log_feature)) {
 		cmdq_err("debugfs_create_file cmdq-log-feature failed:%ld",
-			PTR_ERR(util.fs.log_feature));
+			 PTR_ERR(util.fs.log_feature));
 		return PTR_ERR(util.fs.log_feature);
 	}
 

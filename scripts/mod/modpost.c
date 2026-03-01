@@ -44,8 +44,12 @@ static int allow_missing_ns_imports;
 static bool error_occurred;
 
 enum export {
-	export_plain,      export_unused,     export_gpl,
-	export_unused_gpl, export_gpl_future, export_unknown
+	export_plain,
+	export_unused,
+	export_gpl,
+	export_unused_gpl,
+	export_gpl_future,
+	export_unknown
 };
 
 /* In kernel, this size is defined in linux/module.h;
@@ -54,8 +58,8 @@ enum export {
 
 #define MODULE_NAME_LEN (64 - sizeof(Elf_Addr))
 
-void __attribute__((format(printf, 2, 3)))
-modpost_log(enum loglevel loglevel, const char *fmt, ...)
+void __attribute__((format(printf, 2, 3))) modpost_log(enum loglevel loglevel,
+						       const char *fmt, ...)
 {
 	va_list arglist;
 
@@ -195,9 +199,9 @@ struct symbol {
 	unsigned int crc;
 	int crc_valid;
 	char *namespace;
-	unsigned int weak:1;
-	unsigned int is_static:1;  /* 1 if symbol is not global */
-	enum export  export;       /* Type of export */
+	unsigned int weak : 1;
+	unsigned int is_static : 1; /* 1 if symbol is not global */
+	enum export export; /* Type of export */
 	char name[];
 };
 
@@ -206,12 +210,12 @@ static struct symbol *symbolhash[SYMBOL_HASH_SIZE];
 /* This is based on the hash agorithm from gdbm, via tdb */
 static inline unsigned int tdb_hash(const char *name)
 {
-	unsigned value;	/* Used to compute the hash value.  */
-	unsigned   i;	/* Used to cycle through random values. */
+	unsigned value; /* Used to compute the hash value.  */
+	unsigned i; /* Used to cycle through random values. */
 
 	/* Set the initial value from the key size. */
 	for (value = 0x238F13AF * strlen(name), i = 0; name[i]; i++)
-		value = (value + (((unsigned char *)name)[i] << (i*5 % 24)));
+		value = (value + (((unsigned char *)name)[i] << (i * 5 % 24)));
 
 	return (1103515243 * value + 12345);
 }
@@ -253,7 +257,8 @@ static struct symbol *find_symbol(const char *name)
 	if (name[0] == '.')
 		name++;
 
-	for (s = symbolhash[tdb_hash(name) % SYMBOL_HASH_SIZE]; s; s = s->next) {
+	for (s = symbolhash[tdb_hash(name) % SYMBOL_HASH_SIZE]; s;
+	     s = s->next) {
 		if (strcmp(s->name, name) == 0)
 			return s;
 	}
@@ -293,14 +298,13 @@ static const struct {
 	const char *str;
 	enum export export;
 } export_list[] = {
-	{ .str = "EXPORT_SYMBOL",            .export = export_plain },
-	{ .str = "EXPORT_UNUSED_SYMBOL",     .export = export_unused },
-	{ .str = "EXPORT_SYMBOL_GPL",        .export = export_gpl },
+	{ .str = "EXPORT_SYMBOL", .export = export_plain },
+	{ .str = "EXPORT_UNUSED_SYMBOL", .export = export_unused },
+	{ .str = "EXPORT_SYMBOL_GPL", .export = export_gpl },
 	{ .str = "EXPORT_UNUSED_SYMBOL_GPL", .export = export_unused_gpl },
 	{ .str = "EXPORT_SYMBOL_GPL_FUTURE", .export = export_gpl_future },
-	{ .str = "(unknown)",                .export = export_unknown },
+	{ .str = "(unknown)", .export = export_unknown },
 };
-
 
 static const char *export_str(enum export ex)
 {
@@ -429,7 +433,7 @@ static struct symbol *sym_add_exported(const char *name, struct module *mod,
 	}
 
 	s->module = mod;
-	s->export    = export;
+	s->export = export;
 	return s;
 }
 
@@ -461,7 +465,7 @@ static void *grab_file(const char *filename, size_t *size)
 		goto failed;
 
 	*size = st.st_size;
-	map = mmap(NULL, *size, PROT_READ|PROT_WRITE, MAP_PRIVATE, fd, 0);
+	map = mmap(NULL, *size, PROT_READ | PROT_WRITE, MAP_PRIVATE, fd, 0);
 
 failed:
 	close(fd);
@@ -480,7 +484,7 @@ static int parse_elf(struct elf_info *info, const char *filename)
 	unsigned int i;
 	Elf_Ehdr *hdr;
 	Elf_Shdr *sechdrs;
-	Elf_Sym  *sym;
+	Elf_Sym *sym;
 	const char *secstrings;
 	unsigned int symtab_idx = ~0U, symtab_shndx_idx = ~0U;
 
@@ -508,19 +512,19 @@ static int parse_elf(struct elf_info *info, const char *filename)
 		return 0;
 	}
 	/* Fix endianness in ELF header */
-	hdr->e_type      = TO_NATIVE(hdr->e_type);
-	hdr->e_machine   = TO_NATIVE(hdr->e_machine);
-	hdr->e_version   = TO_NATIVE(hdr->e_version);
-	hdr->e_entry     = TO_NATIVE(hdr->e_entry);
-	hdr->e_phoff     = TO_NATIVE(hdr->e_phoff);
-	hdr->e_shoff     = TO_NATIVE(hdr->e_shoff);
-	hdr->e_flags     = TO_NATIVE(hdr->e_flags);
-	hdr->e_ehsize    = TO_NATIVE(hdr->e_ehsize);
+	hdr->e_type = TO_NATIVE(hdr->e_type);
+	hdr->e_machine = TO_NATIVE(hdr->e_machine);
+	hdr->e_version = TO_NATIVE(hdr->e_version);
+	hdr->e_entry = TO_NATIVE(hdr->e_entry);
+	hdr->e_phoff = TO_NATIVE(hdr->e_phoff);
+	hdr->e_shoff = TO_NATIVE(hdr->e_shoff);
+	hdr->e_flags = TO_NATIVE(hdr->e_flags);
+	hdr->e_ehsize = TO_NATIVE(hdr->e_ehsize);
 	hdr->e_phentsize = TO_NATIVE(hdr->e_phentsize);
-	hdr->e_phnum     = TO_NATIVE(hdr->e_phnum);
+	hdr->e_phnum = TO_NATIVE(hdr->e_phnum);
 	hdr->e_shentsize = TO_NATIVE(hdr->e_shentsize);
-	hdr->e_shnum     = TO_NATIVE(hdr->e_shnum);
-	hdr->e_shstrndx  = TO_NATIVE(hdr->e_shstrndx);
+	hdr->e_shnum = TO_NATIVE(hdr->e_shnum);
+	hdr->e_shstrndx = TO_NATIVE(hdr->e_shstrndx);
 	sechdrs = (void *)hdr + hdr->e_shoff;
 	info->sechdrs = sechdrs;
 
@@ -537,29 +541,27 @@ static int parse_elf(struct elf_info *info, const char *filename)
 		 * read count from .sh_size.
 		 */
 		info->num_sections = TO_NATIVE(sechdrs[0].sh_size);
-	}
-	else {
+	} else {
 		info->num_sections = hdr->e_shnum;
 	}
 	if (hdr->e_shstrndx == SHN_XINDEX) {
 		info->secindex_strings = TO_NATIVE(sechdrs[0].sh_link);
-	}
-	else {
+	} else {
 		info->secindex_strings = hdr->e_shstrndx;
 	}
 
 	/* Fix endianness in section headers */
 	for (i = 0; i < info->num_sections; i++) {
-		sechdrs[i].sh_name      = TO_NATIVE(sechdrs[i].sh_name);
-		sechdrs[i].sh_type      = TO_NATIVE(sechdrs[i].sh_type);
-		sechdrs[i].sh_flags     = TO_NATIVE(sechdrs[i].sh_flags);
-		sechdrs[i].sh_addr      = TO_NATIVE(sechdrs[i].sh_addr);
-		sechdrs[i].sh_offset    = TO_NATIVE(sechdrs[i].sh_offset);
-		sechdrs[i].sh_size      = TO_NATIVE(sechdrs[i].sh_size);
-		sechdrs[i].sh_link      = TO_NATIVE(sechdrs[i].sh_link);
-		sechdrs[i].sh_info      = TO_NATIVE(sechdrs[i].sh_info);
+		sechdrs[i].sh_name = TO_NATIVE(sechdrs[i].sh_name);
+		sechdrs[i].sh_type = TO_NATIVE(sechdrs[i].sh_type);
+		sechdrs[i].sh_flags = TO_NATIVE(sechdrs[i].sh_flags);
+		sechdrs[i].sh_addr = TO_NATIVE(sechdrs[i].sh_addr);
+		sechdrs[i].sh_offset = TO_NATIVE(sechdrs[i].sh_offset);
+		sechdrs[i].sh_size = TO_NATIVE(sechdrs[i].sh_size);
+		sechdrs[i].sh_link = TO_NATIVE(sechdrs[i].sh_link);
+		sechdrs[i].sh_info = TO_NATIVE(sechdrs[i].sh_info);
 		sechdrs[i].sh_addralign = TO_NATIVE(sechdrs[i].sh_addralign);
-		sechdrs[i].sh_entsize   = TO_NATIVE(sechdrs[i].sh_entsize);
+		sechdrs[i].sh_entsize = TO_NATIVE(sechdrs[i].sh_entsize);
 	}
 	/* Find symbol table. */
 	secstrings = (void *)hdr + sechdrs[info->secindex_strings].sh_offset;
@@ -569,8 +571,8 @@ static int parse_elf(struct elf_info *info, const char *filename)
 
 		if (!nobits && sechdrs[i].sh_offset > info->size) {
 			fatal("%s is truncated. sechdrs[i].sh_offset=%lu > "
-			      "sizeof(*hrd)=%zu\n", filename,
-			      (unsigned long)sechdrs[i].sh_offset,
+			      "sizeof(*hrd)=%zu\n",
+			      filename, (unsigned long)sechdrs[i].sh_offset,
 			      sizeof(*hdr));
 			return 0;
 		}
@@ -594,22 +596,22 @@ static int parse_elf(struct elf_info *info, const char *filename)
 		if (sechdrs[i].sh_type == SHT_SYMTAB) {
 			unsigned int sh_link_idx;
 			symtab_idx = i;
-			info->symtab_start = (void *)hdr +
-			    sechdrs[i].sh_offset;
-			info->symtab_stop  = (void *)hdr +
-			    sechdrs[i].sh_offset + sechdrs[i].sh_size;
+			info->symtab_start = (void *)hdr + sechdrs[i].sh_offset;
+			info->symtab_stop = (void *)hdr + sechdrs[i].sh_offset +
+					    sechdrs[i].sh_size;
 			sh_link_idx = sechdrs[i].sh_link;
-			info->strtab       = (void *)hdr +
-			    sechdrs[sh_link_idx].sh_offset;
+			info->strtab =
+				(void *)hdr + sechdrs[sh_link_idx].sh_offset;
 		}
 
 		/* 32bit section no. table? ("more than 64k sections") */
 		if (sechdrs[i].sh_type == SHT_SYMTAB_SHNDX) {
 			symtab_shndx_idx = i;
-			info->symtab_shndx_start = (void *)hdr +
-			    sechdrs[i].sh_offset;
-			info->symtab_shndx_stop  = (void *)hdr +
-			    sechdrs[i].sh_offset + sechdrs[i].sh_size;
+			info->symtab_shndx_start =
+				(void *)hdr + sechdrs[i].sh_offset;
+			info->symtab_shndx_stop = (void *)hdr +
+						  sechdrs[i].sh_offset +
+						  sechdrs[i].sh_size;
 		}
 	}
 	if (!info->symtab_start)
@@ -618,9 +620,9 @@ static int parse_elf(struct elf_info *info, const char *filename)
 	/* Fix endianness in symbols */
 	for (sym = info->symtab_start; sym < info->symtab_stop; sym++) {
 		sym->st_shndx = TO_NATIVE(sym->st_shndx);
-		sym->st_name  = TO_NATIVE(sym->st_name);
+		sym->st_name = TO_NATIVE(sym->st_name);
 		sym->st_value = TO_NATIVE(sym->st_value);
-		sym->st_size  = TO_NATIVE(sym->st_size);
+		sym->st_size = TO_NATIVE(sym->st_size);
 	}
 
 	if (symtab_shndx_idx != ~0U) {
@@ -673,8 +675,8 @@ static int ignore_undef_symbol(struct elf_info *info, const char *symname)
 }
 
 static void handle_modversion(const struct module *mod,
-			      const struct elf_info *info,
-			      const Elf_Sym *sym, const char *symname)
+			      const struct elf_info *info, const Elf_Sym *sym,
+			      const char *symname)
 {
 	unsigned int crc;
 
@@ -712,7 +714,8 @@ static void handle_symbol(struct module *mod, struct elf_info *info,
 		if (strstarts(symname, "__gnu_lto_")) {
 			/* Should warn here, but modpost runs before the linker */
 		} else
-			warn("\"%s\" [%s] is COMMON symbol\n", symname, mod->name);
+			warn("\"%s\" [%s] is COMMON symbol\n", symname,
+			     mod->name);
 		break;
 	case SHN_UNDEF:
 		/* undefined symbol */
@@ -836,7 +839,7 @@ static const char *sym_name(struct elf_info *elf, Elf_Sym *sym)
  * "foo*" will match a string that begins with "foo"
  * "*foo*" will match a string that contains "foo"
  */
-static int match(const char *sym, const char * const pat[])
+static int match(const char *sym, const char *const pat[])
 {
 	const char *p;
 	while (*pat) {
@@ -873,25 +876,24 @@ static int match(const char *sym, const char * const pat[])
 }
 
 /* sections that we do not want to do full section mismatch check on */
-static const char *const section_white_list[] =
-{
+static const char *const section_white_list[] = {
 	".comment*",
 	".debug*",
-	".cranges",		/* sh64 */
-	".zdebug*",		/* Compressed debug sections. */
-	".GCC.command.line",	/* record-gcc-switches */
-	".mdebug*",        /* alpha, score, mips etc. */
-	".pdr",            /* alpha, score, mips etc. */
+	".cranges", /* sh64 */
+	".zdebug*", /* Compressed debug sections. */
+	".GCC.command.line", /* record-gcc-switches */
+	".mdebug*", /* alpha, score, mips etc. */
+	".pdr", /* alpha, score, mips etc. */
 	".stab*",
 	".note*",
 	".got*",
 	".toc*",
-	".xt.prop",				 /* xtensa */
-	".xt.lit",         /* xtensa */
-	".arcextmap*",			/* arc */
-	".gnu.linkonce.arcext*",	/* arc : modules */
-	".cmem*",			/* EZchip */
-	".fmt_slot*",			/* EZchip */
+	".xt.prop", /* xtensa */
+	".xt.lit", /* xtensa */
+	".arcextmap*", /* arc */
+	".gnu.linkonce.arcext*", /* arc : modules */
+	".cmem*", /* EZchip */
+	".fmt_slot*", /* EZchip */
 	".gnu.lto*",
 	".discard.*",
 	NULL
@@ -918,23 +920,18 @@ static void check_section(const char *modname, struct elf_info *elf,
 	}
 }
 
+#define ALL_INIT_DATA_SECTIONS                                                 \
+	".init.setup", ".init.rodata", ".meminit.rodata", ".init.data",        \
+		".meminit.data"
+#define ALL_EXIT_DATA_SECTIONS ".exit.data", ".memexit.data"
 
+#define ALL_INIT_TEXT_SECTIONS ".init.text", ".meminit.text"
+#define ALL_EXIT_TEXT_SECTIONS ".exit.text", ".memexit.text"
 
-#define ALL_INIT_DATA_SECTIONS \
-	".init.setup", ".init.rodata", ".meminit.rodata", \
-	".init.data", ".meminit.data"
-#define ALL_EXIT_DATA_SECTIONS \
-	".exit.data", ".memexit.data"
-
-#define ALL_INIT_TEXT_SECTIONS \
-	".init.text", ".meminit.text"
-#define ALL_EXIT_TEXT_SECTIONS \
-	".exit.text", ".memexit.text"
-
-#define ALL_PCI_INIT_SECTIONS	\
-	".pci_fixup_early", ".pci_fixup_header", ".pci_fixup_final", \
-	".pci_fixup_enable", ".pci_fixup_resume", \
-	".pci_fixup_resume_early", ".pci_fixup_suspend"
+#define ALL_PCI_INIT_SECTIONS                                                  \
+	".pci_fixup_early", ".pci_fixup_header", ".pci_fixup_final",           \
+		".pci_fixup_enable", ".pci_fixup_resume",                      \
+		".pci_fixup_resume_early", ".pci_fixup_suspend"
 
 #define ALL_XXXINIT_SECTIONS MEM_INIT_SECTIONS
 #define ALL_XXXEXIT_SECTIONS MEM_EXIT_SECTIONS
@@ -943,31 +940,33 @@ static void check_section(const char *modname, struct elf_info *elf,
 #define ALL_EXIT_SECTIONS EXIT_SECTIONS, ALL_XXXEXIT_SECTIONS
 
 #define DATA_SECTIONS ".data", ".data.rel"
-#define TEXT_SECTIONS ".text", ".text.unlikely", ".sched.text", \
-		".kprobes.text", ".cpuidle.text", ".noinstr.text"
-#define OTHER_TEXT_SECTIONS ".ref.text", ".head.text", ".spinlock.text", \
-		".fixup", ".entry.text", ".exception.text", ".text.*", \
-		".coldtext"
+#define TEXT_SECTIONS                                                          \
+	".text", ".text.unlikely", ".sched.text", ".kprobes.text",             \
+		".cpuidle.text", ".noinstr.text"
+#define OTHER_TEXT_SECTIONS                                                    \
+	".ref.text", ".head.text", ".spinlock.text", ".fixup", ".entry.text",  \
+		".exception.text", ".hyp.text", ".text.*", ".coldtext"
 
-#define INIT_SECTIONS      ".init.*"
-#define MEM_INIT_SECTIONS  ".meminit.*"
+#define INIT_SECTIONS ".init.*"
+#define MEM_INIT_SECTIONS ".meminit.*"
 
-#define EXIT_SECTIONS      ".exit.*"
-#define MEM_EXIT_SECTIONS  ".memexit.*"
+#define EXIT_SECTIONS ".exit.*"
+#define MEM_EXIT_SECTIONS ".memexit.*"
 
-#define ALL_TEXT_SECTIONS  ALL_INIT_TEXT_SECTIONS, ALL_EXIT_TEXT_SECTIONS, \
-		TEXT_SECTIONS, OTHER_TEXT_SECTIONS
+#define ALL_TEXT_SECTIONS                                                      \
+	ALL_INIT_TEXT_SECTIONS, ALL_EXIT_TEXT_SECTIONS, TEXT_SECTIONS,         \
+		OTHER_TEXT_SECTIONS
 
 /* init data sections */
-static const char *const init_data_sections[] =
-	{ ALL_INIT_DATA_SECTIONS, NULL };
+static const char *const init_data_sections[] = { ALL_INIT_DATA_SECTIONS,
+						  NULL };
 
 /* all init sections */
 static const char *const init_sections[] = { ALL_INIT_SECTIONS, NULL };
 
 /* All init and exit sections (code + data) */
-static const char *const init_exit_sections[] =
-	{ALL_INIT_SECTIONS, ALL_EXIT_SECTIONS, NULL };
+static const char *const init_exit_sections[] = { ALL_INIT_SECTIONS,
+						  ALL_EXIT_SECTIONS, NULL };
 
 /* all text sections */
 static const char *const text_sections[] = { ALL_TEXT_SECTIONS, NULL };
@@ -975,21 +974,16 @@ static const char *const text_sections[] = { ALL_TEXT_SECTIONS, NULL };
 /* data section */
 static const char *const data_sections[] = { DATA_SECTIONS, NULL };
 
-
 /* symbols in .data that may refer to init/exit sections */
-#define DEFAULT_SYMBOL_WHITE_LIST					\
-	"*driver",							\
-	"*_template", /* scsi uses *_template a lot */			\
-	"*_timer",    /* arm uses ops structures named _timer a lot */	\
-	"*_sht",      /* scsi also used *_sht to some extent */		\
-	"*_ops",							\
-	"*_probe",							\
-	"*_probe_one",							\
-	"*_console"
+#define DEFAULT_SYMBOL_WHITE_LIST                                              \
+	"*driver", "*_template", /* scsi uses *_template a lot */              \
+		"*_timer", /* arm uses ops structures named _timer a lot */    \
+		"*_sht", /* scsi also used *_sht to some extent */             \
+		"*_ops", "*_probe", "*_probe_one", "*_console"
 
 static const char *const head_sections[] = { ".head.text*", NULL };
-static const char *const linker_symbols[] =
-	{ "__init_begin", "_sinittext", "_einittext", NULL };
+static const char *const linker_symbols[] = { "__init_begin", "_sinittext",
+					      "_einittext", NULL };
 static const char *const optim_symbols[] = { "*.constprop.*", NULL };
 
 enum mismatch {
@@ -1032,108 +1026,106 @@ struct sectioncheck {
 	enum mismatch mismatch;
 	const char *symbol_white_list[20];
 	void (*handler)(const char *modname, struct elf_info *elf,
-			const struct sectioncheck* const mismatch,
-			Elf_Rela *r, Elf_Sym *sym, const char *fromsec);
-
+			const struct sectioncheck *const mismatch, Elf_Rela *r,
+			Elf_Sym *sym, const char *fromsec);
 };
 
 static void extable_mismatch_handler(const char *modname, struct elf_info *elf,
-				     const struct sectioncheck* const mismatch,
+				     const struct sectioncheck *const mismatch,
 				     Elf_Rela *r, Elf_Sym *sym,
 				     const char *fromsec);
 
 static const struct sectioncheck sectioncheck[] = {
-/* Do not reference init/exit code/data from
+	/* Do not reference init/exit code/data from
  * normal code and data
  */
-{
-	.fromsec = { TEXT_SECTIONS, NULL },
-	.bad_tosec = { ALL_INIT_SECTIONS, NULL },
-	.mismatch = TEXT_TO_ANY_INIT,
-	.symbol_white_list = { DEFAULT_SYMBOL_WHITE_LIST, NULL },
-},
-{
-	.fromsec = { DATA_SECTIONS, NULL },
-	.bad_tosec = { ALL_XXXINIT_SECTIONS, NULL },
-	.mismatch = DATA_TO_ANY_INIT,
-	.symbol_white_list = { DEFAULT_SYMBOL_WHITE_LIST, NULL },
-},
-{
-	.fromsec = { DATA_SECTIONS, NULL },
-	.bad_tosec = { INIT_SECTIONS, NULL },
-	.mismatch = DATA_TO_ANY_INIT,
-	.symbol_white_list = {
-		"*_template", "*_timer", "*_sht", "*_ops",
-		"*_probe", "*_probe_one", "*_console", NULL
+	{
+		.fromsec = { TEXT_SECTIONS, NULL },
+		.bad_tosec = { ALL_INIT_SECTIONS, NULL },
+		.mismatch = TEXT_TO_ANY_INIT,
+		.symbol_white_list = { DEFAULT_SYMBOL_WHITE_LIST, NULL },
 	},
-},
-{
-	.fromsec = { TEXT_SECTIONS, NULL },
-	.bad_tosec = { ALL_EXIT_SECTIONS, NULL },
-	.mismatch = TEXT_TO_ANY_EXIT,
-	.symbol_white_list = { DEFAULT_SYMBOL_WHITE_LIST, NULL },
-},
-{
-	.fromsec = { DATA_SECTIONS, NULL },
-	.bad_tosec = { ALL_EXIT_SECTIONS, NULL },
-	.mismatch = DATA_TO_ANY_EXIT,
-	.symbol_white_list = { DEFAULT_SYMBOL_WHITE_LIST, NULL },
-},
-/* Do not reference init code/data from meminit code/data */
-{
-	.fromsec = { ALL_XXXINIT_SECTIONS, NULL },
-	.bad_tosec = { INIT_SECTIONS, NULL },
-	.mismatch = XXXINIT_TO_SOME_INIT,
-	.symbol_white_list = { DEFAULT_SYMBOL_WHITE_LIST, NULL },
-},
-/* Do not reference exit code/data from memexit code/data */
-{
-	.fromsec = { ALL_XXXEXIT_SECTIONS, NULL },
-	.bad_tosec = { EXIT_SECTIONS, NULL },
-	.mismatch = XXXEXIT_TO_SOME_EXIT,
-	.symbol_white_list = { DEFAULT_SYMBOL_WHITE_LIST, NULL },
-},
-/* Do not use exit code/data from init code */
-{
-	.fromsec = { ALL_INIT_SECTIONS, NULL },
-	.bad_tosec = { ALL_EXIT_SECTIONS, NULL },
-	.mismatch = ANY_INIT_TO_ANY_EXIT,
-	.symbol_white_list = { DEFAULT_SYMBOL_WHITE_LIST, NULL },
-},
-/* Do not use init code/data from exit code */
-{
-	.fromsec = { ALL_EXIT_SECTIONS, NULL },
-	.bad_tosec = { ALL_INIT_SECTIONS, NULL },
-	.mismatch = ANY_EXIT_TO_ANY_INIT,
-	.symbol_white_list = { DEFAULT_SYMBOL_WHITE_LIST, NULL },
-},
-{
-	.fromsec = { ALL_PCI_INIT_SECTIONS, NULL },
-	.bad_tosec = { INIT_SECTIONS, NULL },
-	.mismatch = ANY_INIT_TO_ANY_EXIT,
-	.symbol_white_list = { NULL },
-},
-/* Do not export init/exit functions or data */
-{
-	.fromsec = { "___ksymtab*", NULL },
-	.bad_tosec = { INIT_SECTIONS, EXIT_SECTIONS, NULL },
-	.mismatch = EXPORT_TO_INIT_EXIT,
-	.symbol_white_list = { DEFAULT_SYMBOL_WHITE_LIST, NULL },
-},
-{
-	.fromsec = { "__ex_table", NULL },
-	/* If you're adding any new black-listed sections in here, consider
+	{
+		.fromsec = { DATA_SECTIONS, NULL },
+		.bad_tosec = { ALL_XXXINIT_SECTIONS, NULL },
+		.mismatch = DATA_TO_ANY_INIT,
+		.symbol_white_list = { DEFAULT_SYMBOL_WHITE_LIST, NULL },
+	},
+	{
+		.fromsec = { DATA_SECTIONS, NULL },
+		.bad_tosec = { INIT_SECTIONS, NULL },
+		.mismatch = DATA_TO_ANY_INIT,
+		.symbol_white_list = { "*_template", "*_timer", "*_sht",
+				       "*_ops", "*_probe", "*_probe_one",
+				       "*_console", NULL },
+	},
+	{
+		.fromsec = { TEXT_SECTIONS, NULL },
+		.bad_tosec = { ALL_EXIT_SECTIONS, NULL },
+		.mismatch = TEXT_TO_ANY_EXIT,
+		.symbol_white_list = { DEFAULT_SYMBOL_WHITE_LIST, NULL },
+	},
+	{
+		.fromsec = { DATA_SECTIONS, NULL },
+		.bad_tosec = { ALL_EXIT_SECTIONS, NULL },
+		.mismatch = DATA_TO_ANY_EXIT,
+		.symbol_white_list = { DEFAULT_SYMBOL_WHITE_LIST, NULL },
+	},
+	/* Do not reference init code/data from meminit code/data */
+	{
+		.fromsec = { ALL_XXXINIT_SECTIONS, NULL },
+		.bad_tosec = { INIT_SECTIONS, NULL },
+		.mismatch = XXXINIT_TO_SOME_INIT,
+		.symbol_white_list = { DEFAULT_SYMBOL_WHITE_LIST, NULL },
+	},
+	/* Do not reference exit code/data from memexit code/data */
+	{
+		.fromsec = { ALL_XXXEXIT_SECTIONS, NULL },
+		.bad_tosec = { EXIT_SECTIONS, NULL },
+		.mismatch = XXXEXIT_TO_SOME_EXIT,
+		.symbol_white_list = { DEFAULT_SYMBOL_WHITE_LIST, NULL },
+	},
+	/* Do not use exit code/data from init code */
+	{
+		.fromsec = { ALL_INIT_SECTIONS, NULL },
+		.bad_tosec = { ALL_EXIT_SECTIONS, NULL },
+		.mismatch = ANY_INIT_TO_ANY_EXIT,
+		.symbol_white_list = { DEFAULT_SYMBOL_WHITE_LIST, NULL },
+	},
+	/* Do not use init code/data from exit code */
+	{
+		.fromsec = { ALL_EXIT_SECTIONS, NULL },
+		.bad_tosec = { ALL_INIT_SECTIONS, NULL },
+		.mismatch = ANY_EXIT_TO_ANY_INIT,
+		.symbol_white_list = { DEFAULT_SYMBOL_WHITE_LIST, NULL },
+	},
+	{
+		.fromsec = { ALL_PCI_INIT_SECTIONS, NULL },
+		.bad_tosec = { INIT_SECTIONS, NULL },
+		.mismatch = ANY_INIT_TO_ANY_EXIT,
+		.symbol_white_list = { NULL },
+	},
+	/* Do not export init/exit functions or data */
+	{
+		.fromsec = { "___ksymtab*", NULL },
+		.bad_tosec = { INIT_SECTIONS, EXIT_SECTIONS, NULL },
+		.mismatch = EXPORT_TO_INIT_EXIT,
+		.symbol_white_list = { DEFAULT_SYMBOL_WHITE_LIST, NULL },
+	},
+	{
+		.fromsec = { "__ex_table", NULL },
+		/* If you're adding any new black-listed sections in here, consider
 	 * adding a special 'printer' for them in scripts/check_extable.
 	 */
-	.bad_tosec = { ".altinstr_replacement", NULL },
-	.good_tosec = {ALL_TEXT_SECTIONS , NULL},
-	.mismatch = EXTABLE_TO_NON_TEXT,
-	.handler = extable_mismatch_handler,
-}
+		.bad_tosec = { ".altinstr_replacement", NULL },
+		.good_tosec = { ALL_TEXT_SECTIONS, NULL },
+		.mismatch = EXTABLE_TO_NON_TEXT,
+		.handler = extable_mismatch_handler,
+	}
 };
 
-static const struct sectioncheck *section_mismatch(
-		const char *fromsec, const char *tosec)
+static const struct sectioncheck *section_mismatch(const char *fromsec,
+						   const char *tosec)
 {
 	int i;
 	int elems = sizeof(sectioncheck) / sizeof(struct sectioncheck);
@@ -1150,9 +1142,11 @@ static const struct sectioncheck *section_mismatch(
 
 	for (i = 0; i < elems; i++) {
 		if (match(fromsec, check->fromsec)) {
-			if (check->bad_tosec[0] && match(tosec, check->bad_tosec))
+			if (check->bad_tosec[0] &&
+			    match(tosec, check->bad_tosec))
 				return check;
-			if (check->good_tosec[0] && !match(tosec, check->good_tosec))
+			if (check->good_tosec[0] &&
+			    !match(tosec, check->good_tosec))
 				return check;
 		}
 		check++;
@@ -1226,26 +1220,22 @@ static int secref_whitelist(const struct sectioncheck *mismatch,
 			    const char *tosec, const char *tosym)
 {
 	/* Check for pattern 1 */
-	if (match(tosec, init_data_sections) &&
-	    match(fromsec, data_sections) &&
+	if (match(tosec, init_data_sections) && match(fromsec, data_sections) &&
 	    strstarts(fromsym, "__param"))
 		return 0;
 
 	/* Check for pattern 1a */
-	if (strcmp(tosec, ".init.text") == 0 &&
-	    match(fromsec, data_sections) &&
+	if (strcmp(tosec, ".init.text") == 0 && match(fromsec, data_sections) &&
 	    strstarts(fromsym, "__param_ops_"))
 		return 0;
 
 	/* Check for pattern 2 */
-	if (match(tosec, init_exit_sections) &&
-	    match(fromsec, data_sections) &&
+	if (match(tosec, init_exit_sections) && match(fromsec, data_sections) &&
 	    match(fromsym, mismatch->symbol_white_list))
 		return 0;
 
 	/* Check for pattern 3 */
-	if (match(fromsec, head_sections) &&
-	    match(tosec, init_sections))
+	if (match(fromsec, head_sections) && match(tosec, init_sections))
 		return 0;
 
 	/* Check for pattern 4 */
@@ -1253,8 +1243,7 @@ static int secref_whitelist(const struct sectioncheck *mismatch,
 		return 0;
 
 	/* Check for pattern 5 */
-	if (match(fromsec, text_sections) &&
-	    match(tosec, init_sections) &&
+	if (match(fromsec, text_sections) && match(tosec, init_sections) &&
 	    match(fromsym, optim_symbols))
 		return 0;
 
@@ -1268,8 +1257,9 @@ static int secref_whitelist(const struct sectioncheck *mismatch,
 static inline int is_arm_mapping_symbol(const char *str)
 {
 	return str[0] == '$' &&
-	       (str[1] == 'a' || str[1] == 'd' || str[1] == 't' || str[1] == 'x')
-	       && (str[2] == '\0' || str[2] == '.');
+	       (str[1] == 'a' || str[1] == 'd' || str[1] == 't' ||
+		str[1] == 'x') &&
+	       (str[2] == '\0' || str[2] == '.');
 }
 
 /*
@@ -1414,7 +1404,7 @@ static int is_function(Elf_Sym *sym)
 		return -1;
 }
 
-static void print_section_list(const char * const list[20])
+static void print_section_list(const char *const list[20])
 {
 	const char *const *s = list;
 
@@ -1427,12 +1417,22 @@ static void print_section_list(const char * const list[20])
 	fprintf(stderr, "\n");
 }
 
-static inline void get_pretty_name(int is_func, const char** name, const char** name_p)
+static inline void get_pretty_name(int is_func, const char **name,
+				   const char **name_p)
 {
 	switch (is_func) {
-	case 0:	*name = "variable"; *name_p = ""; break;
-	case 1:	*name = "function"; *name_p = "()"; break;
-	default: *name = "(unknown reference)"; *name_p = ""; break;
+	case 0:
+		*name = "variable";
+		*name_p = "";
+		break;
+	case 1:
+		*name = "function";
+		*name_p = "()";
+		break;
+	default:
+		*name = "(unknown reference)";
+		*name_p = "";
+		break;
 	}
 }
 
@@ -1441,14 +1441,11 @@ static inline void get_pretty_name(int is_func, const char** name, const char** 
  * Try to find symbols near it so user can find it.
  * Check whitelist before warning - it may be a false positive.
  */
-static void report_sec_mismatch(const char *modname,
-				const struct sectioncheck *mismatch,
-				const char *fromsec,
-				unsigned long long fromaddr,
-				const char *fromsym,
-				int from_is_func,
-				const char *tosec, const char *tosym,
-				int to_is_func)
+static void
+report_sec_mismatch(const char *modname, const struct sectioncheck *mismatch,
+		    const char *fromsec, unsigned long long fromaddr,
+		    const char *fromsym, int from_is_func, const char *tosec,
+		    const char *tosym, int to_is_func)
 {
 	const char *from, *from_p;
 	const char *to, *to_p;
@@ -1470,25 +1467,24 @@ static void report_sec_mismatch(const char *modname,
 		prl_from = sec2annotation(fromsec);
 		prl_to = sec2annotation(tosec);
 		fprintf(stderr,
-		"The function %s%s() references\n"
-		"the %s %s%s%s.\n"
-		"This is often because %s lacks a %s\n"
-		"annotation or the annotation of %s is wrong.\n",
-		prl_from, fromsym,
-		to, prl_to, tosym, to_p,
-		fromsym, prl_to, tosym);
+			"The function %s%s() references\n"
+			"the %s %s%s%s.\n"
+			"This is often because %s lacks a %s\n"
+			"annotation or the annotation of %s is wrong.\n",
+			prl_from, fromsym, to, prl_to, tosym, to_p, fromsym,
+			prl_to, tosym);
 		free(prl_from);
 		free(prl_to);
 		break;
 	case DATA_TO_ANY_INIT: {
 		prl_to = sec2annotation(tosec);
 		fprintf(stderr,
-		"The variable %s references\n"
-		"the %s %s%s%s\n"
-		"If the reference is valid then annotate the\n"
-		"variable with __init* or __refdata (see linux/init.h) "
-		"or name the variable:\n",
-		fromsym, to, prl_to, tosym, to_p);
+			"The variable %s references\n"
+			"the %s %s%s%s\n"
+			"If the reference is valid then annotate the\n"
+			"variable with __init* or __refdata (see linux/init.h) "
+			"or name the variable:\n",
+			fromsym, to, prl_to, tosym, to_p);
 		print_section_list(mismatch->symbol_white_list);
 		free(prl_to);
 		break;
@@ -1496,21 +1492,21 @@ static void report_sec_mismatch(const char *modname,
 	case TEXT_TO_ANY_EXIT:
 		prl_to = sec2annotation(tosec);
 		fprintf(stderr,
-		"The function %s() references a %s in an exit section.\n"
-		"Often the %s %s%s has valid usage outside the exit section\n"
-		"and the fix is to remove the %sannotation of %s.\n",
-		fromsym, to, to, tosym, to_p, prl_to, tosym);
+			"The function %s() references a %s in an exit section.\n"
+			"Often the %s %s%s has valid usage outside the exit section\n"
+			"and the fix is to remove the %sannotation of %s.\n",
+			fromsym, to, to, tosym, to_p, prl_to, tosym);
 		free(prl_to);
 		break;
 	case DATA_TO_ANY_EXIT: {
 		prl_to = sec2annotation(tosec);
 		fprintf(stderr,
-		"The variable %s references\n"
-		"the %s %s%s%s\n"
-		"If the reference is valid then annotate the\n"
-		"variable with __exit* (see linux/init.h) or "
-		"name the variable:\n",
-		fromsym, to, prl_to, tosym, to_p);
+			"The variable %s references\n"
+			"the %s %s%s%s\n"
+			"If the reference is valid then annotate the\n"
+			"variable with __exit* (see linux/init.h) or "
+			"name the variable:\n",
+			fromsym, to, prl_to, tosym, to_p);
 		print_section_list(mismatch->symbol_white_list);
 		free(prl_to);
 		break;
@@ -1520,13 +1516,12 @@ static void report_sec_mismatch(const char *modname,
 		prl_from = sec2annotation(fromsec);
 		prl_to = sec2annotation(tosec);
 		fprintf(stderr,
-		"The %s %s%s%s references\n"
-		"a %s %s%s%s.\n"
-		"If %s is only used by %s then\n"
-		"annotate %s with a matching annotation.\n",
-		from, prl_from, fromsym, from_p,
-		to, prl_to, tosym, to_p,
-		tosym, fromsym, tosym);
+			"The %s %s%s%s references\n"
+			"a %s %s%s%s.\n"
+			"If %s is only used by %s then\n"
+			"annotate %s with a matching annotation.\n",
+			from, prl_from, fromsym, from_p, to, prl_to, tosym,
+			to_p, tosym, fromsym, tosym);
 		free(prl_from);
 		free(prl_to);
 		break;
@@ -1534,16 +1529,15 @@ static void report_sec_mismatch(const char *modname,
 		prl_from = sec2annotation(fromsec);
 		prl_to = sec2annotation(tosec);
 		fprintf(stderr,
-		"The %s %s%s%s references\n"
-		"a %s %s%s%s.\n"
-		"This is often seen when error handling "
-		"in the init function\n"
-		"uses functionality in the exit path.\n"
-		"The fix is often to remove the %sannotation of\n"
-		"%s%s so it may be used outside an exit section.\n",
-		from, prl_from, fromsym, from_p,
-		to, prl_to, tosym, to_p,
-		prl_to, tosym, to_p);
+			"The %s %s%s%s references\n"
+			"a %s %s%s%s.\n"
+			"This is often seen when error handling "
+			"in the init function\n"
+			"uses functionality in the exit path.\n"
+			"The fix is often to remove the %sannotation of\n"
+			"%s%s so it may be used outside an exit section.\n",
+			from, prl_from, fromsym, from_p, to, prl_to, tosym,
+			to_p, prl_to, tosym, to_p);
 		free(prl_from);
 		free(prl_to);
 		break;
@@ -1551,26 +1545,25 @@ static void report_sec_mismatch(const char *modname,
 		prl_from = sec2annotation(fromsec);
 		prl_to = sec2annotation(tosec);
 		fprintf(stderr,
-		"The %s %s%s%s references\n"
-		"a %s %s%s%s.\n"
-		"This is often seen when error handling "
-		"in the exit function\n"
-		"uses functionality in the init path.\n"
-		"The fix is often to remove the %sannotation of\n"
-		"%s%s so it may be used outside an init section.\n",
-		from, prl_from, fromsym, from_p,
-		to, prl_to, tosym, to_p,
-		prl_to, tosym, to_p);
+			"The %s %s%s%s references\n"
+			"a %s %s%s%s.\n"
+			"This is often seen when error handling "
+			"in the exit function\n"
+			"uses functionality in the init path.\n"
+			"The fix is often to remove the %sannotation of\n"
+			"%s%s so it may be used outside an init section.\n",
+			from, prl_from, fromsym, from_p, to, prl_to, tosym,
+			to_p, prl_to, tosym, to_p);
 		free(prl_from);
 		free(prl_to);
 		break;
 	case EXPORT_TO_INIT_EXIT:
 		prl_to = sec2annotation(tosec);
 		fprintf(stderr,
-		"The symbol %s is exported and annotated %s\n"
-		"Fix this by removing the %sannotation of %s "
-		"or drop the export.\n",
-		tosym, prl_to, prl_to, tosym);
+			"The symbol %s is exported and annotated %s\n"
+			"Fix this by removing the %sannotation of %s "
+			"or drop the export.\n",
+			tosym, prl_to, prl_to, tosym);
 		free(prl_to);
 		break;
 	case EXTABLE_TO_NON_TEXT:
@@ -1582,8 +1575,9 @@ static void report_sec_mismatch(const char *modname,
 }
 
 static void default_mismatch_handler(const char *modname, struct elf_info *elf,
-				     const struct sectioncheck* const mismatch,
-				     Elf_Rela *r, Elf_Sym *sym, const char *fromsec)
+				     const struct sectioncheck *const mismatch,
+				     Elf_Rela *r, Elf_Sym *sym,
+				     const char *fromsec)
 {
 	const char *tosec;
 	Elf_Sym *to;
@@ -1602,21 +1596,21 @@ static void default_mismatch_handler(const char *modname, struct elf_info *elf,
 	tosym = sym_name(elf, to);
 
 	/* check whitelist - we may ignore it */
-	if (secref_whitelist(mismatch,
-			     fromsec, fromsym, tosec, tosym)) {
-		report_sec_mismatch(modname, mismatch,
-				    fromsec, r->r_offset, fromsym,
-				    is_function(from), tosec, tosym,
+	if (secref_whitelist(mismatch, fromsec, fromsym, tosec, tosym)) {
+		report_sec_mismatch(modname, mismatch, fromsec, r->r_offset,
+				    fromsym, is_function(from), tosec, tosym,
 				    is_function(to));
 	}
 }
 
-static int is_executable_section(struct elf_info* elf, unsigned int section_index)
+static int is_executable_section(struct elf_info *elf,
+				 unsigned int section_index)
 {
 	if (section_index > elf->num_sections)
 		fatal("section_index is outside elf->num_sections!\n");
 
-	return ((elf->sechdrs[section_index].sh_flags & SHF_EXECINSTR) == SHF_EXECINSTR);
+	return ((elf->sechdrs[section_index].sh_flags & SHF_EXECINSTR) ==
+		SHF_EXECINSTR);
 }
 
 /*
@@ -1624,7 +1618,7 @@ static int is_executable_section(struct elf_info* elf, unsigned int section_inde
  * to know the sizeof(struct exception_table_entry) for the target architecture.
  */
 static unsigned int extable_entry_size = 0;
-static void find_extable_entry_size(const char* const sec, const Elf_Rela* r)
+static void find_extable_entry_size(const char *const sec, const Elf_Rela *r)
 {
 	/*
 	 * If we're currently checking the second relocation within __ex_table,
@@ -1649,37 +1643,35 @@ static inline bool is_extable_fault_address(Elf_Rela *r)
 	if (r->r_offset && extable_entry_size == 0)
 		fatal("extable_entry size hasn't been discovered!\n");
 
-	return ((r->r_offset == 0) ||
-		(r->r_offset % extable_entry_size == 0));
+	return ((r->r_offset == 0) || (r->r_offset % extable_entry_size == 0));
 }
 
-#define is_second_extable_reloc(Start, Cur, Sec)			\
+#define is_second_extable_reloc(Start, Cur, Sec)                               \
 	(((Cur) == (Start) + 1) && (strcmp("__ex_table", (Sec)) == 0))
 
-static void report_extable_warnings(const char* modname, struct elf_info* elf,
-				    const struct sectioncheck* const mismatch,
-				    Elf_Rela* r, Elf_Sym* sym,
-				    const char* fromsec, const char* tosec)
+static void report_extable_warnings(const char *modname, struct elf_info *elf,
+				    const struct sectioncheck *const mismatch,
+				    Elf_Rela *r, Elf_Sym *sym,
+				    const char *fromsec, const char *tosec)
 {
-	Elf_Sym* fromsym = find_elf_symbol2(elf, r->r_offset, fromsec);
-	const char* fromsym_name = sym_name(elf, fromsym);
-	Elf_Sym* tosym = find_elf_symbol(elf, r->r_addend, sym);
-	const char* tosym_name = sym_name(elf, tosym);
-	const char* from_pretty_name;
-	const char* from_pretty_name_p;
-	const char* to_pretty_name;
-	const char* to_pretty_name_p;
+	Elf_Sym *fromsym = find_elf_symbol2(elf, r->r_offset, fromsec);
+	const char *fromsym_name = sym_name(elf, fromsym);
+	Elf_Sym *tosym = find_elf_symbol(elf, r->r_addend, sym);
+	const char *tosym_name = sym_name(elf, tosym);
+	const char *from_pretty_name;
+	const char *from_pretty_name_p;
+	const char *to_pretty_name;
+	const char *to_pretty_name_p;
 
-	get_pretty_name(is_function(fromsym),
-			&from_pretty_name, &from_pretty_name_p);
-	get_pretty_name(is_function(tosym),
-			&to_pretty_name, &to_pretty_name_p);
+	get_pretty_name(is_function(fromsym), &from_pretty_name,
+			&from_pretty_name_p);
+	get_pretty_name(is_function(tosym), &to_pretty_name, &to_pretty_name_p);
 
 	warn("%s(%s+0x%lx): Section mismatch in reference"
 	     " from the %s %s%s to the %s %s:%s%s\n",
 	     modname, fromsec, (long)r->r_offset, from_pretty_name,
-	     fromsym_name, from_pretty_name_p,
-	     to_pretty_name, tosec, tosym_name, to_pretty_name_p);
+	     fromsym_name, from_pretty_name_p, to_pretty_name, tosec,
+	     tosym_name, to_pretty_name_p);
 
 	if (!match(tosec, mismatch->bad_tosec) &&
 	    is_executable_section(elf, get_secindex(elf, sym)))
@@ -1694,12 +1686,12 @@ static void report_extable_warnings(const char* modname, struct elf_info* elf,
 			fromsec, (long)r->r_offset, tosec, tosec, tosec);
 }
 
-static void extable_mismatch_handler(const char* modname, struct elf_info *elf,
-				     const struct sectioncheck* const mismatch,
-				     Elf_Rela* r, Elf_Sym* sym,
+static void extable_mismatch_handler(const char *modname, struct elf_info *elf,
+				     const struct sectioncheck *const mismatch,
+				     Elf_Rela *r, Elf_Sym *sym,
 				     const char *fromsec)
 {
-	const char* tosec = sec_name(elf, get_secindex(elf, sym));
+	const char *tosec = sec_name(elf, get_secindex(elf, sym));
 
 	sec_mismatch_count++;
 
@@ -1731,23 +1723,24 @@ static void extable_mismatch_handler(const char* modname, struct elf_info *elf,
 }
 
 static void check_section_mismatch(const char *modname, struct elf_info *elf,
-				   Elf_Rela *r, Elf_Sym *sym, const char *fromsec)
+				   Elf_Rela *r, Elf_Sym *sym,
+				   const char *fromsec)
 {
 	const char *tosec = sec_name(elf, get_secindex(elf, sym));
 	const struct sectioncheck *mismatch = section_mismatch(fromsec, tosec);
 
 	if (mismatch) {
 		if (mismatch->handler)
-			mismatch->handler(modname, elf,  mismatch,
-					  r, sym, fromsec);
+			mismatch->handler(modname, elf, mismatch, r, sym,
+					  fromsec);
 		else
-			default_mismatch_handler(modname, elf, mismatch,
-						 r, sym, fromsec);
+			default_mismatch_handler(modname, elf, mismatch, r, sym,
+						 fromsec);
 	}
 }
 
-static unsigned int *reloc_location(struct elf_info *elf,
-				    Elf_Shdr *sechdr, Elf_Rela *r)
+static unsigned int *reloc_location(struct elf_info *elf, Elf_Shdr *sechdr,
+				    Elf_Rela *r)
 {
 	return sym_get_data_by_offset(elf, sechdr->sh_info, r->r_offset);
 }
@@ -1772,20 +1765,20 @@ static int addend_386_rel(struct elf_info *elf, Elf_Shdr *sechdr, Elf_Rela *r)
 }
 
 #ifndef R_ARM_CALL
-#define R_ARM_CALL	28
+#define R_ARM_CALL 28
 #endif
 #ifndef R_ARM_JUMP24
-#define R_ARM_JUMP24	29
+#define R_ARM_JUMP24 29
 #endif
 
-#ifndef	R_ARM_THM_CALL
-#define	R_ARM_THM_CALL		10
+#ifndef R_ARM_THM_CALL
+#define R_ARM_THM_CALL 10
 #endif
-#ifndef	R_ARM_THM_JUMP24
-#define	R_ARM_THM_JUMP24	30
+#ifndef R_ARM_THM_JUMP24
+#define R_ARM_THM_JUMP24 30
 #endif
-#ifndef	R_ARM_THM_JUMP19
-#define	R_ARM_THM_JUMP19	51
+#ifndef R_ARM_THM_JUMP19
+#define R_ARM_THM_JUMP19 51
 #endif
 
 static int addend_arm_rel(struct elf_info *elf, Elf_Shdr *sechdr, Elf_Rela *r)
@@ -1795,8 +1788,8 @@ static int addend_arm_rel(struct elf_info *elf, Elf_Shdr *sechdr, Elf_Rela *r)
 	switch (r_typ) {
 	case R_ARM_ABS32:
 		/* From ARM ABI: (S + A) | T */
-		r->r_addend = (int)(long)
-			      (elf->symtab_start + ELF_R_SYM(r->r_info));
+		r->r_addend =
+			(int)(long)(elf->symtab_start + ELF_R_SYM(r->r_info));
 		break;
 	case R_ARM_PC24:
 	case R_ARM_CALL:
@@ -1805,9 +1798,8 @@ static int addend_arm_rel(struct elf_info *elf, Elf_Shdr *sechdr, Elf_Rela *r)
 	case R_ARM_THM_JUMP24:
 	case R_ARM_THM_JUMP19:
 		/* From ARM ABI: ((S + A) | T) - P */
-		r->r_addend = (int)(long)(elf->hdr +
-			      sechdr->sh_offset +
-			      (r->r_offset - sechdr->sh_addr));
+		r->r_addend = (int)(long)(elf->hdr + sechdr->sh_offset +
+					  (r->r_offset - sechdr->sh_addr));
 		break;
 	default:
 		return 1;
@@ -1822,7 +1814,7 @@ static int addend_mips_rel(struct elf_info *elf, Elf_Shdr *sechdr, Elf_Rela *r)
 	unsigned int inst;
 
 	if (r_typ == R_MIPS_HI16)
-		return 1;	/* skip this */
+		return 1; /* skip this */
 	inst = TO_NATIVE(*location);
 	switch (r_typ) {
 	case R_MIPS_LO16:
@@ -1841,14 +1833,14 @@ static int addend_mips_rel(struct elf_info *elf, Elf_Shdr *sechdr, Elf_Rela *r)
 static void section_rela(const char *modname, struct elf_info *elf,
 			 Elf_Shdr *sechdr)
 {
-	Elf_Sym  *sym;
+	Elf_Sym *sym;
 	Elf_Rela *rela;
 	Elf_Rela r;
 	unsigned int r_sym;
 	const char *fromsec;
 
 	Elf_Rela *start = (void *)elf->hdr + sechdr->sh_offset;
-	Elf_Rela *stop  = (void *)start + sechdr->sh_size;
+	Elf_Rela *stop = (void *)start + sechdr->sh_size;
 
 	fromsec = sech_name(elf, sechdr);
 	fromsec += strlen(".rela");
@@ -1894,7 +1886,7 @@ static void section_rel(const char *modname, struct elf_info *elf,
 	const char *fromsec;
 
 	Elf_Rel *start = (void *)elf->hdr + sechdr->sh_offset;
-	Elf_Rel *stop  = (void *)start + sechdr->sh_size;
+	Elf_Rel *stop = (void *)start + sechdr->sh_size;
 
 	fromsec = sech_name(elf, sechdr);
 	fromsec += strlen(".rel");
@@ -1996,7 +1988,7 @@ static void read_symbols(const char *modname)
 	char *license;
 	char *namespace;
 	struct module *mod;
-	struct elf_info info = { };
+	struct elf_info info = {};
 	Elf_Sym *sym;
 
 	if (!parse_elf(&info, modname))
@@ -2032,8 +2024,8 @@ static void read_symbols(const char *modname)
 		namespace = get_modinfo(&info, "import_ns");
 		while (namespace) {
 			add_namespace(&mod->imported_namespaces, namespace);
-			namespace = get_next_modinfo(&info, "import_ns",
-						     namespace);
+			namespace =
+				get_next_modinfo(&info, "import_ns", namespace);
 		}
 	}
 
@@ -2063,9 +2055,8 @@ static void read_symbols(const char *modname)
 		unsigned char bind = ELF_ST_BIND(sym->st_info);
 
 		if (bind == STB_GLOBAL || bind == STB_WEAK) {
-			struct symbol *s =
-				find_symbol(remove_dot(info.strtab +
-						       sym->st_name));
+			struct symbol *s = find_symbol(
+				remove_dot(info.strtab + sym->st_name));
 
 			if (s)
 				s->is_static = 0;
@@ -2104,7 +2095,7 @@ static void read_symbols_from_files(const char *filename)
 
 	while (fgets(fname, PATH_MAX, in) != NULL) {
 		if (strends(fname, "\n"))
-			fname[strlen(fname)-1] = '\0';
+			fname[strlen(fname) - 1] = '\0';
 		read_symbols(fname);
 	}
 
@@ -2169,8 +2160,7 @@ static void check_for_unused(enum export exp, const char *m, const char *s)
 	switch (exp) {
 	case export_unused:
 	case export_unused_gpl:
-		warn("module %s.ko uses symbol '%s' marked UNUSED\n",
-		     m, s);
+		warn("module %s.ko uses symbol '%s' marked UNUSED\n", m, s);
 		break;
 	default:
 		/* ignore */
@@ -2187,7 +2177,8 @@ static void check_exports(struct module *mod)
 		exp = find_symbol(s->name);
 		if (!exp || exp->module == mod) {
 			if (have_vmlinux && !s->weak)
-				modpost_log(warn_unresolved ? LOG_WARN : LOG_ERROR,
+				modpost_log(warn_unresolved ? LOG_WARN :
+							      LOG_ERROR,
 					    "\"%s\" [%s.ko] undefined!\n",
 					    s->name, mod->name);
 			continue;
@@ -2200,9 +2191,10 @@ static void check_exports(struct module *mod)
 
 		if (exp->namespace &&
 		    !module_imports_namespace(mod, exp->namespace)) {
-			modpost_log(allow_missing_ns_imports ? LOG_WARN : LOG_ERROR,
-				    "module %s uses symbol %s from namespace %s, but does not import it.\n",
-				    basename, exp->name, exp->namespace);
+			modpost_log(
+				allow_missing_ns_imports ? LOG_WARN : LOG_ERROR,
+				"module %s uses symbol %s from namespace %s, but does not import it.\n",
+				basename, exp->name, exp->namespace);
 			add_namespace(&mod->missing_namespaces, exp->namespace);
 		}
 
@@ -2275,7 +2267,8 @@ static void add_intree_flag(struct buffer *b, int is_intree)
 static void add_scmversion(struct buffer *b)
 {
 	if (module_scmversion[0] != '\0')
-		buf_printf(b, "\nMODULE_INFO(scmversion, \"%s\");\n", module_scmversion);
+		buf_printf(b, "\nMODULE_INFO(scmversion, \"%s\");\n",
+			   module_scmversion);
 }
 
 /* Cannot check for assembler */
@@ -2319,17 +2312,16 @@ static void add_versions(struct buffer *b, struct module *mod)
 		if (!s->module)
 			continue;
 		if (!s->crc_valid) {
-			warn("\"%s\" [%s.ko] has no CRC!\n",
-				s->name, mod->name);
+			warn("\"%s\" [%s.ko] has no CRC!\n", s->name,
+			     mod->name);
 			continue;
 		}
 		if (strlen(s->name) >= MODULE_NAME_LEN) {
-			error("too long symbol \"%s\" [%s.ko]\n",
-			      s->name, mod->name);
+			error("too long symbol \"%s\" [%s.ko]\n", s->name,
+			      mod->name);
 			break;
 		}
-		buf_printf(b, "\t{ %#8x, \"%s\" },\n",
-			   s->crc, s->name);
+		buf_printf(b, "\t{ %#8x, \"%s\" },\n", s->crc, s->name);
 	}
 
 	buf_printf(b, "};\n");
@@ -2422,11 +2414,11 @@ static void write_if_changed(struct buffer *b, const char *fname)
 	fclose(file);
 	return;
 
- free_write:
+free_write:
 	free(tmp);
- close_write:
+close_write:
 	fclose(file);
- write:
+write:
 	write_buf(b, fname);
 }
 
@@ -2485,12 +2477,12 @@ fail:
 
 static void write_dump(const char *fname)
 {
-	struct buffer buf = { };
+	struct buffer buf = {};
 	struct symbol *symbol;
 	const char *namespace;
 	int n;
 
-	for (n = 0; n < SYMBOL_HASH_SIZE ; n++) {
+	for (n = 0; n < SYMBOL_HASH_SIZE; n++) {
 		symbol = symbolhash[n];
 		while (symbol) {
 			if (!symbol->module->from_dump) {
@@ -2515,7 +2507,6 @@ static void write_namespace_deps_files(const char *fname)
 	struct buffer ns_deps_buf = {};
 
 	for (mod = modules; mod; mod = mod->next) {
-
 		if (mod->from_dump || !mod->missing_namespaces)
 			continue;
 
@@ -2539,7 +2530,7 @@ struct dump_list {
 int main(int argc, char **argv)
 {
 	struct module *mod;
-	struct buffer buf = { };
+	struct buffer buf = {};
 	char *missing_namespace_deps = NULL;
 	char *dump_write = NULL, *files_source = NULL;
 	int opt;
@@ -2586,7 +2577,8 @@ int main(int argc, char **argv)
 			missing_namespace_deps = optarg;
 			break;
 		case 'v':
-			strncpy(module_scmversion, optarg, sizeof(module_scmversion) - 1);
+			strncpy(module_scmversion, optarg,
+				sizeof(module_scmversion) - 1);
 			break;
 		default:
 			exit(1);
@@ -2653,9 +2645,8 @@ int main(int argc, char **argv)
 
 		for (s = symbolhash[n]; s; s = s->next) {
 			if (s->is_static)
-				error("\"%s\" [%s] is a static %s\n",
-				      s->name, s->module->name,
-				      export_str(s->export));
+				error("\"%s\" [%s] is a static %s\n", s->name,
+				      s->module->name, export_str(s->export));
 		}
 	}
 

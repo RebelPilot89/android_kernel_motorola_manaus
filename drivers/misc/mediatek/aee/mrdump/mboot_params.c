@@ -27,6 +27,8 @@
 #include <linux/uaccess.h>
 #include <linux/vmalloc.h>
 
+#define AEE_SRAM_PRINTK_IMPLEMENTED
+#define AEE_IS_ENABLE_IMPLEMENTED
 #include <mt-plat/aee.h>
 #include "mboot_params_internal.h"
 #include "mrdump_helper.h"
@@ -186,7 +188,6 @@ struct last_reboot_reason {
 	uint8_t etc_status;
 	uint8_t etc_mode;
 
-
 	int8_t thermal_temp[THERMAL_RESERVED_TZS];
 	uint8_t thermal_status;
 	uint8_t thermal_ATM_status;
@@ -227,18 +228,18 @@ struct mboot_params_buffer {
 	uint32_t sig;
 	/* for size comptible */
 	uint32_t off_pl;
-	uint32_t off_lpl;	/* last preloader: struct reboot_reason_pl */
+	uint32_t off_lpl; /* last preloader: struct reboot_reason_pl */
 	uint32_t sz_pl;
 	uint32_t off_lk;
-	uint32_t off_llk;	/* last lk: struct reboot_reason_lk */
+	uint32_t off_llk; /* last lk: struct reboot_reason_lk */
 	uint32_t sz_lk;
 	uint32_t padding[3];
 	uint32_t sz_buffer;
-	uint32_t off_linux;	/* struct last_reboot_reason */
+	uint32_t off_linux; /* struct last_reboot_reason */
 	uint32_t filling[4];
 };
 
-#define REBOOT_REASON_SIG (0x43474244)	/* DBRR */
+#define REBOOT_REASON_SIG (0x43474244) /* DBRR */
 static int FIQ_log_size = sizeof(struct mboot_params_buffer);
 
 static struct mboot_params_buffer *mboot_params_buffer;
@@ -253,7 +254,7 @@ static void mboot_params_init_val(void);
 
 #include "desc/desc_s.h"
 void aee_rr_get_desc_info(unsigned long *addr, unsigned long *size,
-		unsigned long *start)
+			  unsigned long *start)
 {
 	if (!addr || !size || !start)
 		return;
@@ -279,21 +280,22 @@ static void *_memcpy(void *dest, const void *src, size_t count)
 #define memcpy _memcpy
 #endif
 
-#define LAST_RR_SEC_VAL(header, sect, type, item) \
-	(header->off_##sect ? \
-	((type *)((void *)header + header->off_##sect))->item : 0)
-#define LAST_RRR_BUF_VAL(buf, rr_item)	\
+#define LAST_RR_SEC_VAL(header, sect, type, item)                              \
+	(header->off_##sect ?                                                  \
+		 ((type *)((void *)header + header->off_##sect))->item :       \
+		 0)
+#define LAST_RRR_BUF_VAL(buf, rr_item)                                         \
 	LAST_RR_SEC_VAL(buf, linux, struct last_reboot_reason, rr_item)
-#define LAST_RRPL_BUF_VAL(buf, rr_item)	\
+#define LAST_RRPL_BUF_VAL(buf, rr_item)                                        \
 	LAST_RR_SEC_VAL(buf, pl, struct reboot_reason_pl, rr_item)
-#define LAST_RRR_VAL(rr_item)	\
-	LAST_RR_SEC_VAL(mboot_params_old, linux, struct last_reboot_reason, \
+#define LAST_RRR_VAL(rr_item)                                                  \
+	LAST_RR_SEC_VAL(mboot_params_old, linux, struct last_reboot_reason,    \
 			rr_item)
-#define LAST_RRPL_VAL(rr_item)	\
+#define LAST_RRPL_VAL(rr_item)                                                 \
 	LAST_RR_SEC_VAL(mboot_params_old, pl, struct reboot_reason_pl, rr_item)
 
-void get_mbootlog_buffer(unsigned long *addr,
-		unsigned long *size, unsigned long *start)
+void get_mbootlog_buffer(unsigned long *addr, unsigned long *size,
+			 unsigned long *start)
 {
 	*addr = (unsigned long)mbootlog_buf;
 	*size = mbootlog_buf_len;
@@ -311,7 +313,7 @@ void sram_log_save(const char *msg, int count)
 	/* count >= buffer_size, full the buffer */
 	if (count >= mbootlog_buf_len) {
 		memcpy(mbootlog_buf, msg + (count - mbootlog_buf_len),
-				mbootlog_buf_len);
+		       mbootlog_buf_len);
 		mbootlog_first_idx = 0;
 		mbootlog_size = mbootlog_buf_len;
 	} else if (count > (mbootlog_buf_len - mbootlog_first_idx)) {
@@ -362,7 +364,7 @@ void aee_sram_fiq_log(const char *msg)
 EXPORT_SYMBOL(aee_sram_fiq_log);
 
 static void mboot_params_write(struct console *console, const char *s,
-		unsigned int count)
+			       unsigned int count)
 {
 	unsigned long flags;
 
@@ -403,14 +405,14 @@ void aee_sram_printk(const char *fmt, ...)
 	t = cpu_clock(raw_smp_processor_id());
 	nanosec_rem = do_div(t, 1000000000);
 	tlen = sprintf(sram_printk_buf, ">%5lu.%06lu< ", (unsigned long)t,
-			nanosec_rem / 1000);
+		       nanosec_rem / 1000);
 	if (tlen < 0) {
 		preempt_enable();
 		return;
 	}
 
 	r = vscnprintf(sram_printk_buf + tlen, sizeof(sram_printk_buf) - tlen,
-			fmt, args);
+		       fmt, args);
 
 	mboot_params_write(NULL, sram_printk_buf, r + tlen);
 	preempt_enable();
@@ -426,7 +428,8 @@ int aee_is_enable(void)
 
 	node = of_find_node_by_path("/chosen");
 	if (node) {
-		if (of_property_read_string(node, "aee,enable", &aee_enable) == 0) {
+		if (of_property_read_string(node, "aee,enable", &aee_enable) ==
+		    0) {
 			if (strnstr(aee_enable, "mini", 4))
 				ret = 1;
 			else if (strnstr(aee_enable, "full", 4))
@@ -451,13 +454,12 @@ void mboot_params_enable_console(int enabled)
 
 static int mboot_params_check_header(struct mboot_params_buffer *buffer)
 {
-	if (!buffer || (buffer->sz_buffer != mboot_params_buffer->sz_buffer)
-		|| buffer->off_pl > buffer->sz_buffer
-		|| buffer->off_lk > buffer->sz_buffer
-		|| buffer->off_linux > buffer->sz_buffer
-		|| buffer->off_pl + ALIGN(buffer->sz_pl, 64) != buffer->off_lpl
-		|| buffer->off_lk + ALIGN(buffer->sz_lk, 64)
-			!= buffer->off_llk) {
+	if (!buffer || (buffer->sz_buffer != mboot_params_buffer->sz_buffer) ||
+	    buffer->off_pl > buffer->sz_buffer ||
+	    buffer->off_lk > buffer->sz_buffer ||
+	    buffer->off_linux > buffer->sz_buffer ||
+	    buffer->off_pl + ALIGN(buffer->sz_pl, 64) != buffer->off_lpl ||
+	    buffer->off_lk + ALIGN(buffer->sz_lk, 64) != buffer->off_llk) {
 		pr_notice("mboot_params: ilegal header.");
 		return -1;
 	} else
@@ -470,24 +472,26 @@ static void aee_rr_show_in_log(void)
 		pr_notice("mboot_params: no valid data\n");
 	else {
 		pr_notice("pmic & external buck: 0x%x\n",
-				LAST_RRR_VAL(pmic_ext_buck));
-		pr_notice("mboot_params: CPU notifier status: %d, %d, 0x%llx, %llu\n",
-				LAST_RRR_VAL(hotplug_cpu_event),
-				LAST_RRR_VAL(hotplug_cb_index),
-				LAST_RRR_VAL(hotplug_cb_fp),
-				LAST_RRR_VAL(hotplug_cb_times));
-		pr_notice("mboot_params: CPU HPS footprint: %llu, 0x%x, %d, %llu\n",
-				LAST_RRR_VAL(hps_cb_enter_times),
-				LAST_RRR_VAL(hps_cb_cpu_bitmask),
-				LAST_RRR_VAL(hps_cb_footprint),
-				LAST_RRR_VAL(hps_cb_fp_times));
+			  LAST_RRR_VAL(pmic_ext_buck));
+		pr_notice(
+			"mboot_params: CPU notifier status: %d, %d, 0x%llx, %llu\n",
+			LAST_RRR_VAL(hotplug_cpu_event),
+			LAST_RRR_VAL(hotplug_cb_index),
+			LAST_RRR_VAL(hotplug_cb_fp),
+			LAST_RRR_VAL(hotplug_cb_times));
+		pr_notice(
+			"mboot_params: CPU HPS footprint: %llu, 0x%x, %d, %llu\n",
+			LAST_RRR_VAL(hps_cb_enter_times),
+			LAST_RRR_VAL(hps_cb_cpu_bitmask),
+			LAST_RRR_VAL(hps_cb_footprint),
+			LAST_RRR_VAL(hps_cb_fp_times));
 		pr_notice("mboot_params: last init function: 0x%lx\n",
-				LAST_RRR_VAL(last_init_func));
+			  LAST_RRR_VAL(last_init_func));
 	}
 }
 
 static int __init mboot_params_save_old(struct mboot_params_buffer *buffer,
-		size_t buffer_size)
+					size_t buffer_size)
 {
 	mboot_params_old = kmalloc(buffer_size, GFP_KERNEL);
 	if (!mboot_params_old)
@@ -498,13 +502,13 @@ static int __init mboot_params_save_old(struct mboot_params_buffer *buffer,
 }
 
 static int __init mboot_params_init(struct mboot_params_buffer *buffer,
-		size_t buffer_size)
+				    size_t buffer_size)
 {
 	mboot_params_buffer = buffer;
 	buffer->sz_buffer = buffer_size;
 
-	if (buffer->sig != REBOOT_REASON_SIG  ||
-			mboot_params_check_header(buffer)) {
+	if (buffer->sig != REBOOT_REASON_SIG ||
+	    mboot_params_check_header(buffer)) {
 		memset_io((void *)buffer, 0, buffer_size);
 		buffer->sig = REBOOT_REASON_SIG;
 		mboot_params_clear = 1;
@@ -513,15 +517,15 @@ static int __init mboot_params_init(struct mboot_params_buffer *buffer,
 	}
 	if (mboot_params_save_old(buffer, buffer_size))
 		pr_notice("mboot_params: failed to creat old buffer\n");
-	if (buffer->sz_lk != 0 && buffer->off_lk + ALIGN(buffer->sz_lk, 64) ==
-			buffer->off_llk)
+	if (buffer->sz_lk != 0 &&
+	    buffer->off_lk + ALIGN(buffer->sz_lk, 64) == buffer->off_llk)
 		buffer->off_linux = buffer->off_llk + ALIGN(buffer->sz_lk, 64);
 	else
 		/* OTA:leave enough space for pl/lk */
 		buffer->off_linux = 512;
 	buffer->sz_buffer = buffer_size;
 	memset_io((void *)buffer + buffer->off_linux, 0,
-			buffer_size - buffer->off_linux);
+		  buffer_size - buffer->off_linux);
 	mboot_params_init_desc(buffer->off_linux);
 #ifndef CONFIG_PSTORE
 	register_console(&mboot_params);
@@ -551,13 +555,12 @@ static int __init dt_get_mboot_params(struct mem_desc_t *data)
 	if (!np_chosen)
 		np_chosen = of_find_node_by_path("/chosen@0");
 
-	sram = (struct mem_desc_t *)of_get_property(np_chosen,
-						    "ram_console",
+	sram = (struct mem_desc_t *)of_get_property(np_chosen, "ram_console",
 						    NULL);
 	if (sram) {
 		pr_notice("mboot_params:[DT] 0x%x@0x%x, 0x%x(0x%x)\n",
-				sram->size, sram->start,
-				sram->def_type, sram->offset);
+			  sram->size, sram->start, sram->def_type,
+			  sram->offset);
 		*data = *sram;
 		return 1;
 	}
@@ -618,8 +621,9 @@ static phys_addr_t mboot_params_reserve_memory(void)
 	return rmem->base + MBOOT_PARAMS_DRAM_OFF;
 }
 
-static void mboot_params_parse_memory_info(struct mem_desc_t *sram,
-		struct mboot_params_memory_info *p_memory_info)
+static void
+mboot_params_parse_memory_info(struct mem_desc_t *sram,
+			       struct mboot_params_memory_info *p_memory_info)
 {
 	struct mboot_params_memory_info *memory_info;
 	u32 magic1, magic2;
@@ -628,11 +632,12 @@ static void mboot_params_parse_memory_info(struct mem_desc_t *sram,
 	u32 mini_addr, mini_size;
 
 	if (sram->offset > sram->size) {
-		memory_info = ioremap_wc((sram->start + sram->offset),
-				sizeof(struct mboot_params_memory_info));
+		memory_info =
+			ioremap_wc((sram->start + sram->offset),
+				   sizeof(struct mboot_params_memory_info));
 		if (!memory_info) {
 			pr_info("mboot_params: [DT] offset:0x%x not map\n",
-					sram->offset);
+				sram->offset);
 			mboot_params_fatal("memory_info not map");
 			return;
 		}
@@ -647,17 +652,15 @@ static void mboot_params_parse_memory_info(struct mem_desc_t *sram,
 
 		if (magic1 == MEM_MAGIC1 && magic2 == MEM_MAGIC2) {
 			mrdump_mini_set_addr_size(mini_addr, mini_size);
-			pr_notice("mboot_params: [DT] 0x%x@0x%x\n",
-					mini_size, mini_addr);
+			pr_notice("mboot_params: [DT] 0x%x@0x%x\n", mini_size,
+				  mini_addr);
 			memcpy(p_memory_info, memory_info,
-				sizeof(struct mboot_params_memory_info));
+			       sizeof(struct mboot_params_memory_info));
 		} else {
-			pr_info("[DT] self (0x%x@0x%x)-0x%x@0x%x\n",
-					magic1, magic2,
-					dram_size, dram_addr);
-			pr_info("[DT] mrdump 0x%x@0x%x-0x%x@0x%x\n",
-					mini_size, mini_addr,
-					mrdump_size, mrdump_addr);
+			pr_info("[DT] self (0x%x@0x%x)-0x%x@0x%x\n", magic1,
+				magic2, dram_size, dram_addr);
+			pr_info("[DT] mrdump 0x%x@0x%x-0x%x@0x%x\n", mini_size,
+				mini_addr, mrdump_size, mrdump_addr);
 			mboot_params_fatal("illegal magic number");
 		}
 	} else {
@@ -673,7 +676,7 @@ static int __init mboot_params_early_init(void)
 	size_t buffer_size = 0;
 #ifdef CONFIG_OF
 	struct mem_desc_t sram = { 0 };
-	struct mboot_params_memory_info memory_info_data = {0};
+	struct mboot_params_memory_info memory_info_data = { 0 };
 	unsigned int start, size;
 
 	if (dt_get_mboot_params(&sram)) {
@@ -681,7 +684,7 @@ static int __init mboot_params_early_init(void)
 		if (sram.def_type == MBOOT_PARAMS_DEF_SRAM) {
 			pr_info("mboot_params: using sram:0x%x\n", sram.start);
 			start = sram.start;
-			size  = sram.size;
+			size = sram.size;
 			bufp = ioremap_wc(sram.start, sram.size);
 		} else if (sram.def_type == MBOOT_PARAMS_DEF_DRAM) {
 			start = mboot_params_reserve_memory();
@@ -691,7 +694,7 @@ static int __init mboot_params_early_init(void)
 			bufp = remap_lowmem(start, size);
 		} else {
 			pr_info("mboot_params: unknown def type:%d\n",
-					sram.def_type);
+				sram.def_type);
 			mboot_params_fatal("unknown def type");
 			return -ENODEV;
 		}
@@ -708,12 +711,12 @@ static int __init mboot_params_early_init(void)
 			buffer_size = size;
 			if (bufp->sig != REBOOT_REASON_SIG) {
 				pr_info("mboot_params: illegal sig:0x%x\n",
-						bufp->sig);
+					bufp->sig);
 				mboot_params_fatal("illegal sig");
 			}
 		} else {
 			pr_info("mboot_params: ioremap failed, [0x%x, 0x%x]\n",
-					start, size);
+				start, size);
 			mboot_params_fatal("ioremap failed");
 		}
 	} else {
@@ -724,7 +727,7 @@ static int __init mboot_params_early_init(void)
 #endif
 
 	pr_notice("mboot_params: buffer start: 0x%lx, size: 0x%zx\n",
-			(unsigned long)bufp, buffer_size);
+		  (unsigned long)bufp, buffer_size);
 	mtk_cpu_num = num_present_cpus();
 	if (bufp)
 		return mboot_params_init(bufp, buffer_size);
@@ -742,10 +745,10 @@ console_initcall(mboot_params_early_init);
 #endif
 
 /* aee sram flags save */
-#define RR_BASE(stage)	\
+#define RR_BASE(stage)                                                         \
 	((void *)mboot_params_buffer + mboot_params_buffer->off_##stage)
 #define RR_LINUX ((struct last_reboot_reason *)RR_BASE(linux))
-#define RR_BASE_PA(stage)	\
+#define RR_BASE_PA(stage)                                                      \
 	((void *)mboot_params_buffer_pa + mboot_params_buffer->off_##stage)
 #define RR_LINUX_PA ((struct last_reboot_reason *)RR_BASE_PA(linux))
 
@@ -754,13 +757,11 @@ console_initcall(mboot_params_early_init);
 
 #define LAST_RR_SET_WITH_ID(rr_item, id, value) (RR_LINUX->rr_item[id] = value)
 
-#define LAST_RR_VAL(rr_item)				\
-	(mboot_params_buffer ? RR_LINUX->rr_item : 0)
+#define LAST_RR_VAL(rr_item) (mboot_params_buffer ? RR_LINUX->rr_item : 0)
 
-#define LAST_RR_MEMCPY(rr_item, str, len)				\
-	(strlcpy(RR_LINUX->rr_item, str, len))
+#define LAST_RR_MEMCPY(rr_item, str, len) (strlcpy(RR_LINUX->rr_item, str, len))
 
-#define LAST_RR_MEMCPY_WITH_ID(rr_item, id, str, len)			\
+#define LAST_RR_MEMCPY_WITH_ID(rr_item, id, str, len)                          \
 	(strlcpy(RR_LINUX->rr_item[id], str, len))
 
 static void mboot_params_init_val(void)
@@ -771,8 +772,7 @@ static void mboot_params_init_val(void)
 #else
 	LAST_RR_SET(kaslr_offset, 0xd15ab1e);
 #endif
-	LAST_RR_SET(oops_in_progress_addr,
-		(unsigned long)(&oops_in_progress));
+	LAST_RR_SET(oops_in_progress_addr, (unsigned long)(&oops_in_progress));
 }
 
 void aee_rr_rec_fiq_step(u8 step)
@@ -852,7 +852,7 @@ void aee_rr_rec_last_irq_enter(int cpu, int irq, u64 jiffies)
 	} else {
 		pr_notice("%s invalid cpu= %d\n", __func__, cpu);
 	}
-	mb();			/*TODO:need add comments */
+	mb(); /*TODO:need add comments */
 }
 
 void aee_rr_rec_last_irq_exit(int cpu, int irq, u64 jiffies)
@@ -865,7 +865,7 @@ void aee_rr_rec_last_irq_exit(int cpu, int irq, u64 jiffies)
 	} else {
 		pr_notice("%s invalid cpu= %d\n", __func__, cpu);
 	}
-	mb();			/*TODO:need add comments */
+	mb(); /*TODO:need add comments */
 }
 
 void aee_rr_rec_hotplug_footprint(int cpu, u8 fp)
@@ -2242,7 +2242,6 @@ void aee_rr_rec_last_sync_func(unsigned long val)
 	LAST_RR_SET(last_sync_func, val);
 }
 
-
 void aee_rr_rec_set_bit_pmic_ext_buck(int bit, int loc)
 {
 	int8_t rr_pmic_ext_buck;
@@ -2284,7 +2283,6 @@ void aee_rr_rec_drcc_dbg_info(uint32_t ret, uint32_t off, uint64_t ts)
 	LAST_RR_SET(drcc_dbg_ts, ts);
 }
 
-
 void aee_rr_rec_suspend_debug_flag(u32 val)
 {
 	if (!mboot_params_init_done || !mboot_params_buffer)
@@ -2301,16 +2299,16 @@ int aee_rr_last_fiq_step(void)
 }
 EXPORT_SYMBOL(aee_rr_last_fiq_step);
 
-typedef void (*last_rr_show_t) (struct seq_file *m);
-typedef void (*last_rr_show_cpu_t) (struct seq_file *m, int cpu);
+typedef void (*last_rr_show_t)(struct seq_file *m);
+typedef void (*last_rr_show_cpu_t)(struct seq_file *m, int cpu);
 
 void aee_rr_show_wdt_status(struct seq_file *m)
 {
 	unsigned int wdt_status;
 	struct mboot_params_buffer *buffer = mboot_params_old;
 
-	if (!buffer->off_pl || buffer->off_pl + ALIGN(buffer->sz_pl, 64)
-			!= buffer->off_lpl) {
+	if (!buffer->off_pl ||
+	    buffer->off_pl + ALIGN(buffer->sz_pl, 64) != buffer->off_lpl) {
 		/* workaround for compatibility to old preloader & lk (OTA) */
 		wdt_status = *((unsigned char *)buffer + 12);
 	} else
@@ -2351,8 +2349,7 @@ void aee_rr_show_oops_in_progress_addr(struct seq_file *m)
 	uint64_t oops_in_progress_addr;
 
 	oops_in_progress_addr = LAST_RRR_VAL(oops_in_progress_addr);
-	seq_printf(m, "&oops_in_progress: 0x%llx\n",
-		       oops_in_progress_addr);
+	seq_printf(m, "&oops_in_progress: 0x%llx\n", oops_in_progress_addr);
 }
 
 void aee_rr_show_wdk_ktime(struct seq_file *m)
@@ -2398,8 +2395,7 @@ void aee_rr_show_hotplug_status(struct seq_file *m)
 {
 	seq_printf(m, "CPU notifier status: %d, %d, 0x%llx, %llu\n",
 		   LAST_RRR_VAL(hotplug_cpu_event),
-		   LAST_RRR_VAL(hotplug_cb_index),
-		   LAST_RRR_VAL(hotplug_cb_fp),
+		   LAST_RRR_VAL(hotplug_cb_index), LAST_RRR_VAL(hotplug_cb_fp),
 		   LAST_RRR_VAL(hotplug_cb_times));
 }
 
@@ -2415,14 +2411,13 @@ void aee_rr_show_hps_status(struct seq_file *m)
 void aee_rr_show_hotplug_caller_callee_status(struct seq_file *m)
 {
 	seq_printf(m, "CPU Hotplug: caller CPU%d, callee CPU%d\n",
-		   LAST_RRR_VAL(cpu_caller),
-		   LAST_RRR_VAL(cpu_callee));
+		   LAST_RRR_VAL(cpu_caller), LAST_RRR_VAL(cpu_callee));
 }
 
 void aee_rr_show_hotplug_up_prepare_ktime(struct seq_file *m)
 {
 	seq_printf(m, "CPU_UP_PREPARE: %lld\n",
-			LAST_RRR_VAL(cpu_up_prepare_ktime));
+		   LAST_RRR_VAL(cpu_up_prepare_ktime));
 }
 
 void aee_rr_show_hotplug_starting_ktime(struct seq_file *m)
@@ -2438,7 +2433,7 @@ void aee_rr_show_hotplug_online_ktime(struct seq_file *m)
 void aee_rr_show_hotplug_down_prepare_ktime(struct seq_file *m)
 {
 	seq_printf(m, "CPU_DOWN_PREPARE: %lld\n",
-			LAST_RRR_VAL(cpu_down_prepare_ktime));
+		   LAST_RRR_VAL(cpu_down_prepare_ktime));
 }
 
 void aee_rr_show_hotplug_dying_ktime(struct seq_file *m)
@@ -2454,7 +2449,7 @@ void aee_rr_show_hotplug_dead_ktime(struct seq_file *m)
 void aee_rr_show_hotplug_post_dead_ktime(struct seq_file *m)
 {
 	seq_printf(m, "CPU_POST_DEAD: %lld\n",
-			LAST_RRR_VAL(cpu_post_dead_ktime));
+		   LAST_RRR_VAL(cpu_post_dead_ktime));
 }
 
 void aee_rr_show_mcdi(struct seq_file *m)
@@ -2495,19 +2490,19 @@ void aee_rr_show_spm_suspend(struct seq_file *m)
 void aee_rr_show_spm_common_scenario(struct seq_file *m)
 {
 	seq_printf(m, "spm_common_scenario: 0x%x\n",
-			LAST_RRR_VAL(spm_common_scenario_data));
+		   LAST_RRR_VAL(spm_common_scenario_data));
 }
 
 void aee_rr_show_mtk_cpuidle_footprint(struct seq_file *m, int cpu)
 {
 	seq_printf(m, "  mtk_cpuidle_footprint: 0x%x\n",
-			LAST_RRR_VAL(mtk_cpuidle_footprint[cpu]));
+		   LAST_RRR_VAL(mtk_cpuidle_footprint[cpu]));
 }
 
 void aee_rr_show_mcdi_footprint(struct seq_file *m, int cpu)
 {
 	seq_printf(m, "  mcdi footprint: 0x%x\n",
-			LAST_RRR_VAL(mcdi_footprint[cpu]));
+		   LAST_RRR_VAL(mcdi_footprint[cpu]));
 }
 
 void aee_rr_show_clk(struct seq_file *m)
@@ -2531,7 +2526,7 @@ void aee_rr_show_vcore_dvfs_opp(struct seq_file *m)
 void aee_rr_show_vcore_dvfs_status(struct seq_file *m)
 {
 	seq_printf(m, "vcore_dvfs_status: 0x%x\n",
-			LAST_RRR_VAL(vcore_dvfs_status));
+		   LAST_RRR_VAL(vcore_dvfs_status));
 }
 
 void aee_rr_show_ppm_cluster_limit(struct seq_file *m)
@@ -2540,7 +2535,7 @@ void aee_rr_show_ppm_cluster_limit(struct seq_file *m)
 
 	for (i = 0; i < ARRAY_LEN_8; i++)
 		seq_printf(m, "ppm_cluster_limit: 0x%08x\n",
-				LAST_RRR_VAL(ppm_cluster_limit[i]));
+			   LAST_RRR_VAL(ppm_cluster_limit[i]));
 }
 
 void aee_rr_show_ppm_step(struct seq_file *m)
@@ -2566,33 +2561,33 @@ void aee_rr_show_ppm_policy_mask(struct seq_file *m)
 void aee_rr_show_ppm_waiting_for_pbm(struct seq_file *m)
 {
 	seq_printf(m, "ppm_waiting_for_pbm: 0x%x\n",
-			LAST_RRR_VAL(ppm_waiting_for_pbm));
+		   LAST_RRR_VAL(ppm_waiting_for_pbm));
 }
 
 void aee_rr_show_cpu_dvfs_vproc_big(struct seq_file *m)
 {
 	seq_printf(m, "cpu_dvfs_vproc_big: 0x%x\n",
-			LAST_RRR_VAL(cpu_dvfs_vproc_big));
+		   LAST_RRR_VAL(cpu_dvfs_vproc_big));
 }
 
 void aee_rr_show_cpu_dvfs_vproc_little(struct seq_file *m)
 {
 	seq_printf(m, "cpu_dvfs_vproc_little: 0x%x\n",
-			LAST_RRR_VAL(cpu_dvfs_vproc_little));
+		   LAST_RRR_VAL(cpu_dvfs_vproc_little));
 }
 
 void aee_rr_show_cpu_dvfs_oppidx(struct seq_file *m)
 {
 	seq_printf(m, "cpu_dvfs_oppidx: little = 0x%x\n",
-			LAST_RRR_VAL(cpu_dvfs_oppidx) & 0xF);
+		   LAST_RRR_VAL(cpu_dvfs_oppidx) & 0xF);
 	seq_printf(m, "cpu_dvfs_oppidx: big = 0x%x\n",
-			(LAST_RRR_VAL(cpu_dvfs_oppidx) >> 4) & 0xF);
+		   (LAST_RRR_VAL(cpu_dvfs_oppidx) >> 4) & 0xF);
 }
 
 void aee_rr_show_cpu_dvfs_cci_oppidx(struct seq_file *m)
 {
 	seq_printf(m, "cpu_dvfs_oppidx: cci = 0x%x\n",
-			LAST_RRR_VAL(cpu_dvfs_cci_oppidx) & 0xF);
+		   LAST_RRR_VAL(cpu_dvfs_cci_oppidx) & 0xF);
 }
 
 void aee_rr_show_cpu_dvfs_status(struct seq_file *m)
@@ -2608,7 +2603,7 @@ void aee_rr_show_cpu_dvfs_step(struct seq_file *m)
 void aee_rr_show_cpu_dvfs_pbm_step(struct seq_file *m)
 {
 	seq_printf(m, "cpu_dvfs_pbm_step: 0x%x\n",
-			LAST_RRR_VAL(cpu_dvfs_pbm_step));
+		   LAST_RRR_VAL(cpu_dvfs_pbm_step));
 }
 
 void aee_rr_show_cpu_dvfs_cb(struct seq_file *m)
@@ -2639,7 +2634,7 @@ void aee_rr_show_gpu_dvfs_status(struct seq_file *m)
 void aee_rr_show_gpu_dvfs_power_count(struct seq_file *m)
 {
 	seq_printf(m, "gpu_dvfs_power_count: %d\n",
-		LAST_RRR_VAL(gpu_dvfs_power_count));
+		   LAST_RRR_VAL(gpu_dvfs_power_count));
 }
 
 void aee_rr_show_drcc_0(struct seq_file *m)
@@ -2768,7 +2763,7 @@ void aee_rr_show_ptp_vboot(struct seq_file *m)
 
 	for (i = 0; i < 8; i++)
 		seq_printf(m, "ptp_bank_[%d]_vboot = 0x%llx\n", i,
-			(LAST_RRR_VAL(ptp_vboot) >> (i * 8)) & 0xFF);
+			   (LAST_RRR_VAL(ptp_vboot) >> (i * 8)) & 0xFF);
 }
 
 void aee_rr_show_ptp_cpu_big_volt(struct seq_file *m)
@@ -2777,7 +2772,7 @@ void aee_rr_show_ptp_cpu_big_volt(struct seq_file *m)
 
 	for (i = 0; i < 8; i++)
 		seq_printf(m, "ptp_cpu_big_volt[%d] = %llx\n", i,
-			(LAST_RRR_VAL(ptp_cpu_big_volt) >> (i * 8)) & 0xFF);
+			   (LAST_RRR_VAL(ptp_cpu_big_volt) >> (i * 8)) & 0xFF);
 }
 
 void aee_rr_show_ptp_cpu_big_volt_1(struct seq_file *m)
@@ -2786,7 +2781,8 @@ void aee_rr_show_ptp_cpu_big_volt_1(struct seq_file *m)
 
 	for (i = 0; i < 8; i++)
 		seq_printf(m, "ptp_cpu_big_volt_1[%d] = %llx\n", i,
-			(LAST_RRR_VAL(ptp_cpu_big_volt_1) >> (i * 8)) & 0xFF);
+			   (LAST_RRR_VAL(ptp_cpu_big_volt_1) >> (i * 8)) &
+				   0xFF);
 }
 
 void aee_rr_show_ptp_cpu_big_volt_2(struct seq_file *m)
@@ -2795,7 +2791,8 @@ void aee_rr_show_ptp_cpu_big_volt_2(struct seq_file *m)
 
 	for (i = 0; i < 8; i++)
 		seq_printf(m, "ptp_cpu_big_volt_2[%d] = %llx\n", i,
-			(LAST_RRR_VAL(ptp_cpu_big_volt_2) >> (i * 8)) & 0xFF);
+			   (LAST_RRR_VAL(ptp_cpu_big_volt_2) >> (i * 8)) &
+				   0xFF);
 }
 
 void aee_rr_show_ptp_cpu_big_volt_3(struct seq_file *m)
@@ -2804,7 +2801,8 @@ void aee_rr_show_ptp_cpu_big_volt_3(struct seq_file *m)
 
 	for (i = 0; i < 8; i++)
 		seq_printf(m, "ptp_cpu_big_volt_3[%d] = %llx\n", i,
-			(LAST_RRR_VAL(ptp_cpu_big_volt_3) >> (i * 8)) & 0xFF);
+			   (LAST_RRR_VAL(ptp_cpu_big_volt_3) >> (i * 8)) &
+				   0xFF);
 }
 
 void aee_rr_show_ptp_cpu_2_little_volt(struct seq_file *m)
@@ -2813,8 +2811,8 @@ void aee_rr_show_ptp_cpu_2_little_volt(struct seq_file *m)
 
 	for (i = 0; i < 8; i++)
 		seq_printf(m, "ptp_cpu_2_little_volt[%d] = %llx\n", i,
-			(LAST_RRR_VAL(ptp_cpu_2_little_volt) >>
-			(i * 8)) & 0xFF);
+			   (LAST_RRR_VAL(ptp_cpu_2_little_volt) >> (i * 8)) &
+				   0xFF);
 }
 
 void aee_rr_show_ptp_cpu_2_little_volt_1(struct seq_file *m)
@@ -2823,8 +2821,8 @@ void aee_rr_show_ptp_cpu_2_little_volt_1(struct seq_file *m)
 
 	for (i = 0; i < 8; i++)
 		seq_printf(m, "ptp_cpu_2_little_volt_1[%d] = %llx\n", i,
-			(LAST_RRR_VAL(ptp_cpu_2_little_volt_1) >>
-			(i * 8)) & 0xFF);
+			   (LAST_RRR_VAL(ptp_cpu_2_little_volt_1) >> (i * 8)) &
+				   0xFF);
 }
 
 void aee_rr_show_ptp_cpu_2_little_volt_2(struct seq_file *m)
@@ -2833,8 +2831,8 @@ void aee_rr_show_ptp_cpu_2_little_volt_2(struct seq_file *m)
 
 	for (i = 0; i < 8; i++)
 		seq_printf(m, "ptp_cpu_2_little_volt_2[%d] = %llx\n", i,
-			(LAST_RRR_VAL(ptp_cpu_2_little_volt_2) >>
-			(i * 8)) & 0xFF);
+			   (LAST_RRR_VAL(ptp_cpu_2_little_volt_2) >> (i * 8)) &
+				   0xFF);
 }
 
 void aee_rr_show_ptp_cpu_2_little_volt_3(struct seq_file *m)
@@ -2843,8 +2841,8 @@ void aee_rr_show_ptp_cpu_2_little_volt_3(struct seq_file *m)
 
 	for (i = 0; i < 8; i++)
 		seq_printf(m, "ptp_cpu_2_little_volt_3[%d] = %llx\n", i,
-			(LAST_RRR_VAL(ptp_cpu_2_little_volt_3) >>
-			(i * 8)) & 0xFF);
+			   (LAST_RRR_VAL(ptp_cpu_2_little_volt_3) >> (i * 8)) &
+				   0xFF);
 }
 
 void aee_rr_show_ptp_cpu_little_volt(struct seq_file *m)
@@ -2853,7 +2851,8 @@ void aee_rr_show_ptp_cpu_little_volt(struct seq_file *m)
 
 	for (i = 0; i < 8; i++)
 		seq_printf(m, "ptp_cpu_little_volt[%d] = %llx\n", i,
-			(LAST_RRR_VAL(ptp_cpu_little_volt) >> (i * 8)) & 0xFF);
+			   (LAST_RRR_VAL(ptp_cpu_little_volt) >> (i * 8)) &
+				   0xFF);
 }
 
 void aee_rr_show_ptp_cpu_little_volt_1(struct seq_file *m)
@@ -2862,8 +2861,8 @@ void aee_rr_show_ptp_cpu_little_volt_1(struct seq_file *m)
 
 	for (i = 0; i < 8; i++)
 		seq_printf(m, "ptp_cpu_little_volt_1[%d] = %llx\n", i,
-			(LAST_RRR_VAL(ptp_cpu_little_volt_1) >>
-			(i * 8)) & 0xFF);
+			   (LAST_RRR_VAL(ptp_cpu_little_volt_1) >> (i * 8)) &
+				   0xFF);
 }
 
 void aee_rr_show_ptp_cpu_little_volt_2(struct seq_file *m)
@@ -2872,8 +2871,8 @@ void aee_rr_show_ptp_cpu_little_volt_2(struct seq_file *m)
 
 	for (i = 0; i < 8; i++)
 		seq_printf(m, "ptp_cpu_little_volt_2[%d] = %llx\n", i,
-			(LAST_RRR_VAL(ptp_cpu_little_volt_2) >>
-			(i * 8)) & 0xFF);
+			   (LAST_RRR_VAL(ptp_cpu_little_volt_2) >> (i * 8)) &
+				   0xFF);
 }
 
 void aee_rr_show_ptp_cpu_little_volt_3(struct seq_file *m)
@@ -2882,8 +2881,8 @@ void aee_rr_show_ptp_cpu_little_volt_3(struct seq_file *m)
 
 	for (i = 0; i < 8; i++)
 		seq_printf(m, "ptp_cpu_little_volt_3[%d] = %llx\n", i,
-			(LAST_RRR_VAL(ptp_cpu_little_volt_3) >>
-			 (i * 8)) & 0xFF);
+			   (LAST_RRR_VAL(ptp_cpu_little_volt_3) >> (i * 8)) &
+				   0xFF);
 }
 
 void aee_rr_show_ptp_cpu_cci_volt(struct seq_file *m)
@@ -2892,7 +2891,7 @@ void aee_rr_show_ptp_cpu_cci_volt(struct seq_file *m)
 
 	for (i = 0; i < 8; i++)
 		seq_printf(m, "ptp_cpu_cci_volt[%d] = %llx\n", i,
-			(LAST_RRR_VAL(ptp_cpu_cci_volt) >> (i * 8)) & 0xFF);
+			   (LAST_RRR_VAL(ptp_cpu_cci_volt) >> (i * 8)) & 0xFF);
 }
 
 void aee_rr_show_ptp_cpu_cci_volt_1(struct seq_file *m)
@@ -2901,7 +2900,8 @@ void aee_rr_show_ptp_cpu_cci_volt_1(struct seq_file *m)
 
 	for (i = 0; i < 8; i++)
 		seq_printf(m, "ptp_cpu_cci_volt_1[%d] = %llx\n", i,
-			(LAST_RRR_VAL(ptp_cpu_cci_volt_1) >> (i * 8)) & 0xFF);
+			   (LAST_RRR_VAL(ptp_cpu_cci_volt_1) >> (i * 8)) &
+				   0xFF);
 }
 
 void aee_rr_show_ptp_cpu_cci_volt_2(struct seq_file *m)
@@ -2910,7 +2910,8 @@ void aee_rr_show_ptp_cpu_cci_volt_2(struct seq_file *m)
 
 	for (i = 0; i < 8; i++)
 		seq_printf(m, "ptp_cpu_cci_volt_2[%d] = %llx\n", i,
-			(LAST_RRR_VAL(ptp_cpu_cci_volt_2) >> (i * 8)) & 0xFF);
+			   (LAST_RRR_VAL(ptp_cpu_cci_volt_2) >> (i * 8)) &
+				   0xFF);
 }
 
 void aee_rr_show_ptp_cpu_cci_volt_3(struct seq_file *m)
@@ -2919,7 +2920,8 @@ void aee_rr_show_ptp_cpu_cci_volt_3(struct seq_file *m)
 
 	for (i = 0; i < 8; i++)
 		seq_printf(m, "ptp_cpu_cci_volt_3[%d] = %llx\n", i,
-			(LAST_RRR_VAL(ptp_cpu_cci_volt_3) >> (i * 8)) & 0xFF);
+			   (LAST_RRR_VAL(ptp_cpu_cci_volt_3) >> (i * 8)) &
+				   0xFF);
 }
 
 void aee_rr_show_ptp_gpu_volt(struct seq_file *m)
@@ -2962,9 +2964,9 @@ void aee_rr_show_ptp_temp(struct seq_file *m)
 {
 	seq_printf(m, "ptp_temp: big = %llx\n", LAST_RRR_VAL(ptp_temp) & 0xFF);
 	seq_printf(m, "ptp_temp: GPU = %llx\n",
-			(LAST_RRR_VAL(ptp_temp) >> 8) & 0xFF);
+		   (LAST_RRR_VAL(ptp_temp) >> 8) & 0xFF);
 	seq_printf(m, "ptp_temp: little = %llx\n",
-			(LAST_RRR_VAL(ptp_temp) >> 16) & 0xFF);
+		   (LAST_RRR_VAL(ptp_temp) >> 16) & 0xFF);
 }
 
 void aee_rr_show_thermal_temp(struct seq_file *m)
@@ -2972,8 +2974,8 @@ void aee_rr_show_thermal_temp(struct seq_file *m)
 	int i;
 
 	for (i = 0; i < thermal_num; i++)
-		seq_printf(m, "thermal_temp%d = %d\n",
-				(i + 1), LAST_RRR_VAL(thermal_temp[i]));
+		seq_printf(m, "thermal_temp%d = %d\n", (i + 1),
+			   LAST_RRR_VAL(thermal_temp[i]));
 }
 
 void aee_rr_show_ptp_status(struct seq_file *m)
@@ -3000,23 +3002,19 @@ void aee_rr_show_idvfs_ctrl_reg(struct seq_file *m)
 {
 	seq_printf(m, "idvfs_ctrl_reg = 0x%x\n", LAST_RRR_VAL(idvfs_ctrl_reg));
 	seq_printf(m, "idvfs_Endis = %s\n",
-			(LAST_RRR_VAL(idvfs_ctrl_reg) & 0x1) ?
-			"Enable" : "Disable");
+		   (LAST_RRR_VAL(idvfs_ctrl_reg) & 0x1) ? "Enable" : "Disable");
 	seq_printf(m, "idvfs_SWP_Endis = %s\n",
-			(LAST_RRR_VAL(idvfs_ctrl_reg) & 0x2) ?
-			"Enable" : "Disable");
+		   (LAST_RRR_VAL(idvfs_ctrl_reg) & 0x2) ? "Enable" : "Disable");
 	seq_printf(m, "idvfs_OCP_Endis = %s\n",
-			(LAST_RRR_VAL(idvfs_ctrl_reg) & 0x4) ?
-			"Enable" : "Disable");
+		   (LAST_RRR_VAL(idvfs_ctrl_reg) & 0x4) ? "Enable" : "Disable");
 	seq_printf(m, "idvfs_OTP_Endis = %s\n",
-			(LAST_RRR_VAL(idvfs_ctrl_reg) & 0x8) ?
-			"Enable" : "Disable");
+		   (LAST_RRR_VAL(idvfs_ctrl_reg) & 0x8) ? "Enable" : "Disable");
 }
 
 void aee_rr_show_idvfs_enable_cnt(struct seq_file *m)
 {
 	seq_printf(m, "idvfs_enable_cnt = %u\n",
-			LAST_RRR_VAL(idvfs_enable_cnt));
+		   LAST_RRR_VAL(idvfs_enable_cnt));
 }
 
 void aee_rr_show_idvfs_swreq_cnt(struct seq_file *m)
@@ -3027,8 +3025,8 @@ void aee_rr_show_idvfs_swreq_cnt(struct seq_file *m)
 void aee_rr_show_idvfs_curr_volt(struct seq_file *m)
 {
 	seq_printf(m, "idvfs_curr_volt = %umv, 0x5e = 0x%x\n",
-		(((LAST_RRR_VAL(idvfs_curr_volt) & 0xff) * 10) + 300),
-		(LAST_RRR_VAL(idvfs_curr_volt) >> 8));
+		   (((LAST_RRR_VAL(idvfs_curr_volt) & 0xff) * 10) + 300),
+		   (LAST_RRR_VAL(idvfs_curr_volt) >> 8));
 }
 
 void aee_rr_show_idvfs_sram_ldo(struct seq_file *m)
@@ -3039,27 +3037,27 @@ void aee_rr_show_idvfs_sram_ldo(struct seq_file *m)
 void aee_rr_show_idvfs_swavg_curr_pct_x100(struct seq_file *m)
 {
 	seq_printf(m, "idvfs_swavg_curr_pct_x100 = %u, %uMHz\n",
-		LAST_RRR_VAL(idvfs_swavg_curr_pct_x100),
-		(LAST_RRR_VAL(idvfs_swavg_curr_pct_x100) / 4));
+		   LAST_RRR_VAL(idvfs_swavg_curr_pct_x100),
+		   (LAST_RRR_VAL(idvfs_swavg_curr_pct_x100) / 4));
 }
 
 void aee_rr_show_idvfs_swreq_curr_pct_x100(struct seq_file *m)
 {
 	seq_printf(m, "idvfs_swreq_curr_pct_x100 = %u, %uMHz\n",
-		LAST_RRR_VAL(idvfs_swreq_curr_pct_x100),
-		(LAST_RRR_VAL(idvfs_swreq_curr_pct_x100) / 4));
+		   LAST_RRR_VAL(idvfs_swreq_curr_pct_x100),
+		   (LAST_RRR_VAL(idvfs_swreq_curr_pct_x100) / 4));
 }
 
 void aee_rr_show_idvfs_swreq_next_pct_x100(struct seq_file *m)
 {
 	seq_printf(m, "idvfs_swreq_next_pct_x100 = %u, %uMHz\n",
-		LAST_RRR_VAL(idvfs_swreq_next_pct_x100),
-		(LAST_RRR_VAL(idvfs_swreq_next_pct_x100) / 4));
+		   LAST_RRR_VAL(idvfs_swreq_next_pct_x100),
+		   (LAST_RRR_VAL(idvfs_swreq_next_pct_x100) / 4));
 }
 
 void aee_rr_show_idvfs_state_manchine(struct seq_file *m)
 {
-/*
+	/*
  * 0: disable finish
  * 1: enable finish
  * 2: enable start
@@ -3093,7 +3091,7 @@ void aee_rr_show_idvfs_state_manchine(struct seq_file *m)
 		break;
 	default:
 		seq_printf(m, "idvfs state = %u, unknown state manchine\n",
-				LAST_RRR_VAL(idvfs_state_manchine));
+			   LAST_RRR_VAL(idvfs_state_manchine));
 		break;
 	}
 }
@@ -3104,7 +3102,7 @@ void aee_rr_show_ocp_target_limit(struct seq_file *m)
 
 	for (i = 0; i < ARRAY_LEN_4; i++)
 		seq_printf(m, "ocp_target_limit[%d]: %d\n", i,
-				LAST_RRR_VAL(ocp_target_limit[i]));
+			   LAST_RRR_VAL(ocp_target_limit[i]));
 }
 
 void aee_rr_show_ocp_enable(struct seq_file *m)
@@ -3120,7 +3118,7 @@ void aee_rr_show_thermal_status(struct seq_file *m)
 void aee_rr_show_thermal_ATM_status(struct seq_file *m)
 {
 	seq_printf(m, "thermal_ATM_status: %d\n",
-			LAST_RRR_VAL(thermal_ATM_status));
+		   LAST_RRR_VAL(thermal_ATM_status));
 }
 
 void aee_rr_show_thermal_ktime(struct seq_file *m)
@@ -3141,31 +3139,31 @@ void aee_rr_show_scp_lr(struct seq_file *m)
 void aee_rr_show_last_init_func(struct seq_file *m)
 {
 	seq_printf(m, "last init function: 0x%lx\n",
-			LAST_RRR_VAL(last_init_func));
+		   LAST_RRR_VAL(last_init_func));
 }
 
 void aee_rr_show_last_sync_func(struct seq_file *m)
 {
 	seq_printf(m, "last sync function: 0x%lx\n",
-			LAST_RRR_VAL(last_sync_func));
+		   LAST_RRR_VAL(last_sync_func));
 }
 
 void aee_rr_show_last_async_func(struct seq_file *m)
 {
 	seq_printf(m, "last async function: 0x%lx\n",
-			LAST_RRR_VAL(last_async_func));
+		   LAST_RRR_VAL(last_async_func));
 }
 
 void aee_rr_show_pmic_ext_buck(struct seq_file *m)
 {
 	seq_printf(m, "pmic & external buck: 0x%x\n",
-			LAST_RRR_VAL(pmic_ext_buck));
+		   LAST_RRR_VAL(pmic_ext_buck));
 }
 
 void aee_rr_show_hang_detect_timeout_count(struct seq_file *m)
 {
 	seq_printf(m, "hang detect time out: 0x%x\n",
-			LAST_RRR_VAL(hang_detect_timeout_count));
+		   LAST_RRR_VAL(hang_detect_timeout_count));
 }
 
 void aee_rr_show_gz_irq(struct seq_file *m)
@@ -3176,11 +3174,11 @@ void aee_rr_show_gz_irq(struct seq_file *m)
 void aee_rr_show_drcc_dbg_info(struct seq_file *m)
 {
 	seq_printf(m, "DRCC dbg info result: 0x%x\n",
-			LAST_RRR_VAL(drcc_dbg_ret));
+		   LAST_RRR_VAL(drcc_dbg_ret));
 	seq_printf(m, "DRCC dbg info offset: 0x%x\n",
-			LAST_RRR_VAL(drcc_dbg_off));
+		   LAST_RRR_VAL(drcc_dbg_off));
 	seq_printf(m, "DRCC dbg info timestamp: 0x%llx\n",
-			LAST_RRR_VAL(drcc_dbg_ts));
+		   LAST_RRR_VAL(drcc_dbg_ts));
 }
 
 __weak uint32_t get_vcore_dvfs_sram_debug_regs(uint32_t index)
@@ -3194,8 +3192,8 @@ void aee_rr_show_vcore_dvfs_debug_regs(struct seq_file *m)
 	uint32_t count = get_vcore_dvfs_sram_debug_regs(0);
 
 	for (i = 0; i < count; i++)
-		seq_printf(m, "vcore dvfs debug regs(index %d) = 0x%x\n",
-				i + 1, get_vcore_dvfs_sram_debug_regs(i + 1));
+		seq_printf(m, "vcore dvfs debug regs(index %d) = 0x%x\n", i + 1,
+			   get_vcore_dvfs_sram_debug_regs(i + 1));
 }
 
 __weak uint32_t get_suspend_debug_flag(void)
@@ -3222,7 +3220,7 @@ void aee_rr_show_suspend_debug_regs(struct seq_file *m)
 
 	for (i = 0; i < count; i++)
 		seq_printf(m, "SPM Suspend debug regs(index %d) = 0x%x\n",
-				i + 1, get_suspend_debug_regs(i + 1));
+			   i + 1, get_suspend_debug_regs(i + 1));
 }
 
 __weak void *get_spm_firmware_version(uint32_t index)
@@ -3238,8 +3236,8 @@ void aee_rr_show_spm_firmware_version(struct seq_file *m)
 	if (ptr)
 		for (i = 0; i < *ptr; i++)
 			seq_printf(m, "SPM firmware version(index %d) = %s\n",
-				i + 1,
-				(char *)get_spm_firmware_version(i + 1));
+				   i + 1,
+				   (char *)get_spm_firmware_version(i + 1));
 }
 
 int __weak mt_reg_dump(char *buf)
@@ -3274,154 +3272,146 @@ void aee_rr_show_last_bus(struct seq_file *m)
 	}
 }
 
-
-last_rr_show_t aee_rr_show[] = {
-	aee_rr_show_wdt_status,
-	aee_rr_show_fiq_step,
-	aee_rr_show_exp_type,
-	aee_rr_show_kick_check,
-	aee_rr_show_kaslr_offset,
-	aee_rr_show_oops_in_progress_addr,
-	aee_rr_show_wdk_ktime,
-	aee_rr_show_wdk_systimer_cnt,
-	aee_rr_show_last_pc,
-	aee_rr_show_last_bus,
-	aee_rr_show_mcdi,
-	aee_rr_show_mcdi_r15,
-	aee_rr_show_suspend_debug_flag,
-	aee_rr_show_suspend_debug_regs,
-	aee_rr_show_spm_firmware_version,
-	aee_rr_show_deepidle,
-	aee_rr_show_sodi3,
-	aee_rr_show_sodi,
-	aee_rr_show_mcsodi,
-	aee_rr_show_spm_suspend,
-	aee_rr_show_spm_common_scenario,
-	aee_rr_show_vcore_dvfs_opp,
-	aee_rr_show_vcore_dvfs_status,
-	aee_rr_show_vcore_dvfs_debug_regs,
-	aee_rr_show_clk,
-	aee_rr_show_fiq_cache_step,
-	aee_rr_show_ppm_cluster_limit,
-	aee_rr_show_ppm_step,
-	aee_rr_show_ppm_cur_state,
-	aee_rr_show_ppm_min_pwr_bgt,
-	aee_rr_show_ppm_policy_mask,
-	aee_rr_show_ppm_waiting_for_pbm,
-	aee_rr_show_cpu_dvfs_vproc_big,
-	aee_rr_show_cpu_dvfs_vproc_little,
-	aee_rr_show_cpu_dvfs_oppidx,
-	aee_rr_show_cpu_dvfs_cci_oppidx,
-	aee_rr_show_cpu_dvfs_status,
-	aee_rr_show_cpu_dvfs_step,
-	aee_rr_show_cpu_dvfs_pbm_step,
-	aee_rr_show_cpu_dvfs_cb,
-	aee_rr_show_cpufreq_cb,
-	aee_rr_show_gpu_dvfs_vgpu,
-	aee_rr_show_gpu_dvfs_oppidx,
-	aee_rr_show_gpu_dvfs_status,
-	aee_rr_show_gpu_dvfs_power_count,
-	aee_rr_show_drcc_0,
-	aee_rr_show_drcc_1,
-	aee_rr_show_drcc_2,
-	aee_rr_show_drcc_3,
-	aee_rr_show_drcc_dbg_info,
-	aee_rr_show_ptp_devinfo_0,
-	aee_rr_show_ptp_devinfo_1,
-	aee_rr_show_ptp_devinfo_2,
-	aee_rr_show_ptp_devinfo_3,
-	aee_rr_show_ptp_devinfo_4,
-	aee_rr_show_ptp_devinfo_5,
-	aee_rr_show_ptp_devinfo_6,
-	aee_rr_show_ptp_devinfo_7,
-	aee_rr_show_ptp_e0,
-	aee_rr_show_ptp_e1,
-	aee_rr_show_ptp_e2,
-	aee_rr_show_ptp_e3,
-	aee_rr_show_ptp_e4,
-	aee_rr_show_ptp_e5,
-	aee_rr_show_ptp_e6,
-	aee_rr_show_ptp_e7,
-	aee_rr_show_ptp_e8,
-	aee_rr_show_ptp_e9,
-	aee_rr_show_ptp_e10,
-	aee_rr_show_ptp_e11,
-	aee_rr_show_ptp_vboot,
-	aee_rr_show_ptp_cpu_big_volt,
-	aee_rr_show_ptp_cpu_big_volt_1,
-	aee_rr_show_ptp_cpu_big_volt_2,
-	aee_rr_show_ptp_cpu_big_volt_3,
-	aee_rr_show_ptp_cpu_2_little_volt,
-	aee_rr_show_ptp_cpu_2_little_volt_1,
-	aee_rr_show_ptp_cpu_2_little_volt_2,
-	aee_rr_show_ptp_cpu_2_little_volt_3,
-	aee_rr_show_ptp_cpu_little_volt,
-	aee_rr_show_ptp_cpu_little_volt_1,
-	aee_rr_show_ptp_cpu_little_volt_2,
-	aee_rr_show_ptp_cpu_little_volt_3,
-	aee_rr_show_ptp_cpu_cci_volt,
-	aee_rr_show_ptp_cpu_cci_volt_1,
-	aee_rr_show_ptp_cpu_cci_volt_2,
-	aee_rr_show_ptp_cpu_cci_volt_3,
-	aee_rr_show_ptp_gpu_volt,
-	aee_rr_show_ptp_gpu_volt_2,
-	aee_rr_show_ptp_gpu_volt_3,
-	aee_rr_show_ptp_temp,
-	aee_rr_show_ptp_status,
-	aee_rr_show_eem_pi_offset,
-	aee_rr_show_etc_status,
-	aee_rr_show_etc_mode,
-	aee_rr_show_thermal_temp,
-	aee_rr_show_thermal_status,
-	aee_rr_show_thermal_ATM_status,
-	aee_rr_show_thermal_ktime,
-	aee_rr_show_idvfs_ctrl_reg,
-	aee_rr_show_idvfs_enable_cnt,
-	aee_rr_show_idvfs_swreq_cnt,
-	aee_rr_show_idvfs_curr_volt,
-	aee_rr_show_idvfs_sram_ldo,
-	aee_rr_show_idvfs_swavg_curr_pct_x100,
-	aee_rr_show_idvfs_swreq_curr_pct_x100,
-	aee_rr_show_idvfs_swreq_next_pct_x100,
-	aee_rr_show_idvfs_state_manchine,
-	aee_rr_show_ocp_target_limit,
-	aee_rr_show_ocp_enable,
-	aee_rr_show_scp_pc,
-	aee_rr_show_scp_lr,
-	aee_rr_show_hang_detect_timeout_count,
-	aee_rr_show_last_async_func,
-	aee_rr_show_last_sync_func,
-	aee_rr_show_gz_irq,
-	aee_rr_show_last_init_func,
-	aee_rr_show_pmic_ext_buck,
-	aee_rr_show_hps_status,
-	aee_rr_show_hotplug_status,
-	aee_rr_show_hotplug_caller_callee_status,
-	aee_rr_show_hotplug_up_prepare_ktime,
-	aee_rr_show_hotplug_starting_ktime,
-	aee_rr_show_hotplug_online_ktime,
-	aee_rr_show_hotplug_down_prepare_ktime,
-	aee_rr_show_hotplug_dying_ktime,
-	aee_rr_show_hotplug_dead_ktime,
-	aee_rr_show_hotplug_post_dead_ktime
+last_rr_show_t aee_rr_show[] = { aee_rr_show_wdt_status,
+				 aee_rr_show_fiq_step,
+				 aee_rr_show_exp_type,
+				 aee_rr_show_kick_check,
+				 aee_rr_show_kaslr_offset,
+				 aee_rr_show_oops_in_progress_addr,
+				 aee_rr_show_wdk_ktime,
+				 aee_rr_show_wdk_systimer_cnt,
+				 aee_rr_show_last_pc,
+				 aee_rr_show_last_bus,
+				 aee_rr_show_mcdi,
+				 aee_rr_show_mcdi_r15,
+				 aee_rr_show_suspend_debug_flag,
+				 aee_rr_show_suspend_debug_regs,
+				 aee_rr_show_spm_firmware_version,
+				 aee_rr_show_deepidle,
+				 aee_rr_show_sodi3,
+				 aee_rr_show_sodi,
+				 aee_rr_show_mcsodi,
+				 aee_rr_show_spm_suspend,
+				 aee_rr_show_spm_common_scenario,
+				 aee_rr_show_vcore_dvfs_opp,
+				 aee_rr_show_vcore_dvfs_status,
+				 aee_rr_show_vcore_dvfs_debug_regs,
+				 aee_rr_show_clk,
+				 aee_rr_show_fiq_cache_step,
+				 aee_rr_show_ppm_cluster_limit,
+				 aee_rr_show_ppm_step,
+				 aee_rr_show_ppm_cur_state,
+				 aee_rr_show_ppm_min_pwr_bgt,
+				 aee_rr_show_ppm_policy_mask,
+				 aee_rr_show_ppm_waiting_for_pbm,
+				 aee_rr_show_cpu_dvfs_vproc_big,
+				 aee_rr_show_cpu_dvfs_vproc_little,
+				 aee_rr_show_cpu_dvfs_oppidx,
+				 aee_rr_show_cpu_dvfs_cci_oppidx,
+				 aee_rr_show_cpu_dvfs_status,
+				 aee_rr_show_cpu_dvfs_step,
+				 aee_rr_show_cpu_dvfs_pbm_step,
+				 aee_rr_show_cpu_dvfs_cb,
+				 aee_rr_show_cpufreq_cb,
+				 aee_rr_show_gpu_dvfs_vgpu,
+				 aee_rr_show_gpu_dvfs_oppidx,
+				 aee_rr_show_gpu_dvfs_status,
+				 aee_rr_show_gpu_dvfs_power_count,
+				 aee_rr_show_drcc_0,
+				 aee_rr_show_drcc_1,
+				 aee_rr_show_drcc_2,
+				 aee_rr_show_drcc_3,
+				 aee_rr_show_drcc_dbg_info,
+				 aee_rr_show_ptp_devinfo_0,
+				 aee_rr_show_ptp_devinfo_1,
+				 aee_rr_show_ptp_devinfo_2,
+				 aee_rr_show_ptp_devinfo_3,
+				 aee_rr_show_ptp_devinfo_4,
+				 aee_rr_show_ptp_devinfo_5,
+				 aee_rr_show_ptp_devinfo_6,
+				 aee_rr_show_ptp_devinfo_7,
+				 aee_rr_show_ptp_e0,
+				 aee_rr_show_ptp_e1,
+				 aee_rr_show_ptp_e2,
+				 aee_rr_show_ptp_e3,
+				 aee_rr_show_ptp_e4,
+				 aee_rr_show_ptp_e5,
+				 aee_rr_show_ptp_e6,
+				 aee_rr_show_ptp_e7,
+				 aee_rr_show_ptp_e8,
+				 aee_rr_show_ptp_e9,
+				 aee_rr_show_ptp_e10,
+				 aee_rr_show_ptp_e11,
+				 aee_rr_show_ptp_vboot,
+				 aee_rr_show_ptp_cpu_big_volt,
+				 aee_rr_show_ptp_cpu_big_volt_1,
+				 aee_rr_show_ptp_cpu_big_volt_2,
+				 aee_rr_show_ptp_cpu_big_volt_3,
+				 aee_rr_show_ptp_cpu_2_little_volt,
+				 aee_rr_show_ptp_cpu_2_little_volt_1,
+				 aee_rr_show_ptp_cpu_2_little_volt_2,
+				 aee_rr_show_ptp_cpu_2_little_volt_3,
+				 aee_rr_show_ptp_cpu_little_volt,
+				 aee_rr_show_ptp_cpu_little_volt_1,
+				 aee_rr_show_ptp_cpu_little_volt_2,
+				 aee_rr_show_ptp_cpu_little_volt_3,
+				 aee_rr_show_ptp_cpu_cci_volt,
+				 aee_rr_show_ptp_cpu_cci_volt_1,
+				 aee_rr_show_ptp_cpu_cci_volt_2,
+				 aee_rr_show_ptp_cpu_cci_volt_3,
+				 aee_rr_show_ptp_gpu_volt,
+				 aee_rr_show_ptp_gpu_volt_2,
+				 aee_rr_show_ptp_gpu_volt_3,
+				 aee_rr_show_ptp_temp,
+				 aee_rr_show_ptp_status,
+				 aee_rr_show_eem_pi_offset,
+				 aee_rr_show_etc_status,
+				 aee_rr_show_etc_mode,
+				 aee_rr_show_thermal_temp,
+				 aee_rr_show_thermal_status,
+				 aee_rr_show_thermal_ATM_status,
+				 aee_rr_show_thermal_ktime,
+				 aee_rr_show_idvfs_ctrl_reg,
+				 aee_rr_show_idvfs_enable_cnt,
+				 aee_rr_show_idvfs_swreq_cnt,
+				 aee_rr_show_idvfs_curr_volt,
+				 aee_rr_show_idvfs_sram_ldo,
+				 aee_rr_show_idvfs_swavg_curr_pct_x100,
+				 aee_rr_show_idvfs_swreq_curr_pct_x100,
+				 aee_rr_show_idvfs_swreq_next_pct_x100,
+				 aee_rr_show_idvfs_state_manchine,
+				 aee_rr_show_ocp_target_limit,
+				 aee_rr_show_ocp_enable,
+				 aee_rr_show_scp_pc,
+				 aee_rr_show_scp_lr,
+				 aee_rr_show_hang_detect_timeout_count,
+				 aee_rr_show_last_async_func,
+				 aee_rr_show_last_sync_func,
+				 aee_rr_show_gz_irq,
+				 aee_rr_show_last_init_func,
+				 aee_rr_show_pmic_ext_buck,
+				 aee_rr_show_hps_status,
+				 aee_rr_show_hotplug_status,
+				 aee_rr_show_hotplug_caller_callee_status,
+				 aee_rr_show_hotplug_up_prepare_ktime,
+				 aee_rr_show_hotplug_starting_ktime,
+				 aee_rr_show_hotplug_online_ktime,
+				 aee_rr_show_hotplug_down_prepare_ktime,
+				 aee_rr_show_hotplug_dying_ktime,
+				 aee_rr_show_hotplug_dead_ktime,
+				 aee_rr_show_hotplug_post_dead_ktime
 
 };
 
 last_rr_show_cpu_t aee_rr_show_cpu[] = {
-	aee_rr_show_last_irq_enter,
-	aee_rr_show_jiffies_last_irq_enter,
-	aee_rr_show_last_irq_exit,
-	aee_rr_show_jiffies_last_irq_exit,
-	aee_rr_show_hotplug_footprint,
-	aee_rr_show_mtk_cpuidle_footprint,
+	aee_rr_show_last_irq_enter,    aee_rr_show_jiffies_last_irq_enter,
+	aee_rr_show_last_irq_exit,     aee_rr_show_jiffies_last_irq_exit,
+	aee_rr_show_hotplug_footprint, aee_rr_show_mtk_cpuidle_footprint,
 	aee_rr_show_mcdi_footprint,
 };
 
-last_rr_show_t aee_rr_last_xxx[] = {
-	aee_rr_show_last_pc,
-	aee_rr_show_last_bus,
-	aee_rr_show_suspend_debug_flag
-};
+last_rr_show_t aee_rr_last_xxx[] = { aee_rr_show_last_pc, aee_rr_show_last_bus,
+				     aee_rr_show_suspend_debug_flag };
 
 #define array_size(x) (sizeof(x) / sizeof((x)[0]))
 int aee_rr_reboot_reason_show(struct seq_file *m, void *v)
@@ -3430,20 +3420,21 @@ int aee_rr_reboot_reason_show(struct seq_file *m, void *v)
 
 	if (mboot_params_check_header(mboot_params_old)) {
 		seq_puts(m, "NO VALID DATA.\n");
-		seq_printf(m, "%s, old status is %u.\n", mboot_params_clear ?
-				"Clear" : "Not Clear", old_wdt_status);
+		seq_printf(m, "%s, old status is %u.\n",
+			   mboot_params_clear ? "Clear" : "Not Clear",
+			   old_wdt_status);
 		seq_puts(m, "Only try to dump last_XXX.\n");
 		for (i = 0; i < array_size(aee_rr_last_xxx); i++)
-			aee_rr_last_xxx[i] (m);
+			aee_rr_last_xxx[i](m);
 		return 0;
 	}
 	for (i = 0; i < array_size(aee_rr_show); i++)
-		aee_rr_show[i] (m);
+		aee_rr_show[i](m);
 
 	for (cpu = 0; cpu < num_possible_cpus(); cpu++) {
 		seq_printf(m, "CPU %d\n", cpu);
 		for (i = 0; i < array_size(aee_rr_show_cpu); i++)
-			aee_rr_show_cpu[i] (m, cpu);
+			aee_rr_show_cpu[i](m, cpu);
 	}
 	return 0;
 }

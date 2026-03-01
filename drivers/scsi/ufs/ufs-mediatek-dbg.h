@@ -121,6 +121,16 @@ int cmd_hist_disable(void);
 #define ufs_mtk_dbg_register(...)
 #define ufs_mtk_dbg_dump(...)
 
+static inline int cmd_hist_enable(void)
+{
+	return 0;
+}
+
+static inline int cmd_hist_disable(void)
+{
+	return 0;
+}
+
 #endif
 
 #endif

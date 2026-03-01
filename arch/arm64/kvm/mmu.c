@@ -31,6 +31,9 @@ static phys_addr_t hyp_idmap_vector;
 
 static unsigned long io_map_base;
 
+static phys_addr_t kvm_host_pa(void *addr);
+static void *kvm_host_va(phys_addr_t phys);
+
 static void *kvm_s2_zalloc_pages_exact(size_t size)
 {
 	return alloc_pages_exact(size, GFP_KERNEL_ACCOUNT | __GFP_ZERO);
@@ -107,6 +110,28 @@ static void *stage2_memcache_zalloc_page(void *arg)
 	struct kvm_mmu_memory_cache *mc = arg;
 
 	return kvm_mmu_memory_cache_alloc(mc);
+}
+
+static void hyp_memcache_free_page(void *virt, void *arg)
+{
+	put_page(virt_to_page(virt));
+}
+
+void free_hyp_memcache(struct kvm_hyp_memcache *mc, struct kvm *kvm)
+{
+	__free_hyp_memcache(mc, hyp_memcache_free_page, kvm_host_va, kvm);
+}
+
+void free_hyp_stage2_memcache(struct kvm_hyp_memcache *mc, struct kvm *kvm)
+{
+	__free_hyp_memcache(mc, hyp_memcache_free_page, kvm_host_va, kvm);
+}
+
+int topup_hyp_memcache(struct kvm_vcpu *vcpu)
+{
+	return __topup_hyp_memcache(&vcpu->arch.pkvm_memcache, 1,
+				    stage2_memcache_zalloc_page, kvm_host_pa,
+				    &vcpu->arch.mmu_page_cache);
 }
 
 static void kvm_host_get_page(void *addr)

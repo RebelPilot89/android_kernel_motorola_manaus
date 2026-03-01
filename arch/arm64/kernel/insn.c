@@ -236,6 +236,12 @@ int __kprobes aarch64_insn_patch_text(void *addrs[], u32 insns[], int cnt)
 				       cpu_online_mask);
 }
 
+int aarch64_addr_write(void *addr, u64 dst)
+{
+	WRITE_ONCE(*(u64 *)addr, dst);
+	return 0;
+}
+
 static int __kprobes aarch64_get_imm_shift_mask(enum aarch64_insn_imm_type type,
 						u32 *maskp, int *shiftp)
 {

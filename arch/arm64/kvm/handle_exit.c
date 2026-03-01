@@ -354,6 +354,8 @@ void handle_exit_early(struct kvm_vcpu *vcpu, int exception_index)
 		kvm_handle_guest_serror(vcpu, kvm_vcpu_get_esr(vcpu));
 }
 
+const char __hyp_panic_string[] = "HYP panic";
+
 void __noreturn __cold nvhe_hyp_panic_handler(u64 esr, u64 spsr, u64 elr_virt,
 					      u64 elr_phys, u64 par,
 					      uintptr_t vcpu, u64 far,

@@ -12,9 +12,8 @@
 
 #ifdef CONFIG_EFI
 
-__efistub_kernel_size		= _edata - _text;
-__efistub_primary_entry_offset	= primary_entry - _text;
-
+__efistub_kernel_size = _edata - _text;
+__efistub_primary_entry_offset = primary_entry - _text;
 
 /*
  * The EFI stub has its own symbol namespace prefixed by __efistub_, to
@@ -25,29 +24,29 @@ __efistub_primary_entry_offset	= primary_entry - _text;
  * linked at. The routines below are all implemented in assembler in a
  * position independent manner
  */
-__efistub_memcmp		= __pi_memcmp;
-__efistub_memchr		= __pi_memchr;
-__efistub_memcpy		= __pi_memcpy;
-__efistub_memmove		= __pi_memmove;
-__efistub_memset		= __pi_memset;
-__efistub_strlen		= __pi_strlen;
-__efistub_strnlen		= __pi_strnlen;
-__efistub_strcmp		= __pi_strcmp;
-__efistub_strncmp		= __pi_strncmp;
-__efistub_strrchr		= __pi_strrchr;
+__efistub_memcmp = __pi_memcmp;
+__efistub_memchr = __pi_memchr;
+__efistub_memcpy = __pi_memcpy;
+__efistub_memmove = __pi_memmove;
+__efistub_memset = __pi_memset;
+__efistub_strlen = __pi_strlen;
+__efistub_strnlen = __pi_strnlen;
+__efistub_strcmp = __pi_strcmp;
+__efistub_strncmp = __pi_strncmp;
+__efistub_strrchr = __pi_strrchr;
 __efistub___clean_dcache_area_poc = __pi___clean_dcache_area_poc;
 
 #if defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KASAN_SW_TAGS)
-__efistub___memcpy		= __pi_memcpy;
-__efistub___memmove		= __pi_memmove;
-__efistub___memset		= __pi_memset;
+__efistub___memcpy = __pi_memcpy;
+__efistub___memmove = __pi_memmove;
+__efistub___memset = __pi_memset;
 #endif
 
-__efistub__text			= _text;
-__efistub__end			= _end;
-__efistub__edata		= _edata;
-__efistub_screen_info		= screen_info;
-__efistub__ctype		= _ctype;
+__efistub__text = _text;
+__efistub__end = _end;
+__efistub__edata = _edata;
+__efistub_screen_info = screen_info;
+__efistub__ctype = _ctype;
 
 #endif
 
@@ -76,6 +75,7 @@ KVM_NVHE_ALIAS(kvm_vgic_global_state);
 
 /* Kernel symbols used to call panic() from nVHE hyp code (via ERET). */
 KVM_NVHE_ALIAS(__hyp_panic_string);
+KVM_NVHE_ALIAS(nvhe_hyp_panic_handler);
 KVM_NVHE_ALIAS(panic);
 
 /* Vectors installed by hyp-init on reset HVC. */
@@ -86,6 +86,7 @@ KVM_NVHE_ALIAS(__icache_flags);
 
 /* Kernel symbols needed for cpus_have_final/const_caps checks. */
 KVM_NVHE_ALIAS(arm64_const_caps_ready);
+KVM_NVHE_ALIAS(arm64_ftr_reg_ctrel0);
 KVM_NVHE_ALIAS(cpu_hwcap_keys);
 
 /* Static keys which are set if a vGIC trap should be handled in hyp. */

@@ -61,5 +61,6 @@ ccflags-y += -I$(srctree)/$(src)/include \
              -I$(srctree)/$(src)/$(DRV)/platform/mt6886/include \
              -I$(srctree)/$(src)/conn_drv/connv3/src \
              -I$(srctree)/$(src)/../common \
+             -I$(srctree)/drivers/misc/mediatek/include/mt-plat \
              -I$(srctree)/drivers/misc/mediatek/modem/common/include \
              -I$(srctree)/drivers/gpu/drm/mediatek/mediatek_v2
