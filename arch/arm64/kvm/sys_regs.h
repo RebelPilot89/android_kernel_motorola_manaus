@@ -12,6 +12,7 @@
 #define __ARM64_KVM_SYS_REGS_LOCAL_H__
 
 #include <linux/bsearch.h>
+#include "kvm_motorola_fix.h"
 
 #define reg_to_encoding(x)						\
 	sys_reg((u32)(x)->Op0, (u32)(x)->Op1,				\

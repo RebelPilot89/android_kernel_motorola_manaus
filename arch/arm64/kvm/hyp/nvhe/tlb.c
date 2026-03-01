@@ -59,16 +59,16 @@ static void enter_vmid_context(struct kvm_s2_mmu *mmu,
 		 * TLB fill. For guests, we ensure that the S1 MMU is
 		 * temporarily enabled in the next context.
 		 */
-		val = cxt->tcr = read_sysreg_el1(SYS_TCR);
+		val = cxt->tcr = read_sysreg(tcr_el1);
 		val |= TCR_EPD1_MASK | TCR_EPD0_MASK;
-		write_sysreg_el1(val, SYS_TCR);
+		write_sysreg(val, tcr_el1);
 		isb();
 
 		if (vcpu) {
-			val = cxt->sctlr = read_sysreg_el1(SYS_SCTLR);
+			val = cxt->sctlr = read_sysreg(sctlr_el1);
 			if (!(val & SCTLR_ELx_M)) {
 				val |= SCTLR_ELx_M;
-				write_sysreg_el1(val, SYS_SCTLR);
+				write_sysreg(val, sctlr_el1);
 				isb();
 			}
 		} else {
@@ -113,11 +113,11 @@ static void exit_vmid_context(struct tlb_inv_context *cxt)
 
 	if (cpus_have_final_cap(ARM64_WORKAROUND_SPECULATIVE_AT)) {
 		if (!(cxt->sctlr & SCTLR_ELx_M)) {
-			write_sysreg_el1(cxt->sctlr, SYS_SCTLR);
+			write_sysreg(cxt->sctlr, sctlr_el1);
 			isb();
 		}
 
-		write_sysreg_el1(cxt->tcr, SYS_TCR);
+		write_sysreg(cxt->tcr, tcr_el1);
 	}
 
 	cxt->mmu = NULL;

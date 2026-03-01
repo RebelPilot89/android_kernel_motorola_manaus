@@ -1082,3 +1082,351 @@ Field	23:16	LD
 Res0	15:8
 Field	7:0	LR
 EndSysreg
+
+
+# ---------------------------------------------------------------------------
+# Registers required by KVM/pKVM hypervisor (Ported from upstream 5.15).
+# These blocks use "Res0 63:0" as a minimal encoding-only stub that generates
+# the SYS_<reg> encoding macro without field-level bit definitions.  The
+# generated _RES0 masks are deliberately not used by any existing code.
+# Full field definitions can be added in a follow-up when upstreaming.
+# ---------------------------------------------------------------------------
+
+# EL1 context save/restore registers
+
+Sysreg	ACTLR_EL1	3	0	1	0	1
+Res0	63:0
+EndSysreg
+
+Sysreg	TCR_EL1	3	0	2	0	2
+Res0	63:0
+EndSysreg
+
+Sysreg	SPSR_EL1	3	0	4	0	0
+Res0	63:0
+EndSysreg
+
+Sysreg	ELR_EL1	3	0	4	0	1
+Res0	63:0
+EndSysreg
+
+Sysreg	AFSR0_EL1	3	0	5	1	0
+Res0	63:0
+EndSysreg
+
+Sysreg	AFSR1_EL1	3	0	5	1	1
+Res0	63:0
+EndSysreg
+
+Sysreg	ESR_EL1	3	0	5	2	0
+Res0	63:0
+EndSysreg
+
+Sysreg	TFSR_EL1	3	0	5	6	0
+Res0	63:0
+EndSysreg
+
+Sysreg	TFSRE0_EL1	3	0	5	6	1
+Res0	63:0
+EndSysreg
+
+Sysreg	MAIR_EL1	3	0	10	2	0
+Res0	63:0
+EndSysreg
+
+Sysreg	AMAIR_EL1	3	0	10	3	0
+Res0	63:0
+EndSysreg
+
+Sysreg	VBAR_EL1	3	0	12	0	0
+Res0	63:0
+EndSysreg
+
+Sysreg	DISR_EL1	3	0	12	1	1
+Res0	63:0
+EndSysreg
+
+Sysreg	CNTKCTL_EL1	3	0	14	1	0
+Res0	63:0
+EndSysreg
+
+Sysreg	CCSIDR_EL1	3	1	0	0	0
+Res0	63:0
+EndSysreg
+
+Sysreg	AIDR_EL1	3	1	0	0	7
+Res0	63:0
+EndSysreg
+
+# EL2 exception/context registers
+
+Sysreg	SPSR_EL2	3	4	4	0	0
+Res0	63:0
+EndSysreg
+
+Sysreg	ELR_EL2	3	4	4	0	1
+Res0	63:0
+EndSysreg
+
+Sysreg	IFSR32_EL2	3	4	5	0	1
+Res0	63:0
+EndSysreg
+
+Sysreg	ESR_EL2	3	4	5	2	0
+Res0	63:0
+EndSysreg
+
+Sysreg	VSESR_EL2	3	4	5	2	3
+Res0	63:0
+EndSysreg
+
+Sysreg	FPEXC32_EL2	3	4	5	3	0
+Res0	63:0
+EndSysreg
+
+Sysreg	TFSR_EL2	3	4	5	6	0
+Res0	63:0
+EndSysreg
+
+Sysreg	VDISR_EL2	3	4	12	1	1
+Res0	63:0
+EndSysreg
+
+Sysreg	DBGVCR32_EL2	2	4	0	7	0
+Res0	63:0
+EndSysreg
+
+# FEAT_FGT (Fine Grained Traps) EL2 registers
+
+Sysreg	HFGITR_EL2	3	4	1	1	6
+Res0	63:0
+EndSysreg
+
+Sysreg	HFGRTR_EL2	3	4	1	3	0
+Res0	63:0
+EndSysreg
+
+Sysreg	HFGWTR_EL2	3	4	1	3	1
+Res0	63:0
+EndSysreg
+
+# GICv3 virtualization EL2 registers (ICH_*/ICC_SRE_EL2)
+
+Sysreg	ICC_SRE_EL2	3	4	12	9	5
+Res0	63:0
+EndSysreg
+
+Sysreg	ICH_HCR_EL2	3	4	12	11	0
+Res0	63:0
+EndSysreg
+
+Sysreg	ICH_VTR_EL2	3	4	12	11	1
+Res0	63:0
+EndSysreg
+
+Sysreg	ICH_MISR_EL2	3	4	12	11	2
+Res0	63:0
+EndSysreg
+
+Sysreg	ICH_EISR_EL2	3	4	12	11	3
+Res0	63:0
+EndSysreg
+
+Sysreg	ICH_ELRSR_EL2	3	4	12	11	5
+Res0	63:0
+EndSysreg
+
+Sysreg	ICH_VMCR_EL2	3	4	12	11	7
+Res0	63:0
+EndSysreg
+
+# EL1/EL2-access (EL12) registers for VHE context save/restore
+
+Sysreg	TCR_EL12	3	5	2	0	2
+Res0	63:0
+EndSysreg
+
+Sysreg	SPSR_EL12	3	5	4	0	0
+Res0	63:0
+EndSysreg
+
+Sysreg	ELR_EL12	3	5	4	0	1
+Res0	63:0
+EndSysreg
+
+Sysreg	AFSR0_EL12	3	5	5	1	0
+Res0	63:0
+EndSysreg
+
+Sysreg	AFSR1_EL12	3	5	5	1	1
+Res0	63:0
+EndSysreg
+
+Sysreg	ESR_EL12	3	5	5	2	0
+Res0	63:0
+EndSysreg
+
+Sysreg	TFSR_EL12	3	5	5	6	0
+Res0	63:0
+EndSysreg
+
+Sysreg	MAIR_EL12	3	5	10	2	0
+Res0	63:0
+EndSysreg
+
+Sysreg	AMAIR_EL12	3	5	10	3	0
+Res0	63:0
+EndSysreg
+
+Sysreg	VBAR_EL12	3	5	12	0	0
+Res0	63:0
+EndSysreg
+
+Sysreg	CNTKCTL_EL12	3	5	14	1	0
+Res0	63:0
+EndSysreg
+
+Sysreg	SCTLR_EL12	3	5	1	0	0
+Res0	63:0
+EndSysreg
+
+Sysreg	TTBR0_EL12	3	5	2	0	0
+Res0	63:0
+EndSysreg
+
+Sysreg	TTBR1_EL12	3	5	2	0	1
+Res0	63:0
+EndSysreg
+
+Sysreg	TRBLIMITR_EL1	3	0	9	11	0
+Res0	63:0
+EndSysreg
+
+Sysreg	TRFCR_EL1	3	0	1	2	1
+Res0	63:0
+EndSysreg
+
+Sysreg	ICH_LR0_EL2	3	4	12	12	0
+Res0	63:0
+EndSysreg
+
+Sysreg	ICH_LR1_EL2	3	4	12	12	1
+Res0	63:0
+EndSysreg
+
+Sysreg	ICH_LR2_EL2	3	4	12	12	2
+Res0	63:0
+EndSysreg
+
+Sysreg	ICH_LR3_EL2	3	4	12	12	3
+Res0	63:0
+EndSysreg
+
+Sysreg	ICH_LR4_EL2	3	4	12	12	4
+Res0	63:0
+EndSysreg
+
+Sysreg	ICH_LR5_EL2	3	4	12	12	5
+Res0	63:0
+EndSysreg
+
+Sysreg	ICH_LR6_EL2	3	4	12	12	6
+Res0	63:0
+EndSysreg
+
+Sysreg	ICH_LR7_EL2	3	4	12	12	7
+Res0	63:0
+EndSysreg
+
+Sysreg	ICH_LR8_EL2	3	4	12	13	0
+Res0	63:0
+EndSysreg
+
+Sysreg	ICH_LR9_EL2	3	4	12	13	1
+Res0	63:0
+EndSysreg
+
+Sysreg	ICH_LR10_EL2	3	4	12	13	2
+Res0	63:0
+EndSysreg
+
+Sysreg	ICH_LR11_EL2	3	4	12	13	3
+Res0	63:0
+EndSysreg
+
+Sysreg	ICH_LR12_EL2	3	4	12	13	4
+Res0	63:0
+EndSysreg
+
+Sysreg	ICH_LR13_EL2	3	4	12	13	5
+Res0	63:0
+EndSysreg
+
+Sysreg	ICH_LR14_EL2	3	4	12	13	6
+Res0	63:0
+EndSysreg
+
+Sysreg	ICH_LR15_EL2	3	4	12	13	7
+Res0	63:0
+EndSysreg
+
+Sysreg	CNTV_CTL_EL0	3	3	14	3	1
+Res0	63:0
+EndSysreg
+
+Sysreg	CNTV_CVAL_EL0	3	3	14	3	2
+Res0	63:0
+EndSysreg
+
+Sysreg	CNTV_CTL_EL02	3	5	14	3	1
+Res0	63:0
+EndSysreg
+
+Sysreg	CNTV_CVAL_EL02	3	5	14	3	2
+Res0	63:0
+EndSysreg
+
+Sysreg	SCTLR_EL2	3	4	1	0	0
+Res0	63:0
+EndSysreg
+
+Sysreg	ICH_AP0R0_EL2	3	4	12	8	4
+Res0	63:0
+EndSysreg
+
+Sysreg	ICH_AP0R1_EL2	3	4	12	8	5
+Res0	63:0
+EndSysreg
+
+Sysreg	ICH_AP0R2_EL2	3	4	12	8	6
+Res0	63:0
+EndSysreg
+
+Sysreg	ICH_AP0R3_EL2	3	4	12	8	7
+Res0	63:0
+EndSysreg
+
+Sysreg	ICH_AP1R0_EL2	3	4	12	9	0
+Res0	63:0
+EndSysreg
+
+Sysreg	ICH_AP1R1_EL2	3	4	12	9	1
+Res0	63:0
+EndSysreg
+
+Sysreg	ICH_AP1R2_EL2	3	4	12	9	2
+Res0	63:0
+EndSysreg
+
+Sysreg	ICH_AP1R3_EL2	3	4	12	9	3
+Res0	63:0
+EndSysreg
+
+
+Sysreg	TPIDR_EL0	3	3	13	0	2
+Res0	63:0
+EndSysreg
+
+Sysreg	TPIDRRO_EL0	3	3	13	0	3
+Res0	63:0
+EndSysreg

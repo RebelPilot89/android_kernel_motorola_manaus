@@ -169,15 +169,29 @@
 #endif
 
 /* Registros faltantes en C */
-#define SYS_HFGRTR_EL2 sys_reg(3, 4, 1, 1, 0)
-#define SYS_HFGWTR_EL2 sys_reg(3, 4, 1, 1, 1)
+#ifndef SYS_HFGRTR_EL2
+#define SYS_HFGRTR_EL2 sys_reg(3, 4, 1, 3, 0)
+#endif
+#ifndef SYS_HFGWTR_EL2
+#define SYS_HFGWTR_EL2 sys_reg(3, 4, 1, 3, 1)
+#endif
+#ifndef SYS_TCR_EL1
 #define SYS_TCR_EL1 sys_reg(3, 0, 2, 0, 2)
+#endif
+#ifndef SYS_ESR_EL1
 #define SYS_ESR_EL1 sys_reg(3, 0, 5, 2, 0)
+#endif
+#ifndef SYS_AFSR0_EL1
 #define SYS_AFSR0_EL1 sys_reg(3, 0, 5, 1, 0)
+#endif
 
 /* Máscaras de bits HFGxTR (ARMv8.6+) */
+#ifndef HFGxTR_EL2_nSMPRI_EL1_MASK
 #define HFGxTR_EL2_nSMPRI_EL1_MASK BIT(54)
+#endif
+#ifndef HFGxTR_EL2_nTPIDR2_EL0_MASK
 #define HFGxTR_EL2_nTPIDR2_EL0_MASK BIT(55)
+#endif
 
 /* Bits de FP/SIMD */
 #ifndef CPACR_EL1_FPEN_EL0EN

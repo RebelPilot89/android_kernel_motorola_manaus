@@ -65,8 +65,6 @@
 					      ".subsection 1\n"                        \
 					      "663:\n\t" newinstr "\n"                 \
 					      "664:\n\t"                               \
-					      ".org	. - (664b-663b) + (662b-661b)\n\t" \
-					      ".org	. - (662b-661b) + (664b-663b)\n\t" \
 					      ".previous\n"                            \
 					      ".endif\n"
 
@@ -106,8 +104,7 @@
 	.popsection
 	.subsection 1
 663:	\insn2
-664:	.org	. - (664b-663b) + (662b-661b)
-	.org	. - (662b-661b) + (664b-663b)
+664:
 	.previous
 	.endif
 .endm
@@ -184,8 +181,6 @@
  */
 .macro alternative_endif
 664:
-	.org	. - (664b-663b) + (662b-661b)
-	.org	. - (662b-661b) + (664b-663b)
 	.if .Lasm_alt_mode==0
 	.previous
 	.endif
