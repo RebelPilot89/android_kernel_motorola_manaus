@@ -22,6 +22,12 @@
 # This is to prevent any build issue due to wrong path.
 src:=$(if $(patsubst /%,,$(src)),$(srctree)/$(src),$(src))
 
+# Include MTK platform customisations early so CONFIG_MALI_REAL_HW,
+# CONFIG_MALI_DEVFREQ and other per-platform flags are visible to all
+# sub-Kbuild files (backend/gpu, hw_access, …) that are included via
+# INCLUDE_SUBDIR below.
+-include $(src)/Kbuild-mtk-custom-env
+
 #
 # Prevent misuse when Kernel configurations are not present by default
 # in out-of-tree builds
