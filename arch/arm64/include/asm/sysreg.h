@@ -494,7 +494,7 @@ asm(
 #define __SYSREG_EQ_SYS_ICH_LR15_EL2 ""
 #endif
 
-/* EL1 register .equ definitions for read/write_sysreg_el1() LLVM IAS compatibility */
+/* EL1 register .equ definitions for mrs_s/msr_s LLVM IAS compatibility */
 #ifdef SYS_SCTLR_EL1
 #define __SYSREG_EQ_SYS_SCTLR_EL1 ".equ SYS_SCTLR_EL1, " __stringify(SYS_SCTLR_EL1) "\n"
 #else
@@ -1220,13 +1220,13 @@ __SYSREG_EQ_SYS_TPIDRRO_EL0
 #endif
 
 #ifndef SET_PSTATE_PAN
-#define SET_PSTATE_PAN(x)	nop
+#define SET_PSTATE_PAN(x)	nop	/* stub: hardware without PAN (ARMv8.1) */
 #endif
 #ifndef SET_PSTATE_UAO
-#define SET_PSTATE_UAO(x)	nop
+#define SET_PSTATE_UAO(x)	nop	/* stub: hardware without UAO (ARMv8.2) */
 #endif
 #ifndef SET_PSTATE_SSBS
-#define SET_PSTATE_SSBS(x)	nop
+#define SET_PSTATE_SSBS(x)	nop	/* stub: hardware without SSBS (ARMv8.5) */
 #endif
 
 #ifndef SYS_TFSR_EL1_TF0_SHIFT
