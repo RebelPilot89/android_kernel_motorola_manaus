@@ -145,7 +145,6 @@ static irqreturn_t emimpu_violation_irq(int irq, void *dev_id)
 	bool violation, miu_violation;
 	irqreturn_t irqret;
 	const unsigned int hp_mask = 0x600000;
-	char md_str[MTK_EMI_MAX_CMD_LEN + 13] = {'\0'};
 
 	nr_vio = 0;
 	msg_len = 0;
@@ -251,9 +250,16 @@ static irqreturn_t emimpu_violation_irq(int irq, void *dev_id)
 		 * purpose.
 		 */
 		if (mpu->md_handler) {
-			strncpy(md_str, "emi-mpu-v2.c", 13);
-			strncat(md_str, mpu->vio_msg, sizeof(md_str) - strlen(md_str) - 1);
-			mpu->md_handler(md_str);
+			char *md_str = kmalloc(MTK_EMI_MAX_CMD_LEN + 13, GFP_ATOMIC);
+
+			if (md_str) {
+				strncpy(md_str, "emi-mpu-v2.c", 13);
+				strncat(md_str, mpu->vio_msg, MTK_EMI_MAX_CMD_LEN - 1);
+				mpu->md_handler(md_str);
+				kfree(md_str);
+			} else {
+				mpu->md_handler(mpu->vio_msg);
+			}
 		}
 
 		/*

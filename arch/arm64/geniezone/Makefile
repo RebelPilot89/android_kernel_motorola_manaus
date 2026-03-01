@@ -3,6 +3,6 @@
 # Main Makefile for gzvm
 #
 
-gzvm-y := vm.o vcpu.o vgic.o
+gzvm-y := vm.o vcpu.o vgic.o gzvm_common.o
 
 obj-y += gzvm.o

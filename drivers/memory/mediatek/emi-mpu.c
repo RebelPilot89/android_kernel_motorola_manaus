@@ -86,7 +86,6 @@ static irqreturn_t emimpu_violation_irq(int irq, void *dev_id)
 	ssize_t msg_len;
 	int n, nr_vio;
 	bool violation;
-	char md_str[MTK_EMI_MAX_CMD_LEN + 10] = {'\0'};
 
 	if (mpu->in_msg_dump)
 		goto ignore_violation;
@@ -149,9 +148,16 @@ static irqreturn_t emimpu_violation_irq(int irq, void *dev_id)
 		 * purpose.
 		 */
 		if (mpu->md_handler) {
-			strncpy(md_str, "emi-mpu.c", 10);
-			strncat(md_str, mpu->vio_msg, sizeof(md_str) - strlen(md_str) - 1);
-			mpu->md_handler(md_str);
+			char *md_str = kmalloc(MTK_EMI_MAX_CMD_LEN + 10, GFP_ATOMIC);
+
+			if (md_str) {
+				strncpy(md_str, "emi-mpu.c", 10);
+				strncat(md_str, mpu->vio_msg, MTK_EMI_MAX_CMD_LEN - 1);
+				mpu->md_handler(md_str);
+				kfree(md_str);
+			} else {
+				mpu->md_handler(mpu->vio_msg);
+			}
 		}
 	}
 
