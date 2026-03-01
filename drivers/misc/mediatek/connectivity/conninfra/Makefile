@@ -43,9 +43,10 @@ mtk_conninfra-objs += $(DRV3)/src/connv3_drv.o \
                       $(DRV3)/src/connv3.o
 
 # Common adapters (needed when CONFIG_MTK_CONN_INFRA=y, common/ is excluded)
+# connsys_debug_utility.o is omitted here: connsyslog.o already provides
+# those symbols. Including both causes duplicate symbol link errors.
 mtk_conninfra-objs += $(CMN)/wmt_build_in_adapter.o \
-                      $(CMN)/connectivity_build_in_adapter.o \
-                      $(CMN)/debug_utility/connsys_debug_utility.o
+                      $(CMN)/connectivity_build_in_adapter.o
 
 # Soporte de Plataforma (Aquí es donde entra tu hardware)
 # Nota: Si tu SoC usa la carpeta mt6886, lo incluimos así:
