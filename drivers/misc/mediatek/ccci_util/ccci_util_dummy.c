@@ -103,4 +103,15 @@ int __weak mbim_start_xmit(struct sk_buff *skb, int ifid)
 	pr_debug("[ccci/dummy] %s is not supported!\n", __func__);
 	return 0;
 }
+/*
+ * fsm_scp_init0 - no-op stub used when CONFIG_MTK_ECCCI_DRIVER=y.
+ * When the ECCCI driver is built-in, CCCI_KMODULE_ENABLE is not defined,
+ * so the real fsm_scp_init0 in ccci_fsm_scp.c is not compiled.
+ * ccci_core.c still calls it via the SCP notifier; this weak fallback
+ * satisfies the linker without affecting non-SCP functionality.
+ */
+void __weak fsm_scp_init0(void)
+{
+	pr_debug("[ccci/dummy] %s is not supported!\n", __func__);
+}
 
