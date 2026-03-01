@@ -1203,7 +1203,7 @@ static void fbt_query_dep_list_loading(struct render_info *thr)
 	fpsgo_fbt2minitop_start(thr->dep_valid_size, thr->dep_arr);
 }
 
-static int fbt_get_dep_list(struct render_info *thr)
+static noinline_for_stack int fbt_get_dep_list(struct render_info *thr)
 {
 	int pid;
 	int count = 0;

@@ -16,6 +16,9 @@ mtk_fm_drv-objs := core/fm_main.o \
 # Platform interface (conn_infra for CONNAC2X)
 mtk_fm_drv-$(CONFIG_MTK_FM_CHIP_CONNAC2X) += plat/conn_infra.o
 
+# MT6635 chip RDS ops (mt6635_fm_rds_ops_register/unregister called by conn_infra.c)
+mtk_fm_drv-$(CONFIG_MTK_FM_CHIP_CONNAC2X) += chips/mt6635/pub/mt6635_fm_rds.o
+
 # Soporte específico para MT6879 (CONNAC2X)
 mtk_fm_drv-$(CONFIG_MTK_FM_CHIP_CONNAC2X) += chips/connac2x/pub/connac2x_fm_lib.o
 
