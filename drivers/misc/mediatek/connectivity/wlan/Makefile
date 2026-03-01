@@ -999,6 +999,7 @@ $(MODULE_NAME)-objs  += $(SYSDVT_OBJS)
 $(MODULE_NAME)-objs  += $(NAN_OBJS)
 $(MODULE_NAME)-objs  += $(NAN_SEC_OBJS)
 $(MODULE_NAME)-objs  += adaptor/wmt_cdev_wifi.o
+$(MODULE_NAME)-objs  += adaptor/wifi_pwr_on.o
 
 ifneq ($(findstring UT_TEST_MODE,$(MTK_COMBO_CHIP)),)
 include $(src)/test/ut.make
