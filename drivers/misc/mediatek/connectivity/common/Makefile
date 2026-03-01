@@ -40,8 +40,13 @@ mtk_wmt_detect-objs += $(PLAT_DIR)/mtk_wcn_consys_hw.o
 endif
 
 # DEBUG UTILITY
-mtk_wmt_detect-objs += debug_utility/connsys_debug_utility.o \
-                       debug_utility/ring.o \
+# connsys_debug_utility.o provides the common log API. When CONFIG_MTK_CONN_INFRA
+# is enabled, connsyslog.o (part of conninfra) already exports the same symbols,
+# so skip this file to avoid duplicate symbol link errors.
+ifneq ($(CONFIG_MTK_CONN_INFRA),y)
+mtk_wmt_detect-objs += debug_utility/connsys_debug_utility.o
+endif
+mtk_wmt_detect-objs += debug_utility/ring.o \
                        debug_utility/ring_emi.o
 
 # Flags de compilación e Includes

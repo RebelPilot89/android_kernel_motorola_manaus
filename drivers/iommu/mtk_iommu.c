@@ -1233,20 +1233,34 @@ static irqreturn_t mtk_iommu_isr_sec(int irq, struct mtk_iommu_data *data)
 }
 #endif
 
-/* Stub functions for PERI IOMMU - TODO: implement proper port analysis */
+/* PERI IOMMU analyse helpers */
+#if !IS_ENABLED(CONFIG_MTK_IOMMU_MISC_DBG)
+static char *peri_tf_analyse(enum peri_iommu iommu_id, u32 fault_id)
+{
+	return NULL;
+}
+
+static enum peri_iommu get_peri_iommu_id(u32 bus_id)
+{
+	if (bus_id < PERI_IOMMU_NUM)
+		return (enum peri_iommu)bus_id;
+	return PERI_IOMMU_NUM;
+}
+#else
 char *peri_tf_analyse(enum peri_iommu iommu_id, u32 fault_id)
 {
-	/* Return NULL to indicate not supported - caller handles this */
+	pr_info("%s, dbg mode, peri_iommu:%d, fault_id:0x%x\n", __func__,
+		iommu_id, fault_id);
 	return NULL;
 }
 
 enum peri_iommu get_peri_iommu_id(u32 bus_id)
 {
-	/* Simple mapping - may need platform-specific implementation */
 	if (bus_id < PERI_IOMMU_NUM)
 		return (enum peri_iommu)bus_id;
 	return PERI_IOMMU_NUM;
 }
+#endif /* !IS_ENABLED(CONFIG_MTK_IOMMU_MISC_DBG) */
 
 static void peri_iommu_read_data(void __iomem *base, enum peri_iommu iommu_id)
 {
