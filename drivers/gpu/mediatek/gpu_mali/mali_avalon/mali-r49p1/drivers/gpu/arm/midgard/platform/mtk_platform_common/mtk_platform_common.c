@@ -51,18 +51,18 @@
 #endif /* CONFIG_MALI_MTK_GPU_DVFS_HINT_26M_LOADING */
 #endif /* CONFIG_MALI_MIDGARD_DVFS && CONFIG_MALI_MTK_DVFS_POLICY */
 
+#if IS_ENABLED(CONFIG_MTK_GPU_SWPM_SUPPORT)
+#include <platform/mtk_mfg_counter.h>
+#include <platform/mtk_platform_common/mtk_ltr_pmu.h>
+#include <platform/mtk_platform_common/mtk_gpu_power_model_sspm_ipi.h>
+#endif /* CONFIG_MTK_GPU_SWPM_SUPPORT */
+
 #if IS_ENABLED(CONFIG_MALI_MTK_PROC_FS)
 #include <linux/proc_fs.h>
 
 #if IS_ENABLED(CONFIG_MALI_MTK_ADAPTIVE_POWER_POLICY)
 #include <platform/mtk_platform_common/mtk_platform_adaptive_power_policy.h>
 #endif /* CONFIG_MALI_MTK_ADAPTIVE_POWER_POLICY */
-
-#if IS_ENABLED(CONFIG_MTK_GPU_SWPM_SUPPORT)
-#include <platform/mtk_mfg_counter.h>
-#include <mtk_ltr_pmu.h>
-#include <mtk_gpu_power_model_sspm_ipi.h>
-#endif /* CONFIG_MTK_GPU_SWPM_SUPPORT */
 
 /* name of the proc root dir */
 #define PROC_ROOT "mtk_mali"
@@ -111,6 +111,65 @@ static DEFINE_MUTEX(mfg_pm_lock);
 static DEFINE_MUTEX(common_debug_lock);
 
 static struct kbase_device *mali_kbdev;
+
+static int mtk_common_gpufreq_dual_commit_compat(int gpu_oppidx, int stack_oppidx)
+{
+	int ret = 0;
+
+	if (gpu_oppidx >= 0) {
+		 ret = gpufreq_commit(TARGET_GPU, gpu_oppidx);
+		 if (ret)
+			  return ret;
+	}
+
+	if (stack_oppidx >= 0)
+		 ret = gpufreq_commit(TARGET_STACK, stack_oppidx);
+
+	return ret;
+}
+
+static int mtk_common_ged_dvfs_get_last_commit_top_idx_compat(void)
+{
+	return (int)ged_dvfs_get_last_commit_idx();
+}
+
+static int mtk_common_ged_dvfs_get_last_commit_stack_idx_compat(void)
+{
+	return (int)ged_dvfs_get_last_commit_idx();
+}
+
+static unsigned long mtk_common_ged_dvfs_write_sysram_last_commit_idx_compat(void)
+{
+	return ged_dvfs_get_last_commit_idx();
+}
+
+static unsigned long
+mtk_common_ged_dvfs_write_sysram_last_commit_idx_test_compat(int commit_idx)
+{
+	(void)commit_idx;
+
+	return ged_dvfs_get_last_commit_idx();
+}
+
+static unsigned long
+mtk_common_ged_dvfs_write_sysram_last_commit_dual_test_compat(int top_idx,
+								      int stack_idx)
+{
+	(void)top_idx;
+	(void)stack_idx;
+
+	return ged_dvfs_get_last_commit_idx();
+}
+
+static int mtk_common_ged_dvfs_update_step_size_compat(int low_step, int med_step,
+							      int high_step)
+{
+	(void)low_step;
+	(void)med_step;
+	(void)high_step;
+
+	return 0;
+}
 
 struct kbase_device *mtk_common_get_kbdev(void)
 {
@@ -376,7 +435,8 @@ int mtk_common_gpufreq_dual_commit(int gpu_oppidx, int stack_oppidx)
 #if IS_ENABLED(CONFIG_MTK_GPUFREQ_V2)
 		ret = mtk_common_gpufreq_bringup() ?
 			      -1 :
-			      gpufreq_dual_commit(gpu_oppidx, stack_oppidx);
+			      mtk_common_gpufreq_dual_commit_compat(gpu_oppidx,
+						       stack_oppidx);
 #else
 		ret = mtk_common_gpufreq_bringup() ?
 			      -1 :
@@ -403,7 +463,7 @@ int mtk_common_ged_dvfs_get_last_commit_top_idx(void)
 {
 #if IS_ENABLED(CONFIG_MALI_MIDGARD_DVFS) &&                                    \
 	IS_ENABLED(CONFIG_MALI_MTK_DVFS_POLICY)
-	return (int)ged_dvfs_get_last_commit_top_idx();
+	return mtk_common_ged_dvfs_get_last_commit_top_idx_compat();
 #else
 	return -1;
 #endif
@@ -413,7 +473,7 @@ int mtk_common_ged_dvfs_get_last_commit_stack_idx(void)
 {
 #if IS_ENABLED(CONFIG_MALI_MIDGARD_DVFS) &&                                    \
 	IS_ENABLED(CONFIG_MALI_MTK_DVFS_POLICY)
-	return (int)ged_dvfs_get_last_commit_stack_idx();
+	return mtk_common_ged_dvfs_get_last_commit_stack_idx_compat();
 #else
 	return -1;
 #endif
@@ -422,7 +482,7 @@ unsigned long mtk_common_ged_dvfs_write_sysram_last_commit_idx(void)
 {
 #if IS_ENABLED(CONFIG_MALI_MIDGARD_DVFS) &&                                    \
 	IS_ENABLED(CONFIG_MALI_MTK_DVFS_POLICY)
-	return (unsigned long)ged_dvfs_write_sysram_last_commit_idx();
+	return mtk_common_ged_dvfs_write_sysram_last_commit_idx_compat();
 #else
 	return -1;
 #endif
@@ -432,7 +492,7 @@ unsigned long mtk_common_ged_dvfs_write_sysram_last_commit_top_idx(void)
 {
 #if IS_ENABLED(CONFIG_MALI_MIDGARD_DVFS) &&                                    \
 	IS_ENABLED(CONFIG_MALI_MTK_DVFS_POLICY)
-	return (unsigned long)ged_dvfs_write_sysram_last_commit_top_idx();
+	return mtk_common_ged_dvfs_write_sysram_last_commit_idx_compat();
 #else
 	return -1;
 #endif
@@ -442,7 +502,7 @@ unsigned long mtk_common_ged_dvfs_write_sysram_last_commit_stack_idx(void)
 {
 #if IS_ENABLED(CONFIG_MALI_MIDGARD_DVFS) &&                                    \
 	IS_ENABLED(CONFIG_MALI_MTK_DVFS_POLICY)
-	return (unsigned long)ged_dvfs_write_sysram_last_commit_stack_idx();
+	return mtk_common_ged_dvfs_write_sysram_last_commit_idx_compat();
 #else
 	return -1;
 #endif
@@ -452,7 +512,7 @@ unsigned long mtk_common_ged_dvfs_write_sysram_last_commit_dual(void)
 {
 #if IS_ENABLED(CONFIG_MALI_MIDGARD_DVFS) &&                                    \
 	IS_ENABLED(CONFIG_MALI_MTK_DVFS_POLICY)
-	return (unsigned long)ged_dvfs_write_sysram_last_commit_dual();
+	return mtk_common_ged_dvfs_write_sysram_last_commit_idx_compat();
 #else
 	return -1;
 #endif
@@ -463,7 +523,7 @@ mtk_common_ged_dvfs_write_sysram_last_commit_idx_test(int commit_idx)
 {
 #if IS_ENABLED(CONFIG_MALI_MIDGARD_DVFS) &&                                    \
 	IS_ENABLED(CONFIG_MALI_MTK_DVFS_POLICY)
-	return (unsigned long)ged_dvfs_write_sysram_last_commit_idx_test(
+	return mtk_common_ged_dvfs_write_sysram_last_commit_idx_test_compat(
 		commit_idx);
 #else
 	return -1;
@@ -475,7 +535,7 @@ mtk_common_ged_dvfs_write_sysram_last_commit_top_idx_test(int commit_idx)
 {
 #if IS_ENABLED(CONFIG_MALI_MIDGARD_DVFS) &&                                    \
 	IS_ENABLED(CONFIG_MALI_MTK_DVFS_POLICY)
-	return (unsigned long)ged_dvfs_write_sysram_last_commit_top_idx_test(
+	return mtk_common_ged_dvfs_write_sysram_last_commit_idx_test_compat(
 		commit_idx);
 #else
 	return -1;
@@ -487,7 +547,7 @@ mtk_common_ged_dvfs_write_sysram_last_commit_stack_idx_test(int commit_idx)
 {
 #if IS_ENABLED(CONFIG_MALI_MIDGARD_DVFS) &&                                    \
 	IS_ENABLED(CONFIG_MALI_MTK_DVFS_POLICY)
-	return (unsigned long)ged_dvfs_write_sysram_last_commit_stack_idx_test(
+	return mtk_common_ged_dvfs_write_sysram_last_commit_idx_test_compat(
 		commit_idx);
 #else
 	return -1;
@@ -500,7 +560,7 @@ mtk_common_ged_dvfs_write_sysram_last_commit_dual_test(int top_idx,
 {
 #if IS_ENABLED(CONFIG_MALI_MIDGARD_DVFS) &&                                    \
 	IS_ENABLED(CONFIG_MALI_MTK_DVFS_POLICY)
-	return (unsigned long)ged_dvfs_write_sysram_last_commit_dual_test(
+	return mtk_common_ged_dvfs_write_sysram_last_commit_dual_test_compat(
 		top_idx, stack_idx);
 #else
 	return -1;
@@ -512,7 +572,8 @@ int mtk_common_ged_dvfs_update_step_size(int low_step, int med_step,
 {
 #if IS_ENABLED(CONFIG_MALI_MIDGARD_DVFS) &&                                    \
 	IS_ENABLED(CONFIG_MALI_MTK_DVFS_POLICY)
-	return ged_dvfs_update_step_size(low_step, med_step, high_step);
+	return mtk_common_ged_dvfs_update_step_size_compat(low_step, med_step,
+			high_step);
 #else
 	return -1;
 #endif
@@ -551,7 +612,7 @@ int mtk_common_ged_pwr_hint(int pwr_hint)
 #endif
 }
 
-#if IS_ENABLED(CONFIG_PROC_FS)
+#if IS_ENABLED(CONFIG_MALI_MTK_PROC_FS)
 static void mtk_common_procfs_init(struct kbase_device *kbdev)
 {
 	if (IS_ERR_OR_NULL(kbdev))

@@ -26,9 +26,15 @@
 #include <sched/sched.h>
 #include "mrdump_private.h"
 
+#if IS_ENABLED(CONFIG_64BIT)
+#define KALLS_ALGN 8
+#else
+#define KALLS_ALGN 4
+#endif
+
 #ifdef MODULE
 
-#define NAME_LEN	128
+#define NAME_LEN 128
 
 static unsigned long *mrdump_ka;
 static int *mrdump_ko;
@@ -38,12 +44,6 @@ static u8 *mrdump_kn;
 static unsigned int *mrdump_km;
 static u8 *mrdump_ktt;
 static u16 *mrdump_kti;
-
-#if IS_ENABLED(CONFIG_64BIT)
-#define KALLS_ALGN	8
-#else
-#define KALLS_ALGN	4
-#endif
 
 #if IS_ENABLED(CONFIG_KALLSYMS_BASE_RELATIVE)
 unsigned long aee_get_kn_off(void)
@@ -94,7 +94,7 @@ static void *kinfo_vaddr;
 static void mrdump_ka_work_func(struct work_struct *work);
 static void aee_base_addrs_init(void);
 
-static DECLARE_DELAYED_WORK(ka_work,mrdump_ka_work_func);
+static DECLARE_DELAYED_WORK(ka_work, mrdump_ka_work_func);
 
 int mrdump_ka_init(void *vaddr)
 {
@@ -132,8 +132,8 @@ static void mrdump_ka_work_func(struct work_struct *work)
 	}
 }
 
-static unsigned int mrdump_checking_names(unsigned int off,
-					   char *namebuf, size_t buflen)
+static unsigned int mrdump_checking_names(unsigned int off, char *namebuf,
+					  size_t buflen)
 {
 	int len, skipped_first = 0;
 	const u8 *tptr, *data;
@@ -207,8 +207,7 @@ static void print_pstate(struct pt_regs *regs)
 	u64 pstate = regs->pstate;
 
 	if (compat_user_mode(regs)) {
-		pr_info("pstate: %08llx (%c%c%c%c %c %s %s %c%c%c)\n",
-			pstate,
+		pr_info("pstate: %08llx (%c%c%c%c %c %s %s %c%c%c)\n", pstate,
 			pstate & PSR_AA32_N_BIT ? 'N' : 'n',
 			pstate & PSR_AA32_Z_BIT ? 'Z' : 'z',
 			pstate & PSR_AA32_C_BIT ? 'C' : 'c',
@@ -221,8 +220,7 @@ static void print_pstate(struct pt_regs *regs)
 			pstate & PSR_AA32_F_BIT ? 'F' : 'f');
 	} else {
 		pr_info("pstate: %08llx (%c%c%c%c %c%c%c%c %cPAN %cUAO)\n",
-			pstate,
-			pstate & PSR_N_BIT ? 'N' : 'n',
+			pstate, pstate & PSR_N_BIT ? 'N' : 'n',
 			pstate & PSR_Z_BIT ? 'Z' : 'z',
 			pstate & PSR_C_BIT ? 'C' : 'c',
 			pstate & PSR_V_BIT ? 'V' : 'v',
@@ -240,10 +238,10 @@ static void print_pstate(struct pt_regs *regs)
 static void show_data(unsigned long addr, int nbytes, const char *name)
 {
 	int i, j, invalid, nlines;
-	u32 *p, data[8] = {0};
+	u32 *p, data[8] = { 0 };
 
 	if (addr < (UL(0xffffffffffffffff) - (UL(1) << VA_BITS) + 1) ||
-			addr > UL(0xFFFFFFFFFFFFF000))
+	    addr > UL(0xFFFFFFFFFFFFF000))
 		return;
 
 	pr_info("%s: %#lx:\n", name, addr);
@@ -260,9 +258,9 @@ static void show_data(unsigned long addr, int nbytes, const char *name)
 			}
 		}
 		if (invalid != 8)
-			pr_info(MEM_FMT, (unsigned long)p & 0xffff,
-				data[0], data[1], data[2], data[3],
-				data[4], data[5], data[6], data[7]);
+			pr_info(MEM_FMT, (unsigned long)p & 0xffff, data[0],
+				data[1], data[2], data[3], data[4], data[5],
+				data[6], data[7]);
 	}
 }
 
@@ -299,8 +297,8 @@ void aee_show_regs(struct pt_regs *regs)
 	i = top_reg;
 
 	while (i >= 1) {
-		pr_info("x%-2d: %016llx x%-2d: %016llx\n",
-			i, regs->regs[i], i - 1, regs->regs[i - 1]);
+		pr_info("x%-2d: %016llx x%-2d: %016llx\n", i, regs->regs[i],
+			i - 1, regs->regs[i - 1]);
 		i -= 2;
 	}
 	if (!user_mode(regs)) {
@@ -329,17 +327,14 @@ void aee_show_regs(struct pt_regs *regs)
 	pr_info("LR is at %pS\n", (void *)regs->ARM_lr);
 	pr_info("pc : [<%08lx>]    lr : [<%08lx>]    psr: %08lx\n",
 		regs->ARM_pc, regs->ARM_lr, regs->ARM_cpsr);
-	pr_info("sp : %08lx  ip : %08lx  fp : %08lx\n",
-		regs->ARM_sp, regs->ARM_ip, regs->ARM_fp);
-	pr_info("r10: %08lx  r9 : %08lx  r8 : %08lx\n",
-		regs->ARM_r10, regs->ARM_r9,
-		regs->ARM_r8);
+	pr_info("sp : %08lx  ip : %08lx  fp : %08lx\n", regs->ARM_sp,
+		regs->ARM_ip, regs->ARM_fp);
+	pr_info("r10: %08lx  r9 : %08lx  r8 : %08lx\n", regs->ARM_r10,
+		regs->ARM_r9, regs->ARM_r8);
 	pr_info("r7 : %08lx  r6 : %08lx  r5 : %08lx  r4 : %08lx\n",
-		regs->ARM_r7, regs->ARM_r6,
-		regs->ARM_r5, regs->ARM_r4);
+		regs->ARM_r7, regs->ARM_r6, regs->ARM_r5, regs->ARM_r4);
 	pr_info("r3 : %08lx  r2 : %08lx  r1 : %08lx  r0 : %08lx\n",
-		regs->ARM_r3, regs->ARM_r2,
-		regs->ARM_r1, regs->ARM_r0);
+		regs->ARM_r3, regs->ARM_r2, regs->ARM_r1, regs->ARM_r0);
 }
 #endif
 
@@ -386,7 +381,6 @@ unsigned long aee_get_text(void)
 static struct list_head *p_modules;
 struct list_head *aee_get_modules(void)
 {
-
 	if (p_modules)
 		return p_modules;
 
@@ -525,7 +519,7 @@ static void aee_base_addrs_init(void)
 			continue;
 		}
 
-		if (!p_log_ptr&& strcmp(strbuf, "prb") == 0) {
+		if (!p_log_ptr && strcmp(strbuf, "prb") == 0) {
 			p_log_ptr = (void *)mrdump_idx2addr(i);
 			search_num--;
 			continue;
@@ -560,7 +554,6 @@ unsigned long aee_get_text(void)
 static struct list_head *p_modules;
 struct list_head *aee_get_modules(void)
 {
-
 	if (p_modules)
 		return p_modules;
 
@@ -596,6 +589,53 @@ unsigned long aee_get_kallsyms_addresses(void)
 		return (unsigned long)kallsyms_addresses;
 	return (unsigned long)kallsyms_offsets;
 }
+
+#if IS_ENABLED(CONFIG_KALLSYMS_BASE_RELATIVE)
+unsigned long aee_get_kn_off(void)
+{
+	if (!kallsyms_offsets || !kallsyms_names)
+		return 0;
+
+	return (unsigned long)kallsyms_names - (unsigned long)kallsyms_offsets;
+}
+
+unsigned long aee_get_kns_off(void)
+{
+	unsigned long kn_off = aee_get_kn_off();
+
+	if (!kn_off || kn_off < KALLS_ALGN)
+		return 0;
+
+	return kn_off - KALLS_ALGN;
+}
+
+unsigned long aee_get_km_off(void)
+{
+	if (!kallsyms_offsets || !kallsyms_markers)
+		return 0;
+
+	return (unsigned long)kallsyms_markers -
+	       (unsigned long)kallsyms_offsets;
+}
+
+unsigned long aee_get_ktt_off(void)
+{
+	if (!kallsyms_offsets || !kallsyms_token_table)
+		return 0;
+
+	return (unsigned long)kallsyms_token_table -
+	       (unsigned long)kallsyms_offsets;
+}
+
+unsigned long aee_get_kti_off(void)
+{
+	if (!kallsyms_offsets || !kallsyms_token_index)
+		return 0;
+
+	return (unsigned long)kallsyms_token_index -
+	       (unsigned long)kallsyms_offsets;
+}
+#endif
 
 unsigned long aee_get_kti_addresses(void)
 {
@@ -673,112 +713,102 @@ static char *task_group_path(struct task_group *tg)
 
 static DEFINE_SPINLOCK(sched_debug_lock);
 
-static const char * const sched_tunable_scaling_names[] = {
-	"none",
-	"logarithmic",
-	"linear"
+static const char *const sched_tunable_scaling_names[] = {
+	"none", "logarithmic", "linear"
 }; /* kernel/sched/debug.c */
 
 char print_at_AEE_buffer[160];
 
-#define SEQ_printf_at_AEE(m, x...)		\
-do {						\
-	snprintf(print_at_AEE_buffer, sizeof(print_at_AEE_buffer), x);	\
-	aee_sram_fiq_log(print_at_AEE_buffer);	\
-} while (0)
+#define SEQ_printf_at_AEE(m, x...)                                             \
+	do {                                                                   \
+		snprintf(print_at_AEE_buffer, sizeof(print_at_AEE_buffer), x); \
+		aee_sram_fiq_log(print_at_AEE_buffer);                         \
+	} while (0)
 
-static void
-print_task_at_AEE(struct seq_file *m, struct rq *rq, struct task_struct *p)
+static void print_task_at_AEE(struct seq_file *m, struct rq *rq,
+			      struct task_struct *p)
 {
 #if IS_ENABLED(CONFIG_SCHEDSTATS)
 	if (rq->curr == p) {
 #if IS_ENABLED(CONFIG_CGROUP_SCHED)
-		SEQ_printf_at_AEE(m, "R%15s %5d %9lld.%06ld %9lld ",
-			p->comm,
-			task_pid_nr(p),
-			SPLIT_NS(p->se.vruntime),
-			(long long)(p->nvcsw + p->nivcsw));
+		SEQ_printf_at_AEE(m, "R%15s %5d %9lld.%06ld %9lld ", p->comm,
+				  task_pid_nr(p), SPLIT_NS(p->se.vruntime),
+				  (long long)(p->nvcsw + p->nivcsw));
 
 		SEQ_printf_at_AEE(m, "%5d ", p->prio);
 
 		SEQ_printf_at_AEE(m, "%9lld.%06ld %9lld.%06ld %9lld.%06ld ",
-			SPLIT_NS(p->se.statistics.wait_sum),
-			SPLIT_NS(p->se.sum_exec_runtime),
-			SPLIT_NS(p->se.statistics.sum_sleep_runtime));
+				  SPLIT_NS(p->se.statistics.wait_sum),
+				  SPLIT_NS(p->se.sum_exec_runtime),
+				  SPLIT_NS(p->se.statistics.sum_sleep_runtime));
 
 		SEQ_printf_at_AEE(m, "%s\n", task_group_path(task_group(p)));
 
 #else
-		SEQ_printf_at_AEE(m, "R%15s %5d %9lld.%06ld %9lld ",
-			p->comm,
-			task_pid_nr(p),
-			SPLIT_NS(p->se.vruntime),
-			(long long)(p->nvcsw + p->nivcsw));
+		SEQ_printf_at_AEE(m, "R%15s %5d %9lld.%06ld %9lld ", p->comm,
+				  task_pid_nr(p), SPLIT_NS(p->se.vruntime),
+				  (long long)(p->nvcsw + p->nivcsw));
 
 		SEQ_printf_at_AEE(m, "%5d ", p->prio);
 
 		SEQ_printf_at_AEE(m, "%9lld.%06ld %9lld.%06ld %9lld.%06ld ",
-			SPLIT_NS(p->se.statistics.wait_sum),
-			SPLIT_NS(p->se.sum_exec_runtime),
-			SPLIT_NS(p->se.statistics.sum_sleep_runtime));
+				  SPLIT_NS(p->se.statistics.wait_sum),
+				  SPLIT_NS(p->se.sum_exec_runtime),
+				  SPLIT_NS(p->se.statistics.sum_sleep_runtime));
 #endif
 #if IS_ENABLED(CONFIG_NUMA_BALANCING)
-		SEQ_printf_at_AEE(m, " %d %d",
-			task_node(p), task_numa_group_id(p));
+		SEQ_printf_at_AEE(m, " %d %d", task_node(p),
+				  task_numa_group_id(p));
 #endif
 	} else {
 #if IS_ENABLED(CONFIG_CGROUP_SCHED)
-		SEQ_printf_at_AEE(m, " %15s %5d %9lld.%06ld %9lld ",
-			p->comm,
-			task_pid_nr(p),
-			SPLIT_NS(p->se.vruntime),
-			(long long)(p->nvcsw + p->nivcsw));
+		SEQ_printf_at_AEE(m, " %15s %5d %9lld.%06ld %9lld ", p->comm,
+				  task_pid_nr(p), SPLIT_NS(p->se.vruntime),
+				  (long long)(p->nvcsw + p->nivcsw));
 
 		SEQ_printf_at_AEE(m, "%5d ", p->prio);
 
 		SEQ_printf_at_AEE(m, "%9lld.%06ld %9lld.%06ld %9lld.%06ld ",
-			SPLIT_NS(p->se.statistics.wait_sum),
-			SPLIT_NS(p->se.sum_exec_runtime),
-			SPLIT_NS(p->se.statistics.sum_sleep_runtime));
+				  SPLIT_NS(p->se.statistics.wait_sum),
+				  SPLIT_NS(p->se.sum_exec_runtime),
+				  SPLIT_NS(p->se.statistics.sum_sleep_runtime));
 
 		SEQ_printf_at_AEE(m, "%s\n", task_group_path(task_group(p)));
 #else
-		SEQ_printf_at_AEE(m, "% 15s %5d %9lld.%06ld %9lld ",
-			p->comm,
-			task_pid_nr(p),
-			SPLIT_NS(p->se.vruntime),
-			(long long)(p->nvcsw + p->nivcsw));
+		SEQ_printf_at_AEE(m, "% 15s %5d %9lld.%06ld %9lld ", p->comm,
+				  task_pid_nr(p), SPLIT_NS(p->se.vruntime),
+				  (long long)(p->nvcsw + p->nivcsw));
 		SEQ_printf_at_AEE(m, "%5d ", p->prio);
 
 		SEQ_printf_at_AEE(m, "%9lld.%06ld %9lld.%06ld %9lld.%06ld ",
-			SPLIT_NS(p->se.statistics.wait_sum),
-			SPLIT_NS(p->se.sum_exec_runtime),
-			SPLIT_NS(p->se.statistics.sum_sleep_runtime));
+				  SPLIT_NS(p->se.statistics.wait_sum),
+				  SPLIT_NS(p->se.sum_exec_runtime),
+				  SPLIT_NS(p->se.statistics.sum_sleep_runtime));
 #endif
 #if IS_ENABLED(CONFIG_NUMA_BALANCING)
-		SEQ_printf_at_AEE(m, " %d %d",
-			task_node(p), task_numa_group_id(p));
+		SEQ_printf_at_AEE(m, " %d %d", task_node(p),
+				  task_numa_group_id(p));
 #endif
 	}
 #else
-	SEQ_printf_at_AEE(m, "%9lld.%06ld %9lu %9lld.%06ld",
-		0LL, 0L,
-		SPLIT_NS(p->se.sum_exec_runtime),
-		0LL, 0L);
+	SEQ_printf_at_AEE(m, "%9lld.%06ld %9lu %9lld.%06ld", 0LL, 0L,
+			  SPLIT_NS(p->se.sum_exec_runtime), 0LL, 0L);
 #endif
 }
 
 /* sched: add aee log */
-#define read_trylock_irqsave(lock, flags) \
-	({ \
-	 typecheck(unsigned long, flags); \
-	 local_irq_save(flags); \
-	 read_trylock(lock) ? \
-	 1 : ({ local_irq_restore(flags); 0; }); \
-	 })
+#define read_trylock_irqsave(lock, flags)                                      \
+	({                                                                     \
+		typecheck(unsigned long, flags);                               \
+		local_irq_save(flags);                                         \
+		read_trylock(lock) ? 1 : ({                                    \
+			local_irq_restore(flags);                              \
+			0;                                                     \
+		});                                                            \
+	})
 
-int read_trylock_n_irqsave(rwlock_t *lock,
-		unsigned long *flags, struct seq_file *m, char *msg)
+int read_trylock_n_irqsave(rwlock_t *lock, unsigned long *flags,
+			   struct seq_file *m, char *msg)
 {
 	int locked, trylock_cnt = 0;
 
@@ -798,22 +828,23 @@ int read_trylock_n_irqsave(rwlock_t *lock,
 			owner = lock->owner;
 #if IS_ENABLED(CONFIG_SMP)
 		SEQ_printf_at_AEE(m, " lock: %p, .magic: %08x, .owner: %s/%d",
-				lock, lock->magic,
-				owner ? owner->comm : "<<none>>",
-				owner ? task_pid_nr(owner) : -1);
+				  lock, lock->magic,
+				  owner ? owner->comm : "<<none>>",
+				  owner ? task_pid_nr(owner) : -1);
 
 #if IS_ENABLED(CONFIG_ARM64)
 		SEQ_printf_at_AEE(m, ".owner_cpu: %d, value: %d\n",
-			lock->owner_cpu, lock->raw_lock.wait_lock.locked);
+				  lock->owner_cpu,
+				  lock->raw_lock.wait_lock.locked);
 #else
 		SEQ_printf_at_AEE(m, ".owner_cpu: %d\n", lock->owner_cpu);
 #endif
 
 #else
 		SEQ_printf_at_AEE(m, " lock: %p, .magic: %08x, .owner: %s/%d",
-			   lock, lock->magic,
-			   owner ? owner->comm : "<<none>>",
-			   owner ? task_pid_nr(owner) : -1);
+				  lock, lock->magic,
+				  owner ? owner->comm : "<<none>>",
+				  owner ? task_pid_nr(owner) : -1);
 		SEQ_printf_at_AEE(m, ".owner_cpu: %d\n", lock->owner_cpu);
 #endif
 #endif
@@ -822,8 +853,8 @@ int read_trylock_n_irqsave(rwlock_t *lock,
 	return locked;
 }
 
-int raw_spin_trylock_n_irqsave(raw_spinlock_t *lock,
-		unsigned long *flags, struct seq_file *m, char *msg)
+int raw_spin_trylock_n_irqsave(raw_spinlock_t *lock, unsigned long *flags,
+			       struct seq_file *m, char *msg)
 {
 	int locked, trylock_cnt = 0;
 
@@ -844,26 +875,25 @@ int raw_spin_trylock_n_irqsave(raw_spinlock_t *lock,
 #if IS_ENABLED(CONFIG_ARM64)
 #if IS_ENABLED(CONFIG_SMP)
 		SEQ_printf_at_AEE(m, " lock: %lx, .magic: %08x, .owner: %s/%d",
-			   (long)lock, lock->magic,
-			   owner ? owner->comm : "<<none>>",
-			   owner ? task_pid_nr(owner) : -1);
-		SEQ_printf_at_AEE(m, ".owner_cpu: %d",
-			   lock->owner_cpu);
+				  (long)lock, lock->magic,
+				  owner ? owner->comm : "<<none>>",
+				  owner ? task_pid_nr(owner) : -1);
+		SEQ_printf_at_AEE(m, ".owner_cpu: %d", lock->owner_cpu);
 #else
 		SEQ_printf_at_AEE(m, " lock: %lx, .magic: %08x, .owner: %s/%d",
-			   (long)lock, lock->magic,
-			   owner ? owner->comm : "<<none>>",
-			   owner ? task_pid_nr(owner) : -1);
+				  (long)lock, lock->magic,
+				  owner ? owner->comm : "<<none>>",
+				  owner ? task_pid_nr(owner) : -1);
 		SEQ_printf_at_AEE(m, ".owner_cpu: %d, value: %d\n",
-			   lock->owner_cpu, lock->raw_lock.slock);
+				  lock->owner_cpu, lock->raw_lock.slock);
 #endif
 #else
 		SEQ_printf_at_AEE(m, " lock: %x, .magic: %08x, .owner: %s/%d",
-			   (int)lock, lock->magic,
-				owner ? owner->comm : "<<none>>",
-				owner ? task_pid_nr(owner) : -1);
+				  (int)lock, lock->magic,
+				  owner ? owner->comm : "<<none>>",
+				  owner ? task_pid_nr(owner) : -1);
 		SEQ_printf_at_AEE(m, ".owner_cpu: %d, value: %d\n",
-				lock->owner_cpu, lock->raw_lock.slock);
+				  lock->owner_cpu, lock->raw_lock.slock);
 #endif
 #endif
 	}
@@ -871,8 +901,8 @@ int raw_spin_trylock_n_irqsave(raw_spinlock_t *lock,
 	return locked;
 }
 
-int spin_trylock_n_irqsave(spinlock_t *lock,
-		unsigned long *flags, struct seq_file *m, char *msg)
+int spin_trylock_n_irqsave(spinlock_t *lock, unsigned long *flags,
+			   struct seq_file *m, char *msg)
 {
 	int locked, trylock_cnt = 0;
 
@@ -895,27 +925,26 @@ int spin_trylock_n_irqsave(spinlock_t *lock,
 #if IS_ENABLED(CONFIG_ARM64)
 #if IS_ENABLED(CONFIG_SMP)
 		SEQ_printf_at_AEE(m, " lock: %lx, .magic: %08x, .owner: %s/%d",
-			   (long)&rlock, rlock.magic,
-			   owner ? owner->comm : "<<none>>",
-			   owner ? task_pid_nr(owner) : -1);
+				  (long)&rlock, rlock.magic,
+				  owner ? owner->comm : "<<none>>",
+				  owner ? task_pid_nr(owner) : -1);
 		SEQ_printf_at_AEE(m, " .owner_cpu: %d, pending: %u",
-			   rlock.owner_cpu,
-			   rlock.raw_lock.pending);
+				  rlock.owner_cpu, rlock.raw_lock.pending);
 #else
 		SEQ_printf_at_AEE(m, " lock: %lx, .magic: %08x, .owner: %s/%d",
-			   (long)&rlock, rlock.magic,
-			   owner ? owner->comm : "<<none>>",
-			   owner ? task_pid_nr(owner) : -1);
+				  (long)&rlock, rlock.magic,
+				  owner ? owner->comm : "<<none>>",
+				  owner ? task_pid_nr(owner) : -1);
 		SEQ_printf_at_AEE(m, ".owner_cpu: %d, value: %d\n",
-			   rlock.owner_cpu, rlock.raw_lock.slock);
+				  rlock.owner_cpu, rlock.raw_lock.slock);
 #endif
 #else
 		SEQ_printf_at_AEE(m, " lock: %x, .magic: %08x, .owner: %s/%d",
-			   (int)&rlock, rlock.magic,
-			   owner ? owner->comm : "<<none>>",
-			   owner ? task_pid_nr(owner) : -1);
+				  (int)&rlock, rlock.magic,
+				  owner ? owner->comm : "<<none>>",
+				  owner ? task_pid_nr(owner) : -1);
 		SEQ_printf_at_AEE(m, ".owner_cpu: %d, value: %d\n",
-			    rlock.owner_cpu, rlock.raw_lock.slock);
+				  rlock.owner_cpu, rlock.raw_lock.slock);
 #endif
 #endif
 	}
@@ -928,12 +957,14 @@ static void print_rq_at_AEE(struct seq_file *m, struct rq *rq, int rq_cpu)
 
 	SEQ_printf_at_AEE(m, "\n");
 	SEQ_printf_at_AEE(m, "runnable tasks:\n");
-	SEQ_printf_at_AEE(m,
-	"            task   PID         tree-key  switches  prio        wait-time         sum-exec        sum-sleep\n");
-	SEQ_printf_at_AEE(m, "---------------------------------------------------\n");
+	SEQ_printf_at_AEE(
+		m,
+		"            task   PID         tree-key  switches  prio        wait-time         sum-exec        sum-sleep\n");
+	SEQ_printf_at_AEE(
+		m, "---------------------------------------------------\n");
 
 	rcu_read_lock();
-	for_each_process_thread(g, p) {
+	for_each_process_thread (g, p) {
 		/*
 		 * if (task_cpu(p) != rq_cpu)
 		 * sched: only output the runnable tasks,
@@ -948,13 +979,14 @@ static void print_rq_at_AEE(struct seq_file *m, struct rq *rq, int rq_cpu)
 }
 
 #if IS_ENABLED(CONFIG_FAIR_GROUP_SCHED)
-static void print_cfs_group_stats_at_AEE(struct seq_file *m,
-		int cpu, struct task_group *tg)
+static void print_cfs_group_stats_at_AEE(struct seq_file *m, int cpu,
+					 struct task_group *tg)
 {
 	struct sched_entity *se = tg->se[cpu];
 
-#define P(F)		SEQ_printf_at_AEE(m, "  .%-30s: %lld\n",	#F, (long long)F)
-#define PN(F)		SEQ_printf_at_AEE(m, "  .%-30s: %lu\n", #F, SPLIT_NS((long long)F))
+#define P(F) SEQ_printf_at_AEE(m, "  .%-30s: %lld\n", #F, (long long)F)
+#define PN(F)                                                                  \
+	SEQ_printf_at_AEE(m, "  .%-30s: %lu\n", #F, SPLIT_NS((long long)F))
 
 	if (!se)
 		return;
@@ -963,10 +995,12 @@ static void print_cfs_group_stats_at_AEE(struct seq_file *m,
 	PN(se->vruntime);
 	PN(se->sum_exec_runtime);
 #if NO_EXPORT
-#define P_SCHEDSTAT(F)	\
-	SEQ_printf_at_AEE(m, "  .%-30s: %lld\n",        #F, (long long)schedstat_val(F))
-#define PN_SCHEDSTAT(F)	\
-	SEQ_printf_at_AEE(m, "  .%-30s: %lu\n", #F, SPLIT_NS((long long)schedstat_val(F)))
+#define P_SCHEDSTAT(F)                                                         \
+	SEQ_printf_at_AEE(m, "  .%-30s: %lld\n", #F,                           \
+			  (long long)schedstat_val(F))
+#define PN_SCHEDSTAT(F)                                                        \
+	SEQ_printf_at_AEE(m, "  .%-30s: %lu\n", #F,                            \
+			  SPLIT_NS((long long)schedstat_val(F)))
 	if (schedstat_enabled()) {
 		PN_SCHEDSTAT(se->statistics.wait_start);
 		PN_SCHEDSTAT(se->statistics.sleep_start);
@@ -994,8 +1028,8 @@ static void print_cfs_group_stats_at_AEE(struct seq_file *m,
 void print_cfs_rq_at_AEE(struct seq_file *m, int cpu, struct cfs_rq *cfs_rq)
 {
 #if NO_EXPORT
-	s64 MIN_vruntime = -1, min_vruntime, max_vruntime = -1,
-		spread, rq0_min_vruntime, spread0;
+	s64 MIN_vruntime = -1, min_vruntime, max_vruntime = -1, spread,
+	    rq0_min_vruntime, spread0;
 	struct rq *rq = cpu_rq(cpu);
 	struct sched_entity *last;
 	unsigned long flags;
@@ -1004,17 +1038,18 @@ void print_cfs_rq_at_AEE(struct seq_file *m, int cpu, struct cfs_rq *cfs_rq)
 
 #if IS_ENABLED(CONFIG_FAIR_GROUP_SCHED)
 	SEQ_printf_at_AEE(m, "\n");
-	SEQ_printf_at_AEE(m, "cfs_rq[%d]:%s\n", cpu, task_group_path(cfs_rq->tg));
+	SEQ_printf_at_AEE(m, "cfs_rq[%d]:%s\n", cpu,
+			  task_group_path(cfs_rq->tg));
 #else
 	SEQ_printf_at_AEE(m, "\n");
 	SEQ_printf_at_AEE(m, "cfs_rq[%d]:\n", cpu);
 #endif
 	SEQ_printf_at_AEE(m, "  .%-30s: %lu\n", "exec_clock",
-			SPLIT_NS(cfs_rq->exec_clock));
+			  SPLIT_NS(cfs_rq->exec_clock));
 
 #if NO_EXPORT
-	locked = raw_spin_trylock_n_irqsave(&rq->lock,
-			&flags, m, "print_cfs_rq_at_AEE");
+	locked = raw_spin_trylock_n_irqsave(&rq->lock, &flags, m,
+					    "print_cfs_rq_at_AEE");
 	if (rb_first_cached(&cfs_rq->tasks_timeline))
 		MIN_vruntime = (__pick_first_entity(cfs_rq))->vruntime;
 	last = __pick_last_entity(cfs_rq);
@@ -1026,51 +1061,48 @@ void print_cfs_rq_at_AEE(struct seq_file *m, int cpu, struct cfs_rq *cfs_rq)
 	if (locked)
 		raw_spin_unlock_irqrestore(&rq->lock, flags);
 	SEQ_printf_at_AEE(m, "  .%-30s: %lu\n", "MIN_vruntime",
-			SPLIT_NS(MIN_vruntime));
+			  SPLIT_NS(MIN_vruntime));
 	SEQ_printf_at_AEE(m, "  .%-30s: %lu\n", "min_vruntime",
-			SPLIT_NS(min_vruntime));
+			  SPLIT_NS(min_vruntime));
 	SEQ_printf_at_AEE(m, "  .%-30s: %lu\n", "max_vruntime",
-			SPLIT_NS(max_vruntime));
+			  SPLIT_NS(max_vruntime));
 
 	spread = max_vruntime - MIN_vruntime;
-	SEQ_printf_at_AEE(m, "  .%-30s: %lu\n", "spread",
-			SPLIT_NS(spread));
+	SEQ_printf_at_AEE(m, "  .%-30s: %lu\n", "spread", SPLIT_NS(spread));
 	spread0 = min_vruntime - rq0_min_vruntime;
-	SEQ_printf_at_AEE(m, "  .%-30s: %lu\n", "spread0",
-		SPLIT_NS(spread0));
+	SEQ_printf_at_AEE(m, "  .%-30s: %lu\n", "spread0", SPLIT_NS(spread0));
 	SEQ_printf_at_AEE(m, "  .%-30s: %d\n", "nr_spread_over",
-		cfs_rq->nr_spread_over);
+			  cfs_rq->nr_spread_over);
 #endif
 
-	SEQ_printf_at_AEE(m, "  .%-30s: %d\n",
-			"nr_running", cfs_rq->nr_running);
+	SEQ_printf_at_AEE(m, "  .%-30s: %d\n", "nr_running",
+			  cfs_rq->nr_running);
 	SEQ_printf_at_AEE(m, "  .%-30s: %ld\n", "load", cfs_rq->load.weight);
 #if IS_ENABLED(CONFIG_SMP)
 	SEQ_printf_at_AEE(m, "  .%-30s: %lu\n", "load_avg",
-			cfs_rq->avg.load_avg);
+			  cfs_rq->avg.load_avg);
 	SEQ_printf_at_AEE(m, "  .%-30s: %lu\n", "util_avg",
-			cfs_rq->avg.util_avg);
+			  cfs_rq->avg.util_avg);
 	SEQ_printf_at_AEE(m, "  .%-30s: %u\n", "util_est_enqueued",
-			cfs_rq->avg.util_est.enqueued);
+			  cfs_rq->avg.util_est.enqueued);
 	SEQ_printf_at_AEE(m, "  .%-30s: %ld\n", "removed.load_avg",
-			cfs_rq->removed.load_avg);
+			  cfs_rq->removed.load_avg);
 	SEQ_printf_at_AEE(m, "  .%-30s: %ld\n", "removed.util_avg",
-			cfs_rq->removed.util_avg);
+			  cfs_rq->removed.util_avg);
 	SEQ_printf_at_AEE(m, "  .%-30s: %ld\n", "removed.runnable_avg",
-			cfs_rq->removed.runnable_avg);
+			  cfs_rq->removed.runnable_avg);
 
 #if IS_ENABLED(CONFIG_FAIR_GROUP_SCHED)
 	SEQ_printf_at_AEE(m, "  .%-30s: %lu\n", "tg_load_avg_contrib",
-			cfs_rq->tg_load_avg_contrib);
+			  cfs_rq->tg_load_avg_contrib);
 	SEQ_printf_at_AEE(m, "  .%-30s: %ld\n", "tg_load_avg",
-			atomic_long_read(&cfs_rq->tg->load_avg));
+			  atomic_long_read(&cfs_rq->tg->load_avg));
 #endif
 #endif
 #if IS_ENABLED(CONFIG_CFS_BANDWIDTH)
-	SEQ_printf_at_AEE(m, "  .%-30s: %d\n", "throttled",
-			cfs_rq->throttled);
+	SEQ_printf_at_AEE(m, "  .%-30s: %d\n", "throttled", cfs_rq->throttled);
 	SEQ_printf_at_AEE(m, "  .%-30s: %d\n", "throttle_count",
-			cfs_rq->throttle_count);
+			  cfs_rq->throttle_count);
 #endif
 
 #if IS_ENABLED(CONFIG_FAIR_GROUP_SCHED)
@@ -1078,9 +1110,9 @@ void print_cfs_rq_at_AEE(struct seq_file *m, int cpu, struct cfs_rq *cfs_rq)
 #endif
 }
 
-#define for_each_leaf_cfs_rq(rq, cfs_rq) \
-	list_for_each_entry_rcu(cfs_rq, &rq->leaf_cfs_rq_list, leaf_cfs_rq_list)
-
+#define for_each_leaf_cfs_rq(rq, cfs_rq)                                       \
+	list_for_each_entry_rcu (cfs_rq, &rq->leaf_cfs_rq_list,                \
+				 leaf_cfs_rq_list)
 
 void print_cfs_stats_at_AEE(struct seq_file *m, int cpu)
 {
@@ -1103,13 +1135,10 @@ void print_rt_rq_at_AEE(struct seq_file *m, int cpu, struct rt_rq *rt_rq)
 	SEQ_printf_at_AEE(m, "rt_rq[%d]:\n", cpu);
 #endif
 
-
-#define P(x) \
-	SEQ_printf_at_AEE(m, "  .%-30s: %lld\n", #x, (long long)(rt_rq->x))
-#define PU(x) \
+#define P(x) SEQ_printf_at_AEE(m, "  .%-30s: %lld\n", #x, (long long)(rt_rq->x))
+#define PU(x)                                                                  \
 	SEQ_printf_at_AEE(m, "  .%-30s: %lu\n", #x, (unsigned long)(rt_rq->x))
-#define PN(x) \
-	SEQ_printf_at_AEE(m, "  .%-30s: %lu\n", #x, SPLIT_NS(rt_rq->x))
+#define PN(x) SEQ_printf_at_AEE(m, "  .%-30s: %lu\n", #x, SPLIT_NS(rt_rq->x))
 
 	P(rt_nr_running);
 #if IS_ENABLED(CONFIG_SMP)
@@ -1125,14 +1154,13 @@ void print_rt_rq_at_AEE(struct seq_file *m, int cpu, struct rt_rq *rt_rq)
 #undef P
 }
 
-
 #if IS_ENABLED(CONFIG_RT_GROUP_SCHED)
 
 static inline struct task_group *next_task_group(struct task_group *tg)
 {
 	do {
-		tg = list_entry_rcu(tg->list.next,
-			typeof(struct task_group), list);
+		tg = list_entry_rcu(tg->list.next, typeof(struct task_group),
+				    list);
 	} while (&tg->list != &task_groups && task_group_is_autogroup(tg));
 
 	if (&tg->list == &task_groups)
@@ -1141,15 +1169,15 @@ static inline struct task_group *next_task_group(struct task_group *tg)
 	return tg;
 }
 
-#define for_each_rt_rq(rt_rq, iter, rq)					\
-	for (iter = container_of(&task_groups, typeof(*iter), list);	\
-		(iter = next_task_group(iter)) &&			\
-		(rt_rq = iter->rt_rq[cpu_of(rq)]);)
+#define for_each_rt_rq(rt_rq, iter, rq)                                        \
+	for (iter = container_of(&task_groups, typeof(*iter), list);           \
+	     (iter = next_task_group(iter)) &&                                 \
+	     (rt_rq = iter->rt_rq[cpu_of(rq)]);)
 
 #else /* !CONFIG_RT_GROUP_SCHED */
 
-#define for_each_rt_rq(rt_rq, iter, rq) \
-	for ((void) iter, rt_rq = &rq->rt; rt_rq; rt_rq = NULL)
+#define for_each_rt_rq(rt_rq, iter, rq)                                        \
+	for ((void)iter, rt_rq = &rq->rt; rt_rq; rt_rq = NULL)
 
 #endif
 
@@ -1172,7 +1200,7 @@ void print_dl_rq_at_AEE(struct seq_file *m, int cpu, struct dl_rq *dl_rq)
 	SEQ_printf_at_AEE(m, "\n");
 	SEQ_printf_at_AEE(m, "dl_rq[%d]:\n", cpu);
 
-#define PU(x) \
+#define PU(x)                                                                  \
 	SEQ_printf_at_AEE(m, "  .%-30s: %lu\n", #x, (unsigned long)(dl_rq->x))
 
 	PU(dl_nr_running);
@@ -1183,7 +1211,8 @@ void print_dl_rq_at_AEE(struct seq_file *m, int cpu, struct dl_rq *dl_rq)
 	dl_bw = &dl_rq->dl_bw;
 #endif
 	SEQ_printf_at_AEE(m, "  .%-30s: %lld\n", "dl_bw->bw", dl_bw->bw);
-	SEQ_printf_at_AEE(m, "  .%-30s: %lld\n", "dl_bw->total_bw", dl_bw->total_bw);
+	SEQ_printf_at_AEE(m, "  .%-30s: %lld\n", "dl_bw->total_bw",
+			  dl_bw->total_bw);
 
 #undef PU
 }
@@ -1201,36 +1230,35 @@ static void print_cpu_at_AEE(struct seq_file *m, int cpu)
 
 #if IS_ENABLED(CONFIG_X86)
 	{
-		unsigned int freq = cpu_khz ? : 1;
+		unsigned int freq = cpu_khz ?: 1;
 
-		SEQ_printf_at_AEE(m, "cpu#%d, %u.%03u MHz\n",
-			   cpu, freq / 1000, (freq % 1000));
+		SEQ_printf_at_AEE(m, "cpu#%d, %u.%03u MHz\n", cpu, freq / 1000,
+				  (freq % 1000));
 	}
 #else
 	/* sched: add cpu info */
 	SEQ_printf_at_AEE(m, "cpu#%d: %s\n", cpu,
-			cpu_is_offline(cpu) ? "Offline" : "Online");
+			  cpu_is_offline(cpu) ? "Offline" : "Online");
 #endif
 
-#define P(x) \
-do { \
-	if (sizeof(rq->x) == 4) \
-		SEQ_printf_at_AEE(m, "  .%-30s: %ld\n", \
-		#x, (long)(rq->x)); \
-	else \
-		SEQ_printf_at_AEE(m, "  .%-30s: %lld\n", \
-		#x, (long long)(rq->x)); \
-} while (0)
+#define P(x)                                                                   \
+	do {                                                                   \
+		if (sizeof(rq->x) == 4)                                        \
+			SEQ_printf_at_AEE(m, "  .%-30s: %ld\n", #x,            \
+					  (long)(rq->x));                      \
+		else                                                           \
+			SEQ_printf_at_AEE(m, "  .%-30s: %lld\n", #x,           \
+					  (long long)(rq->x));                 \
+	} while (0)
 
-#define PN(x) \
-	SEQ_printf_at_AEE(m, "  .%-30s: %lu\n", #x, SPLIT_NS(rq->x))
+#define PN(x) SEQ_printf_at_AEE(m, "  .%-30s: %lu\n", #x, SPLIT_NS(rq->x))
 
 	P(nr_running);
 	P(nr_switches);
 	P(nr_uninterruptible);
 	PN(next_balance);
-	SEQ_printf_at_AEE(m, "  .%-30s: %ld\n",
-			"curr->pid", (long)(task_pid_nr(rq->curr)));
+	SEQ_printf_at_AEE(m, "  .%-30s: %ld\n", "curr->pid",
+			  (long)(task_pid_nr(rq->curr)));
 	PN(clock);
 	PN(clock_task);
 #undef P
@@ -1255,8 +1283,8 @@ do { \
 #undef P
 #endif
 
-	locked = spin_trylock_n_irqsave(&sched_debug_lock,
-			&flags, m, "print_cpu_at_AEE");
+	locked = spin_trylock_n_irqsave(&sched_debug_lock, &flags, m,
+					"print_cpu_at_AEE");
 	print_cfs_stats_at_AEE(m, cpu);
 	print_rt_stats_at_AEE(m, cpu);
 	print_dl_stats_at_AEE(m, cpu);
@@ -1282,14 +1310,12 @@ static void sched_debug_header_at_AEE(struct seq_file *m)
 	local_irq_restore(flags);
 
 	SEQ_printf_at_AEE(m, "Sched Debug Version: v0.11, %s %.*s\n",
-		init_utsname()->release,
-		(int)strcspn(init_utsname()->version, " "),
-		init_utsname()->version);
+			  init_utsname()->release,
+			  (int)strcspn(init_utsname()->version, " "),
+			  init_utsname()->version);
 
-#define P(x) \
-	SEQ_printf_at_AEE(m, "%-40s: %lld\n", #x, (long long)(x))
-#define PN(x) \
-	SEQ_printf_at_AEE(m, "%-40s: %lu\n", #x, SPLIT_NS(x))
+#define P(x) SEQ_printf_at_AEE(m, "%-40s: %lld\n", #x, (long long)(x))
+#define PN(x) SEQ_printf_at_AEE(m, "%-40s: %lu\n", #x, SPLIT_NS(x))
 	PN(ktime);
 	PN(sched_clk);
 	PN(cpu_clk);
@@ -1304,10 +1330,8 @@ static void sched_debug_header_at_AEE(struct seq_file *m)
 	SEQ_printf_at_AEE(m, "sysctl_sched\n");
 
 #if NO_EXPORT
-#define P(x) \
-	SEQ_printf_at_AEE(m, "  .%-40s: %lld\n", #x, (long long)(x))
-#define PN(x) \
-	SEQ_printf_at_AEE(m, "  .%-40s: %lu\n", #x, SPLIT_NS(x))
+#define P(x) SEQ_printf_at_AEE(m, "  .%-40s: %lld\n", #x, (long long)(x))
+#define PN(x) SEQ_printf_at_AEE(m, "  .%-40s: %lu\n", #x, SPLIT_NS(x))
 	PN(sysctl_sched_latency);
 	PN(sysctl_sched_min_granularity);
 	PN(sysctl_sched_wakeup_granularity);
@@ -1316,8 +1340,8 @@ static void sched_debug_header_at_AEE(struct seq_file *m)
 #undef PN
 #undef P
 
-	SEQ_printf_at_AEE(m, "  .%-40s: %d (%s)\n",
-		"sysctl_sched_tunable_scaling",
+	SEQ_printf_at_AEE(
+		m, "  .%-40s: %d (%s)\n", "sysctl_sched_tunable_scaling",
 		sysctl_sched_tunable_scaling,
 		sched_tunable_scaling_names[sysctl_sched_tunable_scaling]);
 #endif
@@ -1334,11 +1358,11 @@ void sysrq_sched_debug_show_at_AEE(void)
 
 	sched_debug_header_at_AEE(NULL);
 #if NO_EXPORT
-	locked = read_trylock_n_irqsave(&tasklist_lock,
-			&flags, NULL, "sched_debug_show_at_AEE");
+	locked = read_trylock_n_irqsave(&tasklist_lock, &flags, NULL,
+					"sched_debug_show_at_AEE");
 #endif
 	rcu_read_lock();
-	for_each_possible_cpu(cpu) {
+	for_each_possible_cpu (cpu) {
 		print_cpu_at_AEE(NULL, cpu);
 	}
 	rcu_read_unlock();

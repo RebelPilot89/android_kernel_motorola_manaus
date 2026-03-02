@@ -4,11 +4,11 @@
 MTK_CONN_PATH := drivers/misc/mediatek/connectivity
 
 # 1. Infraestructura Base (Primero)
-ifneq (,$(filter y m,$(CONFIG_MTK_CONN_INFRA)))
-obj-$(CONFIG_MTK_CONN_INFRA)   += conninfra/
-else
+# ConnInfra y Common no son excluyentes en este árbol: múltiples símbolos
+# WMT/STP exportados por common/ son consumidos por wlan/, gps/ y fmradio/
+# aun cuando conninfra está habilitado.
 obj-$(CONFIG_MTK_CONN_COMMON)  += common/
-endif
+obj-$(CONFIG_MTK_CONN_INFRA)   += conninfra/
 
 # 2. Power Throttling (siempre necesario con ConnInfra)
 obj-$(CONFIG_MTK_CONN_INFRA)   += power_throttling/

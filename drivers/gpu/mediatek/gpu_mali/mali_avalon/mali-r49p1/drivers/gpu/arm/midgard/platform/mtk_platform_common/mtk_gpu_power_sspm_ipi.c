@@ -12,7 +12,7 @@
 
 #include "mtk_gpu_power_sspm_ipi.h"
 #include "mali_kbase.h"
-#include "mali_kbase_vinstr.h"
+#include "mali_kbase_kinstr_prfcnt.h"
 #include <linux/scmi_protocol.h>
 #include <linux/module.h>
 #include <tinysys-scmi.h>
@@ -50,7 +50,7 @@ static void gpu_send_enable_ipi(unsigned int type, unsigned int enable)
 
 
 static void MTKGPUPower_model_kbase_setup(int flag, unsigned int interval_ns) {
-	struct kbase_ioctl_hwcnt_reader_setup setup;
+	union kbase_ioctl_kinstr_prfcnt_setup setup;
 	int ret;
 
 	//Get the first device - it doesn't matter in this case
@@ -58,14 +58,10 @@ static void MTKGPUPower_model_kbase_setup(int flag, unsigned int interval_ns) {
 	if (!pm_kbdev)
 		return;
 
-	//Default doesn't enable all HWC
-	setup.fe_bm = 0x16;
-	setup.shader_bm = 0x5EC6;
-	setup.tiler_bm = 0x6;
-	setup.mmu_l2_bm = 0x1FC0;
-	setup.buffer_count = 1;
+	setup.in.request_item_count = 3;
 	MTK_update_mtk_pm(flag);
-	ret = MTK_kbase_vinstr_hwcnt_reader_setup(pm_kbdev->vinstr_ctx, &setup);
+	ret = MTK_kbase_vinstr_hwcnt_reader_setup(pm_kbdev->kinstr_prfcnt_ctx,
+							  &setup);
 	//1ms = 1000000ns
 	MTK_kbasep_vinstr_hwcnt_set_interval(interval_ns);
 }
@@ -158,7 +154,7 @@ void MTKGPUPower_model_suspend(void){
 	if (init_flag != gpm_kernel_side) {
 		return;
 	}
-	kbase_vinstr_suspend(pm_kbdev->vinstr_ctx);
+	kbase_kinstr_prfcnt_suspend(pm_kbdev->kinstr_prfcnt_ctx);
 }
 EXPORT_SYMBOL(MTKGPUPower_model_suspend);
 
@@ -169,7 +165,7 @@ void MTKGPUPower_model_resume(void){
 	if (init_flag != gpm_kernel_side) {
 		return;
 	}
-	kbase_vinstr_resume(pm_kbdev->vinstr_ctx);
+	kbase_kinstr_prfcnt_resume(pm_kbdev->kinstr_prfcnt_ctx);
 }
 EXPORT_SYMBOL(MTKGPUPower_model_resume);
 

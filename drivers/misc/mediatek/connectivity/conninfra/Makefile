@@ -42,6 +42,16 @@ mtk_conninfra-objs += $(CONNV2_DBG)/conninfra_dbg.o \
 mtk_conninfra-objs += $(DRV3)/src/connv3_drv.o \
                       $(DRV3)/src/connv3.o
 
+# ConnV3 Core + Platform (requeridos por connv3_drv/connv3)
+mtk_conninfra-objs += $(DRV3)/core/connv3_core.o \
+                      $(DRV3)/debug_utility/coredump/connv3_coredump.o \
+                      $(DRV3)/debug_utility/coredump/connv3_dump_mng.o \
+                      $(DRV3)/platform/connv3_hw.o \
+                      $(DRV3)/platform/connv3_hw_dbg.o \
+                      $(DRV3)/platform/connv3_hw_plat_data.o \
+                      $(DRV3)/platform/connv3_pinctrl_mng.o \
+                      $(DRV3)/platform/connv3_pmic_mng.o
+
 # Common adapters (needed when CONFIG_MTK_CONN_INFRA=y, common/ is excluded)
 # connsys_debug_utility.o is omitted here: connsyslog.o already provides
 # those symbols. Including both causes duplicate symbol link errors.

@@ -2233,7 +2233,7 @@ static int vcp_io_device_remove(struct platform_device *dev)
 	return 0;
 }
 
-void mbox_setup_pin_table(unsigned int mbox)
+static void mbox_setup_pin_table(unsigned int mbox)
 {
 	int i, last_ofs = 0, last_idx = 0, last_slot = 0, last_sz = 0;
 

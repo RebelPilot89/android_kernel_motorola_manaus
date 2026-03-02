@@ -761,6 +761,7 @@ static int connv3_dump_exception_show(struct connv3_dump_ctx *ctx, char *customi
 {
 	char *exception_log;
 	char *exp_tag_name = connv3_dump_mng_get_exception_tag_name(ctx->conn_type);
+	(void)exp_tag_name;
 
 	if (customized_string != NULL)
 		exception_log = customized_string;

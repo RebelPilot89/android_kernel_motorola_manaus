@@ -187,7 +187,6 @@ void mtk_common_cal_gpu_utilization(unsigned int *pui32Loading,
 	util_ex->util_l2ext_raw     = utilisation[UTIL_l2ext_ID + NUM_PERF_COUNTERS];
 #endif /* CONFIG_MALI_MTK_GPU_DVFS_ASYNC */
 
-	util_ex->delta_time     = delta_time << 8;   // 8 = KBASE_PM_TIME_SHIFT
 #if IS_ENABLED(CONFIG_MALI_MTK_GPU_DVFS_HINT_26M_LOADING)
 	util_ex->util_iter_u_mcu = mtk_dvfs_hint_26m_cal_prfcnt_utilization(
           SELECT_UNION_ITER_MCU, gpu_power_status);
@@ -249,7 +248,6 @@ void mtk_common_cal_gpu_utilization(unsigned int *pui32Loading,
 		delta_time;
 	util_ex->util_compute = (100 * (diff->busy_cl[0]+diff->busy_cl[1])) /
 		delta_time;
-	util_ex->delta_time = delta_time << 8;   // 8 = KBASE_PM_TIME_SHIFT
 #endif
 
 	if (pui32Loading)
