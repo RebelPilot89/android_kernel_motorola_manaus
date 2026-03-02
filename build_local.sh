@@ -3,15 +3,15 @@ set -euo pipefail
 
 export PATH="/opt/neutron-clang/bin:/usr/local/bin:/usr/bin:/bin"
 
-# 2. Variables de Arquitectura
+# Arquitectura
 export ARCH=arm64
 export SUBARCH=arm64
 
-# 3. Activación de LLVM puro (v23)
+# Activación de LLVM puro (Neutron Clang 23)
 export LLVM=1
 export LLVM_IAS=1
 
-# 4. Definición de herramientas (Aseguramos que no use nada de GNU)
+# Herramientas target (cross-compilation)
 export CC=clang
 export LD=ld.lld
 export AR=llvm-ar
@@ -22,11 +22,41 @@ export STRIP=llvm-strip
 export READELF=llvm-readelf
 export OBJSIZE=llvm-size
 
-# 5. Prefijos de Compilación Cruzada
-# Añadimos CLANG_TRIPLE para que Clang sepa a qué target apuntar exactamente
+# Herramientas host (compilación de programas del sistema de build)
+export HOSTCC=clang
+export HOSTCXX=clang++
+export HOSTAR=llvm-ar
+export HOSTLD=ld.lld
+
+# Prefijos de Compilación Cruzada
 export CLANG_TRIPLE=aarch64-linux-gnu-
 export CROSS_COMPILE=aarch64-linux-gnu-
 export CROSS_COMPILE_COMPAT=arm-linux-gnueabi-
+
+# Parámetros comunes para todos los invocaciones de make
+MAKE_FLAGS=(
+    O=out
+    ARCH=arm64
+    LLVM=1
+    LLVM_IAS=1
+    CC=clang
+    LD=ld.lld
+    AR=llvm-ar
+    NM=llvm-nm
+    OBJCOPY=llvm-objcopy
+    OBJDUMP=llvm-objdump
+    STRIP=llvm-strip
+    READELF=llvm-readelf
+    OBJSIZE=llvm-size
+    HOSTCC=clang
+    HOSTCXX=clang++
+    HOSTAR=llvm-ar
+    HOSTLD=ld.lld
+    CROSS_COMPILE=aarch64-linux-gnu-
+    CROSS_COMPILE_COMPAT=arm-linux-gnueabi-
+    CLANG_TRIPLE=aarch64-linux-gnu-
+    -j"$(nproc)"
+)
 
 # Uso: make O=out M=drivers/misc modules
 # - ejecutar el script SIN argumentos: hace un build completo usando out/.config
@@ -34,8 +64,9 @@ export CROSS_COMPILE_COMPAT=arm-linux-gnueabi-
 
 if [ "$#" -gt 0 ]; then
     echo "Export-only mode: environment variables exported for testing."
-    printf "ARCH=%s\nSUBARCH=%s\nLLVM=%s\nLLVM_IAS=%s\nCROSS_COMPILE=%s\nCROSS_COMPILE_COMPAT=%s\nPATH=%s\n" \
-        "$ARCH" "$SUBARCH" "$LLVM" "$LLVM_IAS" "$CROSS_COMPILE" "$CROSS_COMPILE_COMPAT" "$PATH"
+    printf "ARCH=%s\nSUBARCH=%s\nLLVM=%s\nLLVM_IAS=%s\nHOSTCC=%s\nHOSTCXX=%s\nHOSTAR=%s\nHOSTLD=%s\nCROSS_COMPILE=%s\nCROSS_COMPILE_COMPAT=%s\nPATH=%s\n" \
+        "$ARCH" "$SUBARCH" "$LLVM" "$LLVM_IAS" "$HOSTCC" "$HOSTCXX" "$HOSTAR" "$HOSTLD" \
+        "$CROSS_COMPILE" "$CROSS_COMPILE_COMPAT" "$PATH"
     exit 0
 fi
 
@@ -44,9 +75,9 @@ if [ -f out/.config ]; then
     echo "Found out/.config — building kernel in O=out..."
 else
     echo "No out/.config found — creating a defconfig in out/"
-    make O=out ARCH=arm64 manaus_defconfig
+    make "${MAKE_FLAGS[@]}" manaus_defconfig
 fi
 
 echo "Starting full build (O=out)"
-bear -- make prepare O=out ARCH=arm64 LLVM=1 LLVM_IAS=1 -j"$(nproc)" 
-bear -- make O=out ARCH=arm64 LLVM=1 LLVM_IAS=1 CROSS_COMPILE=aarch64-linux-gnu- -j"$(nproc)" 
+bear -- make "${MAKE_FLAGS[@]}" prepare
+bear -- make "${MAKE_FLAGS[@]}"
