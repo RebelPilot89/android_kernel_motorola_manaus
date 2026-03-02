@@ -343,6 +343,7 @@ int mtk_common_gpufreq_bringup(void)
 
 	return bringup;
 }
+EXPORT_SYMBOL_GPL(mtk_common_gpufreq_bringup);
 
 int mtk_common_gpufreq_commit(int opp_idx)
 {
@@ -364,6 +365,7 @@ int mtk_common_gpufreq_commit(int opp_idx)
 
 	return ret;
 }
+EXPORT_SYMBOL_GPL(mtk_common_gpufreq_commit);
 
 int mtk_common_gpufreq_dual_commit(int gpu_oppidx, int stack_oppidx)
 {
@@ -385,6 +387,7 @@ int mtk_common_gpufreq_dual_commit(int gpu_oppidx, int stack_oppidx)
 
 	return ret;
 }
+EXPORT_SYMBOL_GPL(mtk_common_gpufreq_dual_commit);
 
 int mtk_common_ged_dvfs_get_last_commit_idx(void)
 {

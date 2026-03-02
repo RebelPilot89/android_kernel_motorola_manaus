@@ -807,6 +807,10 @@ KBUILD_CFLAGS += -Wno-gnu
 # source of a reference will be _MergedGlobals and not on of the whitelisted names.
 # See modpost pattern 2
 KBUILD_CFLAGS += -mno-global-merge
+# Clang 14+ warns about functions declared without prototypes.
+KBUILD_CFLAGS += $(call cc-disable-warning, deprecated-non-prototype)
+# Clang 20+ warns about character arrays exactly sized for their initializer.
+KBUILD_CFLAGS += $(call cc-disable-warning, unterminated-string-initialization)
 else
 
 # Warn about unmarked fall-throughs in switch statement.

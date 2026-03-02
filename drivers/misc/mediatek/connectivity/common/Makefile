@@ -19,6 +19,14 @@ mtk_wmt_detect-objs := $(CORE_DIR)/wmt_core.o \
                        $(CORE_DIR)/stp_exp.o \
                        $(CORE_DIR)/psm_core.o
 
+# IC-specific ops tables: wmt_core.c references wmt_ic_ops_soc and the legacy
+# chip variants at link time, so all IC object files must be present.
+mtk_wmt_detect-objs += $(CORE_DIR)/wmt_ic_soc.o \
+                       $(CORE_DIR)/wmt_ic_6620.o \
+                       $(CORE_DIR)/wmt_ic_6628.o \
+                       $(CORE_DIR)/wmt_ic_6630.o \
+                       $(CORE_DIR)/wmt_ic_6632.o
+
 # Objetos LINUX (OSAL / Glue)
 mtk_wmt_detect-objs += $(LINUX_DIR)/osal.o \
                        $(LINUX_DIR)/wmt_dev.o \
@@ -28,6 +36,7 @@ mtk_wmt_detect-objs += $(LINUX_DIR)/osal.o \
                        $(LINUX_DIR)/wmt_dbg.o \
                        $(LINUX_DIR)/wmt_alarm.o \
                        $(LINUX_DIR)/stp_dbg.o \
+                       $(LINUX_DIR)/stp_dbg_soc.o \
                        $(LINUX_DIR)/stp_uart.o
 
 # OBJETOS DE PLATAFORMA (Específicos para MT6879/MT6835)

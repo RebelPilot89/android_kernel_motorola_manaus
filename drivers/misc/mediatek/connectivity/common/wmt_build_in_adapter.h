@@ -54,4 +54,13 @@ extern void *mtk_wcn_cmb_sdio_pm_data;
 void wmt_export_mtk_wcn_cmb_sdio_disable_eirq(void);
 int wmt_export_mtk_wcn_sdio_irq_flag_set(int flag);
 
+/*
+ * ConnInfra-mode stubs for legacy WMT function-control and STP APIs.
+ * Provided so in-tree consumers compiled with CONFIG_MTK_CONN_INFRA=y can
+ * resolve these symbols without pulling in the full WMT common stack.
+ */
+int mtk_wcn_wmt_func_on(unsigned int type);
+int mtk_wcn_wmt_func_off(unsigned int type);
+int mtk_wcn_stp_coredump_start_get(void);
+
 #endif /* WMT_BUILD_IN_ADAPTER_H */

@@ -604,3 +604,36 @@ void wmt_export_mtk_wcn_cmb_sdio_disable_eirq(void)
 	mtk_wcn_cmb_sdio_disable_eirq();
 }
 EXPORT_SYMBOL(wmt_export_mtk_wcn_cmb_sdio_disable_eirq);
+
+/*
+ * ConnInfra-mode stubs for legacy WMT function-control APIs.
+ *
+ * When CONFIG_MTK_CONN_INFRA=y the common/ WMT stack is intentionally skipped.
+ * The WLAN adaptor (wmt_cdev_wifi.c) and other legacy consumers still call
+ * mtk_wcn_wmt_func_on/off; in ConnInfra v2 mode power is managed by the
+ * conninfra subsystem, so these shims always return success.
+ *
+ * mtk_wcn_stp_coredump_start_get() is called by the WLAN reset path; return 0
+ * (coredump not in progress) to allow normal reset handling.
+ */
+#ifndef MTK_WCN_BOOL_TRUE
+#define MTK_WCN_BOOL_TRUE 1
+#endif
+
+int mtk_wcn_wmt_func_on(unsigned int type)
+{
+	return MTK_WCN_BOOL_TRUE;
+}
+EXPORT_SYMBOL(mtk_wcn_wmt_func_on);
+
+int mtk_wcn_wmt_func_off(unsigned int type)
+{
+	return MTK_WCN_BOOL_TRUE;
+}
+EXPORT_SYMBOL(mtk_wcn_wmt_func_off);
+
+int mtk_wcn_stp_coredump_start_get(void)
+{
+	return 0;
+}
+EXPORT_SYMBOL(mtk_wcn_stp_coredump_start_get);
