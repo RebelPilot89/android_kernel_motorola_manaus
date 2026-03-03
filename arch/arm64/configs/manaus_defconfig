@@ -2312,7 +2312,7 @@ CONFIG_MOTO_CCCI_SEC_SUPPORT=y
 #
 # Misc configs
 #
-CONFIG_FPGA_EARLY_PORTING=y
+# CONFIG_FPGA_EARLY_PORTING is not set
 # end of Misc configs
 
 # CONFIG_ECHO is not set
