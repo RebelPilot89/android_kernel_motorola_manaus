@@ -21,8 +21,10 @@ snd-soc-mtk-common-$(CONFIG_SND_SOC_MTK_SMART_PHONE) += mtk-sp-pcm-ops.o mtk-afe
 # definitions override the __weak stubs in scp_wrapper_ipi.c at link time.
 obj-$(CONFIG_SND_SOC_MEDIATEK) += mtk-afe-external.o
 
-# speaker dynamic detect
-obj-m += mtk-sp-spk-amp.o
+# speaker dynamic detect; must be built-in when SND_SOC_MEDIATEK=y so that
+# mt6879-mt6368.c (and other machine drivers) can link mtk_spk_* at vmlinux
+# link time rather than resolving them from a module at runtime.
+obj-$(CONFIG_SND_SOC_MEDIATEK) += mtk-sp-spk-amp.o
 
 # BT CVSD driver
 obj-$(CONFIG_SND_SOC_MTK_BTCVSD) += mtk-btcvsd.o
