@@ -344,20 +344,17 @@ void mt_print_scp_ipi_id(unsigned int mbox)
 
 /*
  * Stubs for 3-way HW semaphore notifier chain. The real implementation lives in
- * sound/soc/mediatek/common/mtk-afe-external.c, which is only compiled when
- * CONFIG_SND_SOC is enabled. When audio is disabled (as on this Lab-Server build),
- * these no-ops satisfy the references from adsp_driver_v2.c and scp_helper.c.
- * __weak allows the strong definitions from mtk-afe-external.c to override if
- * CONFIG_SND_SOC is ever enabled in the future.
+ * sound/soc/mediatek/common/mtk-afe-external.c (built-in when SND_SOC_MEDIATEK=y).
+ * These __weak no-ops satisfy references when audio is not built-in; they must NOT
+ * use EXPORT_SYMBOL_GPL because mtk-afe-external.c already exports the strong symbol,
+ * and a duplicate export causes "exported twice" modpost fatals.
  */
 int __weak register_3way_semaphore_notifier(struct notifier_block *nb)
 {
 	return 0;
 }
-EXPORT_SYMBOL_GPL(register_3way_semaphore_notifier);
 
 int __weak unregister_3way_semaphore_notifier(struct notifier_block *nb)
 {
 	return 0;
 }
-EXPORT_SYMBOL_GPL(unregister_3way_semaphore_notifier);
