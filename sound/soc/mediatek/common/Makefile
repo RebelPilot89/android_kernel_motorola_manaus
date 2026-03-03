@@ -16,8 +16,10 @@ snd-soc-mtk-common-$(CONFIG_MTK_ECCCI_DRIVER) += mtk-usip.o
 snd-soc-mtk-common-$(CONFIG_SND_SOC_MTK_SRAM) += mtk-sram-manager.o
 snd-soc-mtk-common-$(CONFIG_SND_SOC_MTK_SMART_PHONE) += mtk-sp-pcm-ops.o mtk-afe-debug.o
 
-# functions for external modules
-obj-m += mtk-afe-external.o
+# functions for external modules; built-in when SND_SOC_MEDIATEK=y so that
+# the strong register_3way_semaphore_notifier/unregister_3way_semaphore_notifier
+# definitions override the __weak stubs in scp_wrapper_ipi.c at link time.
+obj-$(CONFIG_SND_SOC_MEDIATEK) += mtk-afe-external.o
 
 # speaker dynamic detect
 obj-m += mtk-sp-spk-amp.o
