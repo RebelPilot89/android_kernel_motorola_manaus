@@ -620,6 +620,12 @@ EXPORT_SYMBOL(wmt_export_mtk_wcn_cmb_sdio_disable_eirq);
 #define MTK_WCN_BOOL_TRUE 1
 #endif
 
+/* These stub implementations are only used when the full WMT core stack
+ * (CONFIG_MTK_WCN_CORE_EN / mtk_wmt_detect module) is NOT compiled.
+ * When the core stack is built, wmt_exp.c and stp_core.c provide the
+ * real implementations and their EXPORT_SYMBOLs.
+ */
+#ifndef CONFIG_MTK_WCN_CORE_EN
 int mtk_wcn_wmt_func_on(unsigned int type)
 {
 	return MTK_WCN_BOOL_TRUE;
@@ -637,3 +643,4 @@ int mtk_wcn_stp_coredump_start_get(void)
 	return 0;
 }
 EXPORT_SYMBOL(mtk_wcn_stp_coredump_start_get);
+#endif /* !CONFIG_MTK_WCN_CORE_EN */

@@ -17,3 +17,11 @@ ufs-mediatek-mod-$(CONFIG_UFSHID) += ufshid.o
 ufs-mediatek-mod-$(CONFIG_SCSI_SKHID) += ufs-manual-gc.o
 ufs-mediatek-mod-$(CONFIG_UFSRINGBUF) += ufsringbuf.o
 ufs-mediatek-mod-$(CONFIG_SCSI_UFS_CRYPTO) += ../ufshcd-moto-crypto.o
+# ufshcd-moto-crypto.c is also needed when fscrypt wrapped-key mode is enabled
+# (CONFIG_FSCRYPT_WRAPED_KEY_MODE_SUPPORT), even when the generic
+# CONFIG_SCSI_UFS_CRYPTO path is not active (requires BLK_INLINE_ENCRYPTION).
+ifeq ($(CONFIG_FSCRYPT_WRAPED_KEY_MODE_SUPPORT),y)
+ifneq ($(CONFIG_SCSI_UFS_CRYPTO),y)
+ufs-mediatek-mod-y += ../ufshcd-moto-crypto.o
+endif
+endif

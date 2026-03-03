@@ -1412,6 +1412,13 @@ void osal_buffer_dump_data(const unsigned int *buf, const unsigned char *title,
 
 static int ftrace_flag;
 
+int osal_ftrace_print(const char *str, ...)
+{
+	/* trace_printk is intentionally disabled; stub for API compatibility */
+	return 0;
+}
+EXPORT_SYMBOL(osal_ftrace_print);
+
 int osal_ftrace_print_ctrl(int flag)
 {
 #ifdef CONFIG_TRACING
@@ -1419,6 +1426,24 @@ int osal_ftrace_print_ctrl(int flag)
 #endif
 	return 0;
 }
+
+int connsys_log_alarm_enable(unsigned int sec)
+{
+	return 0;
+}
+EXPORT_SYMBOL(connsys_log_alarm_enable);
+
+int connsys_log_alarm_disable(void)
+{
+	return 0;
+}
+EXPORT_SYMBOL(connsys_log_alarm_disable);
+
+int connsys_log_blank_state_changed(int blank_state)
+{
+	return 0;
+}
+EXPORT_SYMBOL(connsys_log_blank_state_changed);
 
 #define OPQ_DUMP_OPDATA_PER_OP 6
 #define OPQ_DUMP_OP_BUF_SIZE   (12 + 12 + 17 + 10 + 4 + 13 + 10 + \

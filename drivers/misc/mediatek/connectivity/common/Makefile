@@ -60,12 +60,22 @@ mtk_wmt_detect-objs += $(DETECT_DIR)/wmt_detect.o \
 # SDIO HIF / BGW desense: provide mtk_wcn_hif_sdio_wmt_control and
 # send_command_to_daemon which are referenced by wmt_ctrl.c and wmt_dev.c.
 mtk_wmt_detect-objs += $(LINUX_DIR)/hif_sdio.o \
-                       $(LINUX_DIR)/bgw_desense.o
+                       $(LINUX_DIR)/bgw_desense.o \
+                       $(LINUX_DIR)/stp_sdio.o \
+                       $(LINUX_DIR)/stp_dbg_combo.o
+
+# Built-in adapter shims: provide connectivity_export_show_stack,
+# wmt_export_platform_bridge_*, wifi_irq, mtk_wcn_cmb_sdio_pm_cb, etc.
+# Guard for conflicting symbols is in wmt_build_in_adapter.c via #ifndef CONFIG_MTK_WCN_CORE_EN.
+mtk_wmt_detect-objs += wmt_build_in_adapter.o \
+                       connectivity_build_in_adapter.o
 
 # DEBUG UTILITY
-# connsys_debug_utility.o provides the common log API. When CONFIG_MTK_CONN_INFRA
-# is enabled, connsyslog.o (part of conninfra) already exports the same symbols,
-# so skip this file to avoid duplicate symbol link errors.
+# connsys_debug_utility.c provides connsys_log_alarm_enable, connsys_log_alarm_disable,
+# and connsys_log_blank_state_changed which are NOT exported by conninfra's connsyslog.c.
+# When CONFIG_MTK_CONN_INFRA is enabled, conninfra/base/osal.c provides stub implementations
+# of these three symbols, so we skip this file only in that case to avoid duplicate symbols
+# for the other overlapping connsys_log_* functions that conninfra does export.
 ifeq (,$(filter y m,$(CONFIG_MTK_CONN_INFRA)))
 mtk_wmt_detect-objs += debug_utility/connsys_debug_utility.o
 endif
