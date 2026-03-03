@@ -314,6 +314,11 @@ void osal_bug_on(unsigned int val);
 int osal_snprintf(char *buf, unsigned int len, const char *fmt, ...);
 
 int osal_sprintf(char *str, const char *format, ...);
+int osal_err_print(const char *str, ...);
+int osal_warn_print(const char *str, ...);
+int osal_dbg_print(const char *str, ...);
+int osal_dbg_assert(int expr, const char *file, int line);
+int osal_dbg_assert_aee(const char *module, const char *detail_description, ...);
 void *osal_malloc(unsigned int size);
 void osal_free(const void *dst);
 void *osal_memset(void *buf, int i, unsigned int len);

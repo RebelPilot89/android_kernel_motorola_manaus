@@ -308,6 +308,13 @@ int mtk_platform_device_init(struct kbase_device *kbdev)
 
 void mtk_platform_device_term(struct kbase_device *kbdev) { }
 
+int mtk_platform_pm_init(struct kbase_device *kbdev)
+{
+	return 0;
+}
+
+void mtk_platform_pm_term(struct kbase_device *kbdev) { }
+
 #if !MALI_USE_CSF
 int kbase_platform_dvfs_event(struct kbase_device *kbdev, u32 utilisation,
 			      u32 util_gl_share, u32 util_cl_share[])

@@ -793,6 +793,16 @@ void mtk_mfg_counter_destroy(void)
 	mtk_get_gpu_pmu_swapnreset_fp = NULL;
 }
 
+void mtk_mfg_counter_init(void)
+{
+	mtk_get_gpu_pmu_init_fp = mali_get_gpu_pmu_init;
+	mtk_get_gpu_pmu_deinit_fp = mali_get_gpu_pmu_deinit;
+	mtk_get_gpu_pmu_swapnreset_fp = mali_get_gpu_pmu_swapnreset;
+	mtk_get_gpu_pmu_swapnreset_stop_fp = mali_get_gpu_pmu_swapnreset_stop;
+	binited = 0;
+	mfg_is_power_on = 0;
+}
+
 // init but don't enable met
 int gator_gpu_pmu_init(void)
 {
