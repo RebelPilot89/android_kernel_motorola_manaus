@@ -114,7 +114,7 @@ struct kbase_gator_hwcnt_handles *kbase_gator_hwcnt_init(struct kbase_gator_hwcn
 	int errcode;
 	struct kbase_gator_hwcnt_handles *hand;
 	const struct kbase_hwcnt_metadata *metadata;
-	struct kbase_hwcnt_physical_enable_map phys_map;
+	struct kbase_hwcnt_physical_enable_map phys_map = {};
 	uint32_t dump_size = 0, i = 0;
 	uint32_t nr_l2, nr_sc_bits, j;
 	uint64_t core_mask;
