@@ -52,11 +52,13 @@ mtk_conninfra-objs += $(DRV3)/core/connv3_core.o \
                       $(DRV3)/platform/connv3_pinctrl_mng.o \
                       $(DRV3)/platform/connv3_pmic_mng.o
 
-# Common adapters (needed when CONFIG_MTK_CONN_INFRA=y, common/ is excluded)
-# connsys_debug_utility.o is omitted here: connsyslog.o already provides
-# those symbols. Including both causes duplicate symbol link errors.
+# Common adapters are compatibility shims and should only be linked when
+# common core (wmt_exp/stp_core) is not built. If both are linked, duplicated
+# symbols (e.g. mtk_wcn_wmt_func_on) appear at vmlinux link time.
+ifeq (,$(filter y m,$(CONFIG_MTK_CONN_COMMON)))
 mtk_conninfra-objs += $(CMN)/wmt_build_in_adapter.o \
                       $(CMN)/connectivity_build_in_adapter.o
+endif
 
 # Soporte de Plataforma (Aquí es donde entra tu hardware)
 # Nota: Si tu SoC usa la carpeta mt6886, lo incluimos así:

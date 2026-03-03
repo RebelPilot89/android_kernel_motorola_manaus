@@ -37,19 +37,19 @@ static void gpu_send_enable_ipi(unsigned int type, unsigned int enable)
 	}
 
 	ipi_cmd.cmd = type;
-	ipi_cmd.power_statue= enable;
+	ipi_cmd.power_statue = enable;
 #ifdef CONFIG_MALI_SCMI_ENABLE
-	ret = scmi_tinysys_common_set(_tinfo->ph, gpu_pm_id,
-			ipi_cmd.cmd, ipi_cmd.power_statue, 0, 0, 0);
+	ret = scmi_tinysys_common_set(_tinfo->ph, gpu_pm_id, ipi_cmd.cmd,
+				      ipi_cmd.power_statue, 0, 0, 0);
 #endif
 	if (ret) {
 		pr_info("gpu_send_enable_ipi %d send fail,ret=%d\n",
-		ipi_cmd.cmd, ret);
+			ipi_cmd.cmd, ret);
 	}
 }
 
-
-static void MTKGPUPower_model_kbase_setup(int flag, unsigned int interval_ns) {
+static void MTKGPUPower_model_kbase_setup(int flag, unsigned int interval_ns)
+{
 	union kbase_ioctl_kinstr_prfcnt_setup setup;
 	int ret;
 
@@ -61,12 +61,13 @@ static void MTKGPUPower_model_kbase_setup(int flag, unsigned int interval_ns) {
 	setup.in.request_item_count = 3;
 	MTK_update_mtk_pm(flag);
 	ret = MTK_kbase_vinstr_hwcnt_reader_setup(pm_kbdev->kinstr_prfcnt_ctx,
-							  &setup);
+						  &setup);
 	//1ms = 1000000ns
 	MTK_kbasep_vinstr_hwcnt_set_interval(interval_ns);
 }
 
-void MTKGPUPower_model_sspm_enable(void) {
+void MTKGPUPower_model_sspm_enable(void)
+{
 	int pm_tool = MTK_get_mtk_pm();
 
 	if (pm_tool == pm_non)
@@ -77,7 +78,8 @@ void MTKGPUPower_model_sspm_enable(void) {
 	init_flag = gpm_sspm_side;
 }
 
-void MTKGPUPower_model_start(unsigned int interval_ns) {
+void MTKGPUPower_model_start(unsigned int interval_ns)
+{
 	int pm_tool = MTK_get_mtk_pm();
 
 	mutex_lock(&gpu_pmu_info_lock);
@@ -101,7 +103,8 @@ void MTKGPUPower_model_start(unsigned int interval_ns) {
 }
 EXPORT_SYMBOL(MTKGPUPower_model_start);
 
-void MTKGPUPower_model_start_swpm(unsigned int interval_ns){
+void MTKGPUPower_model_start_swpm(unsigned int interval_ns)
+{
 	int pm_tool = MTK_get_mtk_pm();
 
 	mutex_lock(&gpu_pmu_info_lock);
@@ -118,8 +121,7 @@ void MTKGPUPower_model_start_swpm(unsigned int interval_ns){
 
 	if (init_flag == gpm_off && pm_tool == pm_non) {
 		MTKGPUPower_model_kbase_setup(pm_swpm, interval_ns);
-	}
-	else if(pm_tool != pm_non){
+	} else if (pm_tool != pm_non) {
 		MTK_kbasep_vinstr_hwcnt_set_interval(0);
 		MTK_update_mtk_pm(pm_swpm);
 		MTK_kbasep_vinstr_hwcnt_set_interval(interval_ns);
@@ -130,7 +132,8 @@ void MTKGPUPower_model_start_swpm(unsigned int interval_ns){
 }
 EXPORT_SYMBOL(MTKGPUPower_model_start_swpm);
 
-void MTKGPUPower_model_stop(void){
+void MTKGPUPower_model_stop(void)
+{
 	mutex_lock(&gpu_pmu_info_lock);
 	if (init_flag != gpm_off) {
 		if (init_flag == gpm_sspm_side) {
@@ -147,7 +150,8 @@ void MTKGPUPower_model_stop(void){
 }
 EXPORT_SYMBOL(MTKGPUPower_model_stop);
 
-void MTKGPUPower_model_suspend(void){
+void MTKGPUPower_model_suspend(void)
+{
 	if (ipi_register_flag && init_flag == gpm_sspm_side)
 		gpu_send_enable_ipi(GPU_PM_POWER_STATUE, 0);
 
@@ -158,7 +162,8 @@ void MTKGPUPower_model_suspend(void){
 }
 EXPORT_SYMBOL(MTKGPUPower_model_suspend);
 
-void MTKGPUPower_model_resume(void){
+void MTKGPUPower_model_resume(void)
+{
 	if (ipi_register_flag && init_flag == gpm_sspm_side)
 		gpu_send_enable_ipi(GPU_PM_POWER_STATUE, 1);
 
@@ -169,12 +174,13 @@ void MTKGPUPower_model_resume(void){
 }
 EXPORT_SYMBOL(MTKGPUPower_model_resume);
 
-int MTKGPUPower_model_init(void) {
+int MTKGPUPower_model_init(void)
+{
 #ifdef CONFIG_MALI_SCMI_ENABLE
 	int ret;
 	_tinfo = get_scmi_tinysys_info();
 	ret = of_property_read_u32(_tinfo->sdev->dev.of_node, "scmi_gpupm",
-			&gpu_pm_id);
+				   &gpu_pm_id);
 	ipi_register_flag = true;
 	if (ret) {
 		pr_info("get scmi_qos fail, ret %d\n", ret);
@@ -188,10 +194,8 @@ int MTKGPUPower_model_init(void) {
 	return 0;
 }
 
-void MTKGPUPower_model_destroy(void) {
+void MTKGPUPower_model_destroy(void)
+{
 	mtk_ltr_gpu_pmu_start_fp = NULL;
 	mtk_ltr_gpu_pmu_stop_fp = NULL;
-
 }
-
-

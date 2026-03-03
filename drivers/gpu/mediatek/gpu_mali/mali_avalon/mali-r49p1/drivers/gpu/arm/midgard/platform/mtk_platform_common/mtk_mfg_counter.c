@@ -783,6 +783,8 @@ int mali_get_gpu_pmu_deinit(void)
 	mfg_is_power_on = 0;
 
 	pr_info("[MTK MFG] Initialized for MT6879\n");
+
+	return PMU_OK;
 }
 
 void mtk_mfg_counter_destroy(void)

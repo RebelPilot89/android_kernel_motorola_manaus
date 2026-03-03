@@ -9,10 +9,10 @@
 
 #include "decode-insn.h"
 
-#define UPROBE_INV_FAULT_CODE	UINT_MAX
+#define UPROBE_INV_FAULT_CODE UINT_MAX
 
-void arch_uprobe_copy_ixol(struct page *page, unsigned long vaddr,
-		void *src, unsigned long len)
+void arch_uprobe_copy_ixol(struct page *page, unsigned long vaddr, void *src,
+			   unsigned long len)
 {
 	void *xol_page_kaddr = kmap_atomic(page);
 	void *dst = xol_page_kaddr + (vaddr & ~PAGE_MASK);
@@ -21,7 +21,7 @@ void arch_uprobe_copy_ixol(struct page *page, unsigned long vaddr,
 	memcpy(dst, src, len);
 
 	/* flush caches (dcache/icache) */
-	sync_icache_aliases(dst, len);
+	sync_icache_aliases((unsigned long)dst, (unsigned long)dst + len);
 
 	kunmap_atomic(xol_page_kaddr);
 }
@@ -32,7 +32,7 @@ unsigned long uprobe_get_swbp_addr(struct pt_regs *regs)
 }
 
 int arch_uprobe_analyze_insn(struct arch_uprobe *auprobe, struct mm_struct *mm,
-		unsigned long addr)
+			     unsigned long addr)
 {
 	probe_opcode_t insn;
 
@@ -131,7 +131,7 @@ void arch_uprobe_abort_xol(struct arch_uprobe *auprobe, struct pt_regs *regs)
 }
 
 bool arch_uretprobe_is_alive(struct return_instance *ret, enum rp_check ctx,
-		struct pt_regs *regs)
+			     struct pt_regs *regs)
 {
 	/*
 	 * If a simple branch instruction (B) was called for retprobed
@@ -146,9 +146,8 @@ bool arch_uretprobe_is_alive(struct return_instance *ret, enum rp_check ctx,
 		return regs->sp < ret->stack;
 }
 
-unsigned long
-arch_uretprobe_hijack_return_addr(unsigned long trampoline_vaddr,
-				  struct pt_regs *regs)
+unsigned long arch_uretprobe_hijack_return_addr(unsigned long trampoline_vaddr,
+						struct pt_regs *regs)
 {
 	unsigned long orig_ret_vaddr;
 
@@ -159,14 +158,13 @@ arch_uretprobe_hijack_return_addr(unsigned long trampoline_vaddr,
 	return orig_ret_vaddr;
 }
 
-int arch_uprobe_exception_notify(struct notifier_block *self,
-				 unsigned long val, void *data)
+int arch_uprobe_exception_notify(struct notifier_block *self, unsigned long val,
+				 void *data)
 {
 	return NOTIFY_DONE;
 }
 
-static int uprobe_breakpoint_handler(struct pt_regs *regs,
-		unsigned int esr)
+static int uprobe_breakpoint_handler(struct pt_regs *regs, unsigned int esr)
 {
 	if (uprobe_pre_sstep_notifier(regs))
 		return DBG_HOOK_HANDLED;
@@ -174,8 +172,7 @@ static int uprobe_breakpoint_handler(struct pt_regs *regs,
 	return DBG_HOOK_ERROR;
 }
 
-static int uprobe_single_step_handler(struct pt_regs *regs,
-		unsigned int esr)
+static int uprobe_single_step_handler(struct pt_regs *regs, unsigned int esr)
 {
 	struct uprobe_task *utask = current->utask;
 

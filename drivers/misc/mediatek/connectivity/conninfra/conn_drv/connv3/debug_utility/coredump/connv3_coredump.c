@@ -52,7 +52,7 @@ struct connv3_dump_ctx {
 
 static atomic_t g_dump_mode = ATOMIC_INIT(CONNV3_DUMP_MODE_DAEMON);
 
-static const char* g_type_name[] = {
+static const char *g_type_name[] = {
 	"Wi-Fi",
 	"BT",
 };
@@ -65,9 +65,9 @@ struct timespec64 g_dump_start_time;
 */
 #if defined(CONFIG_FPGA_EARLY_PORTING)
 /* For FPGA shorten the timer */
-#define CONNV3_EMIDUMP_TIMEOUT		(10*1000)
+#define CONNV3_EMIDUMP_TIMEOUT (10 * 1000)
 #else /* defined(CONFIG_FPGA_EARLY_PORTING) */
-#define CONNV3_EMIDUMP_TIMEOUT		(60*1000)
+#define CONNV3_EMIDUMP_TIMEOUT (60 * 1000)
 #endif
 
 /*******************************************************************************
@@ -80,7 +80,8 @@ struct timespec64 g_dump_start_time;
 ********************************************************************************
 */
 
-static unsigned long timespec64_to_ms(struct timespec64 *begin, struct timespec64 *end)
+static unsigned long timespec64_to_ms(struct timespec64 *begin,
+				      struct timespec64 *end)
 {
 	unsigned long time_diff;
 
@@ -90,9 +91,9 @@ static unsigned long timespec64_to_ms(struct timespec64 *begin, struct timespec6
 	return time_diff;
 }
 
-static void* connv3_dump_malloc(unsigned int size)
+static void *connv3_dump_malloc(unsigned int size)
 {
-	void* p = NULL;
+	void *p = NULL;
 
 	if (size > (PAGE_SIZE << 1))
 		p = vmalloc(size);
@@ -107,20 +108,20 @@ static void* connv3_dump_malloc(unsigned int size)
 	return p;
 }
 
-static void connv3_dump_free(const void* dst)
+static void connv3_dump_free(const void *dst)
 {
 	kvfree(dst);
 }
 
-static const char* connv3_dump_get_type_name(int type)
+static const char *connv3_dump_get_type_name(int type)
 {
 	if (type < CONNV3_DEBUG_TYPE_WIFI || type >= CONNV3_DEBUG_TYPE_SIZE)
 		return "TYPE_INVALID";
 	return g_type_name[type];
 }
 
-static void connv3_dump_set_dump_state(
-	struct connv3_dump_ctx *ctx, enum connv3_coredump_state state)
+static void connv3_dump_set_dump_state(struct connv3_dump_ctx *ctx,
+				       enum connv3_coredump_state state)
 {
 	if (ctx)
 		atomic_set(&ctx->state, state);
@@ -128,7 +129,8 @@ static void connv3_dump_set_dump_state(
 		pr_err("[%s] ctx is null", __func__);
 }
 
-static enum connv3_coredump_state connv3_dump_get_dump_state(struct connv3_dump_ctx* ctx)
+static enum connv3_coredump_state
+connv3_dump_get_dump_state(struct connv3_dump_ctx *ctx)
 {
 	if (ctx)
 		return (enum connv3_coredump_state)atomic_read(&ctx->state);
@@ -136,40 +138,41 @@ static enum connv3_coredump_state connv3_dump_get_dump_state(struct connv3_dump_
 	return CONNV3_COREDUMP_STATE_MAX;
 }
 
-static void connv3_dump_emi_dump_end(void* handler)
+static void connv3_dump_emi_dump_end(void *handler)
 {
-	struct connv3_dump_ctx* ctx = (struct connv3_dump_ctx*)handler;
+	struct connv3_dump_ctx *ctx = (struct connv3_dump_ctx *)handler;
 	enum connv3_coredump_state state = connv3_dump_get_dump_state(ctx);
 
-	if (state == CONNV3_COREDUMP_STATE_EMI || state == CONNV3_COREDUMP_STATE_WAIT_DONE) {
+	if (state == CONNV3_COREDUMP_STATE_EMI ||
+	    state == CONNV3_COREDUMP_STATE_WAIT_DONE) {
 		pr_info("Wake up end command\n");
 		complete(&ctx->emi_dump);
 	}
 }
 
-static int connv3_coredump_info_analysis(
-	struct connv3_dump_ctx *ctx,
-	const int drv, const char *reason, const char* dump_msg)
+static int connv3_coredump_info_analysis(struct connv3_dump_ctx *ctx,
+					 const int drv, const char *reason,
+					 const char *dump_msg)
 {
-	char* task_drv_name[CONNV3_DRV_TYPE_MAX] = {
+	char *task_drv_name[CONNV3_DRV_TYPE_MAX] = {
 		"Task_DrvBT",
 		"Task_DrvWifi",
 		"Task_DrvMODEM",
 		"Task_DrvConnv3",
 	};
-	const char* parser_sub_string[] = {
+	const char *parser_sub_string[] = {
 		"<ASSERT> ",
 		"id=",
 		"isr=",
 		"irq=",
 	};
-	const char* exception_sub_string[] = {
+	const char *exception_sub_string[] = {
 		"<EXCEPTION> ",
 		"ipc=",
 		"eva=",
 		"etype:",
 	};
-	char *pStr = (char*)dump_msg;
+	char *pStr = (char *)dump_msg;
 	char *pDtr = NULL;
 	char *pTemp = NULL;
 	char *pTemp2 = NULL;
@@ -184,13 +187,16 @@ static int connv3_coredump_info_analysis(
 	memset(&ctx->issue_info, 0, sizeof(struct connv3_issue_info));
 
 	if (ctx->conn_type < 0 || ctx->conn_type >= CONNV3_DEBUG_TYPE_SIZE) {
-		pr_notice("[%s] conn_type(%d) is not supported", __func__, ctx->conn_type);
+		pr_notice("[%s] conn_type(%d) is not supported", __func__,
+			  ctx->conn_type);
 		return CONNV3_COREDUMP_ERR_INVALID_INPUT;
 	}
 
 	/* Check force dump */
-	if (strncmp(dump_msg, CONNV3_COREDUMP_FORCE_DUMP, strlen(CONNV3_COREDUMP_FORCE_DUMP)) == 0) {
-		pr_info("[%s] %s", g_type_name[ctx->conn_type], CONNV3_COREDUMP_FORCE_DUMP);
+	if (strncmp(dump_msg, CONNV3_COREDUMP_FORCE_DUMP,
+		    strlen(CONNV3_COREDUMP_FORCE_DUMP)) == 0) {
+		pr_info("[%s] %s", g_type_name[ctx->conn_type],
+			CONNV3_COREDUMP_FORCE_DUMP);
 		ctx->issue_info.issue_type = CONNV3_ISSUE_FORCE_DUMP;
 		goto check_driver_assert;
 	}
@@ -202,7 +208,7 @@ static int connv3_coredump_info_analysis(
 	 * "assert@system/rom/common/cos_task_rom.c-#377"
 	 */
 	memset(&ctx->issue_info.assert_info[0], '\0', CONNV3_ASSERT_INFO_SIZE);
-	type_str = (char*)parser_sub_string[0];
+	type_str = (char *)parser_sub_string[0];
 	pDtr = strstr(pStr, type_str);
 	/* Find "<ASSERT> " */
 	if (pDtr != NULL) {
@@ -211,16 +217,19 @@ static int connv3_coredump_info_analysis(
 		/* Find assert file */
 		if (pTemp != NULL) {
 			idx = 0;
-			remain_array_len = CONNV3_ASSERT_INFO_SIZE -1;
+			remain_array_len = CONNV3_ASSERT_INFO_SIZE - 1;
 			sec_len = strlen("assert@");
-			memcpy(&ctx->issue_info.assert_info[0], "assert@", sec_len);
+			memcpy(&ctx->issue_info.assert_info[0], "assert@",
+			       sec_len);
 			idx += sec_len;
 			remain_array_len -= sec_len;
 
 			/* Copy assert file */
 			len = pTemp - pDtr;
-			sec_len = (len < remain_array_len ? len : remain_array_len);
-			memcpy(&ctx->issue_info.assert_info[idx], pDtr, sec_len);
+			sec_len = (len < remain_array_len ? len :
+							    remain_array_len);
+			memcpy(&ctx->issue_info.assert_info[idx], pDtr,
+			       sec_len);
 			remain_array_len -= sec_len;
 			idx += sec_len;
 
@@ -241,23 +250,19 @@ static int connv3_coredump_info_analysis(
 					pTemp2 = pTemp + 1;
 				}
 				if ((remain_array_len) > (pTemp2 - pTemp)) {
-					memcpy(
-						&ctx->issue_info.assert_info[idx],
-						pTemp,
-						pTemp2 - pTemp);
+					memcpy(&ctx->issue_info.assert_info[idx],
+					       pTemp, pTemp2 - pTemp);
 				} else {
-					memcpy(
-						&ctx->issue_info.assert_info[idx],
-						pTemp,
-						remain_array_len);
+					memcpy(&ctx->issue_info.assert_info[idx],
+					       pTemp, remain_array_len);
 				}
 			}
-			pr_info("assert info:%s\n", ctx->issue_info.assert_info);
-
+			pr_info("assert info:%s\n",
+				ctx->issue_info.assert_info);
 		}
 	} else {
 		/* Check exception */
-		type_str = (char*)exception_sub_string[0];
+		type_str = (char *)exception_sub_string[0];
 		pDtr = strstr(pStr, type_str);
 		if (pDtr == NULL)
 			goto check_task_str;
@@ -265,18 +270,19 @@ static int connv3_coredump_info_analysis(
 		ctx->issue_info.issue_type = CONNV3_ISSUE_FW_EXCEPTION;
 		idx = 0;
 		remain_array_len = CONNV3_ASSERT_INFO_SIZE;
-		sec_len = snprintf(&ctx->issue_info.assert_info[idx], remain_array_len,
-			"%s", "Exception:");
+		sec_len = snprintf(&ctx->issue_info.assert_info[idx],
+				   remain_array_len, "%s", "Exception:");
 		if (sec_len > 0) {
 			remain_array_len -= sec_len;
 			idx += sec_len;
 		}
 
 		/* Check ipc */
-		type_str = (char*)exception_sub_string[1];
+		type_str = (char *)exception_sub_string[1];
 		pDtr = strstr(pDtr, type_str);
 		if (pDtr == NULL) {
-			pr_notice("Exception substring (%s) not found\n", type_str);
+			pr_notice("Exception substring (%s) not found\n",
+				  type_str);
 			goto check_task_str;
 		}
 		pDtr += strlen(type_str);
@@ -284,19 +290,25 @@ static int connv3_coredump_info_analysis(
 		if (pTemp != NULL) {
 			unsigned int exp_ipc = 0;
 			len = pTemp - pDtr;
-			len = (len >= CONNV3_ASSERT_TYPE_SIZE) ? CONNV3_ASSERT_TYPE_SIZE - 1 : len;
+			len = (len >= CONNV3_ASSERT_TYPE_SIZE) ?
+				      CONNV3_ASSERT_TYPE_SIZE - 1 :
+				      len;
 			memcpy(&tempBuf[0], pDtr, len);
 			tempBuf[len] = '\0';
 			ret = kstrtouint(tempBuf, 16, &res);
 			if (ret) {
-				pr_notice("Convert to uint fail, ret=%d, buf=%s\n",
+				pr_notice(
+					"Convert to uint fail, ret=%d, buf=%s\n",
 					ret, tempBuf);
 			} else {
 				exp_ipc = res;
 				pr_info("exp_ipc=0x%x\n", exp_ipc);
 				if (remain_array_len > 0) {
-					sec_len = snprintf(&ctx->issue_info.assert_info[idx], remain_array_len,
-						" ipc=0x%x", exp_ipc);
+					sec_len = snprintf(
+						&ctx->issue_info
+							 .assert_info[idx],
+						remain_array_len, " ipc=0x%x",
+						exp_ipc);
 					if (sec_len > 0) {
 						remain_array_len -= sec_len;
 						idx += sec_len;
@@ -306,7 +318,7 @@ static int connv3_coredump_info_analysis(
 		}
 
 		/* Check eva */
-		type_str = (char*)exception_sub_string[2];
+		type_str = (char *)exception_sub_string[2];
 		pDtr = strstr(pDtr, type_str);
 		if (pDtr == NULL) {
 			pr_notice("substring (%s) not found\n", type_str);
@@ -317,20 +329,25 @@ static int connv3_coredump_info_analysis(
 		if (pTemp != NULL) {
 			unsigned int exp_eva = 0;
 			len = pTemp - pDtr;
-			len = (len >= CONNV3_ASSERT_TYPE_SIZE) ? CONNV3_ASSERT_TYPE_SIZE - 1 : len;
+			len = (len >= CONNV3_ASSERT_TYPE_SIZE) ?
+				      CONNV3_ASSERT_TYPE_SIZE - 1 :
+				      len;
 			memcpy(&tempBuf[0], pDtr, len);
 			tempBuf[len] = '\0';
 			ret = kstrtouint(tempBuf, 16, &res);
 			if (ret) {
-				pr_notice("Convert to uint fail, ret=%d, buf=%s\n",
+				pr_notice(
+					"Convert to uint fail, ret=%d, buf=%s\n",
 					ret, tempBuf);
 			} else {
 				exp_eva = res;
 				pr_info("eva addr=0x%x\n", exp_eva);
 				if (remain_array_len > 0) {
 					sec_len = snprintf(
-						&ctx->issue_info.assert_info[idx], remain_array_len,
-						" eva=0x%x", exp_eva);
+						&ctx->issue_info
+							 .assert_info[idx],
+						remain_array_len, " eva=0x%x",
+						exp_eva);
 					if (sec_len > 0) {
 						remain_array_len -= sec_len;
 						idx += sec_len;
@@ -340,7 +357,7 @@ static int connv3_coredump_info_analysis(
 		}
 
 		/* Check etype */
-		type_str = (char*)exception_sub_string[3];
+		type_str = (char *)exception_sub_string[3];
 		pDtr = strstr(pDtr, type_str);
 		if (pDtr == NULL) {
 			pr_notice("Substring(%s) not found\n", type_str);
@@ -349,16 +366,18 @@ static int connv3_coredump_info_analysis(
 		pDtr += strlen(type_str);
 		pTemp = strchr(pDtr, ',');
 		if (pTemp != NULL) {
-			char etype[CONNV3_ASSERT_INFO_SIZE] = {'\0'};
+			char etype[CONNV3_ASSERT_INFO_SIZE] = { '\0' };
 			len = pTemp - pDtr;
-			len = (len >= CONNV3_ASSERT_TYPE_SIZE) ? CONNV3_ASSERT_TYPE_SIZE - 1 : len;
+			len = (len >= CONNV3_ASSERT_TYPE_SIZE) ?
+				      CONNV3_ASSERT_TYPE_SIZE - 1 :
+				      len;
 			memcpy(&etype, pDtr, len);
 			etype[len] = '\0';
 			pr_info("etype=%s\n", etype);
 			if (remain_array_len > 0) {
 				sec_len = snprintf(
-					&ctx->issue_info.assert_info[idx], remain_array_len,
-					" etype=%s", etype);
+					&ctx->issue_info.assert_info[idx],
+					remain_array_len, " etype=%s", etype);
 				if (sec_len > 0) {
 					remain_array_len -= sec_len;
 					idx += sec_len;
@@ -369,7 +388,7 @@ static int connv3_coredump_info_analysis(
 
 check_task_str:
 	/* Example: "id=0x0 Tmr Svc," */
-	type_str = (char*)parser_sub_string[1];
+	type_str = (char *)parser_sub_string[1];
 	pDtr = strstr(pStr, type_str);
 	if (pDtr == NULL) {
 		pr_notice("parser str is NULL,substring(%s)\n", type_str);
@@ -379,26 +398,33 @@ check_task_str:
 
 		if (pTemp == NULL) {
 			pr_notice("delimiter( ) is not found,substring(%s)\n",
-				type_str);
+				  type_str);
 		} else {
 			task_end = strchr(pTemp, ',');
 			if (task_end != NULL) {
-				unsigned int task_len = ((task_end - pTemp) > CONNV3_TASK_NAME_SIZE - 1 ? CONNV3_TASK_NAME_SIZE - 1 : (task_end - pTemp));
+				unsigned int task_len =
+					((task_end -
+					  pTemp) > CONNV3_TASK_NAME_SIZE - 1 ?
+						 CONNV3_TASK_NAME_SIZE - 1 :
+						 (task_end - pTemp));
 				char task_name[CONNV3_TASK_NAME_SIZE];
 				strncpy(task_name, pTemp, task_len);
 				task_name[task_len] = '\0';
 
-				if (snprintf(ctx->issue_info.task_name, CONNV3_TASK_NAME_SIZE,
-					"Task_%s_%s", task_name,
-					connv3_dump_mng_get_subsys_tag(ctx->conn_type)) < 0)
-					pr_notice("%s snprintf failed\n", __func__);
+				if (snprintf(ctx->issue_info.task_name,
+					     CONNV3_TASK_NAME_SIZE,
+					     "Task_%s_%s", task_name,
+					     connv3_dump_mng_get_subsys_tag(
+						     ctx->conn_type)) < 0)
+					pr_notice("%s snprintf failed\n",
+						  __func__);
 			}
 		}
 	}
 
 	/* Check ISR */
 	ctx->issue_info.fw_isr = 0;
-	type_str = (char*)parser_sub_string[2];
+	type_str = (char *)parser_sub_string[2];
 	pDtr = strstr(pStr, type_str);
 	if (pDtr == NULL) {
 		pr_notice("parser str is NULL,substring(%s)\n", type_str);
@@ -407,26 +433,32 @@ check_task_str:
 		pTemp = strchr(pDtr, ',');
 
 		if (pTemp == NULL) {
-			pr_notice("delimiter(,) is not found,substring(%s)\n", type_str);
+			pr_notice("delimiter(,) is not found,substring(%s)\n",
+				  type_str);
 		} else {
 			len = pTemp - pDtr;
-			len = (len >= CONNV3_ASSERT_TYPE_SIZE) ? CONNV3_ASSERT_TYPE_SIZE - 1 : len;
+			len = (len >= CONNV3_ASSERT_TYPE_SIZE) ?
+				      CONNV3_ASSERT_TYPE_SIZE - 1 :
+				      len;
 			memcpy(&tempBuf[0], pDtr, len);
 			tempBuf[len] = '\0';
 
 			ret = kstrtouint(tempBuf, 16, &res);
 			if (ret) {
-				pr_notice("Get fw isr id fail, ret=%d, buf=%s\n", ret, tempBuf);
+				pr_notice(
+					"Get fw isr id fail, ret=%d, buf=%s\n",
+					ret, tempBuf);
 			} else {
 				ctx->issue_info.fw_isr = res;
-				pr_info("fw isr str:%x\n", ctx->issue_info.fw_isr);
+				pr_info("fw isr str:%x\n",
+					ctx->issue_info.fw_isr);
 			}
 		}
 	}
 
 	/* Check IRQ */
 	ctx->issue_info.fw_irq = 0;
-	type_str = (char*)parser_sub_string[3];
+	type_str = (char *)parser_sub_string[3];
 	pDtr = strstr(pStr, type_str);
 	if (pDtr == NULL) {
 		pr_notice("parser str is NULL,substring(%s)\n", type_str);
@@ -434,18 +466,23 @@ check_task_str:
 		pDtr += strlen(type_str);
 		pTemp = strchr(pDtr, ',');
 		if (pTemp == NULL) {
-			pr_notice("delimiter(,) is not found,substring(%s)\n", type_str);
+			pr_notice("delimiter(,) is not found,substring(%s)\n",
+				  type_str);
 		} else {
 			len = pTemp - pDtr;
-			len = (len >= CONNV3_ASSERT_TYPE_SIZE) ? CONNV3_ASSERT_TYPE_SIZE - 1 : len;
+			len = (len >= CONNV3_ASSERT_TYPE_SIZE) ?
+				      CONNV3_ASSERT_TYPE_SIZE - 1 :
+				      len;
 			memcpy(&tempBuf[0], pDtr, len);
 			tempBuf[len] = '\0';
 			ret = kstrtouint(tempBuf, 16, &res);
 			if (ret) {
-				pr_notice("get fw irq id fail ret=%d, buf=%s\n", ret, tempBuf);
+				pr_notice("get fw irq id fail ret=%d, buf=%s\n",
+					  ret, tempBuf);
 			} else {
 				ctx->issue_info.fw_irq = res;
-				pr_info("fw irq value:%x\n", ctx->issue_info.fw_irq);
+				pr_info("fw irq value:%x\n",
+					ctx->issue_info.fw_irq);
 			}
 		}
 	}
@@ -455,27 +492,32 @@ check_driver_assert:
 	if (drv >= CONNV3_DRV_TYPE_BT && drv < CONNV3_DRV_TYPE_MAX) {
 		ctx->issue_info.issue_type = CONNV3_ISSUE_DRIVER_ASSERT;
 		ctx->issue_info.drv_type = drv;
-		if (snprintf(ctx->issue_info.task_name, CONNV3_TASK_NAME_SIZE, "%s", task_drv_name[drv]) < 0) {
-			pr_notice("[%s] snprintf failed, task name = %s\n", __func__, task_drv_name[drv]);
+		if (snprintf(ctx->issue_info.task_name, CONNV3_TASK_NAME_SIZE,
+			     "%s", task_drv_name[drv]) < 0) {
+			pr_notice("[%s] snprintf failed, task name = %s\n",
+				  __func__, task_drv_name[drv]);
 		}
 	}
 	if (reason != NULL) {
-		strncpy(ctx->issue_info.reason, reason, CONNV3_ASSERT_REASON_SIZE - 1);
+		strncpy(ctx->issue_info.reason, reason,
+			CONNV3_ASSERT_REASON_SIZE - 1);
 	}
-	if (snprintf(ctx->issue_info.subsys_tag, CONNV3_SUBSYS_TAG_SIZE, "%s", connv3_dump_mng_get_subsys_tag(ctx->conn_type)) < 0) {
+	if (snprintf(ctx->issue_info.subsys_tag, CONNV3_SUBSYS_TAG_SIZE, "%s",
+		     connv3_dump_mng_get_subsys_tag(ctx->conn_type)) < 0) {
 		pr_notice("[%s] snprintf failed\n", __func__);
 	}
 
 	return 0;
 }
 
-int connv3_coredump_start(void* handler, const int drv, const char *reason, const char *dump_msg , const char *fw_version)
+int connv3_coredump_start(void *handler, const int drv, const char *reason,
+			  const char *dump_msg, const char *fw_version)
 {
 	enum connv3_coredump_mode coredump_mode;
-	struct connv3_dump_ctx *ctx = (struct connv3_dump_ctx*)handler;
+	struct connv3_dump_ctx *ctx = (struct connv3_dump_ctx *)handler;
 	int ret = 0;
 	enum connv3_coredump_state state;
-	char* fw_ver_one_line = NULL;
+	char *fw_ver_one_line = NULL;
 	int fw_version_len = 0;
 
 	if (ctx == NULL) {
@@ -494,8 +536,8 @@ int connv3_coredump_start(void* handler, const int drv, const char *reason, cons
 		return CONNV3_COREDUMP_ERR_WRONG_STATUS;
 	}
 
-	pr_info("[%s][%s] trigger_drv=%d reason=%s\n",
-		__func__, connv3_dump_get_type_name(ctx->conn_type), drv, reason);
+	pr_info("[%s][%s] trigger_drv=%d reason=%s\n", __func__,
+		connv3_dump_get_type_name(ctx->conn_type), drv, reason);
 	connv3_dump_set_dump_state(ctx, CONNV3_COREDUMP_STATE_START);
 	osal_gettimeofday(&g_dump_start_time);
 
@@ -512,12 +554,17 @@ int connv3_coredump_start(void* handler, const int drv, const char *reason, cons
 	if (fw_version_len > 0) {
 		/* Add newline symbol in the end */
 		fw_version_len += 2;
-		fw_ver_one_line = connv3_dump_malloc(fw_version_len*sizeof(char));
+		fw_ver_one_line =
+			connv3_dump_malloc(fw_version_len * sizeof(char));
 		if (fw_ver_one_line != NULL) {
-			if (snprintf(fw_ver_one_line, fw_version_len, "%s\n", fw_version) < 0)
+			if (snprintf(fw_ver_one_line, fw_version_len, "%s\n",
+				     fw_version) < 0)
 				pr_notice("[%s] snprintf fail\n", __func__);
 			else
-				ret = conndump_netlink_send_to_native(ctx->conn_type, "[M]", (char*)fw_ver_one_line, strlen(fw_ver_one_line));
+				ret = conndump_netlink_send_to_native(
+					ctx->conn_type, "[M]",
+					(char *)fw_ver_one_line,
+					strlen(fw_ver_one_line));
 			connv3_dump_free(fw_ver_one_line);
 			fw_ver_one_line = NULL;
 		}
@@ -528,16 +575,18 @@ int connv3_coredump_start(void* handler, const int drv, const char *reason, cons
 	connv3_coredump_info_analysis(ctx, drv, reason, dump_msg);
 
 	/* Send to native */
-	ret = conndump_netlink_send_to_native(ctx->conn_type, "[M]", (char*)dump_msg, strlen(dump_msg));
+	ret = conndump_netlink_send_to_native(
+		ctx->conn_type, "[M]", (char *)dump_msg, strlen(dump_msg));
 
 	osal_unlock_sleepable_lock(&ctx->ctx_lock);
 	return 0;
 }
 EXPORT_SYMBOL(connv3_coredump_start);
 
-int connv3_coredump_send(void *handler, char *tag, char *content, unsigned int length)
+int connv3_coredump_send(void *handler, char *tag, char *content,
+			 unsigned int length)
 {
-	struct connv3_dump_ctx* ctx = (struct connv3_dump_ctx*)handler;
+	struct connv3_dump_ctx *ctx = (struct connv3_dump_ctx *)handler;
 	int ret = 0;
 	enum connv3_coredump_state state = connv3_dump_get_dump_state(ctx);
 
@@ -547,20 +596,25 @@ int connv3_coredump_send(void *handler, char *tag, char *content, unsigned int l
 	}
 
 	if (ctx->conn_type < 0 || ctx->conn_type >= CONNV3_DEBUG_TYPE_SIZE) {
-		pr_notice("[%s] conn_type(%d) is not supported", __func__, ctx->conn_type);
+		pr_notice("[%s] conn_type(%d) is not supported", __func__,
+			  ctx->conn_type);
 		return CONNV3_COREDUMP_ERR_INVALID_INPUT;
 	}
 
-	if (state >= CONNV3_COREDUMP_STATE_START && state <= CONNV3_COREDUMP_STATE_MEM_REGION) {
+	if (state >= CONNV3_COREDUMP_STATE_START &&
+	    state <= CONNV3_COREDUMP_STATE_MEM_REGION) {
 		ret = osal_lock_sleepable_lock(&ctx->ctx_lock);
 		if (ret) {
-			pr_notice("[%s] get lock fail, ret = %d\n", __func__, ret);
+			pr_notice("[%s] get lock fail, ret = %d\n", __func__,
+				  ret);
 			return CONNV3_COREDUMP_ERR_GET_LOCK_FAIL;
 		}
-		ret = conndump_netlink_send_to_native(ctx->conn_type, tag, content, length);
+		ret = conndump_netlink_send_to_native(ctx->conn_type, tag,
+						      content, length);
 		osal_unlock_sleepable_lock(&ctx->ctx_lock);
 	} else {
-		pr_notice("[%s][%s] tag=%s, wrong state %d", __func__, g_type_name[ctx->conn_type], tag, state);
+		pr_notice("[%s][%s] tag=%s, wrong state %d", __func__,
+			  g_type_name[ctx->conn_type], tag, state);
 		return CONNV3_COREDUMP_ERR_WRONG_STATUS;
 	}
 
@@ -568,22 +622,23 @@ int connv3_coredump_send(void *handler, char *tag, char *content, unsigned int l
 }
 EXPORT_SYMBOL(connv3_coredump_send);
 
-static int connv3_coredump_gen_issue_info_xml(struct connv3_dump_ctx *ctx, char *buf, unsigned int max_len)
+static int connv3_coredump_gen_issue_info_xml(struct connv3_dump_ctx *ctx,
+					      char *buf, unsigned int max_len)
 {
-#define FORMAT_STRING(buf, len, max_len, sec_len, fmt, arg...) \
-do { \
-	sec_len = snprintf(buf + len, max_len, fmt, ##arg); \
-	if (sec_len > 0) { \
-		max_len -= sec_len; \
-		len += sec_len; \
-		if (max_len <= 0) \
-			goto format_finish; \
-	} \
-} while (0)
+#define FORMAT_STRING(buf, len, max_len, sec_len, fmt, arg...)                 \
+	do {                                                                   \
+		sec_len = snprintf(buf + len, max_len, fmt, ##arg);            \
+		if (sec_len > 0) {                                             \
+			max_len -= sec_len;                                    \
+			len += sec_len;                                        \
+			if (max_len <= 0)                                      \
+				goto format_finish;                            \
+		}                                                              \
+	} while (0)
 
 	int len = 0;
 	int sec_len;
-	char* drv_name[CONNV3_DRV_TYPE_MAX] = {
+	char *drv_name[CONNV3_DRV_TYPE_MAX] = {
 		"DRV_BT",
 		"DRV_WIFI",
 		"DRV_MODEM",
@@ -592,82 +647,86 @@ do { \
 	/* Init buffer */
 	memset(buf, '\0', max_len);
 	FORMAT_STRING(buf, len, max_len, sec_len, "<main>\n");
-	FORMAT_STRING(buf, len, max_len, sec_len, "\t<chipid>MT%x</chipid>\n", connv3_dump_mng_get_platform_chipid());
+	FORMAT_STRING(buf, len, max_len, sec_len, "\t<chipid>MT%x</chipid>\n",
+		      connv3_dump_mng_get_platform_chipid());
 
 	/* <issue> section */
-	FORMAT_STRING(buf, len, max_len, sec_len,
+	FORMAT_STRING(
+		buf, len, max_len, sec_len,
 		"\t<issue>\n\t\t<classification>\n\t\t\t%s\n\t\t</classification>\n",
 		ctx->issue_info.assert_info);
 	if (ctx->issue_info.issue_type == CONNV3_ISSUE_FW_EXCEPTION) {
 		FORMAT_STRING(buf, len, max_len, sec_len,
-			"\t\t<rc>\n\t\t\tFW Exception\n\t\t</rc>\n");
+			      "\t\t<rc>\n\t\t\tFW Exception\n\t\t</rc>\n");
 	} else if (ctx->issue_info.issue_type == CONNV3_ISSUE_FW_ASSERT) {
 		FORMAT_STRING(buf, len, max_len, sec_len,
-			"\t\t<rc>\n\t\t\tFW Assert\n\t\t</rc>\n");
+			      "\t\t<rc>\n\t\t\tFW Assert\n\t\t</rc>\n");
 	} else if (ctx->issue_info.issue_type == CONNV3_ISSUE_DRIVER_ASSERT &&
-		ctx->issue_info.drv_type < CONNV3_DRV_TYPE_MAX) {
+		   ctx->issue_info.drv_type < CONNV3_DRV_TYPE_MAX) {
 		FORMAT_STRING(buf, len, max_len, sec_len,
-			"\t\t<rc>\n\t\t\t%s trigger assert\n\t\t</rc>\n", drv_name[ctx->issue_info.drv_type]);
+			      "\t\t<rc>\n\t\t\t%s trigger assert\n\t\t</rc>\n",
+			      drv_name[ctx->issue_info.drv_type]);
 	} else if (ctx->issue_info.issue_type == CONNV3_ISSUE_FORCE_DUMP) {
 		FORMAT_STRING(buf, len, max_len, sec_len,
-			"\t\t<rc>\n\t\t\tForce coredump\n\t\t</rc>\n");
+			      "\t\t<rc>\n\t\t\tForce coredump\n\t\t</rc>\n");
 	} else {
 		FORMAT_STRING(buf, len, max_len, sec_len,
-			"\t\t<rc>\n\t\t\tUnknown\n\t\t</rc>\n");
+			      "\t\t<rc>\n\t\t\tUnknown\n\t\t</rc>\n");
 	}
 	/* <hint><client> section @{*/
 	FORMAT_STRING(buf, len, max_len, sec_len,
-		"\t</issue>\n\t<hint>\n\t\t<client>\n");
+		      "\t</issue>\n\t<hint>\n\t\t<client>\n");
 
 	if (strlen(ctx->issue_info.subsys_tag) != 0) {
 		FORMAT_STRING(buf, len, max_len, sec_len,
-			"\t\t\t<subsys>%s</subsys>\n",
-			ctx->issue_info.subsys_tag);
+			      "\t\t\t<subsys>%s</subsys>\n",
+			      ctx->issue_info.subsys_tag);
 	}
 
 	if (ctx->issue_info.issue_type == CONNV3_ISSUE_DRIVER_ASSERT) {
 		/* Driver trigger assert */
 		FORMAT_STRING(buf, len, max_len, sec_len,
-			"\t\t\t<task>%s</task>\n",
-			ctx->issue_info.task_name);
+			      "\t\t\t<task>%s</task>\n",
+			      ctx->issue_info.task_name);
 		FORMAT_STRING(buf, len, max_len, sec_len,
-			"\t\t\t<irqx>NULL</irqx>\n");
+			      "\t\t\t<irqx>NULL</irqx>\n");
 		FORMAT_STRING(buf, len, max_len, sec_len,
-			"\t\t\t<isr>NULL</isr>\n");
-		if (ctx->issue_info.drv_type >= 0 && ctx->issue_info.drv_type < CONNV3_DRV_TYPE_MAX)
+			      "\t\t\t<isr>NULL</isr>\n");
+		if (ctx->issue_info.drv_type >= 0 &&
+		    ctx->issue_info.drv_type < CONNV3_DRV_TYPE_MAX)
 			FORMAT_STRING(buf, len, max_len, sec_len,
-				"\t\t\t<drv_type>%s</drv_type>\n",
-				drv_name[ctx->issue_info.drv_type]);
+				      "\t\t\t<drv_type>%s</drv_type>\n",
+				      drv_name[ctx->issue_info.drv_type]);
 	} else if (ctx->issue_info.issue_type == CONNV3_ISSUE_FORCE_DUMP) {
 		/* For force dump case, assign task as driver */
 		FORMAT_STRING(buf, len, max_len, sec_len,
-			"\t\t\t<task>%s</task>\n",
-			drv_name[ctx->issue_info.drv_type]);
+			      "\t\t\t<task>%s</task>\n",
+			      drv_name[ctx->issue_info.drv_type]);
 	} else {
 		FORMAT_STRING(buf, len, max_len, sec_len,
-			"\t\t\t<task>%s</task>\n",
-			ctx->issue_info.task_name);
+			      "\t\t\t<task>%s</task>\n",
+			      ctx->issue_info.task_name);
 		FORMAT_STRING(buf, len, max_len, sec_len,
-			"\t\t\t<irqx>IRQ_0x%x</irqx>\n",
-			ctx->issue_info.fw_irq);
+			      "\t\t\t<irqx>IRQ_0x%x</irqx>\n",
+			      ctx->issue_info.fw_irq);
 		FORMAT_STRING(buf, len, max_len, sec_len,
-			"\t\t\t<isr>0x%x</isr>\n",
-			ctx->issue_info.fw_isr);
+			      "\t\t\t<isr>0x%x</isr>\n",
+			      ctx->issue_info.fw_isr);
 	}
 	if (strlen(ctx->issue_info.reason) != 0)
 		FORMAT_STRING(buf, len, max_len, sec_len,
-			"\t\t\t<reason>%s</reason>\n",
-			ctx->issue_info.reason);
+			      "\t\t\t<reason>%s</reason>\n",
+			      ctx->issue_info.reason);
 
 	if (ctx->issue_info.issue_type == CONNV3_ISSUE_DRIVER_ASSERT)
 		FORMAT_STRING(buf, len, max_len, sec_len,
-			"\t\t\t<keyword>%s</keyword>\n", ctx->issue_info.reason);
+			      "\t\t\t<keyword>%s</keyword>\n",
+			      ctx->issue_info.reason);
 	else
 		FORMAT_STRING(buf, len, max_len, sec_len,
-			"\t\t\t<keyword>NULL</keyword>\n");
+			      "\t\t\t<keyword>NULL</keyword>\n");
 
-	FORMAT_STRING(buf, len, max_len, sec_len,
-		"\t\t</client>\n\t</hint>\n");
+	FORMAT_STRING(buf, len, max_len, sec_len, "\t\t</client>\n\t</hint>\n");
 	/*<hint><client> section @}*/
 	FORMAT_STRING(buf, len, max_len, sec_len, "</main>\n");
 format_finish:
@@ -678,9 +737,11 @@ format_finish:
 	return len;
 }
 
-int connv3_coredump_get_issue_info(void *handler, struct connv3_issue_info *issue_info, char *xml_str, unsigned int xml_str_size)
+int connv3_coredump_get_issue_info(void *handler,
+				   struct connv3_issue_info *issue_info,
+				   char *xml_str, unsigned int xml_str_size)
 {
-	struct connv3_dump_ctx *ctx = (struct connv3_dump_ctx*)handler;
+	struct connv3_dump_ctx *ctx = (struct connv3_dump_ctx *)handler;
 	enum connv3_coredump_state state;
 	int ret;
 
@@ -710,32 +771,39 @@ EXPORT_SYMBOL(connv3_coredump_get_issue_info);
 
 static int connv3_dump_end_dump(struct connv3_dump_ctx *ctx)
 {
-#define EMI_COMMAND_LENGTH	64
+#define EMI_COMMAND_LENGTH 64
 	int ret;
 	unsigned long comp_ret;
 	// format: dev=/dev/conninfra_dev,emi_size=aaaaaaaa,mcif_emi_size=bbbbbbbb
-	char cmd_str[EMI_COMMAND_LENGTH] = {'\0'};
+	char cmd_str[EMI_COMMAND_LENGTH] = { '\0' };
 	char *cmd_tag;
 
 	/* EMI is invalid, send end command */
 	if (strlen(ctx->cb.dev_node) == 0 || ctx->cb.emi_size == 0) {
 		cmd_tag = "[COREDUMP_END]";
 		if (snprintf(cmd_str, EMI_COMMAND_LENGTH, "coredump_end") < 0) {
-			pr_notice("[%s][%s] coredump end snprintf failed", __func__, g_type_name[ctx->conn_type]);
+			pr_notice("[%s][%s] coredump end snprintf failed",
+				  __func__, g_type_name[ctx->conn_type]);
 			return -1;
 		}
-		connv3_dump_set_dump_state(ctx, CONNV3_COREDUMP_STATE_WAIT_DONE);
+		connv3_dump_set_dump_state(ctx,
+					   CONNV3_COREDUMP_STATE_WAIT_DONE);
 	} else {
 		cmd_tag = "[EMI]";
 		/* EMI dump */
-		if (snprintf(cmd_str, EMI_COMMAND_LENGTH, "dev=%s,emi_size=%d,mcif_emi_size=%d", ctx->cb.dev_node, ctx->cb.emi_size, ctx->cb.mcif_emi_size) < 0) {
+		if (snprintf(cmd_str, EMI_COMMAND_LENGTH,
+			     "dev=%s,emi_size=%d,mcif_emi_size=%d",
+			     ctx->cb.dev_node, ctx->cb.emi_size,
+			     ctx->cb.mcif_emi_size) < 0) {
 			pr_notice("%s snprintf failed\n", __func__);
 			return -1;
 		}
 		connv3_dump_set_dump_state(ctx, CONNV3_COREDUMP_STATE_EMI);
 	}
-	pr_info("[%s] tag=[%s] dump command=[%s] cmd length=[%d]\n", __func__, cmd_tag, cmd_str, strlen(cmd_str));
-	ret = conndump_netlink_send_to_native(ctx->conn_type, cmd_tag, cmd_str, strlen(cmd_str));
+	pr_info("[%s] tag=[%s] dump command=[%s] cmd length=[%d]\n", __func__,
+		cmd_tag, cmd_str, strlen(cmd_str));
+	ret = conndump_netlink_send_to_native(ctx->conn_type, cmd_tag, cmd_str,
+					      strlen(cmd_str));
 
 	if (ret < 0) {
 		pr_err("Send end or emi command fail, ret = %d\n", ret);
@@ -743,12 +811,12 @@ static int connv3_dump_end_dump(struct connv3_dump_ctx *ctx)
 	}
 
 	comp_ret = wait_for_completion_timeout(
-		&ctx->emi_dump,
-		msecs_to_jiffies(CONNV3_EMIDUMP_TIMEOUT));
+		&ctx->emi_dump, msecs_to_jiffies(CONNV3_EMIDUMP_TIMEOUT));
 
 	if (comp_ret == 0) {
 		pr_err("EMI dump timeout\n");
-		connv3_dump_set_dump_state(ctx, CONNV3_COREDUMP_STATE_EMI_TIMEOUT);
+		connv3_dump_set_dump_state(ctx,
+					   CONNV3_COREDUMP_STATE_EMI_TIMEOUT);
 	} else {
 		pr_info("EMI dump end");
 		connv3_dump_set_dump_state(ctx, CONNV3_COREDUMP_STATE_DONE);
@@ -757,10 +825,12 @@ static int connv3_dump_end_dump(struct connv3_dump_ctx *ctx)
 	return 0;
 }
 
-static int connv3_dump_exception_show(struct connv3_dump_ctx *ctx, char *customized_string)
+static int connv3_dump_exception_show(struct connv3_dump_ctx *ctx,
+				      char *customized_string)
 {
 	char *exception_log;
-	char *exp_tag_name = connv3_dump_mng_get_exception_tag_name(ctx->conn_type);
+	char *exp_tag_name =
+		connv3_dump_mng_get_exception_tag_name(ctx->conn_type);
 	(void)exp_tag_name;
 
 	if (customized_string != NULL)
@@ -769,17 +839,13 @@ static int connv3_dump_exception_show(struct connv3_dump_ctx *ctx, char *customi
 		exception_log = ctx->issue_info.assert_info;
 
 #if defined(CONNINFRA_PLAT_ALPS) && CONNINFRA_PLAT_ALPS
-	pr_info("par1: [%s] pars: [%s] par3: [%d]\n",
-		exp_tag_name,
-		exception_log,
-		strlen(exception_log));
+	pr_info("par1: [%s] pars: [%s] par3: [%d]\n", exp_tag_name,
+		exception_log, strlen(exception_log));
 #if IS_ENABLED(CONFIG_MTK_AEE_FEATURE)
 	/* Call AEE API */
-	aed_common_exception_api(
-		exp_tag_name,
-		NULL, 0,
-		(const int*)exception_log, strlen(exception_log),
-		exception_log, 0);
+	aed_common_exception_api(exp_tag_name, NULL, 0,
+				 (const int *)exception_log,
+				 strlen(exception_log), exception_log, 0);
 #endif
 #endif
 	return 0;
@@ -787,7 +853,7 @@ static int connv3_dump_exception_show(struct connv3_dump_ctx *ctx, char *customi
 
 int connv3_coredump_end(void *handler, char *customized_string)
 {
-	struct connv3_dump_ctx *ctx = (struct connv3_dump_ctx*)handler;
+	struct connv3_dump_ctx *ctx = (struct connv3_dump_ctx *)handler;
 	struct timespec64 pre_end, end;
 	enum connv3_coredump_state state;
 	int ret;
@@ -828,7 +894,8 @@ int connv3_coredump_end(void *handler, char *customized_string)
 }
 EXPORT_SYMBOL(connv3_coredump_end);
 
-void* connv3_coredump_init(int conn_type, const struct connv3_coredump_event_cb *cb)
+void *connv3_coredump_init(int conn_type,
+			   const struct connv3_coredump_event_cb *cb)
 {
 	struct connv3_dump_ctx *ctx = NULL;
 	struct netlink_event_cb nl_cb;
@@ -837,9 +904,11 @@ void* connv3_coredump_init(int conn_type, const struct connv3_coredump_event_cb 
 		pr_notice("[%s] wrong type: %d", __func__, conn_type);
 		goto error_exit;
 	}
-	ctx = (struct connv3_dump_ctx*)connv3_dump_malloc(sizeof(struct connv3_dump_ctx));
+	ctx = (struct connv3_dump_ctx *)connv3_dump_malloc(
+		sizeof(struct connv3_dump_ctx));
 	if (!ctx) {
-		pr_notice("[%s][%s] Allocate connv3_dump_ctx fail", __func__, g_type_name[conn_type]);
+		pr_notice("[%s][%s] Allocate connv3_dump_ctx fail", __func__,
+			  g_type_name[conn_type]);
 		goto error_exit;
 	}
 	/* Clean */
@@ -862,7 +931,7 @@ EXPORT_SYMBOL(connv3_coredump_init);
 
 void connv3_coredump_deinit(void *handler)
 {
-	struct connv3_dump_ctx *ctx = (struct connv3_dump_ctx*)handler;
+	struct connv3_dump_ctx *ctx = (struct connv3_dump_ctx *)handler;
 
 	if (handler == NULL)
 		return;
@@ -875,7 +944,6 @@ enum connv3_coredump_mode connv3_coredump_get_mode(void)
 {
 	return atomic_read(&g_dump_mode);
 }
-
 
 void connv3_coredump_set_dump_mode(enum connv3_coredump_mode mode)
 {

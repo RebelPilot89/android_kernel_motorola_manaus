@@ -112,18 +112,19 @@ static DEFINE_MUTEX(common_debug_lock);
 
 static struct kbase_device *mali_kbdev;
 
-static int mtk_common_gpufreq_dual_commit_compat(int gpu_oppidx, int stack_oppidx)
+static int mtk_common_gpufreq_dual_commit_compat(int gpu_oppidx,
+						 int stack_oppidx)
 {
 	int ret = 0;
 
 	if (gpu_oppidx >= 0) {
-		 ret = gpufreq_commit(TARGET_GPU, gpu_oppidx);
-		 if (ret)
-			  return ret;
+		ret = gpufreq_commit(TARGET_GPU, gpu_oppidx);
+		if (ret)
+			return ret;
 	}
 
 	if (stack_oppidx >= 0)
-		 ret = gpufreq_commit(TARGET_STACK, stack_oppidx);
+		ret = gpufreq_commit(TARGET_STACK, stack_oppidx);
 
 	return ret;
 }
@@ -138,7 +139,8 @@ static int mtk_common_ged_dvfs_get_last_commit_stack_idx_compat(void)
 	return (int)ged_dvfs_get_last_commit_idx();
 }
 
-static unsigned long mtk_common_ged_dvfs_write_sysram_last_commit_idx_compat(void)
+static unsigned long
+mtk_common_ged_dvfs_write_sysram_last_commit_idx_compat(void)
 {
 	return ged_dvfs_get_last_commit_idx();
 }
@@ -153,7 +155,7 @@ mtk_common_ged_dvfs_write_sysram_last_commit_idx_test_compat(int commit_idx)
 
 static unsigned long
 mtk_common_ged_dvfs_write_sysram_last_commit_dual_test_compat(int top_idx,
-								      int stack_idx)
+							      int stack_idx)
 {
 	(void)top_idx;
 	(void)stack_idx;
@@ -161,8 +163,9 @@ mtk_common_ged_dvfs_write_sysram_last_commit_dual_test_compat(int top_idx,
 	return ged_dvfs_get_last_commit_idx();
 }
 
-static int mtk_common_ged_dvfs_update_step_size_compat(int low_step, int med_step,
-							      int high_step)
+static int mtk_common_ged_dvfs_update_step_size_compat(int low_step,
+						       int med_step,
+						       int high_step)
 {
 	(void)low_step;
 	(void)med_step;
@@ -435,8 +438,8 @@ int mtk_common_gpufreq_dual_commit(int gpu_oppidx, int stack_oppidx)
 #if IS_ENABLED(CONFIG_MTK_GPUFREQ_V2)
 		ret = mtk_common_gpufreq_bringup() ?
 			      -1 :
-			      mtk_common_gpufreq_dual_commit_compat(gpu_oppidx,
-						       stack_oppidx);
+			      mtk_common_gpufreq_dual_commit_compat(
+				      gpu_oppidx, stack_oppidx);
 #else
 		ret = mtk_common_gpufreq_bringup() ?
 			      -1 :
@@ -573,7 +576,7 @@ int mtk_common_ged_dvfs_update_step_size(int low_step, int med_step,
 #if IS_ENABLED(CONFIG_MALI_MIDGARD_DVFS) &&                                    \
 	IS_ENABLED(CONFIG_MALI_MTK_DVFS_POLICY)
 	return mtk_common_ged_dvfs_update_step_size_compat(low_step, med_step,
-			high_step);
+							   high_step);
 #else
 	return -1;
 #endif

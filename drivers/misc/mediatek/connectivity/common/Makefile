@@ -28,8 +28,7 @@ mtk_wmt_detect-objs += $(CORE_DIR)/wmt_ic_soc.o \
                        $(CORE_DIR)/wmt_ic_6632.o
 
 # Objetos LINUX (OSAL / Glue)
-mtk_wmt_detect-objs += $(LINUX_DIR)/osal.o \
-                       $(LINUX_DIR)/wmt_dev.o \
+mtk_wmt_detect-objs += $(LINUX_DIR)/wmt_dev.o \
                        $(LINUX_DIR)/wmt_idc.o \
                        $(LINUX_DIR)/wmt_user_proc.o \
                        $(LINUX_DIR)/wmt_proc_dbg.o \
@@ -38,6 +37,10 @@ mtk_wmt_detect-objs += $(LINUX_DIR)/osal.o \
                        $(LINUX_DIR)/stp_dbg.o \
                        $(LINUX_DIR)/stp_dbg_soc.o \
                        $(LINUX_DIR)/stp_uart.o
+
+ifeq (,$(filter y m,$(CONFIG_MTK_CONN_INFRA)))
+mtk_wmt_detect-objs += $(LINUX_DIR)/osal.o
+endif
 
 # OBJETOS DE PLATAFORMA (Específicos para MT6879/MT6835)
 mtk_wmt_detect-objs += $(PLAT_DIR)/mtk_wcn_cmb_hw.o \
@@ -52,11 +55,20 @@ endif
 # connsys_debug_utility.o provides the common log API. When CONFIG_MTK_CONN_INFRA
 # is enabled, connsyslog.o (part of conninfra) already exports the same symbols,
 # so skip this file to avoid duplicate symbol link errors.
-ifneq ($(CONFIG_MTK_CONN_INFRA),y)
+ifeq (,$(filter y m,$(CONFIG_MTK_CONN_INFRA)))
 mtk_wmt_detect-objs += debug_utility/connsys_debug_utility.o
 endif
-mtk_wmt_detect-objs += debug_utility/ring.o \
-                       debug_utility/ring_emi.o
+
+# For MT6879/conninfra-based stacks, ring symbols are provided by
+# conninfra/base/ring.o. Keep common/debug_utility/ring.o only when
+# conninfra is not part of the build.
+ifeq (,$(filter y m,$(CONFIG_MTK_CONN_INFRA)))
+mtk_wmt_detect-objs += debug_utility/ring.o
+endif
+
+ifeq (,$(filter y m,$(CONFIG_MTK_CONN_INFRA)))
+mtk_wmt_detect-objs += debug_utility/ring_emi.o
+endif
 
 # Flags de compilación e Includes
 ccflags-y += -DCONFIG_MTK_WCN_CORE_EN
