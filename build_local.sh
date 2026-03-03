@@ -52,6 +52,7 @@ MAKE_FLAGS=(
     HOSTCXX=clang++
     HOSTAR=llvm-ar
     HOSTLD=ld.lld
+    KBUILD_LDFLAGS=--error-limit=0
     CROSS_COMPILE=aarch64-linux-gnu-
     CROSS_COMPILE_COMPAT=arm-linux-gnueabi-
     CLANG_TRIPLE=aarch64-linux-gnu-

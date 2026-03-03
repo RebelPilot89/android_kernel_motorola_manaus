@@ -4,11 +4,25 @@
  */
 
 #include "ufshcd.h"
+
+#ifdef CONFIG_SCSI_UFS_CRYPTO
 #include "ufshcd-crypto.h"
 #include "tlc_km.h"
 
 #undef CREATE_TRACE_POINTS
 #include <trace/hooks/ufshcd.h>
+#endif
+
+#ifndef CONFIG_SCSI_UFS_CRYPTO
+
+int ufshcd_moto_hba_init_crypto_capabilities(struct ufs_hba *hba)
+{
+	/* Keep behavior safe when wrapped-key mode is enabled without inline crypto. */
+	hba->caps &= ~UFSHCD_CAP_CRYPTO;
+	return 0;
+}
+
+#else
 
 /* Blk-crypto modes supported by UFS crypto */
 static const struct ufs_crypto_alg_entry {
@@ -43,7 +57,7 @@ static u32 ufshcd_get_crypto_para(const union ufs_crypto_cfg_entry *cfg, int slo
 			((0x40 & 0xFF) << 8);  /* bit 8 ~ 16 for total key bytes */
 
 	/* Disable encryption if not configured yet */
-    if (cfg->config_enable == 0)
+	if (cfg->config_enable == 0)
 		crypto_para |= 0x01;
 
 #ifdef CONFIG_MTK_UFS_DEBUG
@@ -308,3 +322,5 @@ out:
 	hba->caps &= ~UFSHCD_CAP_CRYPTO;
 	return err;
 }
+
+#endif /* CONFIG_SCSI_UFS_CRYPTO */
