@@ -6,6 +6,7 @@ obj-$(CONFIG_MTK_CONN_COMMON) += mtk_wmt_detect.o
 CORE_DIR := common_main/core
 LINUX_DIR := common_main/linux
 PLAT_DIR := common_main/platform
+DETECT_DIR := common_detect
 
 # Objetos CORE (WMT / STP)
 mtk_wmt_detect-objs := $(CORE_DIR)/wmt_core.o \
@@ -46,10 +47,13 @@ endif
 mtk_wmt_detect-objs += $(PLAT_DIR)/mtk_wcn_cmb_hw.o \
                        $(PLAT_DIR)/mtk_wcn_dump_util.o \
                        $(PLAT_DIR)/wmt_plat_alps.o \
-                       $(PLAT_DIR)/wmt_plat_stub.o
-ifeq (,$(filter y m,$(CONFIG_MTK_CONN_INFRA)))
-mtk_wmt_detect-objs += $(PLAT_DIR)/mtk_wcn_consys_hw.o
-endif
+                       $(PLAT_DIR)/wmt_plat_stub.o \
+                       $(PLAT_DIR)/mtk_wcn_consys_hw.o
+
+# OBJETOS DETECT (chip-type detection y GPIO)
+mtk_wmt_detect-objs += $(DETECT_DIR)/wmt_detect.o \
+                       $(DETECT_DIR)/wmt_detect_pwr.o \
+                       $(DETECT_DIR)/wmt_gpio.o
 
 # DEBUG UTILITY
 # connsys_debug_utility.o provides the common log API. When CONFIG_MTK_CONN_INFRA

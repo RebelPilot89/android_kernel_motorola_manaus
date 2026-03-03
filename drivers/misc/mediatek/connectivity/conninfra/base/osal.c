@@ -169,6 +169,68 @@ int osal_sprintf(char *str, const char *format, ...)
 	return iRet;
 }
 
+int osal_err_print(const char *str, ...)
+{
+	va_list args;
+	int ret;
+	char tempString[DBG_LOG_STR_SIZE];
+
+	va_start(args, str);
+	ret = vsnprintf(tempString, DBG_LOG_STR_SIZE, str, args);
+	va_end(args);
+	if (ret > 0)
+		pr_err("%s", tempString);
+	return ret;
+}
+
+int osal_warn_print(const char *str, ...)
+{
+	va_list args;
+	int ret;
+	char tempString[DBG_LOG_STR_SIZE];
+
+	va_start(args, str);
+	ret = vsnprintf(tempString, DBG_LOG_STR_SIZE, str, args);
+	va_end(args);
+	if (ret > 0)
+		pr_warn("%s", tempString);
+	return ret;
+}
+
+int osal_dbg_print(const char *str, ...)
+{
+	va_list args;
+	int ret;
+	char tempString[DBG_LOG_STR_SIZE];
+
+	va_start(args, str);
+	ret = vsnprintf(tempString, DBG_LOG_STR_SIZE, str, args);
+	va_end(args);
+	if (ret > 0)
+		pr_debug("%s", tempString);
+	return ret;
+}
+
+int osal_dbg_assert(int expr, const char *file, int line)
+{
+	if (!expr)
+		pr_warn("%s (%d)\n", file, line);
+	return !expr;
+}
+
+int osal_dbg_assert_aee(const char *module, const char *detail_description, ...)
+{
+	char tempString[DBG_LOG_STR_SIZE];
+	va_list args;
+
+	va_start(args, detail_description);
+	if (vsnprintf(tempString, DBG_LOG_STR_SIZE, detail_description, args) > 0)
+		pr_err("[WMT-ASSERT][E][Module]:%s, [INFO]%s\n",
+		       module, tempString);
+	va_end(args);
+	return 0;
+}
+
 void *osal_malloc(unsigned int size)
 {
 	return vmalloc(size);

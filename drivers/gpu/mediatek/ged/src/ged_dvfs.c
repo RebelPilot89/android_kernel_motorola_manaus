@@ -342,6 +342,13 @@ void (*ged_dvfs_gpu_freq_commit_fp)(unsigned long ui32NewFreqID,
 	GED_DVFS_COMMIT_TYPE eCommitType, int *pbCommited) = NULL;
 EXPORT_SYMBOL(ged_dvfs_gpu_freq_commit_fp);
 
+void (*ged_dvfs_gpu_freq_dual_commit_fp)(unsigned long gpuNewFreqID,
+	unsigned long stackNewFreqID, int *pbCommited) = NULL;
+EXPORT_SYMBOL(ged_dvfs_gpu_freq_dual_commit_fp);
+
+u64 (*mtk_get_system_timer_fp)(void) = NULL;
+EXPORT_SYMBOL(mtk_get_system_timer_fp);
+
 unsigned long ged_dvfs_get_last_commit_idx(void)
 {
 	return g_ged_dvfs_commit_idx;
