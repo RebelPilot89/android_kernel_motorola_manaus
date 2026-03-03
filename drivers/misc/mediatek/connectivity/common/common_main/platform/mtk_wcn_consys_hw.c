@@ -85,7 +85,7 @@ UINT8 __iomem *pEmibaseaddr;
 
 P_WMT_CONSYS_IC_OPS wmt_consys_ic_ops;
 
-struct platform_device *g_pdev;
+struct platform_device *g_pdev __weak;
 
 #ifdef ALLOCATE_CONNSYS_EMI_FROM_KO
 phys_addr_t gConEmiPhyBase;
@@ -188,7 +188,7 @@ struct work_struct plt_resume_worker;
 static void plat_resume_handler(struct work_struct *work);
 
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(4, 15, 0))
-struct regmap *g_regmap;
+struct regmap *g_regmap __weak;
 #endif
 
 static int wmt_thermal_get_temp_cb(void *data, int *temp);
@@ -1573,7 +1573,7 @@ P_REG_MAP_ADDR mtk_wcn_consys_get_debug_reg_ary(VOID)
 	return NULL;
 }
 
-struct platform_device *get_consys_device(void)
+struct platform_device *__weak get_consys_device(void)
 {
 	return g_pdev;
 }
