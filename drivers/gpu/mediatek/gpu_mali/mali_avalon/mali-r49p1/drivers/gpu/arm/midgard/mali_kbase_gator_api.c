@@ -222,12 +222,8 @@ void kbase_gator_hwcnt_term(struct kbase_gator_hwcnt_info *in_out_info, struct k
 	}
 
 	if (opaque_handles) {
-		// cancel_work_sync(&opaque_handles->dump_work);
-		if(!cancel_work(&opaque_handles->dump_work)) {
-			while(work_busy(&opaque_handles->dump_work)) {
-			}
-		}
-		if(preempt_count()!=0) {
+		cancel_work_sync(&opaque_handles->dump_work);
+		if (preempt_count() != 0) {
 			preempt_enable();
 			kbase_hwcnt_virtualizer_client_destroy(opaque_handles->hvcli);
 			kbase_hwcnt_dump_buffer_free(&opaque_handles->dump_buf);

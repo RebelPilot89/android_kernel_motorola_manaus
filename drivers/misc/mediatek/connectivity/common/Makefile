@@ -53,7 +53,14 @@ mtk_wmt_detect-objs += $(PLAT_DIR)/mtk_wcn_cmb_hw.o \
 # OBJETOS DETECT (chip-type detection y GPIO)
 mtk_wmt_detect-objs += $(DETECT_DIR)/wmt_detect.o \
                        $(DETECT_DIR)/wmt_detect_pwr.o \
-                       $(DETECT_DIR)/wmt_gpio.o
+                       $(DETECT_DIR)/wmt_gpio.o \
+                       $(DETECT_DIR)/sdio_detect.o \
+                       $(DETECT_DIR)/mtk_wcn_stub_alps.o
+
+# SDIO HIF / BGW desense: provide mtk_wcn_hif_sdio_wmt_control and
+# send_command_to_daemon which are referenced by wmt_ctrl.c and wmt_dev.c.
+mtk_wmt_detect-objs += $(LINUX_DIR)/hif_sdio.o \
+                       $(LINUX_DIR)/bgw_desense.o
 
 # DEBUG UTILITY
 # connsys_debug_utility.o provides the common log API. When CONFIG_MTK_CONN_INFRA
