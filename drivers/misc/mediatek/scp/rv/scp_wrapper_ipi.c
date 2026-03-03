@@ -3,6 +3,7 @@
  * Copyright (c) 2020 MediaTek Inc.
  */
 
+#include <linux/notifier.h>
 #include "scp_ipi.h"
 #include "scp_ipi_table.h"
 #include "scp.h"
@@ -340,3 +341,23 @@ void mt_print_scp_ipi_id(unsigned int mbox)
 	}
 }
 
+
+/*
+ * Stubs for 3-way HW semaphore notifier chain. The real implementation lives in
+ * sound/soc/mediatek/common/mtk-afe-external.c, which is only compiled when
+ * CONFIG_SND_SOC is enabled. When audio is disabled (as on this Lab-Server build),
+ * these no-ops satisfy the references from adsp_driver_v2.c and scp_helper.c.
+ * __weak allows the strong definitions from mtk-afe-external.c to override if
+ * CONFIG_SND_SOC is ever enabled in the future.
+ */
+int __weak register_3way_semaphore_notifier(struct notifier_block *nb)
+{
+	return 0;
+}
+EXPORT_SYMBOL_GPL(register_3way_semaphore_notifier);
+
+int __weak unregister_3way_semaphore_notifier(struct notifier_block *nb)
+{
+	return 0;
+}
+EXPORT_SYMBOL_GPL(unregister_3way_semaphore_notifier);

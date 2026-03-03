@@ -322,3 +322,57 @@ int kbase_platform_dvfs_event(struct kbase_device *kbdev, u32 utilisation,
 	return 1;
 }
 #endif /* !MALI_USE_CSF */
+
+#if IS_ENABLED(CONFIG_MTK_GPU_SWPM_SUPPORT)
+/*
+ * Weak fallback stubs for the Mali Gator HWC API.
+ *
+ * mali_kbase_gator_api.c provides the real (strong) implementations; these
+ * __weak stubs are only used when that translation unit fails to compile
+ * (e.g. if a future toolchain upgrade introduces new -Werror triggers in the
+ * ARM upstream code).  At link time the linker always prefers the strong
+ * definition; the weak symbols are discarded.  This guarantees that
+ * mtk_mfg_counter.c never triggers undefined-symbol linker errors regardless
+ * of the state of the upstream ARM file.
+ */
+#include "mali_kbase_gator_api.h"
+
+struct kbase_gator_hwcnt_handles * __weak
+kbase_gator_hwcnt_init(struct kbase_gator_hwcnt_info *in_out_info)
+{
+	return NULL;
+}
+
+void __weak
+kbase_gator_hwcnt_term(struct kbase_gator_hwcnt_info *in_out_info,
+		       struct kbase_gator_hwcnt_handles *opaque_handles)
+{
+}
+
+const char * const * __weak
+kbase_gator_hwcnt_init_names(uint32_t *total_counters)
+{
+	if (total_counters)
+		*total_counters = 0;
+	return NULL;
+}
+
+void __weak kbase_gator_hwcnt_term_names(void)
+{
+}
+
+uint32_t __weak
+kbase_gator_instr_hwcnt_dump_irq(struct kbase_gator_hwcnt_handles *opaque_handles)
+{
+	return 0;
+}
+
+uint32_t __weak
+kbase_gator_instr_hwcnt_dump_complete(struct kbase_gator_hwcnt_handles *opaque_handles,
+				      uint32_t * const success)
+{
+	if (success)
+		*success = 0;
+	return 0;
+}
+#endif /* CONFIG_MTK_GPU_SWPM_SUPPORT */
