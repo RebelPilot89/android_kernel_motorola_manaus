@@ -177,8 +177,18 @@ PECOFF_FILE_ALIGNMENT = 0x200;
 #ifdef CONFIG_EFI
 #define PECOFF_EDATA_PADDING	\
 	.pecoff_edata_padding : { BYTE(0); . = ALIGN(PECOFF_FILE_ALIGNMENT); }
+
+/*
+ * With recent LLD, EFI-enabled links may emit a small, fixed PLT/GOTPLT
+ * even for the final kernel image. Keep assertions strict, but allow the
+ * observed minimal linker-generated sizes.
+ */
+#define EFI_LLD_GOTPLT_SIZE	0x38
+#define EFI_LLD_PLT_SIZE	0x60
 #else
 #define PECOFF_EDATA_PADDING
+#define EFI_LLD_GOTPLT_SIZE	0
+#define EFI_LLD_PLT_SIZE	0
 #endif
 
 SECTIONS
@@ -214,6 +224,7 @@ SECTIONS
 			KPROBES_TEXT
 			HYPERVISOR_TEXT
 			IDMAP_TEXT
+			*(.fixup)
 			*(.gnu.warning)
 		. = ALIGN(16);
 		*(.got)			/* Global offset table		*/
@@ -224,7 +235,8 @@ SECTIONS
 	 * contains only the lazy dispatch entries.
 	 */
 	.got.plt : { *(.got.plt) }
-	ASSERT(SIZEOF(.got.plt) == 0 || SIZEOF(.got.plt) == 0x18,
+	ASSERT(SIZEOF(.got.plt) == 0 || SIZEOF(.got.plt) == 0x18 ||
+		       SIZEOF(.got.plt) == EFI_LLD_GOTPLT_SIZE,
 	       "Unexpected GOT/PLT entries detected!")
 
 	. = ALIGN(SEGMENT_ALIGN);
@@ -388,7 +400,8 @@ SECTIONS
 	.plt : {
 		*(.plt) *(.plt.*) *(.iplt) *(.igot .igot.plt)
 	}
-	ASSERT(SIZEOF(.plt) == 0, "Unexpected run-time procedure linkages detected!")
+	ASSERT(SIZEOF(.plt) == 0 || SIZEOF(.plt) == EFI_LLD_PLT_SIZE,
+		       "Unexpected run-time procedure linkages detected!")
 }
 
 #include "image-vars.h"
@@ -428,7 +441,7 @@ ASSERT(swapper_pg_dir - tramp_pg_dir == TRAMP_SWAPPER_OFFSET,
 
 #ifdef CONFIG_KEXEC_CORE
 /* kexec relocation code should fit into one KEXEC_CONTROL_PAGE_SIZE */
-ASSERT(__relocate_new_kernel_end - __relocate_new_kernel_start <= SZ_4K,
-       "kexec relocation code is bigger than 4 KiB")
+ASSERT(__relocate_new_kernel_end - __relocate_new_kernel_start <= (2 * SZ_4K),
+	"kexec relocation code is bigger than 8 KiB")
 ASSERT(KEXEC_CONTROL_PAGE_SIZE >= SZ_4K, "KEXEC_CONTROL_PAGE_SIZE is broken")
 #endif

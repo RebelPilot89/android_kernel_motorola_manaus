@@ -106,3 +106,4 @@ build.log
 drivers/kernelsu/userspace/ksud/.cargo/
 # Ignora carpetas .github en subcarpetas
 drivers/*/.github/
+dtbo.img

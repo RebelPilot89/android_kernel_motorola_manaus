@@ -160,6 +160,7 @@ vmlinux_link()
 	local lds="${objtree}/${KBUILD_LDS}"
 	local output=${1}
 	local objects
+	local mapfile
 	local strip_debug
 
 	info LD ${output}
@@ -170,6 +171,10 @@ vmlinux_link()
 	# The kallsyms linking does not need debug symbols included.
 	if [ "$output" != "${output#.tmp_vmlinux.kallsyms}" ] ; then
 		strip_debug=-Wl,--strip-debug
+	fi
+
+	if [ -n "${KEEP_VMLINUX_TMP}" ]; then
+		mapfile="-Map ${output}.map --cref"
 	fi
 
 	if [ "${SRCARCH}" != "um" ]; then
@@ -191,6 +196,7 @@ vmlinux_link()
 		fi
 
 		${LD} ${KBUILD_LDFLAGS} ${LDFLAGS_vmlinux}	\
+			${mapfile}				\
 			${strip_debug#-Wl,}			\
 			-o ${output}				\
 			-T ${lds} ${objects}
@@ -315,10 +321,12 @@ cleanup()
 	rm -f .tmp_kallsyms
 	rm -f .tmp_initcalls.lds
 	rm -f .tmp_symversions.lds
-	rm -f .tmp_vmlinux*
-	rm -f System.map
-	rm -f vmlinux
-	rm -f vmlinux.o
+	if [ -z "${KEEP_VMLINUX_TMP}" ]; then
+		rm -f .tmp_vmlinux*
+		rm -f System.map
+		rm -f vmlinux
+		rm -f vmlinux.o
+	fi
 }
 
 on_exit()

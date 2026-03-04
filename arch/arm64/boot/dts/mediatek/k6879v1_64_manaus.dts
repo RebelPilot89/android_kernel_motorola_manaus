@@ -338,20 +338,47 @@
 };
 #include "k6879v1_64_manaus/cust.dtsi"
 &i2c6 {
+	clock-frequency = <400000>;
 	#address-cells = <1>;
 	#size-cells = <0>;
 	spk: speaker_amp@5c {
 		compatible = "richtek,rt5512";
 		#sound-dai-cells = <0>;
 		reg = <0x5c>;
-		status = "okay";
+		status = "disabled";
 		sound-name-prefix = "Left";
+	};
+
+	aw882xx_smartpa_1: aw882xx@35 {
+		compatible = "awinic,aw882xx_smartpa";
+		#sound-dai-cells = <0>;
+		reg = <0x35>;
+		irq-gpio = <&pio 62 0x0>;
+		rcv-gpio = <&pio 162 0x0>;
+		sound-channel = <0>;
+		vcalb_half = "true";
+		status = "okay";
+	};
+
+	aw882xx_smartpa_0: aw882xx@34 {
+		compatible = "awinic,aw882xx_smartpa";
+		#sound-dai-cells = <0>;
+		reg = <0x34>;
+		irq-gpio = <&pio 4 0x0>;
+		sound-channel = <1>;
+		vcalb_half = "true";
+		status = "okay";
+	};
+
+	fsa4480_switch: fsa4480@42 {
+		compatible = "fsa,fsa4480-i2c";
+		reg = <0x42>;
 	};
 };
 &sound {
-	mediatek,spk-i2s = <1 2>;
+	mediatek,spk-i2s = <1 11>;
 	mediatek,speaker-codec {
-		sound-dai = <&spk>;
+		sound-dai = <&aw882xx_smartpa_1 &aw882xx_smartpa_0>;
 	};
 };
 /* AUDIO GPIO standardization start */

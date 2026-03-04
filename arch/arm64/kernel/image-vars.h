@@ -24,22 +24,22 @@ __efistub_primary_entry_offset = primary_entry - _text;
  * linked at. The routines below are all implemented in assembler in a
  * position independent manner
  */
-__efistub_memcmp = __pi_memcmp;
-__efistub_memchr = __pi_memchr;
-__efistub_memcpy = __pi_memcpy;
-__efistub_memmove = __pi_memmove;
-__efistub_memset = __pi_memset;
-__efistub_strlen = __pi_strlen;
-__efistub_strnlen = __pi_strnlen;
-__efistub_strcmp = __pi_strcmp;
-__efistub_strncmp = __pi_strncmp;
-__efistub_strrchr = __pi_strrchr;
-__efistub___clean_dcache_area_poc = __pi___clean_dcache_area_poc;
+HIDDEN(__efistub_memcmp = __pi_memcmp);
+HIDDEN(__efistub_memchr = __pi_memchr);
+HIDDEN(__efistub_memcpy = __pi_memcpy);
+HIDDEN(__efistub_memmove = __pi_memmove);
+HIDDEN(__efistub_memset = __pi_memset);
+HIDDEN(__efistub_strlen = __pi_strlen);
+HIDDEN(__efistub_strnlen = __pi_strnlen);
+HIDDEN(__efistub_strcmp = __pi_strcmp);
+HIDDEN(__efistub_strncmp = __pi_strncmp);
+HIDDEN(__efistub_strrchr = __pi_strrchr);
+HIDDEN(__efistub___clean_dcache_area_poc = __pi___clean_dcache_area_poc);
 
 #if defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KASAN_SW_TAGS)
-__efistub___memcpy = __pi_memcpy;
-__efistub___memmove = __pi_memmove;
-__efistub___memset = __pi_memset;
+HIDDEN(__efistub___memcpy = __pi_memcpy);
+HIDDEN(__efistub___memmove = __pi_memmove);
+HIDDEN(__efistub___memset = __pi_memset);
 #endif
 
 __efistub__text = _text;
