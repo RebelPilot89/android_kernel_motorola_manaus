@@ -99,7 +99,43 @@ x509.genkey
 /compile_commands.json
 sphinx_*/
 
-# Archivos y logs que has agregado tú
+# Build artifacts from local compilation
+/.config
+/.missing-syscalls.d
+/kernel/bounds.s
+/kernel/.bounds.s.cmd
+/arch/arm64/kernel/asm-offsets.s
+/arch/arm64/kernel/.asm-offsets.s.cmd
+/arch/arm64/kernel/vdso/vdso.so.dbg
+/arch/arm64/kernel/vdso/.vdso.so.dbg.cmd
+/arch/arm64/kernel/vdso/.vdso.lds.cmd
+/arch/arm64/kernel/vdso32/vdso.so.dbg
+/arch/arm64/kernel/vdso32/vdso.so.raw
+/arch/arm64/kernel/vdso32/.vdso.so.dbg.cmd
+/arch/arm64/kernel/vdso32/.vdso.so.raw.cmd
+/arch/arm64/kernel/vdso32/.vdso.lds.cmd
+/arch/arm64/tools/.gen-hyprel.cmd
+/arch/arm/vdso/.vdsomunge.cmd
+/scripts/basic/.fixdep.cmd
+/scripts/mod/.mk_elfconfig.cmd
+/scripts/mod/.elfconfig.h.cmd
+/scripts/mod/.modpost.cmd
+/scripts/mod/.devicetable-offsets.s.cmd
+/scripts/mod/devicetable-offsets.s
+/scripts/dtc/.dtc.cmd
+/scripts/dtc/.dtc-lexer.lex.c.cmd
+/scripts/dtc/.dtc-parser.tab.h.cmd
+/scripts/kconfig/.conf.cmd
+/scripts/kconfig/.lexer.lex.c.cmd
+/scripts/kconfig/.parser.tab.h.cmd
+/scripts/selinux/genheaders/.genheaders.cmd
+/scripts/selinux/mdp/.mdp.cmd
+/scripts/.asn1_compiler.cmd
+/scripts/.extract-cert.cmd
+/scripts/.kallsyms.cmd
+/scripts/.sorttable.cmd
+/fs/netfs/.built-in.a.cmd
+
 Guia de solucion de errores
 build.log
 .vscode/
