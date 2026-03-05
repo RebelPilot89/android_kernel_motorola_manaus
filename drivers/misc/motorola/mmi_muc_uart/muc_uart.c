@@ -26,7 +26,7 @@
 #include <linux/uaccess.h>
 #include <linux/ipc_logging.h>
 #include <linux/firmware.h>
-#include <soc/qcom/mmi_boot_info.h>
+#include <linux/mmi_boot_info.h>
 #include "muc_uart.h"
 #include "mmi_uart.h"
 #include "mmi_char.h"
@@ -35,33 +35,32 @@
 #ifdef CONFIG_IPC_LOGGING
 void *muc_ipc_log;
 #define MUC_IPC_LOG_PAGES 50
-#define MUC_DBG(msg, ...)					\
-	do {								\
-		if (muc_ipc_log) {	\
-			ipc_log_string(muc_ipc_log,			\
-				"[%s] " msg, __func__, ##__VA_ARGS__);	\
-		}							\
+#define MUC_DBG(msg, ...)                                                      \
+	do {                                                                   \
+		if (muc_ipc_log) {                                             \
+			ipc_log_string(muc_ipc_log, "[%s] " msg, __func__,     \
+				       ##__VA_ARGS__);                         \
+		}                                                              \
 	} while (0)
-#define MUC_ERR(msg, ...) \
-	do {								\
-		MUC_DBG(msg, ##__VA_ARGS__); \
-		pr_err("muc_uart: [%s] "msg, __func__, ##__VA_ARGS__); \
+#define MUC_ERR(msg, ...)                                                      \
+	do {                                                                   \
+		MUC_DBG(msg, ##__VA_ARGS__);                                   \
+		pr_err("muc_uart: [%s] " msg, __func__, ##__VA_ARGS__);        \
 	} while (0)
-#define MUC_LOG(msg, ...) \
-	do {								\
-		MUC_DBG(msg, ##__VA_ARGS__); \
-		pr_info("muc_uart: [%s] "msg, __func__, ##__VA_ARGS__); \
+#define MUC_LOG(msg, ...)                                                      \
+	do {                                                                   \
+		MUC_DBG(msg, ##__VA_ARGS__);                                   \
+		pr_info("muc_uart: [%s] " msg, __func__, ##__VA_ARGS__);       \
 	} while (0)
 #else
-#define MUC_DBG(msg, ...) \
-	pr_info("muc_uart: [%s] "msg, __func__, ##__VA_ARGS__)
-#define MUC_ERR(msg, ...) \
-	pr_err("muc_uart: [%s] "msg, __func__, ##__VA_ARGS__)
-#define MUC_LOG(msg, ...) \
-	pr_info("muc_uart: [%s] "msg, __func__, ##__VA_ARGS__)
+#define MUC_DBG(msg, ...)                                                      \
+	pr_info("muc_uart: [%s] " msg, __func__, ##__VA_ARGS__)
+#define MUC_ERR(msg, ...) pr_err("muc_uart: [%s] " msg, __func__, ##__VA_ARGS__)
+#define MUC_LOG(msg, ...)                                                      \
+	pr_info("muc_uart: [%s] " msg, __func__, ##__VA_ARGS__)
 #endif
 
-#define DRIVERNAME	"muc_uart"
+#define DRIVERNAME "muc_uart"
 
 /* Go into low power mode on a sleep request by the muc.  Side effects are that
  * we might return -EAGAIN on a transmit, and will be slower to wake up
@@ -169,8 +168,8 @@ static char *param_mucfw = "";
 module_param(param_mucfw, charp, S_IRUSR);
 MODULE_PARM_DESC(param_mucfw, "ro.mot.build.version.mod.nuttx");
 
-static int muc_uart_config_gpio(struct device *dev,
-		int gpio, char *name, int dir_out, int out_val);
+static int muc_uart_config_gpio(struct device *dev, int gpio, char *name,
+				int dir_out, int out_val);
 
 #if MUC_UART_SEND_SLEEP_ON_IDLE
 static inline void reset_idle_timer(struct mod_muc_data_t *mm_data)
@@ -178,23 +177,23 @@ static inline void reset_idle_timer(struct mod_muc_data_t *mm_data)
 	cancel_delayed_work(&mm_data->idle_work);
 	if (mm_data)
 		mod_timer(&mm_data->idle_timer,
-			jiffies + msecs_to_jiffies(MUC_UART_IDLE_TIME));
+			  jiffies + msecs_to_jiffies(MUC_UART_IDLE_TIME));
 }
 #else
-static inline void reset_idle_timer(struct mod_muc_data_t *mm_data) {}
+static inline void reset_idle_timer(struct mod_muc_data_t *mm_data)
+{
+}
 #endif
 
-static inline void set_wait_for_ack(struct mod_muc_data_t *mm_data,
-	int cmd)
+static inline void set_wait_for_ack(struct mod_muc_data_t *mm_data, int cmd)
 {
 	if (mm_data)
-		if (!(cmd & MSG_ACK_MASK ||
-			cmd & MSG_NACK_MASK ||
-			cmd == UART_SLEEP_REQ ||
-			cmd == UART_SLEEP_REJ)) {
+		if (!(cmd & MSG_ACK_MASK || cmd & MSG_NACK_MASK ||
+		      cmd == UART_SLEEP_REQ || cmd == UART_SLEEP_REJ)) {
 			atomic_set(&mm_data->waiting_for_ack, 1);
-			mod_timer(&mm_data->ack_timer, jiffies +
-				msecs_to_jiffies(MUC_UART_ACK_TIME));
+			mod_timer(&mm_data->ack_timer,
+				  jiffies +
+					  msecs_to_jiffies(MUC_UART_ACK_TIME));
 		}
 }
 
@@ -207,15 +206,14 @@ static inline void clear_wait_for_ack(struct mod_muc_data_t *mm_data)
 		MUC_DBG("got an ack, num credits: %d\n",
 			atomic_read(&mm_data->write_credits));
 		cancel_delayed_work(&mm_data->write_work);
-		queue_delayed_work(mm_data->write_wq,
-				&mm_data->write_work,
-				msecs_to_jiffies(0));
+		queue_delayed_work(mm_data->write_wq, &mm_data->write_work,
+				   msecs_to_jiffies(0));
 	}
 }
 
 /* 1 if the mod is attached to the phone, 0 otherwise */
 static ssize_t mod_attached_show(struct device *dev,
-	struct device_attribute *attr, char *buf)
+				 struct device_attribute *attr, char *buf)
 {
 	int gpio_state = 0;
 	struct platform_device *pdev = to_platform_device(dev);
@@ -227,14 +225,14 @@ static ssize_t mod_attached_show(struct device *dev,
 }
 
 static ssize_t muc_fw_vers_show(struct device *dev,
-	struct device_attribute *attr, char *buf)
+				struct device_attribute *attr, char *buf)
 {
 	struct platform_device *pdev = to_platform_device(dev);
 	struct mod_muc_data_t *mm_data = platform_get_drvdata(pdev);
 
 	if (mm_data && mm_data->muc_fw_vers[0] != '\0')
-		return snprintf(buf, strlen(mm_data->muc_fw_vers) + 1,
-			"%s", mm_data->muc_fw_vers);
+		return snprintf(buf, strlen(mm_data->muc_fw_vers) + 1, "%s",
+				mm_data->muc_fw_vers);
 
 	return 0;
 }
@@ -243,11 +241,9 @@ static ssize_t muc_fw_vers_show(struct device *dev,
 DEVICE_ATTR_RO(mod_attached);
 DEVICE_ATTR_RO(muc_fw_vers);
 
-static struct attribute *muc_uart_attrs[] = {
-	&dev_attr_mod_attached.attr,
-	&dev_attr_muc_fw_vers.attr,
-	NULL
-};
+static struct attribute *muc_uart_attrs[] = { &dev_attr_mod_attached.attr,
+					      &dev_attr_muc_fw_vers.attr,
+					      NULL };
 
 ATTRIBUTE_GROUPS(muc_uart);
 
@@ -275,9 +271,8 @@ static void muc_uart_attach_work(struct work_struct *w)
 		else
 			add_uevent_var(env, "MOD_EVENT=DETACHED");
 
-		kobject_uevent_env(&mm_data->pdev->dev.kobj,
-			KOBJ_CHANGE,
-			env->envp);
+		kobject_uevent_env(&mm_data->pdev->dev.kobj, KOBJ_CHANGE,
+				   env->envp);
 		kfree(env);
 
 		/* also make sure to notify the drivers of the attach/detach */
@@ -310,9 +305,8 @@ static void muc_uart_connect_work(struct work_struct *w)
 		else
 			add_uevent_var(env, "MOD_EVENT=OFFLINE");
 
-		kobject_uevent_env(&mm_data->pdev->dev.kobj,
-			KOBJ_CHANGE,
-			env->envp);
+		kobject_uevent_env(&mm_data->pdev->dev.kobj, KOBJ_CHANGE,
+				   env->envp);
 		kfree(env);
 	}
 }
@@ -320,8 +314,8 @@ static void muc_uart_connect_work(struct work_struct *w)
 static inline void set_sleep_req_pending(struct mod_muc_data_t *mm_data)
 {
 	atomic_set(&mm_data->sleep_req_pending, 1);
-	mod_timer(&mm_data->sleep_req_timer, jiffies +
-		msecs_to_jiffies(MUC_UART_SLEEP_REQ_TIMEOUT));
+	mod_timer(&mm_data->sleep_req_timer,
+		  jiffies + msecs_to_jiffies(MUC_UART_SLEEP_REQ_TIMEOUT));
 }
 
 static inline void clear_sleep_req_pending(struct mod_muc_data_t *mm_data)
@@ -347,10 +341,8 @@ static int muc_uart_wake_muc(struct mod_muc_data_t *mm_data)
 	return 0;
 }
 
-static int muc_uart_send(struct mod_muc_data_t *mm_data,
-	uint16_t cmd,
-	uint8_t *payload,
-	size_t payload_length)
+static int muc_uart_send(struct mod_muc_data_t *mm_data, uint16_t cmd,
+			 uint8_t *payload, size_t payload_length)
 {
 	size_t pkt_size;
 	uint16_t calc_crc;
@@ -401,8 +393,8 @@ static int muc_uart_send(struct mod_muc_data_t *mm_data,
 
 	reset_idle_timer(mm_data);
 
-	pkt_size = sizeof(struct mmi_uart_hdr_t) +
-		payload_length + sizeof(calc_crc);
+	pkt_size = sizeof(struct mmi_uart_hdr_t) + payload_length +
+		   sizeof(calc_crc);
 	pkt = kmalloc(pkt_size, GFP_ATOMIC);
 	if (!pkt) {
 		mmi_uart_clear_tx_busy(mm_data->uart_data);
@@ -413,8 +405,8 @@ static int muc_uart_send(struct mod_muc_data_t *mm_data,
 	/* Populate the packet */
 	hdr = (struct mmi_uart_hdr_t *)pkt;
 	hdr->payload_length = cpu_to_le16(payload_length);
-	hdr->magic =  cpu_to_le16(MSG_MAGIC);
-	hdr->cmd =  cpu_to_le16(cmd);
+	hdr->magic = cpu_to_le16(MSG_MAGIC);
+	hdr->cmd = cpu_to_le16(cmd);
 	memcpy(pkt + sizeof(*hdr), payload, payload_length);
 	calc_crc = crc16(0, pkt, pkt_size - sizeof(calc_crc));
 	*(uint16_t *)(pkt + pkt_size - sizeof(calc_crc)) =
@@ -439,11 +431,9 @@ static int muc_uart_send(struct mod_muc_data_t *mm_data,
 }
 
 /* Any message that needs an ack goes on the queue */
-static int __muc_uart_queue_send(struct mod_muc_data_t *mm_data,
-	uint16_t cmd,
-	uint8_t *payload,
-	size_t payload_len,
-	bool payload_persistant)
+static int __muc_uart_queue_send(struct mod_muc_data_t *mm_data, uint16_t cmd,
+				 uint8_t *payload, size_t payload_len,
+				 bool payload_persistant)
 {
 	struct write_data *write_data;
 	unsigned long flags;
@@ -454,7 +444,8 @@ static int __muc_uart_queue_send(struct mod_muc_data_t *mm_data,
 	/* TODO this should probably panic */
 	if (atomic_dec_if_positive(&mm_data->write_credits) < 0)
 		MUC_ERR("out of credits! "
-			"queue size is: %d\n", mm_data->write_q_size);
+			"queue size is: %d\n",
+			mm_data->write_q_size);
 
 	write_data = kmalloc(sizeof(*write_data), GFP_ATOMIC);
 	if (WARN_ON(!write_data)) {
@@ -462,7 +453,7 @@ static int __muc_uart_queue_send(struct mod_muc_data_t *mm_data,
 		return -ENOMEM;
 	}
 
-	if(!payload_persistant) {
+	if (!payload_persistant) {
 		write_data->payload = kmalloc(payload_len, GFP_ATOMIC);
 		/* TODO this should probably panic */
 		if (WARN_ON(!write_data->payload)) {
@@ -483,28 +474,23 @@ static int __muc_uart_queue_send(struct mod_muc_data_t *mm_data,
 	if (!mm_data->write_data_q)
 		mm_data->write_data_q = write_data;
 	else
-		list_add_tail(&write_data->list,
-			&mm_data->write_data_q->list);
+		list_add_tail(&write_data->list, &mm_data->write_data_q->list);
 	mm_data->write_q_size++;
 	spin_unlock_irqrestore(&write_q_lock, flags);
 
 	if (!atomic_read(&mm_data->waiting_for_ack)) {
 		cancel_delayed_work(&mm_data->write_work);
-		queue_delayed_work(mm_data->write_wq,
-					&mm_data->write_work,
-					msecs_to_jiffies(0));
+		queue_delayed_work(mm_data->write_wq, &mm_data->write_work,
+				   msecs_to_jiffies(0));
 	}
 
 	return payload_len;
 }
 
-static int muc_uart_queue_send(struct mod_muc_data_t *mm_data,
-	uint16_t cmd,
-	uint8_t *payload,
-	size_t payload_len)
+static int muc_uart_queue_send(struct mod_muc_data_t *mm_data, uint16_t cmd,
+			       uint8_t *payload, size_t payload_len)
 {
-	return __muc_uart_queue_send(mm_data, cmd, payload,
-		payload_len, false);
+	return __muc_uart_queue_send(mm_data, cmd, payload, payload_len, false);
 }
 
 static void muc_uart_send_work(struct work_struct *w)
@@ -527,7 +513,7 @@ static void muc_uart_send_work(struct work_struct *w)
 	if (mm_data->write_data_q) {
 		write_data = mm_data->write_data_q;
 		if (list_is_last(&write_data->list,
-			&mm_data->write_data_q->list))
+				 &mm_data->write_data_q->list))
 			mm_data->write_data_q = NULL;
 		else {
 			mm_data->write_data_q =
@@ -557,10 +543,8 @@ static void muc_uart_send_work(struct work_struct *w)
 	muc_uart_wake_muc(mm_data);
 
 	mutex_lock(&tx_lock);
-	ret = muc_uart_send(mm_data,
-		write_data->cmd,
-		write_data->payload,
-		write_data->payload_length);
+	ret = muc_uart_send(mm_data, write_data->cmd, write_data->payload,
+			    write_data->payload_length);
 	mutex_unlock(&tx_lock);
 
 	if (ret < 0) {
@@ -569,7 +553,8 @@ static void muc_uart_send_work(struct work_struct *w)
 			write_data->retries--;
 			if (!write_data->retries) {
 				MUC_ERR("failed to send message %d\n", ret);
-				atomic_add_unless(&mm_data->write_credits, 1, 100);
+				atomic_add_unless(&mm_data->write_credits, 1,
+						  100);
 				goto destroy_msg;
 			}
 		}
@@ -579,15 +564,14 @@ static void muc_uart_send_work(struct work_struct *w)
 		spin_lock_irqsave(&write_q_lock, flags);
 		if (mm_data->write_data_q)
 			list_add_tail(&write_data->list,
-				&mm_data->write_data_q->list);
+				      &mm_data->write_data_q->list);
 		mm_data->write_data_q = write_data;
 		mm_data->write_q_size++;
 		spin_unlock_irqrestore(&write_q_lock, flags);
 
 		cancel_delayed_work(&mm_data->write_work);
-		queue_delayed_work(mm_data->write_wq,
-				&mm_data->write_work,
-				msecs_to_jiffies(10));
+		queue_delayed_work(mm_data->write_wq, &mm_data->write_work,
+				   msecs_to_jiffies(10));
 	} else
 		goto destroy_msg;
 
@@ -607,11 +591,8 @@ static int muc_uart_send_bootmode(struct mod_muc_data_t *mm_data)
 
 	bootmode.hwid = bi_hwrev();
 
-	strncpy(bootmode.ap_guid,
-		param_guid,
-		sizeof(bootmode.ap_guid));
-	strncpy(bootmode.ap_fw_ver_str,
-		param_vers,
+	strncpy(bootmode.ap_guid, param_guid, sizeof(bootmode.ap_guid));
+	strncpy(bootmode.ap_fw_ver_str, param_vers,
 		sizeof(bootmode.ap_fw_ver_str));
 
 	/* Format mucfw vers from "MAJOR.MINOR_DESCRIPTION"
@@ -628,106 +609,101 @@ static int muc_uart_send_bootmode(struct mod_muc_data_t *mm_data)
 		bootmode.boot_mode = FACTORY;
 	} else if (strncmp(bi_bootmode(), "qcom", strlen("qcom")) == 0) {
 		bootmode.boot_mode = QCOM;
-	} else if (strncmp(bi_bootmode(), "bp-tools", strlen("bp-tools")) == 0) {
+	} else if (strncmp(bi_bootmode(), "bp-tools", strlen("bp-tools")) ==
+		   0) {
 		bootmode.boot_mode = BP_TOOLS;
-	} else if (strncmp(bi_bootmode(), "recovery", strlen("recovery")) == 0) {
+	} else if (strncmp(bi_bootmode(), "recovery", strlen("recovery")) ==
+		   0) {
 		bootmode.boot_mode = RECOVERY;
 	} else {
 		/* TODO defaults to normal.  Should we have unknown/other? */
 		bootmode.boot_mode = NORMAL;
 	}
 
-	MUC_DBG("sending AP bootmode %u\n",
-		bootmode.boot_mode);
-	MUC_DBG("sending AP hwid 0x%x\n",
-		bootmode.hwid);
-	MUC_DBG("(%zd) sending AP guid %s\n",
-		sizeof(bootmode.ap_guid), bootmode.ap_guid);
-	MUC_DBG("(%zd) sending AP vers %s\n",
-		sizeof(bootmode.ap_fw_ver_str), bootmode.ap_fw_ver_str);
-	MUC_DBG("sending MUC fw vers 0x%08x\n",
-		bootmode.muc_fw_vers);
+	MUC_DBG("sending AP bootmode %u\n", bootmode.boot_mode);
+	MUC_DBG("sending AP hwid 0x%x\n", bootmode.hwid);
+	MUC_DBG("(%zd) sending AP guid %s\n", sizeof(bootmode.ap_guid),
+		bootmode.ap_guid);
+	MUC_DBG("(%zd) sending AP vers %s\n", sizeof(bootmode.ap_fw_ver_str),
+		bootmode.ap_fw_ver_str);
+	MUC_DBG("sending MUC fw vers 0x%08x\n", bootmode.muc_fw_vers);
 
-	return muc_uart_queue_send(mm_data,
-		BOOT_MODE,
-		(uint8_t *)&bootmode,
-		sizeof(struct boot_mode_t));
+	return muc_uart_queue_send(mm_data, BOOT_MODE, (uint8_t *)&bootmode,
+				   sizeof(struct boot_mode_t));
 }
 
 #define VBUS_PRESENT_UV 2000000
 static int muc_uart_send_power_status(struct mod_muc_data_t *mm_data)
 {
 	struct power_status_t pstatus;
-	union power_supply_propval pval = {0};
+	union power_supply_propval pval = { 0 };
 
-	if(!mm_data->batt_psy ||
-		!mm_data->bms_psy ||
-		!mm_data->usb_psy ||
-		!mm_data->dc_psy)
+	if (!mm_data->batt_psy || !mm_data->bms_psy || !mm_data->usb_psy ||
+	    !mm_data->dc_psy)
 		return -1;
 
 	memset(&pstatus, 0x00, sizeof(struct power_status_t));
 
 	if (!power_supply_get_property(mm_data->usb_psy,
-		POWER_SUPPLY_PROP_PRESENT, &pval))
+				       POWER_SUPPLY_PROP_PRESENT, &pval))
 		pstatus.charger = pval.intval ? 1 : 0;
 
 	if (pstatus.charger &&
 	    !power_supply_get_property(mm_data->usb_psy,
-		POWER_SUPPLY_PROP_TYPEC_MODE, &pval) &&
-		(pval.intval == POWER_SUPPLY_TYPEC_NONE))
+				       POWER_SUPPLY_PROP_TYPEC_MODE, &pval) &&
+	    (pval.intval == POWER_SUPPLY_TYPEC_NONE))
 		pstatus.charger = 0;
 
 	if (!power_supply_get_property(mm_data->batt_psy,
-		POWER_SUPPLY_PROP_TEMP, &pval))
+				       POWER_SUPPLY_PROP_TEMP, &pval))
 		/* Div by 10 to convert from deciDegC to DegC */
 		pstatus.battery_temp = (int16_t)(pval.intval / 10);
 
 	if (!power_supply_get_property(mm_data->batt_psy,
-		POWER_SUPPLY_PROP_CAPACITY, &pval))
+				       POWER_SUPPLY_PROP_CAPACITY, &pval))
 		pstatus.battery_capacity =
 			pval.intval > 0 ? (uint16_t)pval.intval : 0;
 
 	if (!power_supply_get_property(mm_data->bms_psy,
-		POWER_SUPPLY_PROP_CHARGE_FULL, &pval))
+				       POWER_SUPPLY_PROP_CHARGE_FULL, &pval))
 		/* Div by 1000 to convert from uah to mah */
 		pstatus.battery_max_capacity =
 			pval.intval > 0 ? (uint16_t)(pval.intval / 1000) : 0;
 
 	if (!power_supply_get_property(mm_data->batt_psy,
-		POWER_SUPPLY_PROP_VOLTAGE_NOW, &pval))
+				       POWER_SUPPLY_PROP_VOLTAGE_NOW, &pval))
 		pstatus.battery_voltage =
 			pval.intval > 0 ? (uint32_t)pval.intval : 0;
 
 	if (!power_supply_get_property(mm_data->batt_psy,
-		POWER_SUPPLY_PROP_CURRENT_NOW, &pval))
+				       POWER_SUPPLY_PROP_CURRENT_NOW, &pval))
 		pstatus.battery_current = (int32_t)pval.intval;
 
 	if (!power_supply_get_property(mm_data->batt_psy,
-		POWER_SUPPLY_PROP_VOLTAGE_MAX, &pval))
+				       POWER_SUPPLY_PROP_VOLTAGE_MAX, &pval))
 		pstatus.battery_max_voltage =
 			pval.intval > 0 ? (uint32_t)pval.intval : 0;
 
 	if (!power_supply_get_property(mm_data->batt_psy,
-		POWER_SUPPLY_PROP_STATUS, &pval))
+				       POWER_SUPPLY_PROP_STATUS, &pval))
 		pstatus.charging =
 			(pval.intval == POWER_SUPPLY_STATUS_CHARGING);
 
 	if (!power_supply_get_property(mm_data->usb_psy,
-		POWER_SUPPLY_PROP_VOLTAGE_MAX, &pval))
+				       POWER_SUPPLY_PROP_VOLTAGE_MAX, &pval))
 		pstatus.mod_input_voltage =
 			pval.intval > 0 ? (uint32_t)pval.intval : 0;
 	if (!power_supply_get_property(mm_data->usb_psy,
-		POWER_SUPPLY_PROP_HW_CURRENT_MAX, &pval))
+				       POWER_SUPPLY_PROP_HW_CURRENT_MAX, &pval))
 		pstatus.mod_input_current =
 			pval.intval > 0 ? (uint32_t)pval.intval : 0;
 
 	if (!power_supply_get_property(mm_data->dc_psy,
-		POWER_SUPPLY_PROP_PRESENT, &pval))
+				       POWER_SUPPLY_PROP_PRESENT, &pval))
 		pstatus.dc_in = pval.intval ? 1 : 0;
 
 	if (!power_supply_get_property(mm_data->usb_psy,
-		POWER_SUPPLY_PROP_VOLTAGE_NOW, &pval))
+				       POWER_SUPPLY_PROP_VOLTAGE_NOW, &pval))
 		pstatus.vbus = (pval.intval >= VBUS_PRESENT_UV) ? 1 : 0;
 
 	/* TODO */
@@ -736,18 +712,12 @@ static int muc_uart_send_power_status(struct mod_muc_data_t *mm_data)
 	 * pstatus.mod_input_current;
 	 */
 
-	pr_debug("muc_uart reverse_boost %d\n",
-		 pstatus.reverse_boost);
-	pr_debug("muc_uart charging %d\n",
-		 pstatus.charging);
-	pr_debug("muc_uart charger %d\n",
-		 pstatus.charger);
-	pr_debug("muc_uart battery_temp %hd degC\n",
-		 pstatus.battery_temp);
-	pr_debug("muc_uart battery_voltage %u uV\n",
-		 pstatus.battery_voltage);
-	pr_debug("muc_uart battery_current %d uA\n",
-		 pstatus.battery_current);
+	pr_debug("muc_uart reverse_boost %d\n", pstatus.reverse_boost);
+	pr_debug("muc_uart charging %d\n", pstatus.charging);
+	pr_debug("muc_uart charger %d\n", pstatus.charger);
+	pr_debug("muc_uart battery_temp %hd degC\n", pstatus.battery_temp);
+	pr_debug("muc_uart battery_voltage %u uV\n", pstatus.battery_voltage);
+	pr_debug("muc_uart battery_current %d uA\n", pstatus.battery_current);
 	pr_debug("muc_uart battery_max_voltage %u uV\n",
 		 pstatus.battery_max_voltage);
 	pr_debug("muc_uart battery_capacity %hu percent\n",
@@ -763,15 +733,13 @@ static int muc_uart_send_power_status(struct mod_muc_data_t *mm_data)
 	pr_debug("muc_uart mod_input_current %u uA\n",
 		 pstatus.mod_input_current);
 
-	return muc_uart_queue_send(mm_data,
-		POWER_STATUS,
-		(uint8_t *)&pstatus,
-		sizeof(struct power_status_t));
+	return muc_uart_queue_send(mm_data, POWER_STATUS, (uint8_t *)&pstatus,
+				   sizeof(struct power_status_t));
 }
 
 static const char *pctrl_names[] = {
 	"VBUS_IN",
-	"VBUS_IN_SPLIT", 
+	"VBUS_IN_SPLIT",
 	"VBUS_OUT",
 	"DC_IN",
 };
@@ -779,35 +747,30 @@ static const char *pctrl_names[] = {
 static void muc_uart_set_power_control(struct mod_muc_data_t *mm_data,
 				       struct power_control_t *pwrctl)
 {
-	union power_supply_propval pval = {0};
+	union power_supply_propval pval = { 0 };
 
 	if (!mm_data || !pwrctl || !mm_data->mmi_psy) {
 		MUC_ERR("No pwrctrl\n");
 		return;
 	}
 
-	MUC_DBG("flow %s, voltage %u, current %u\n",
-		pctrl_names[pwrctl->flow],
-		pwrctl->voltage_uv,
-		pwrctl->current_ua);
+	MUC_DBG("flow %s, voltage %u, current %u\n", pctrl_names[pwrctl->flow],
+		pwrctl->voltage_uv, pwrctl->current_ua);
 
 	if (pwrctl->flow == VBUS_OUT) {
 		pval.intval = 1;
 		power_supply_set_property(mm_data->mmi_psy,
-					  POWER_SUPPLY_PROP_USB_OTG,
-					  &pval);
+					  POWER_SUPPLY_PROP_USB_OTG, &pval);
 	} else {
 		pval.intval = 0;
 		power_supply_set_property(mm_data->mmi_psy,
-					  POWER_SUPPLY_PROP_USB_OTG,
-					  &pval);
+					  POWER_SUPPLY_PROP_USB_OTG, &pval);
 	}
 
 	if ((pwrctl->flow == VBUS_IN) || (pwrctl->flow == VBUS_IN_SPLIT)) {
 		pval.intval = pwrctl->current_ua;
 		power_supply_set_property(mm_data->mmi_psy,
-					  POWER_SUPPLY_PROP_CURRENT_MAX,
-					  &pval);
+					  POWER_SUPPLY_PROP_CURRENT_MAX, &pval);
 	}
 }
 
@@ -820,18 +783,16 @@ static void muc_uart_ps_notifier_work(struct work_struct *w)
 }
 
 static int muc_uart_ps_notifier_cb(struct notifier_block *nb,
-			       unsigned long event,
-			       void *v)
+				   unsigned long event, void *v)
 {
-	struct mod_muc_data_t *mm_data = container_of(nb,
-		struct mod_muc_data_t, ps_nb);
+	struct mod_muc_data_t *mm_data =
+		container_of(nb, struct mod_muc_data_t, ps_nb);
 	struct power_supply *psy = v;
 
-	if (!psy ||
-		event != PSY_EVENT_PROP_CHANGED ||
-		(strcmp(psy->desc->name, "usb") != 0 &&
-		strcmp(psy->desc->name, "bms") != 0 &&
-		strcmp(psy->desc->name, "battery") != 0))
+	if (!psy || event != PSY_EVENT_PROP_CHANGED ||
+	    (strcmp(psy->desc->name, "usb") != 0 &&
+	     strcmp(psy->desc->name, "bms") != 0 &&
+	     strcmp(psy->desc->name, "battery") != 0))
 		return NOTIFY_OK;
 
 	schedule_work(&mm_data->ps_notify_work);
@@ -840,25 +801,22 @@ static int muc_uart_ps_notifier_cb(struct notifier_block *nb,
 }
 
 int muc_uart_pb_register_wq(struct platform_device *pdev,
-	wait_queue_head_t *read_wq)
+			    wait_queue_head_t *read_wq)
 {
-	struct mod_muc_data_t *mm_data =
-		platform_get_drvdata(pdev);
+	struct mod_muc_data_t *mm_data = platform_get_drvdata(pdev);
 
 	/* Only allow the first one who registered */
-	if(mm_data->read_wq)
+	if (mm_data->read_wq)
 		return 1;
 
 	mm_data->read_wq = read_wq;
 	return 0;
 }
 
-int muc_uart_pb_get_q(struct platform_device *pdev,
-	char __user *buf,
-	size_t *count)
+int muc_uart_pb_get_q(struct platform_device *pdev, char __user *buf,
+		      size_t *count)
 {
-	struct mod_muc_data_t *mm_data =
-		platform_get_drvdata(pdev);
+	struct mod_muc_data_t *mm_data = platform_get_drvdata(pdev);
 
 	unsigned long flags;
 	struct read_data *pb_msg = NULL;
@@ -866,25 +824,23 @@ int muc_uart_pb_get_q(struct platform_device *pdev,
 	spin_lock_irqsave(&read_q_lock, flags);
 	if (mm_data->read_data_q) {
 		pb_msg = mm_data->read_data_q;
-		if(list_is_last(&pb_msg->list,
-			&mm_data->read_data_q->list))
+		if (list_is_last(&pb_msg->list, &mm_data->read_data_q->list))
 			mm_data->read_data_q = NULL;
 		else {
-			mm_data->read_data_q =
-				list_next_entry(pb_msg, list);
+			mm_data->read_data_q = list_next_entry(pb_msg, list);
 			list_del(&pb_msg->list);
 		}
 		mm_data->read_q_size--;
 	}
 	spin_unlock_irqrestore(&read_q_lock, flags);
 
-	if(!pb_msg)
+	if (!pb_msg)
 		return -ENOMSG;
 
-	if(pb_msg->payload_length > *count)
+	if (pb_msg->payload_length > *count)
 		return -ENOSPC;
 
-	if(copy_to_user(buf, pb_msg->payload, pb_msg->payload_length))
+	if (copy_to_user(buf, pb_msg->payload, pb_msg->payload_length))
 		return -EFAULT;
 
 	*count = pb_msg->payload_length;
@@ -897,20 +853,18 @@ int muc_uart_pb_get_q(struct platform_device *pdev,
 
 int muc_uart_pb_get_q_size(struct platform_device *pdev)
 {
-	struct mod_muc_data_t *mm_data =
-		platform_get_drvdata(pdev);
+	struct mod_muc_data_t *mm_data = platform_get_drvdata(pdev);
 
 	return mm_data->read_q_size;
 }
 
 static int muc_uart_pb_put_q(struct mod_muc_data_t *mm_data,
-	size_t payload_length,
-	uint8_t *payload)
+			     size_t payload_length, uint8_t *payload)
 {
 	unsigned long flags;
 	struct read_data *pb_msg;
 
-	if(!payload_length)
+	if (!payload_length)
 		return 1;
 
 	/* TODO should this list have a size limit?
@@ -937,13 +891,12 @@ static int muc_uart_pb_put_q(struct mod_muc_data_t *mm_data,
 	if (!mm_data->read_data_q)
 		mm_data->read_data_q = pb_msg;
 	else
-		list_add_tail(&pb_msg->list,
-			&mm_data->read_data_q->list);
+		list_add_tail(&pb_msg->list, &mm_data->read_data_q->list);
 	mm_data->read_q_size++;
 	spin_unlock_irqrestore(&read_q_lock, flags);
 
 	/* Wake up any process waiting on a message */
-	if(mm_data->read_wq)
+	if (mm_data->read_wq)
 		wake_up(mm_data->read_wq);
 
 	return 0;
@@ -969,11 +922,11 @@ static int muc_uart_send_firmware(struct mod_muc_data_t *mm_data)
 	MUC_LOG("Firmware size is %zd bytes\n", fw->size);
 	MUC_LOG("Queuing %zd messages for upload\n",
 		(fw->size % MUC_FW_PAYLOAD_SIZE) > 0 ?
-		(fw->size / MUC_FW_PAYLOAD_SIZE) + 2 :
-		(fw->size / MUC_FW_PAYLOAD_SIZE) + 1);
+			(fw->size / MUC_FW_PAYLOAD_SIZE) + 2 :
+			(fw->size / MUC_FW_PAYLOAD_SIZE) + 1);
 
-	fw_pkt = kmalloc(sizeof(struct mmi_uart_fw_t) +
-		MUC_FW_PAYLOAD_SIZE, GFP_KERNEL);
+	fw_pkt = kmalloc(sizeof(struct mmi_uart_fw_t) + MUC_FW_PAYLOAD_SIZE,
+			 GFP_KERNEL);
 	if (!fw_pkt) {
 		MUC_ERR("Unable allocate firmware packet\n");
 		goto err_mem;
@@ -988,17 +941,15 @@ static int muc_uart_send_firmware(struct mod_muc_data_t *mm_data)
 		else
 			fw_payload_len = fw_data_remaining;
 
-		memcpy(fw_pkt->payload,
-			fw->data + fw_data_offset,
-			fw_payload_len);
+		memcpy(fw_pkt->payload, fw->data + fw_data_offset,
+		       fw_payload_len);
 
 		fw_pkt_len = sizeof(struct mmi_uart_fw_t) + fw_payload_len;
 		fw_pkt->sn = fw_pkt_sn++;
 
-		if (muc_uart_queue_send(mm_data,
-			PACKETBUS_PROT_MSG,
-			(uint8_t *)fw_pkt,
-			fw_pkt_len) != fw_pkt_len)
+		if (muc_uart_queue_send(mm_data, PACKETBUS_PROT_MSG,
+					(uint8_t *)fw_pkt,
+					fw_pkt_len) != fw_pkt_len)
 			goto err_pkt;
 
 		fw_data_offset += fw_payload_len;
@@ -1009,10 +960,8 @@ static int muc_uart_send_firmware(struct mod_muc_data_t *mm_data)
 	fw_pkt_len = sizeof(struct mmi_uart_fw_t);
 	fw_pkt->sn = fw_pkt_sn;
 
-	if (muc_uart_queue_send(mm_data,
-		PACKETBUS_PROT_MSG,
-		(uint8_t *)fw_pkt,
-		fw_pkt_len) != fw_pkt_len)
+	if (muc_uart_queue_send(mm_data, PACKETBUS_PROT_MSG, (uint8_t *)fw_pkt,
+				fw_pkt_len) != fw_pkt_len)
 		goto err_pkt;
 
 	kfree(fw_pkt);
@@ -1028,8 +977,7 @@ err:
 }
 
 static int muc_uart_check_update(struct mod_muc_data_t *mm_data,
-	size_t payload_len,
-	uint8_t *payload)
+				 size_t payload_len, uint8_t *payload)
 {
 	struct mmi_uart_pb_hdr_t *pb_hdr;
 
@@ -1051,13 +999,11 @@ static int muc_uart_check_update(struct mod_muc_data_t *mm_data,
 	return 0;
 }
 
-int muc_uart_pb_write(struct platform_device *pdev,
-	const char __user *buf,
-	size_t count)
+int muc_uart_pb_write(struct platform_device *pdev, const char __user *buf,
+		      size_t count)
 {
 	uint8_t *payload;
-	struct mod_muc_data_t *mm_data =
-		platform_get_drvdata(pdev);
+	struct mod_muc_data_t *mm_data = platform_get_drvdata(pdev);
 
 	/* Payload is freed after send work is done */
 	payload = kmalloc(count, GFP_KERNEL);
@@ -1067,8 +1013,8 @@ int muc_uart_pb_write(struct platform_device *pdev,
 	if (copy_from_user(payload, buf, count))
 		return -EFAULT;
 
-	return __muc_uart_queue_send(mm_data, PACKETBUS_PROT_MSG,
-		payload,count, true);
+	return __muc_uart_queue_send(mm_data, PACKETBUS_PROT_MSG, payload,
+				     count, true);
 }
 
 static int muc_uart_set_gpio(struct device *dev, int value)
@@ -1081,20 +1027,21 @@ static int muc_uart_set_gpio(struct device *dev, int value)
 
 	gpio_set_value(MUC_GPIO_1, value);
 
-	muc_uart_config_gpio(dev, FORCE_USB_BOOT_GPIO, "force_usb_boot", 1, value);
+	muc_uart_config_gpio(dev, FORCE_USB_BOOT_GPIO, "force_usb_boot", 1,
+			     value);
 	gpio_set_value(FORCE_USB_BOOT_GPIO, value);
 
 	return 0;
 }
 
 static int muc_uart_handle_usb_ctrl(struct mod_muc_data_t *mm_data,
-	struct usb_control_t *usb_ctrl_pkt)
+				    struct usb_control_t *usb_ctrl_pkt)
 {
 	if (!mm_data)
 		return 1;
 
 	if (usb_ctrl_pkt->cmd != USB_SECONDARY_DISABLE &&
-		usb_ctrl_pkt->cmd != USB_SECONDARY_ENABLE)
+	    usb_ctrl_pkt->cmd != USB_SECONDARY_ENABLE)
 		return 1;
 
 	atomic_set(&mm_data->mod_online, usb_ctrl_pkt->cmd);
@@ -1104,142 +1051,147 @@ static int muc_uart_handle_usb_ctrl(struct mod_muc_data_t *mm_data,
 }
 
 static void muc_uart_handle_message(struct mod_muc_data_t *mm_data,
-	struct mmi_uart_hdr_t *hdr,
-	uint8_t *payload,
-	size_t payload_len)
+				    struct mmi_uart_hdr_t *hdr,
+				    uint8_t *payload, size_t payload_len)
 {
 	unsigned long flags;
 
 	MUC_DBG("rxed msg of type 0x%x.\n", hdr->cmd);
 	switch (hdr->cmd) {
-		case UART_SLEEP_REQ: {
-			spin_lock_irqsave(&write_q_lock, flags);
-			if (mm_data->write_data_q)
-				muc_uart_send(mm_data,
-					UART_SLEEP_REJ,
-					NULL, 0);
-			else {
-				set_sleep_req_pending(mm_data);
-				schedule_delayed_work(&mm_data->sleep_work, msecs_to_jiffies(0));
-			}
-			spin_unlock_irqrestore(&write_q_lock, flags);
+	case UART_SLEEP_REQ: {
+		spin_lock_irqsave(&write_q_lock, flags);
+		if (mm_data->write_data_q)
+			muc_uart_send(mm_data, UART_SLEEP_REJ, NULL, 0);
+		else {
+			set_sleep_req_pending(mm_data);
+			schedule_delayed_work(&mm_data->sleep_work,
+					      msecs_to_jiffies(0));
+		}
+		spin_unlock_irqrestore(&write_q_lock, flags);
+		break;
+	}
+	case UART_SLEEP_REJ: {
+		clear_sleep_req_pending(mm_data);
+		reset_idle_timer(mm_data);
+		break;
+	}
+	case PACKETBUS_PROT_MSG: {
+		if (!muc_uart_check_update(mm_data, payload_len, payload) ||
+		    !muc_uart_pb_put_q(mm_data, payload_len, payload)) {
+			muc_uart_send(mm_data,
+				      PACKETBUS_PROT_MSG | MSG_ACK_MASK, NULL,
+				      0);
+		} else {
+			MUC_ERR("Couldn't add packet to pb q!\n");
+			muc_uart_send(mm_data,
+				      PACKETBUS_PROT_MSG | MSG_NACK_MASK, NULL,
+				      0);
+		}
+		break;
+	}
+	case PACKETBUS_PROT_MSG | MSG_ACK_MASK: {
+		clear_wait_for_ack(mm_data);
+		break;
+	}
+	case PACKETBUS_PROT_MSG | MSG_NACK_MASK: {
+		clear_wait_for_ack(mm_data);
+		break;
+	}
+	case POWER_STATUS: {
+		if (muc_uart_send_power_status(mm_data) >= 0)
+			muc_uart_send(mm_data, POWER_STATUS | MSG_ACK_MASK,
+				      NULL, 0);
+		else
+			muc_uart_send(mm_data, POWER_STATUS | MSG_NACK_MASK,
+				      NULL, 0);
+		break;
+	}
+	case POWER_CONTROL: {
+		/* TODO nack if size is wrong ? */
+		if (payload_len == sizeof(struct power_control_t))
+			muc_uart_set_power_control(
+				mm_data, (struct power_control_t *)payload);
+		muc_uart_send(mm_data, hdr->cmd | MSG_ACK_MASK, NULL, 0);
+		break;
+	}
+	case BOOT_MODE: {
+		if (muc_uart_send_bootmode(mm_data) >= 0)
+			muc_uart_send(mm_data, BOOT_MODE | MSG_ACK_MASK, NULL,
+				      0);
+		else
+			muc_uart_send(mm_data, BOOT_MODE | MSG_NACK_MASK, NULL,
+				      0);
+		break;
+	}
+	case MUC_FW_VERSION: {
+		if (payload_len) {
+			muc_uart_send(mm_data, MUC_FW_VERSION | MSG_ACK_MASK,
+				      NULL, 0);
+			MUC_LOG("muc_fw_ver: %.*s\n", (int)payload_len,
+				(char *)payload);
+			memset(mm_data->muc_fw_vers, 0, MUC_FW_VERS_MAX_SIZE);
+			/* Last value of muc_fw_vers should be null char */
+			memcpy(mm_data->muc_fw_vers, payload,
+			       payload_len < (MUC_FW_VERS_MAX_SIZE - 1) ?
+				       payload_len :
+				       (MUC_FW_VERS_MAX_SIZE - 1));
+		} else
+			muc_uart_send(mm_data, MUC_FW_VERSION | MSG_NACK_MASK,
+				      NULL, 0);
+		break;
+	}
+	case MUC_SET_GPIO: {
+		if (payload_len != 1) {
+			pr_info("muc_set_gpio invalid payload_len: %d\n",
+				(int)payload_len);
+			muc_uart_send(mm_data, MUC_SET_GPIO | MSG_NACK_MASK,
+				      NULL, 0);
 			break;
 		}
-		case UART_SLEEP_REJ: {
-			clear_sleep_req_pending(mm_data);
-			reset_idle_timer(mm_data);
-			break;
-		}
-		case PACKETBUS_PROT_MSG: {
-			if (!muc_uart_check_update(mm_data,
-				payload_len,
-				payload) ||
-				!muc_uart_pb_put_q(mm_data,
-				payload_len,
-				payload)) {
-				muc_uart_send(mm_data,
-					PACKETBUS_PROT_MSG|MSG_ACK_MASK,
-					NULL, 0);
-			} else {
-				MUC_ERR("Couldn't add packet to pb q!\n");
-				muc_uart_send(mm_data,
-					PACKETBUS_PROT_MSG|MSG_NACK_MASK,
-					NULL, 0);
-			}
-			break;
-		}
-		case PACKETBUS_PROT_MSG | MSG_ACK_MASK: {
-			clear_wait_for_ack(mm_data);
-			break;
-		}
-		case PACKETBUS_PROT_MSG | MSG_NACK_MASK: {
-			clear_wait_for_ack(mm_data);
-			break;
-		}
-		case POWER_STATUS: {
-			if (muc_uart_send_power_status(mm_data) >= 0)
-				muc_uart_send(mm_data, POWER_STATUS|MSG_ACK_MASK, NULL, 0);
-			else
-				muc_uart_send(mm_data, POWER_STATUS|MSG_NACK_MASK, NULL, 0);
-			break;
-		}
-		case POWER_CONTROL: {
-			/* TODO nack if size is wrong ? */
-			if (payload_len == sizeof(struct power_control_t))
-				muc_uart_set_power_control(mm_data,
-					(struct power_control_t *)payload);
-			muc_uart_send(mm_data, hdr->cmd|MSG_ACK_MASK, NULL, 0);
-			break;
-		}
-		case BOOT_MODE: {
-			if (muc_uart_send_bootmode(mm_data) >= 0)
-				muc_uart_send(mm_data, BOOT_MODE|MSG_ACK_MASK, NULL, 0);
-			else
-				muc_uart_send(mm_data, BOOT_MODE|MSG_NACK_MASK, NULL, 0);
-			break;
-		}
-		case MUC_FW_VERSION: {
-			if (payload_len) {
-				muc_uart_send(mm_data, MUC_FW_VERSION|MSG_ACK_MASK, NULL, 0);
-				MUC_LOG("muc_fw_ver: %.*s\n",
-					(int)payload_len,
-					(char *)payload);
-				memset(mm_data->muc_fw_vers, 0, MUC_FW_VERS_MAX_SIZE);
-				/* Last value of muc_fw_vers should be null char */
-				memcpy(mm_data->muc_fw_vers, payload,
-					payload_len < (MUC_FW_VERS_MAX_SIZE - 1) ?
-					payload_len : (MUC_FW_VERS_MAX_SIZE - 1));
-			} else
-				muc_uart_send(mm_data, MUC_FW_VERSION|MSG_NACK_MASK, NULL, 0);
-			break;
-		}
-		case MUC_SET_GPIO: {
-			if (payload_len != 1) {
-				pr_info("muc_set_gpio invalid payload_len: %d\n", (int)payload_len);
-				muc_uart_send(mm_data, MUC_SET_GPIO|MSG_NACK_MASK, NULL, 0);
-				break;
-			}
 
-			if (muc_uart_set_gpio(&mm_data->pdev->dev, (int)payload[0]) == 0) {
-				muc_uart_send(mm_data, MUC_SET_GPIO|MSG_ACK_MASK, NULL, 0);
-			} else {
-				muc_uart_send(mm_data, MUC_SET_GPIO|MSG_NACK_MASK, NULL, 0);
-			}
-			break;
+		if (muc_uart_set_gpio(&mm_data->pdev->dev, (int)payload[0]) ==
+		    0) {
+			muc_uart_send(mm_data, MUC_SET_GPIO | MSG_ACK_MASK,
+				      NULL, 0);
+		} else {
+			muc_uart_send(mm_data, MUC_SET_GPIO | MSG_NACK_MASK,
+				      NULL, 0);
 		}
-		case USB_CONTROL: {
-			/* TODO nack if size is wrong ? */
-			if (payload_len == sizeof(struct usb_control_t))
-				muc_uart_handle_usb_ctrl(mm_data,
-					(struct usb_control_t *)payload);
-			muc_uart_send(mm_data, hdr->cmd|MSG_ACK_MASK, NULL, 0);
-			break;
+		break;
+	}
+	case USB_CONTROL: {
+		/* TODO nack if size is wrong ? */
+		if (payload_len == sizeof(struct usb_control_t))
+			muc_uart_handle_usb_ctrl(
+				mm_data, (struct usb_control_t *)payload);
+		muc_uart_send(mm_data, hdr->cmd | MSG_ACK_MASK, NULL, 0);
+		break;
+	}
+	case MUC_DEBUG_MSG: {
+		if (payload_len) {
+			/* Ensure null terminated */
+			payload[payload_len - 1] = '\0';
+			MUC_LOG("muc_dbg_msg: %s\n", (char *)payload);
 		}
-		case MUC_DEBUG_MSG: {
-			if (payload_len) {
-				/* Ensure null terminated */
-				payload[payload_len - 1] = '\0';
-				MUC_LOG("muc_dbg_msg: %s\n", (char *)payload);
-			}
-			muc_uart_send(mm_data, hdr->cmd|MSG_ACK_MASK, NULL, 0);
-			break;
+		muc_uart_send(mm_data, hdr->cmd | MSG_ACK_MASK, NULL, 0);
+		break;
+	}
+	default: {
+		if (hdr->cmd & MSG_ACK_MASK)
+			clear_wait_for_ack(mm_data);
+		else if (hdr->cmd & MSG_NACK_MASK)
+			clear_wait_for_ack(mm_data);
+		else {
+			MUC_ERR("Unhandled type %d\n", hdr->cmd);
+			muc_uart_send(mm_data, hdr->cmd | MSG_NACK_MASK, NULL,
+				      0);
 		}
-		default: {
-			if (hdr->cmd & MSG_ACK_MASK)
-				clear_wait_for_ack(mm_data);
-			else if (hdr->cmd & MSG_NACK_MASK)
-				clear_wait_for_ack(mm_data);
-			else {
-				MUC_ERR("Unhandled type %d\n", hdr->cmd);
-				muc_uart_send(mm_data, hdr->cmd|MSG_NACK_MASK, NULL, 0);
-			}
-		}
+	}
 	}
 }
 
-static size_t muc_uart_rx_cb(struct platform_device *pdev,
-	uint8_t *data,
-	size_t len)
+static size_t muc_uart_rx_cb(struct platform_device *pdev, uint8_t *data,
+			     size_t len)
 {
 	int i;
 	size_t content_size;
@@ -1247,8 +1199,7 @@ static size_t muc_uart_rx_cb(struct platform_device *pdev,
 	struct mmi_uart_hdr_t *hdr;
 	uint16_t calc_crc;
 	uint16_t rcvd_crc;
-	struct mod_muc_data_t *mm_data =
-		platform_get_drvdata(pdev);
+	struct mod_muc_data_t *mm_data = platform_get_drvdata(pdev);
 
 	reset_idle_timer(mm_data);
 
@@ -1260,8 +1211,7 @@ static size_t muc_uart_rx_cb(struct platform_device *pdev,
 
 	/* Verify the magic number */
 	if (le16_to_cpu(hdr->magic) != MSG_MAGIC) {
-		MUC_ERR("invalid magic %x\n",
-			le16_to_cpu(hdr->magic));
+		MUC_ERR("invalid magic %x\n", le16_to_cpu(hdr->magic));
 		mmi_uart_report_rx_mag_err(mm_data->uart_data);
 
 		/* Look through the rest of the data we have,
@@ -1270,7 +1220,7 @@ static size_t muc_uart_rx_cb(struct platform_device *pdev,
 		 * before it.  This function will be re-entered
 		 * and the magic number should now be in front.
 		 */
-		for(i = 1; i < (len - 1); i++) {
+		for (i = 1; i < (len - 1); i++) {
 			if (le16_to_cpu(*(uint16_t *)(data + i)) == MSG_MAGIC) {
 				MUC_LOG("Found valid data at offset %d\n", i);
 				return i;
@@ -1280,12 +1230,12 @@ static size_t muc_uart_rx_cb(struct platform_device *pdev,
 		return i;
 	}
 
-	segment_size = le16_to_cpu(hdr->payload_length)
-		+ sizeof(*hdr) + sizeof(calc_crc);
+	segment_size = le16_to_cpu(hdr->payload_length) + sizeof(*hdr) +
+		       sizeof(calc_crc);
 
 	/* Validate the payload size */
 	if (le16_to_cpu(hdr->payload_length) >
-		UART_MAX_MSG_SIZE - MSG_META_DATA_SIZE) {
+	    UART_MAX_MSG_SIZE - MSG_META_DATA_SIZE) {
 		MUC_ERR("invalid len %zd\n", segment_size);
 		mmi_uart_report_rx_len_err(mm_data->uart_data);
 		return sizeof(*hdr);
@@ -1302,11 +1252,12 @@ static size_t muc_uart_rx_cb(struct platform_device *pdev,
 	/* Verify the CRC */
 	if (le16_to_cpu(rcvd_crc) != calc_crc) {
 		mmi_uart_report_rx_crc_err(mm_data->uart_data);
-		print_hex_dump_debug("muc_uart rx (CRC error): ",
-			DUMP_PREFIX_OFFSET,
-			16, 1, data, content_size, true);
+		print_hex_dump_debug(
+			"muc_uart rx (CRC error): ", DUMP_PREFIX_OFFSET, 16, 1,
+			data, content_size, true);
 		MUC_ERR("CRC mismatch, received: 0x%x, "
-			"calculated: 0x%x\n", le16_to_cpu(rcvd_crc), calc_crc);
+			"calculated: 0x%x\n",
+			le16_to_cpu(rcvd_crc), calc_crc);
 	} else {
 		MUC_DBG("cmd=%x, magic=%x, "
 			"payload_length=%x, len=%zd\n",
@@ -1314,17 +1265,15 @@ static size_t muc_uart_rx_cb(struct platform_device *pdev,
 			content_size);
 
 		print_hex_dump_debug("muc_uart rx: ", DUMP_PREFIX_OFFSET, 16, 1,
-			data, content_size, true);
+				     data, content_size, true);
 
 		/* TODO it still might be possible for a message to go
 		 * out of the queue before we handle the response to a
 		 * request.
 		 */
 		mutex_lock(&tx_lock);
-		muc_uart_handle_message(mm_data,
-			hdr,
-			data + sizeof(*hdr),
-			content_size - sizeof(*hdr));
+		muc_uart_handle_message(mm_data, hdr, data + sizeof(*hdr),
+					content_size - sizeof(*hdr));
 		mutex_unlock(&tx_lock);
 	}
 
@@ -1342,8 +1291,9 @@ static void muc_uart_sleep_work(struct work_struct *w)
 	cancel_delayed_work_sync(&mm_data->idle_work);
 
 	if (!mm_data || !mm_data->uart_data ||
-		mmi_uart_set_tx_busy(mm_data->uart_data))
-		schedule_delayed_work(&mm_data->sleep_work, msecs_to_jiffies(500));
+	    mmi_uart_set_tx_busy(mm_data->uart_data))
+		schedule_delayed_work(&mm_data->sleep_work,
+				      msecs_to_jiffies(500));
 	else {
 		MUC_DBG("off.\n");
 #if MUC_UART_DISABLE_ON_SLEEP
@@ -1372,8 +1322,9 @@ static void muc_uart_wake_work(struct work_struct *w)
 	reset_idle_timer(mm_data);
 
 	if (!mm_data || !mm_data->uart_data ||
-		mmi_uart_set_tx_busy(mm_data->uart_data))
-		schedule_delayed_work(&mm_data->wake_work, msecs_to_jiffies(500));
+	    mmi_uart_set_tx_busy(mm_data->uart_data))
+		schedule_delayed_work(&mm_data->wake_work,
+				      msecs_to_jiffies(500));
 	else {
 		MUC_DBG("on.\n");
 
@@ -1387,16 +1338,17 @@ static void muc_uart_wake_work(struct work_struct *w)
 
 		/* Send boot mode on initial wake */
 		if (!booted) {
-			if (muc_uart_send_bootmode(mm_data) >= 0);
-				booted = true;
-		/* Else if there was something in the queue when
+			if (muc_uart_send_bootmode(mm_data) >= 0)
+				;
+			booted = true;
+			/* Else if there was something in the queue when
 		 * we went to sleep start sending it
 		 */
 		} else {
 			cancel_delayed_work(&mm_data->write_work);
 			queue_delayed_work(mm_data->write_wq,
-					&mm_data->write_work,
-					msecs_to_jiffies(0));
+					   &mm_data->write_work,
+					   msecs_to_jiffies(0));
 		}
 	}
 }
@@ -1410,7 +1362,7 @@ static irqreturn_t muc_uart_wake_irq_handler(int irq, void *data)
 		if (atomic_read(&mm_data->sleep_req_pending)) {
 			cancel_delayed_work(&mm_data->sleep_work);
 			schedule_delayed_work(&mm_data->sleep_work,
-				msecs_to_jiffies(0));
+					      msecs_to_jiffies(0));
 		}
 	} else {
 		cancel_delayed_work(&mm_data->wake_work);
@@ -1429,10 +1381,10 @@ static void muc_uart_idle_work(struct work_struct *w)
 	if (!atomic_read(&mm_data->sleep_req_pending)) {
 		mutex_lock(&tx_lock);
 		spin_lock_irqsave(&write_q_lock, flags);
-		if(!mm_data->write_data_q &&
-			muc_uart_send(mm_data, UART_SLEEP_REQ, NULL, 0) < 0)
+		if (!mm_data->write_data_q &&
+		    muc_uart_send(mm_data, UART_SLEEP_REQ, NULL, 0) < 0)
 			schedule_delayed_work(&mm_data->idle_work,
-				msecs_to_jiffies(1000));
+					      msecs_to_jiffies(1000));
 		spin_unlock_irqrestore(&write_q_lock, flags);
 		mutex_unlock(&tx_lock);
 	}
@@ -1442,41 +1394,36 @@ static void muc_uart_idle_work(struct work_struct *w)
 
 static void muc_uart_idle_cb(unsigned long timer_data)
 {
-	struct mod_muc_data_t *mm_data =
-		(struct mod_muc_data_t *)timer_data;
+	struct mod_muc_data_t *mm_data = (struct mod_muc_data_t *)timer_data;
 
 	schedule_delayed_work(&mm_data->idle_work, msecs_to_jiffies(0));
 }
 
 static void muc_uart_ack_cb(unsigned long timer_data)
 {
-	struct mod_muc_data_t *mm_data =
-		(struct mod_muc_data_t *)timer_data;
+	struct mod_muc_data_t *mm_data = (struct mod_muc_data_t *)timer_data;
 
 	/* TODO what should I do if I don't get an ack in time? */
 	if (mm_data) {
 		atomic_set(&mm_data->waiting_for_ack, 0);
 		cancel_delayed_work(&mm_data->write_work);
-		queue_delayed_work(mm_data->write_wq,
-				&mm_data->write_work,
-				msecs_to_jiffies(0));
+		queue_delayed_work(mm_data->write_wq, &mm_data->write_work,
+				   msecs_to_jiffies(0));
 	}
 }
 
 static void muc_uart_sleep_req_cb(unsigned long timer_data)
 {
-	struct mod_muc_data_t *mm_data =
-		(struct mod_muc_data_t *)timer_data;
+	struct mod_muc_data_t *mm_data = (struct mod_muc_data_t *)timer_data;
 
 	/* TODO this should probably panic */
 	if (mm_data) {
-		if(atomic_read(&mm_data->sleep_req_pending))
+		if (atomic_read(&mm_data->sleep_req_pending))
 			atomic_set(&mm_data->sleep_req_pending, 0);
 	}
 }
 
-static int muc_uart_register_cb(struct platform_device *pdev,
-	void *uart_data)
+static int muc_uart_register_cb(struct platform_device *pdev, void *uart_data)
 {
 	struct mod_muc_data_t *mm_data = platform_get_drvdata(pdev);
 
@@ -1499,8 +1446,8 @@ static void *muc_uart_get_uart_data(struct device *dev)
 	return mm_data->uart_data;
 }
 
-static int muc_uart_config_gpio(struct device *dev,
-		int gpio, char *name, int dir_out, int out_val)
+static int muc_uart_config_gpio(struct device *dev, int gpio, char *name,
+				int dir_out, int out_val)
 {
 	int error;
 
@@ -1557,13 +1504,12 @@ static int muc_uart_set_property(struct power_supply *psy,
 	switch (psp) {
 	case POWER_SUPPLY_PROP_ONLINE: {
 		schedule_delayed_work(&mm_data->connect_work,
-			msecs_to_jiffies(EXT_USB_CHECK_TIME));
+				      msecs_to_jiffies(EXT_USB_CHECK_TIME));
 
 		usbctrl_pkt.cmd = val->intval;
-		muc_uart_queue_send(mm_data,
-			USB_CONTROL,
-			(uint8_t *)&usbctrl_pkt,
-			sizeof(struct usb_control_t));
+		muc_uart_queue_send(mm_data, USB_CONTROL,
+				    (uint8_t *)&usbctrl_pkt,
+				    sizeof(struct usb_control_t));
 		break;
 	}
 	default:
@@ -1573,12 +1519,12 @@ static int muc_uart_set_property(struct power_supply *psy,
 }
 
 static const struct power_supply_desc phone_psy_desc = {
-	.name		= "phone",
-	.type		= POWER_SUPPLY_TYPE_MAIN,
-	.get_property	= muc_uart_get_property,
-	.set_property   = muc_uart_set_property,
-	.properties	= muc_uart_ps_props,
-	.num_properties	= ARRAY_SIZE(muc_uart_ps_props),
+	.name = "phone",
+	.type = POWER_SUPPLY_TYPE_MAIN,
+	.get_property = muc_uart_get_property,
+	.set_property = muc_uart_set_property,
+	.properties = muc_uart_ps_props,
+	.num_properties = ARRAY_SIZE(muc_uart_ps_props),
 };
 
 static int muc_uart_probe(struct platform_device *pdev)
@@ -1619,25 +1565,20 @@ static int muc_uart_probe(struct platform_device *pdev)
 
 	atomic_set(&mm_data->write_credits, WRITE_CREDIT_INIT);
 
-	setup_timer(&mm_data->idle_timer,
-		muc_uart_idle_cb,
-		(unsigned long)mm_data);
-	setup_timer(&mm_data->ack_timer,
-		muc_uart_ack_cb,
-		(unsigned long)mm_data);
-	setup_timer(&mm_data->sleep_req_timer,
-		muc_uart_sleep_req_cb,
-		(unsigned long)mm_data);
+	setup_timer(&mm_data->idle_timer, muc_uart_idle_cb,
+		    (unsigned long)mm_data);
+	setup_timer(&mm_data->ack_timer, muc_uart_ack_cb,
+		    (unsigned long)mm_data);
+	setup_timer(&mm_data->sleep_req_timer, muc_uart_sleep_req_cb,
+		    (unsigned long)mm_data);
 
 	if (sysfs_create_groups(&pdev->dev.kobj, muc_uart_groups)) {
 		dev_err(&pdev->dev, "Failed to create sysfs attributes\n");
 		goto err_dest_wq;
 	}
 
-	if (mmi_uart_init(muc_uart_rx_cb,
-		muc_uart_register_cb,
-		muc_uart_get_uart_data,
-		pdev))
+	if (mmi_uart_init(muc_uart_rx_cb, muc_uart_register_cb,
+			  muc_uart_get_uart_data, pdev))
 		goto err_dest_groups;
 
 	mm_data->wake_out_gpio = of_get_gpio(np, 0);
@@ -1646,17 +1587,13 @@ static int muc_uart_probe(struct platform_device *pdev)
 	mm_data->muc_1_gpio = of_get_gpio(np, 3);
 	mm_data->muc_2_gpio = of_get_gpio(np, 4);
 
-	if (mm_data->wake_out_gpio < 0 ||
-		mm_data->wake_in_gpio < 0 ||
-		mm_data->mod_attached_gpio < 0 ||
-		mm_data->muc_1_gpio < 0 ||
-		mm_data->muc_2_gpio < 0)
+	if (mm_data->wake_out_gpio < 0 || mm_data->wake_in_gpio < 0 ||
+	    mm_data->mod_attached_gpio < 0 || mm_data->muc_1_gpio < 0 ||
+	    mm_data->muc_2_gpio < 0)
 		goto err_exit_uart;
 
-	mm_data->wake_irq =
-		gpio_to_irq(mm_data->wake_in_gpio);
-	mm_data->mod_attached_irq =
-		gpio_to_irq(mm_data->mod_attached_gpio);
+	mm_data->wake_irq = gpio_to_irq(mm_data->wake_in_gpio);
+	mm_data->mod_attached_irq = gpio_to_irq(mm_data->mod_attached_gpio);
 
 	/* Let wake irq take us out of suspend */
 	if (irq_set_irq_wake(mm_data->wake_irq, 1))
@@ -1665,40 +1602,35 @@ static int muc_uart_probe(struct platform_device *pdev)
 	if (irq_set_irq_wake(mm_data->mod_attached_irq, 1))
 		MUC_ERR("Failed to set attach irq as wake source");
 
-	if (devm_request_irq(&pdev->dev,
-		mm_data->wake_irq,
-		muc_uart_wake_irq_handler,
-		IRQF_TRIGGER_FALLING | IRQF_TRIGGER_RISING,
-		pdev->dev.driver->name,
-		mm_data))
+	if (devm_request_irq(&pdev->dev, mm_data->wake_irq,
+			     muc_uart_wake_irq_handler,
+			     IRQF_TRIGGER_FALLING | IRQF_TRIGGER_RISING,
+			     pdev->dev.driver->name, mm_data))
 		goto err_exit_uart;
 
-	if (devm_request_irq(&pdev->dev,
-		mm_data->mod_attached_irq,
-		muc_uart_attach_irq_handler,
-		IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING,
-		pdev->dev.driver->name,
-		mm_data))
+	if (devm_request_irq(&pdev->dev, mm_data->mod_attached_irq,
+			     muc_uart_attach_irq_handler,
+			     IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING,
+			     pdev->dev.driver->name, mm_data))
 		goto err_exit_uart;
 
-	if (muc_uart_config_gpio(&pdev->dev,
-			mm_data->wake_out_gpio, "muc_wake", 1, 1))
+	if (muc_uart_config_gpio(&pdev->dev, mm_data->wake_out_gpio, "muc_wake",
+				 1, 1))
 		goto err_exit_uart;
 
-	if (muc_uart_config_gpio(&pdev->dev,
-			mm_data->muc_1_gpio, "muc_1", 1, 0))
+	if (muc_uart_config_gpio(&pdev->dev, mm_data->muc_1_gpio, "muc_1", 1,
+				 0))
 		goto err_free_wake_out;
 
-	if (muc_uart_config_gpio(&pdev->dev,
-			mm_data->muc_2_gpio, "muc_2", 1, 1))
+	if (muc_uart_config_gpio(&pdev->dev, mm_data->muc_2_gpio, "muc_2", 1,
+				 1))
 		goto err_free_muc1;
 
 	if (mmi_char_init(UART_MAX_MSG_SIZE - MSG_META_DATA_SIZE, pdev))
 		goto err_free_muc2;
 
-	mm_data->phone_psy = devm_power_supply_register(&pdev->dev,
-							&phone_psy_desc,
-							&psy_cfg);
+	mm_data->phone_psy = devm_power_supply_register(
+		&pdev->dev, &phone_psy_desc, &psy_cfg);
 	if (IS_ERR(mm_data->phone_psy)) {
 		MUC_ERR("failed: phone power supply register\n");
 		goto err_exit_char;
@@ -1790,16 +1722,14 @@ static int muc_uart_remove(struct platform_device *pdev)
 }
 
 /* TODO define suspend functions */
-static const struct dev_pm_ops muc_uart_dev_pm_ops = {
-	.runtime_suspend = NULL,
-	.runtime_resume = NULL,
-	.runtime_idle = NULL,
-	.suspend_noirq = NULL,
-	.resume_noirq = NULL
-};
+static const struct dev_pm_ops muc_uart_dev_pm_ops = { .runtime_suspend = NULL,
+						       .runtime_resume = NULL,
+						       .runtime_idle = NULL,
+						       .suspend_noirq = NULL,
+						       .resume_noirq = NULL };
 
 static const struct of_device_id muc_uart_match_table[] = {
-	{ .compatible = "mmi,muc-uart"},
+	{ .compatible = "mmi,muc-uart" },
 	{}
 };
 

@@ -29,7 +29,7 @@
 #include <asm/setup.h>
 #include <linux/seq_file.h>
 #include <linux/version.h>
-#include <soc/qcom/mmi_boot_info.h>
+#include <linux/mmi_boot_info.h>
 #include "mmi_info.h"
 
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 1, 0)
@@ -48,22 +48,19 @@
  * EMIT_BOOTINFO and EMIT_BOOTINFO_STR depend on buf and len to already
  * be defined.
  */
-#define EMIT_BOOTINFO(strname, fmt, name) \
-		do { \
-			seq_printf(m, strname ": " fmt "\n", \
-					bi_##name()); \
-		} while (0)
+#define EMIT_BOOTINFO(strname, fmt, name)                                      \
+	do {                                                                   \
+		seq_printf(m, strname ": " fmt "\n", bi_##name());             \
+	} while (0)
 
-#define EMIT_BOOTINFO_STR(strname, strval) \
-		do { \
-			if (strlen(strval) == 0) { \
-				seq_printf(m, "%s: UNKNOWN\n", \
-						strname); \
-			} else { \
-				seq_printf(m, "%s: %s\n", \
-						strname, strval); \
-			} \
-		} while (0)
+#define EMIT_BOOTINFO_STR(strname, strval)                                     \
+	do {                                                                   \
+		if (strlen(strval) == 0) {                                     \
+			seq_printf(m, "%s: UNKNOWN\n", strname);               \
+		} else {                                                       \
+			seq_printf(m, "%s: %s\n", strname, strval);            \
+		}                                                              \
+	} while (0)
 
 /*-------------------------------------------------------------------------*/
 
@@ -71,7 +68,6 @@
 #define BOOTMODE_MAX_LEN 64
 static char bootreason[BOOTREASON_MAX_LEN];
 static char bootmode[BOOTMODE_MAX_LEN];
-
 
 static void mmi_bootarg_setup(void)
 {
@@ -97,8 +93,8 @@ u32 bi_powerup_reason(void)
 }
 EXPORT_SYMBOL(bi_powerup_reason);
 
-#define EMIT_POWERUPREASON() \
-	    EMIT_BOOTINFO("POWERUPREASON", "0x%08x", powerup_reason)
+#define EMIT_POWERUPREASON()                                                   \
+	EMIT_BOOTINFO("POWERUPREASON", "0x%08x", powerup_reason)
 
 /*
  * mbm_version contains the MBM version.
@@ -115,8 +111,7 @@ u32 bi_mbm_version(void)
 }
 EXPORT_SYMBOL(bi_mbm_version);
 
-#define EMIT_MBM_VERSION() \
-	    EMIT_BOOTINFO("MBM_VERSION", "0x%08x", mbm_version)
+#define EMIT_MBM_VERSION() EMIT_BOOTINFO("MBM_VERSION", "0x%08x", mbm_version)
 
 /*
  * boot_seq contains the boot sequence number.
@@ -131,8 +126,7 @@ u32 bi_boot_seq(void)
 }
 EXPORT_SYMBOL(bi_boot_seq);
 
-#define EMIT_BOOT_SEQ() \
-	    EMIT_BOOTINFO("BOOT_SEQ", "%d", boot_seq)
+#define EMIT_BOOT_SEQ() EMIT_BOOTINFO("BOOT_SEQ", "%d", boot_seq)
 
 /*
  * BL build signature a succession of lines of text each denoting
@@ -140,8 +134,8 @@ EXPORT_SYMBOL(bi_boot_seq);
  * as passed along from bootloader via ATAG_BL_BUILD_SIG(s)
  */
 
-#define MAX_BL_BUILD_SIG  20
-#define MAX_BLD_SIG_ITEM  20
+#define MAX_BL_BUILD_SIG 20
+#define MAX_BLD_SIG_ITEM 20
 #define MAX_BLD_SIG_VALUE 80
 
 struct bl_build_sig {
@@ -176,11 +170,11 @@ void bi_add_bl_build_sig(char *bld_sig)
 	pos = value - bld_sig;
 
 	ptr = bl_build_sigs[bl_build_sig_count].item;
-	strlcpy(ptr, bld_sig, pos+1);
+	strlcpy(ptr, bld_sig, pos + 1);
 	convert_to_upper(ptr);
 
 	ptr = bl_build_sigs[bl_build_sig_count].value;
-	strlcpy(ptr, value+1, MAX_BLD_SIG_VALUE);
+	strlcpy(ptr, value + 1, MAX_BLD_SIG_VALUE);
 
 	bl_build_sig_count++;
 }
@@ -198,21 +192,21 @@ static void of_blsig(void)
 	if (n == NULL)
 		return;
 
-	for_each_property_of_node(n, p)
+	for_each_property_of_node (n, p)
 		if (strcmp(p->name, "name"))
 			bi_add_bl_build_sig(p->value);
 
 	of_node_put(n);
 }
 
-#define EMIT_BL_BUILD_SIG() \
-		do { \
-			int i; \
-			for (i = 0; i < bl_build_sig_count; i++) { \
-				EMIT_BOOTINFO_STR(bl_build_sigs[i].item, \
-						bl_build_sigs[i].value); \
-			} \
-		} while (0)
+#define EMIT_BL_BUILD_SIG()                                                    \
+	do {                                                                   \
+		int i;                                                         \
+		for (i = 0; i < bl_build_sig_count; i++) {                     \
+			EMIT_BOOTINFO_STR(bl_build_sigs[i].item,               \
+					  bl_build_sigs[i].value);             \
+		}                                                              \
+	} while (0)
 
 /* System revision s global symbol exported by setup.c
  * use wrapper to maintain coherent format with the other
@@ -225,8 +219,7 @@ u32 bi_hwrev(void)
 }
 EXPORT_SYMBOL(bi_hwrev);
 
-#define EMIT_HWREV() \
-		EMIT_BOOTINFO("HW_REV", "0x%04x", hwrev)
+#define EMIT_HWREV() EMIT_BOOTINFO("HW_REV", "0x%04x", hwrev)
 
 /* Serial high and low are symbols exported by setup.c
  * use wrapper to maintain coherent format with the other
@@ -235,19 +228,17 @@ EXPORT_SYMBOL(bi_hwrev);
 
 static u64 bi_serial(void)
 {
-	return ((u64)mmi_chosen_data.system_serial_high << 32)
-			| (u64)mmi_chosen_data.system_serial_low;
+	return ((u64)mmi_chosen_data.system_serial_high << 32) |
+	       (u64)mmi_chosen_data.system_serial_low;
 }
 
-#define EMIT_SERIAL() \
-		EMIT_BOOTINFO("SERIAL", "0x%llx", serial)
+#define EMIT_SERIAL() EMIT_BOOTINFO("SERIAL", "0x%llx", serial)
 
 const char *bi_bootreason(void)
 {
 	return bootreason;
 }
 EXPORT_SYMBOL(bi_bootreason);
-
 
 const char *bi_bootmode(void)
 {
@@ -282,17 +273,17 @@ static int bootinfo_proc_open(struct inode *inode, struct file *file)
 
 #if KERNEL_VERSION(5, 10, 0) <= LINUX_VERSION_CODE
 static const struct proc_ops bootinfo_proc_fops = {
-	.proc_open           = bootinfo_proc_open,
-	.proc_read           = seq_read,
-	.proc_lseek         = seq_lseek,
-	.proc_release        = single_release,
+	.proc_open = bootinfo_proc_open,
+	.proc_read = seq_read,
+	.proc_lseek = seq_lseek,
+	.proc_release = single_release,
 };
 #else
 static const struct file_operations bootinfo_proc_fops = {
-	.open           = bootinfo_proc_open,
-	.read           = seq_read,
-	.llseek         = seq_lseek,
-	.release        = single_release,
+	.open = bootinfo_proc_open,
+	.read = seq_read,
+	.llseek = seq_lseek,
+	.release = single_release,
 };
 #endif
 
@@ -304,8 +295,8 @@ int mmi_boot_info_init(void)
 	mmi_bootarg_setup();
 
 	/* /proc/bootinfo */
-	proc_bootinfo = proc_create("bootinfo",
-		0444, NULL, &bootinfo_proc_fops);
+	proc_bootinfo =
+		proc_create("bootinfo", 0444, NULL, &bootinfo_proc_fops);
 
 	/* Add to dont panic dump */
 	for (i = 0; i < bl_build_sig_count; i++) {

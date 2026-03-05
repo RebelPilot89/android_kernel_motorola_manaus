@@ -1,0 +1,21 @@
+ccflags-y += -Wall
+ccflags-y += -I$(srctree)/include/linux/input/awinic
+
+ifneq ($(filter m y,$(CONFIG_AW96XX_POWER_SUPPLY_ONLINE)),)
+	ccflags-y += -DCONFIG_USE_POWER_SUPPLY_ONLINE
+endif
+
+ifneq ($(filter m y,$(CONFIG_AW96XX_MTK_CHARGER)),)
+	ccflags-y += -DCONFIG_AW96XX_MTK_CHARGER
+endif
+
+ifneq ($(filter m y,$(CONFIG_AW96XX_MTK_KERNEL419_CHARGER_TYPE)),)
+	ccflags-y += -DCONFIG_AW96XX_MTK_KERNEL419_CHARGER_TYPE
+endif
+
+ifneq ($(filter m y,$(CONFIG_AW96XX_MTK_KERNEL5XX_CHARGER_TYPE)),)
+	ccflags-y += -DCONFIG_AW96XX_MTK_KERNEL5XX_CHARGER_TYPE
+endif
+
+obj-$(CONFIG_MOTO_AWINIC_SAR) += awinic_sar.o
+awinic_sar-objs := comm/aw_sar_comm_interface.o aw_sar.o aw9610x/aw9610x.o aw9620x/aw9620x.o aw9620x/aw_update_fw.o aw963xx/aw963xx.o

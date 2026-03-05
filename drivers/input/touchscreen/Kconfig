@@ -16,6 +16,13 @@ config TOUCHSCREEN_PROPERTIES
 	def_tristate INPUT
 	depends on INPUT
 
+config TOUCHSCREEN_MMI
+	bool "Motorola touchscreen MMI class"
+	depends on INPUT_TOUCHSCREEN && OF && MMI_RELAY && MOTO_SENSORS_CLASS
+	help
+	  Enables Motorola touchscreen class integration, panel notifications,
+	  and charger/sensor coordination hooks.
+
 config TOUCHSCREEN_88PM860X
 	tristate "Marvell 88PM860x touchscreen"
 	depends on MFD_88PM860X
@@ -1345,6 +1352,9 @@ config TOUCHSCREEN_ZINITIX
 
 	  To compile this driver as a module, choose M here: the
 	  module will be called zinitix.
+
+source "drivers/input/touchscreen/goodix_brl_mmi/Kconfig"
+source "drivers/input/touchscreen/focaltech_touch_v3/Kconfig"
 
 config TOUCHSCREEN_MTK_TOUCH
        string "Touch IC name for Mediatek package"

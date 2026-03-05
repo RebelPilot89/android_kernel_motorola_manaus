@@ -1,0 +1,6 @@
+config MMI_NFC_CLK
+	bool "Motorola MMI NFC clock helper"
+	depends on OF && GPIOLIB
+	help
+	  Enables Motorola NFC clock request GPIO wake helper used by
+	  device trees exposing compatible "mmi,nfc-clk".

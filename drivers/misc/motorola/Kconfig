@@ -58,11 +58,25 @@ config MMI_INFO
 	help
 	  Exposes Motorola device information helpers and boot properties.
 
+config MMI_UTAGS
+	tristate "Motorola UTAGS storage"
+	depends on OF && PROC_FS && BLOCK
+	help
+	  Exposes Motorola UTAGS persistent key/value storage through procfs
+	  and reads/writes backing UTAGS partitions from device tree paths.
+
 config MMI_ANNOTATE
 	bool "Motorola mmi annotate"
 	depends on OF && PROC_FS
 	help
 	  Exposes persistent and runtime annotation interface for debugging.
+
+config MMI_SYS_TEMP
+	tristate "Motorola system temperature bridge"
+	depends on OF && THERMAL && POWER_SUPPLY
+	help
+	  Exposes Motorola system temperature IOCTL bridge and virtual
+	  thermal zones for user space temperature publishers.
 
 config MMI_MUC_UART
 	bool "Motorola MUC UART"
@@ -87,6 +101,18 @@ config MOTO_SENSORS_CLASS
 	depends on SYSFS
 	help
 	  Enables Motorola sensors class interface used by vendor sensor drivers.
+
+config MOTO_SX937X_SAR
+	bool "Motorola SX937X SAR sensor"
+	depends on I2C && OF && MOTO_SENSORS_CLASS
+	help
+	  Enables Motorola SX937X SAR proximity sensor driver used on manaus.
+
+config MOTO_AWINIC_SAR
+	bool "Motorola Awinic SAR sensor"
+	depends on I2C && OF && MOTO_SENSORS_CLASS
+	help
+	  Enables Motorola Awinic AW96xx SAR sensor driver used on manaus.
 
 source "drivers/misc/motorola/mm_iosched/Kconfig"
 source "drivers/misc/motorola/moto_swap/Kconfig"

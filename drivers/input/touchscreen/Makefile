@@ -112,7 +112,10 @@ obj-$(CONFIG_TOUCHSCREEN_ROHM_BU21023)	+= rohm_bu21023.o
 obj-$(CONFIG_TOUCHSCREEN_RASPBERRYPI_FW)	+= raspberrypi-ts.o
 obj-$(CONFIG_TOUCHSCREEN_IQS5XX)	+= iqs5xx.o
 obj-$(CONFIG_TOUCHSCREEN_ZINITIX)	+= zinitix.o
+obj-$(CONFIG_TOUCHSCREEN_GOODIX_BRL)	+= goodix_brl_mmi/
+obj-$(CONFIG_TOUCHSCREEN_FTS_V3)	+= focaltech_touch_v3/
 obj-$(CONFIG_TOUCHSCREEN_MTK_TUI_COMMON_API) +=tui-common.o
+obj-$(CONFIG_TOUCHSCREEN_MMI) += touchscreen_mmi/
 TOUCH_LISTS := $(subst ",,$(CONFIG_TOUCHSCREEN_MTK_TOUCH))
 obj-y += $(foreach TOUCH,$(TOUCH_LISTS),$(TOUCH)/)
 

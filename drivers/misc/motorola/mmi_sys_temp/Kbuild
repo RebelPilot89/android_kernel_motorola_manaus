@@ -1,0 +1,4 @@
+# SPDX-License-Identifier: GPL-2.0
+
+ccflags-y += -Wall
+obj-$(CONFIG_MMI_SYS_TEMP) += mmi_sys_temp.o

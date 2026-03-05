@@ -1,0 +1,9 @@
+# SPDX-License-Identifier: GPL-2.0
+
+ccflags-y += -Wall
+ifneq ($(filter m y,$(CONFIG_MMI_RELAY)),)
+ccflags-y += -DMMI_RELAY_MODULE
+endif
+
+goodix_mtk_fod-y += gf_fod_tee.o
+obj-$(CONFIG_GOODIX_MTK_FOD) += goodix_mtk_fod.o

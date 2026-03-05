@@ -869,4 +869,11 @@ config INPUT_STPMIC1_ONKEY
 	  To compile this driver as a module, choose M here: the
 	  module will be called stpmic1_onkey.
 
+config GOODIX_MTK_FOD
+	tristate "Goodix optical fingerprint over display driver"
+	depends on INPUT && SPI && OF
+	help
+	  Say Y here to enable the Goodix optical fingerprint-over-display
+	  driver used on MediaTek-based Motorola devices.
+
 endif

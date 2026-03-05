@@ -1,0 +1,6 @@
+config MMI_UTAGS
+	tristate "Motorola UTAGS storage"
+	depends on OF && PROC_FS && BLOCK
+	help
+	  Exposes Motorola UTAGS persistent key/value storage through procfs
+	  and reads/writes backing UTAGS partitions from device tree paths.
