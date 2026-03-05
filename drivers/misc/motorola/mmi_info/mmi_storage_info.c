@@ -18,7 +18,7 @@
 #include <linux/slab.h>
 #include "mmi_info.h"
 
-struct mmi_storage_info *info;
+static struct mmi_storage_info *info;
 
 SYSFS_SIMPLE_SHOW(fw, info->firmware_version, "%s", 32)
 SYSFS_SIMPLE_SHOW(model, info->product_name, "%s", 32)

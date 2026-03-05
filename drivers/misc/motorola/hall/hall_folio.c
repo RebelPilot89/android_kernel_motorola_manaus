@@ -81,7 +81,7 @@ static struct platform_driver hall_pen_driver = {
 	},
 };
 
-void check_and_send(void)
+static void check_and_send(void)
 {
 	int i;
 	int report_val = 0;
@@ -106,7 +106,7 @@ void check_and_send(void)
 	}
 }
 
-void hall_enable(bool enable)
+static void hall_enable(bool enable)
 {
 	int i;
 	if (enable && !hall_sensor_dev->enable) {
@@ -175,7 +175,11 @@ static struct attribute *hall_class_attrs[] = {
 };
 ATTRIBUTE_GROUPS(hall_class);
 
-struct class hall_class = {
+/* .name is overwritten by "hall,factory-class-name" DTS property before
+ * class_register() is called, so there is no sysfs name conflict with
+ * the pen hall driver which uses the same default.
+ */
+static struct class hall_class = {
 	.name = "hall",
 	.owner = THIS_MODULE,
 	.class_groups = hall_class_groups,

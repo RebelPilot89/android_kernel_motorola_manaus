@@ -184,6 +184,7 @@ int mmi_get_bootarg(char *key, char **value)
 	return mmi_get_bootarg_dt(key, value, "bootargs", " ");
 #endif
 }
+EXPORT_SYMBOL(mmi_get_bootarg);
 
 static void mmi_of_populate_setup(void)
 {

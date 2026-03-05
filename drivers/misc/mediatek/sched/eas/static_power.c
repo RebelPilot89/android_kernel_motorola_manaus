@@ -40,7 +40,7 @@ struct leakage_data {
 	int init;
 };
 
-struct leakage_data info;
+static struct leakage_data info;
 
 unsigned int mtk_get_leakage(unsigned int cpu, unsigned int opp, unsigned int temperature)
 {

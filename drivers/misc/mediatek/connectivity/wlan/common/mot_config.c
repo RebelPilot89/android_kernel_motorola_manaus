@@ -25,64 +25,16 @@ static moto_product products_list[] = {
 
 
 /* use moto bootargs to get device name & radio parameters */
-static char *bootargs_str = NULL;
+extern int mmi_get_bootarg(char *key, char **value);
 
-static int mmi_get_bootarg_dt(char *key, char **value, char *prop, char *spl_flag)
-{
-	const char *bootargs_tmp = NULL;
-	char *idx = NULL;
-	char *kvpair = NULL;
-	int err = 1;
-	struct device_node *n = of_find_node_by_path("/chosen");
-	size_t bootargs_tmp_len = 0;
-
-	if (n == NULL)
-		goto err;
-
-	if (of_property_read_string(n, prop, &bootargs_tmp) != 0)
-		goto putnode;
-
-	bootargs_tmp_len = strlen(bootargs_tmp);
-	if (!bootargs_str) {
-		/* The following operations need a non-const
-		 * version of bootargs
-		 */
-		bootargs_str = kzalloc(bootargs_tmp_len + 1, GFP_KERNEL);
-		if (!bootargs_str)
-			goto putnode;
-	}
-	strlcpy(bootargs_str, bootargs_tmp, bootargs_tmp_len + 1);
-
-	idx = strnstr(bootargs_str, key, strlen(bootargs_str));
-	if (idx) {
-		kvpair = strsep(&idx, " ");
-		if (kvpair)
-			if (strsep(&kvpair, "=")) {
-				*value = strsep(&kvpair, spl_flag);
-				if (*value)
-					err = 0;
-			}
-	}
-
-putnode:
-	of_node_put(n);
-err:
-	return err;
-}
-
-int mmi_get_bootarg(char *key, char **value)
-{
-#ifdef CONFIG_BOOT_CONFIG
-	return mmi_get_bootarg_dt(key, value, "mmi,bootconfig", "\n");
-#else
-	return mmi_get_bootarg_dt(key, value, "bootargs", " ");
-#endif
-}
-
+/*
+ * mmi_free_bootarg_res - retained for API compatibility with callers in
+ * wlan_lib.c.  The bootargs_str buffer is now managed by mmi_info_main.c
+ * (CONFIG_MMI_INFO) for the lifetime of the device, so no cleanup is needed
+ * here.
+ */
 void mmi_free_bootarg_res(void)
 {
-	kfree(bootargs_str);
-	bootargs_str = NULL;
 }
 
 void get_moto_config_file_name(char* name, WIFI_CFG_ENUM index)
