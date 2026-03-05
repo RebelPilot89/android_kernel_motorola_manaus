@@ -61,17 +61,7 @@
 #include <linux/sched.h>
 #include <linux/kthread.h>
 #include <linux/dma-mapping.h>
-#include <linux/mmi_wake_lock.h>
 #include "focaltech_common.h"
-#if defined(CONFIG_INPUT_TOUCHSCREEN_MMI)
-#include <linux/touchscreen_mmi.h>
-#endif
-#ifdef FTS_USB_DETECT_EN
-#include <linux/power_supply.h>
-#endif
-#ifdef CONFIG_FTS_LAST_TIME
-#include <linux/ktime.h>
-#endif
 
 /*****************************************************************************
 * Private constant and macro definitions using #define
@@ -113,10 +103,6 @@
 
 #define FTS_MAX_TOUCH_BUF                   4096
 
-#ifdef FTS_USB_DETECT_EN
-#define FTS_REG_RETRY_TIMES                 5
-#endif
-
 
 /*****************************************************************************
 *  Alternative mode (When something goes wrong, the modules may be able to solve the problem.)
@@ -124,8 +110,31 @@
 /*
  * For commnication error in PM(deep sleep) state
  */
-#define FTS_PATCH_COMERR_PM                 1
+#define FTS_PATCH_COMERR_PM                 0
 #define FTS_TIMEOUT_COMERR_PM               700
+
+
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(5, 10, 0))
+/* A hardware display blank change occurred */
+#define DRM_PANEL_EVENT_BLANK          0x01
+/* A hardware display blank early change occurred */
+#define DRM_PANEL_EARLY_EVENT_BLANK    0x02
+
+enum {
+       /* panel: power on */
+       DRM_PANEL_BLANK_UNBLANK,
+       /* panel: power off */
+       DRM_PANEL_BLANK_POWERDOWN,
+};
+
+struct drm_panel_notifier {
+       void *data;
+};
+struct msm_drm_notifier {
+       void *data;
+};
+#endif
+
 
 /*****************************************************************************
 * Private enumerations, structures and unions using typedef
@@ -142,7 +151,6 @@ struct fts_ts_platform_data {
     u32 irq_gpio_flags;
     u32 reset_gpio;
     u32 reset_gpio_flags;
-    u32 vdd_gpio;
     bool have_key;
     u32 key_number;
     u32 keys[FTS_MAX_KEYS];
@@ -153,11 +161,6 @@ struct fts_ts_platform_data {
     u32 x_min;
     u32 y_min;
     u32 max_touch_number;
-    bool edge_ctrl;
-    bool interpolation_ctrl;
-    bool report_rate_ctrl;
-    bool sample_ctrl;
-    bool stowed_mode_ctrl;
 };
 
 struct ts_event {
@@ -168,14 +171,6 @@ struct ts_event {
     int id;     /*touch ID */
     int area;
 };
-
-#ifdef FOCALTECH_PALM_SENSOR_EN
-enum palm_sensor_lazy_set {
-    PALM_SENSOR_LAZY_SET_NONE = 0,
-    PALM_SENSOR_LAZY_SET_ENABLE,
-    PALM_SENSOR_LAZY_SET_DISABLE,
-};
-#endif
 
 struct pen_event {
     int down;
@@ -192,18 +187,13 @@ struct pen_event {
     int tool_type;
 };
 
-struct focaltech_mode_info {
-	int interpolation;
-	int sample;
-	int report_rate_mode;
-	int edge_mode[2];
-	int stowed;
-};
-
 struct fts_ts_data {
     struct i2c_client *client;
     struct spi_device *spi;
     struct device *dev;
+#ifdef CFG_MTK_PANEL_NOTIFIER
+	struct notifier_block disp_notifier;
+#endif
     struct input_dev *input_dev;
     struct input_dev *pen_dev;
     struct fts_ts_platform_data *pdata;
@@ -216,7 +206,6 @@ struct fts_ts_data {
     wait_queue_head_t ts_waitqueue;
     struct ftxxxx_proc proc;
     struct ftxxxx_proc proc_ta;
-    struct ftxxxx_proc proc_raw;
     spinlock_t irq_lock;
     struct mutex report_mutex;
     struct mutex bus_lock;
@@ -225,14 +214,12 @@ struct fts_ts_data {
     int log_level;
     int fw_is_running;      /* confirm fw is running when using spi:default 0 */
     int dummy_byte;
-    int refresh_rate;
 #if defined(CONFIG_PM) && FTS_PATCH_COMERR_PM
     struct completion pm_completion;
     bool pm_suspend;
 #endif
     bool suspended;
     bool fw_loading;
-    bool force_reflash;
     bool irq_disabled;
     bool power_disabled;
     bool glove_mode;
@@ -275,49 +262,6 @@ struct fts_ts_data {
     struct notifier_block fb_notif;
 #elif defined(CONFIG_HAS_EARLYSUSPEND)
     struct early_suspend early_suspend;
-#endif
-
-#if FTS_USB_DETECT_EN
-	bool usb_detect_flag;
-	uint8_t usb_connected;
-#endif
-
-#ifdef FOCALTECH_SENSOR_EN
-    bool wakeable;
-    bool fod_suspended;
-    unsigned char gesture_type;
-    int zerotap_data[1];
-    int zero_enable;
-    unsigned long fod_jiffies;
-#endif
-    u8 gsx_cmd;
-
-#ifdef FOCALTECH_PALM_SENSOR_EN
-    bool palm_detection_enabled;
-    enum palm_sensor_lazy_set palm_detection_lazy_set;
-    struct timer_list palm_release_fimer;
-    unsigned int palm_release_delay_ms;
-#ifdef CONFIG_HAS_WAKELOCK
-    struct wake_lock palm_gesture_wakelock;
-#else
-    struct wakeup_source *palm_gesture_wakelock;
-#endif
-#ifdef CONFIG_HAS_WAKELOCK
-    struct wake_lock palm_gesture_read_wakelock;
-#else
-    struct wakeup_source *palm_gesture_read_wakelock;
-#endif
-#endif
-
-    struct mutex mode_lock;
-    struct focaltech_mode_info set_mode;
-    struct focaltech_mode_info get_mode;
-
-#if defined(CONFIG_INPUT_TOUCHSCREEN_MMI)
-    struct ts_mmi_class_methods *imports;
-#endif
-#ifdef CONFIG_FTS_LAST_TIME
-    ktime_t last_event_time;
 #endif
 };
 
@@ -371,9 +315,6 @@ void fts_gesture_recovery(struct fts_ts_data *ts_data);
 int fts_gesture_readdata(struct fts_ts_data *ts_data, u8 *data);
 int fts_gesture_suspend(struct fts_ts_data *ts_data);
 int fts_gesture_resume(struct fts_ts_data *ts_data);
-#ifdef FOCALTECH_SENSOR_EN
-void fts_read_report_fod_event(struct fts_ts_data *ts_data);
-#endif
 
 /* Apk and functions */
 int fts_create_apk_debug_channel(struct fts_ts_data *);
@@ -405,26 +346,21 @@ void fts_prc_queue_work(struct fts_ts_data *ts_data);
 /* FW upgrade */
 int fts_fwupg_init(struct fts_ts_data *ts_data);
 int fts_fwupg_exit(struct fts_ts_data *ts_data);
+int fts_fw_resume(bool need_reset);
+int fts_fw_recovery(void);
 int fts_upgrade_bin(char *fw_name, bool force);
-void fts_fwupg_bin(void);
 int fts_enter_test_environment(bool test_state);
-int fts_fw_update_vendor_name(const char* name);
 
 /* Other */
 int fts_reset_proc(int hdelayms);
 int fts_check_cid(struct fts_ts_data *ts_data, u8 id_h);
-int fts_wait_tp_to_valid(int delay);
+int fts_wait_tp_to_valid(void);
 void fts_release_all_finger(void);
 void fts_tp_state_recovery(struct fts_ts_data *ts_data);
-void fts_tp_resume_recovery(struct fts_ts_data *ts_data);
 int fts_ex_mode_init(struct fts_ts_data *ts_data);
 int fts_ex_mode_exit(struct fts_ts_data *ts_data);
 int fts_ex_mode_recovery(struct fts_ts_data *ts_data);
 
 void fts_irq_disable(void);
 void fts_irq_enable(void);
-int fts_power_source_ctrl(struct fts_ts_data *ts_data, int enable);
-#ifdef FOCALTECH_SENSOR_EN
-bool fts_is_fod_resume(struct fts_ts_data *ts_data);
-#endif
 #endif /* __LINUX_FOCALTECH_CORE_H__ */

@@ -14,7 +14,7 @@
 #define __GOODIX_TS_MMI_H__
 
 #include <linux/platform_device.h>
-#include <linux/touchscreen_mmi.h>
+#include <linux/touchscreen_u_mmi.h>
 #include <linux/mmi_wake_lock.h>
 
 #ifdef CONFIG_INPUT_TOUCHSCREEN_MMI
@@ -54,5 +54,6 @@ static int inline goodix_ts_mmi_dev_unregister(struct platform_device *ts_device
 #define EXIT_HIGH_REPORT_RATE_CMD 0xC100
 #define SAMPLE_SWITCH_CMD   0xC2
 #define ENTER_GESTURE_MODE_CMD   0xA6
+#define PALM_DETECTION_SWITCH_CMD   0x93
 #define ENTER_STOWED_MODE_CMD   0x97
 #endif

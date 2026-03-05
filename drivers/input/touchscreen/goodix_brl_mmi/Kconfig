@@ -2,12 +2,12 @@
 # Goodix touchscreen driver configuration
 #
 menuconfig TOUCHSCREEN_GOODIX_BRL
-	bool "Goodix berlin touchscreen"
-	depends on INPUT_TOUCHSCREEN
+	tristate "Goodix berlin touchscreen"
 	help
 	  Say Y here if you have a Goodix berlin series touch controller
 	  to your system.
 
+	  If build module, say M.
 	  If unsure, say N.
 
 if TOUCHSCREEN_GOODIX_BRL
@@ -18,3 +18,6 @@ config TOUCHSCREEN_GOODIX_BRL_SPI
 		Say Y here if the touchscreen is connected via SPI bus.
 
 endif
+config GTP_FOD
+	bool "Goodix Touch FOD Support"
+	depends on TOUCHSCREEN_GOODIX_BRL

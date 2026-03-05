@@ -1,0 +1,9 @@
+menu "MobiCore GUD support"
+
+config MOBICORE_DRIVER
+	tristate "MobiCore Driver"
+	default y
+	help
+	  MobiCore Driver for TrustZone communication.
+
+endmenu

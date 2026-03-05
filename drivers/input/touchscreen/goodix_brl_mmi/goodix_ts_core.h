@@ -16,6 +16,7 @@
 #include <linux/completion.h>
 #include <linux/of_irq.h>
 #include <linux/clk.h>
+#include <linux/version.h>
 #ifdef CONFIG_OF
 #include <linux/of_gpio.h>
 #include <linux/regulator/consumer.h>
@@ -25,7 +26,7 @@
 #include <linux/fb.h>
 #endif
 
-#if IS_ENABLED(CONFIG_DRM_MEDIATEK) && !defined(CONFIG_INPUT_TOUCHSCREEN_MMI)
+#if IS_ENABLED(CONFIG_DRM_MEDIATEK) && !defined(CONFIG_INPUT_TOUCHSCREEN_MMI) || IS_ENABLED(CONFIG_DEVICE_MODULES_DRM_MEDIATEK)
 #include "mtk_disp_notify.h"
 #endif
 
@@ -62,6 +63,8 @@
 
 #define GOODIX_NORMAL_RESET_DELAY_MS	100
 #define GOODIX_HOLD_CPU_RESET_DELAY_MS  5
+#define GOODIX_PALM_RELEASE_DELAY_MS  200
+
 
 #define GOODIX_RETRY_3					3
 #define GOODIX_RETRY_5					5
@@ -79,6 +82,11 @@
 #define GOODIX_GESTURE_SINGLE_TAP		0x4C
 #define GOODIX_GESTURE_FOD_DOWN			0x46
 #define GOODIX_GESTURE_FOD_UP			0x55
+#define GOODIX_GESTURE_PALM_DETECTION		0x40
+
+#ifndef fallthrough
+#define fallthrough do {} while (0) /* fallthrough */
+#endif
 
 enum GOODIX_GESTURE_TYP {
 	GESTURE_SINGLE_TAP = (1 << 0),
@@ -324,6 +332,9 @@ struct goodix_ts_board_data {
 	bool edge_ctrl;
 	bool stowed_mode_ctrl;
 	bool gesture_wait_pm;
+#ifdef CONFIG_GTP_MULTI_CONFIG
+	const char *panel_supplier;
+#endif
 };
 
 enum goodix_fw_update_mode {
@@ -403,6 +414,7 @@ struct goodix_pen_coords {
 /* touch event data */
 struct goodix_touch_data {
 	int touch_num;
+	bool palm_on;
 	struct goodix_ts_coords coords[GOODIX_MAX_TOUCH];
 };
 
@@ -427,11 +439,10 @@ struct goodix_ts_event {
 	enum ts_event_type event_type;
 	u8 request_code; /* represent the request type */
 	u8 gesture_type;
+	u8 gesture_report_info;
 	struct goodix_touch_data touch_data;
 	struct goodix_pen_data pen_data;
-#ifdef CONFIG_GTP_FOD
 	u8 gesture_data[GOODIX_GESTURE_DATA_LEN];
-#endif
 };
 
 enum goodix_ic_bus_type {
@@ -509,6 +520,9 @@ struct goodix_mode_info {
 	int sample;
 	int report_rate_mode;
 	int edge_mode[2];
+#ifdef GOODIX_PALM_SENSOR_EN
+	int palm_detection;
+#endif
 	int stowed;
 };
 
@@ -540,6 +554,11 @@ struct goodix_ts_core {
 	int power_on;
 	int irq;
 	size_t irq_trig_cnt;
+#ifdef GOODIX_PALM_SENSOR_EN
+	atomic_t  palm_status;
+	struct timer_list palm_release_timer;
+	unsigned int palm_release_delay_ms;
+#endif
 
 	atomic_t irq_enabled;
 	atomic_t suspended;
@@ -557,7 +576,7 @@ struct goodix_ts_core {
 #ifdef CONFIG_FB
 	struct notifier_block fb_notifier;
 #endif
-#if IS_ENABLED(CONFIG_DRM_MEDIATEK) && !defined(CONFIG_INPUT_TOUCHSCREEN_MMI)
+#if IS_ENABLED(CONFIG_DRM_MEDIATEK) && !defined(CONFIG_INPUT_TOUCHSCREEN_MMI) || IS_ENABLED(CONFIG_DEVICE_MODULES_DRM_MEDIATEK)
 	struct notifier_block disp_notifier;
 #endif
 

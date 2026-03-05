@@ -23,7 +23,7 @@
 #include <linux/of.h>
 #include <linux/of_address.h>
 #include <linux/ctype.h>
-#include <linux/dma-contiguous.h>
+#include <linux/dma-map-ops.h>
 #include <linux/dma-mapping.h>
 #include <linux/mmi_annotate.h>
 #include <linux/seq_file.h>
@@ -35,20 +35,20 @@
 #define PERSIST_MAGIC_NUM 0xABCD1234
 
 struct platform_data {
-	phys_addr_t	mem_address;
-	size_t		mem_size;
+	phys_addr_t mem_address;
+	size_t mem_size;
 };
 
 struct mem_data_t {
-	unsigned int  size;
-	size_t        cur_off;
+	unsigned int size;
+	size_t cur_off;
 	unsigned char *contents;
 };
 
 struct persist_data_t {
-	unsigned int  magic_num;
-	size_t        size;
-	size_t        cur_off;
+	unsigned int magic_num;
+	size_t size;
+	size_t cur_off;
 	unsigned char contents[];
 };
 
@@ -78,7 +78,7 @@ static int mmi_annotate_open(struct inode *inode, struct file *file)
 }
 
 static ssize_t mmi_annotate_write(struct file *file, const char __user *buf,
-				size_t count, loff_t *offset)
+				  size_t count, loff_t *offset)
 {
 	char buffer[MAX_USER_STR];
 	const size_t maxlen = sizeof(buffer) - 1;
@@ -93,15 +93,15 @@ static ssize_t mmi_annotate_write(struct file *file, const char __user *buf,
 }
 
 static const struct file_operations mmi_annotate_operations = {
-	.open		= mmi_annotate_open,
-	.read		= seq_read,
-	.write		= mmi_annotate_write,
-	.llseek		= seq_lseek,
-	.release	= single_release,
+	.open = mmi_annotate_open,
+	.read = seq_read,
+	.write = mmi_annotate_write,
+	.llseek = seq_lseek,
+	.release = single_release,
 };
 
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(5,4,0)
-static void* mmi_annotate_ram_vmap(phys_addr_t start, size_t size)
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 4, 0)
+static void *mmi_annotate_ram_vmap(phys_addr_t start, size_t size)
 {
 	struct page **pages;
 	phys_addr_t page_start;
@@ -114,8 +114,8 @@ static void* mmi_annotate_ram_vmap(phys_addr_t start, size_t size)
 
 	pages = kmalloc_array(page_count, sizeof(struct page *), GFP_KERNEL);
 	if (!pages) {
-		pr_err("%s: Failed to allocate array for %u pages\n",
-		       __func__, page_count);
+		pr_err("%s: Failed to allocate array for %u pages\n", __func__,
+		       page_count);
 		return NULL;
 	}
 
@@ -127,8 +127,8 @@ static void* mmi_annotate_ram_vmap(phys_addr_t start, size_t size)
 	kfree(pages);
 
 	if (!vaddr) {
-		pr_err("%s: Failed to vmap the %d pages\n",
-		       __func__, page_count);
+		pr_err("%s: Failed to vmap the %d pages\n", __func__,
+		       page_count);
 		return NULL;
 	}
 
@@ -176,57 +176,55 @@ static int mmi_annotate_probe(struct platform_device *pdev)
 	dev_info(dev, "addr %lx", (unsigned long)pdata->mem_address);
 
 	if (pdata->mem_size < sizeof(struct persist_data_t)) {
-		dev_err(dev, "Mem size too small %zx/%zd\n",
-				pdata->mem_size, sizeof(struct persist_data_t));
+		dev_err(dev, "Mem size too small %zx/%zd\n", pdata->mem_size,
+			sizeof(struct persist_data_t));
 		err = -ENOMEM;
 		goto err;
 	}
 
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(5,4,0)
-	persist_data = mmi_annotate_ram_vmap(pdata->mem_address, pdata->mem_size);
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 4, 0)
+	persist_data =
+		mmi_annotate_ram_vmap(pdata->mem_address, pdata->mem_size);
 #else
-	persist_data = dma_remap(dev, NULL, pdata->mem_address,
-					pdata->mem_size, 0);
+	persist_data =
+		dma_remap(dev, NULL, pdata->mem_address, pdata->mem_size, 0);
 #endif
 	if (!persist_data) {
 		dev_err(dev, "Cannot remap buffer %pa size %zx\n",
-				&pdata->mem_address, pdata->mem_size);
+			&pdata->mem_address, pdata->mem_size);
 		err = -ENOMEM;
 		goto err;
 	}
 
 	/* Allocate local memory region for non-persistent data */
-	if(of_property_read_u32(dev->of_node, "mem-size", &mem_data.size)) {
+	if (of_property_read_u32(dev->of_node, "mem-size", &mem_data.size)) {
 		mem_data.size = DEFAULT_MEM_SIZE;
 		dev_info(dev, "mem-size defaulting to %d", DEFAULT_MEM_SIZE);
-	}
-	else
+	} else
 		dev_info(dev, "mem-size %x", mem_data.size);
 
 	mem_data.contents = kzalloc(mem_data.size, GFP_KERNEL);
-	if(!mem_data.contents) {
+	if (!mem_data.contents) {
 		dev_err(dev, "Cannot allocate buffer of size %x\n",
-				mem_data.size);
+			mem_data.size);
 		err = -ENOMEM;
 		goto err;
 	}
 
 	/* If persist data is valid, copy it to the local mem area and reset it */
 	persist_data->size = pdata->mem_size - sizeof(struct persist_data_t);
-	if(persist_data->magic_num == PERSIST_MAGIC_NUM &&
-		persist_data->cur_off <= persist_data->size) {
-		memcpy(mem_data.contents,
-				persist_data->contents,
-				persist_data->cur_off);
+	if (persist_data->magic_num == PERSIST_MAGIC_NUM &&
+	    persist_data->cur_off <= persist_data->size) {
+		memcpy(mem_data.contents, persist_data->contents,
+		       persist_data->cur_off);
 		mem_data.cur_off += persist_data->cur_off;
-	}
-	else
+	} else
 		persist_data->magic_num = PERSIST_MAGIC_NUM;
 	persist_data->cur_off = 0;
 
 	/* Create the procfs file at /proc/driver/mmi_annotate */
-	procfs_file = proc_create("driver/mmi_annotate",
-		0444, NULL, &mmi_annotate_operations);
+	procfs_file = proc_create("driver/mmi_annotate", 0444, NULL,
+				  &mmi_annotate_operations);
 err:
 	return err;
 }
@@ -242,7 +240,7 @@ int mmi_annotate(const char *fmt, ...)
 	va_end(args);
 
 	mutex_lock(&mem_lock);
-	if(mem_data.contents && mem_data.cur_off + len < mem_data.size) {
+	if (mem_data.contents && mem_data.cur_off + len < mem_data.size) {
 		memcpy(mem_data.contents + mem_data.cur_off, line_buf, len);
 		mem_data.cur_off += len;
 	}
@@ -263,10 +261,9 @@ int mmi_annotate_persist(const char *fmt, ...)
 	va_end(args);
 
 	mutex_lock(&persist_lock);
-	if(persist_data &&
-		persist_data->cur_off + len < persist_data->size) {
-		memcpy(persist_data->contents + persist_data->cur_off,
-			line_buf, len);
+	if (persist_data && persist_data->cur_off + len < persist_data->size) {
+		memcpy(persist_data->contents + persist_data->cur_off, line_buf,
+		       len);
 		persist_data->cur_off += len;
 	}
 	mutex_unlock(&persist_lock);
@@ -279,7 +276,7 @@ static int mmi_annotate_remove(struct platform_device *pdev)
 {
 	if (procfs_file)
 		remove_proc_entry("driver/mmi_annotate", NULL);
-	if(mem_data.contents)
+	if (mem_data.contents)
 		kfree(mem_data.contents);
 	return 0;
 }

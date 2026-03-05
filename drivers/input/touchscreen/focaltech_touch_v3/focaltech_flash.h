@@ -206,17 +206,9 @@ struct fts_upgrade {
 /*****************************************************************************
 * Global variable or extern global variabls/functions
 *****************************************************************************/
-extern struct upgrade_func upgrade_func_ft5662;
 
 
 /*****************************************************************************
 * Static function prototypes
 *****************************************************************************/
-int fts_fwupg_reset_in_boot(void);
-int fts_fwupg_enter_into_boot(void);
-int fts_fwupg_erase(u32 delay);
-int fts_fwupg_ecc_cal(u32 saddr, u32 len);
-int fts_flash_write_buf(u32 saddr, u8 *buf, u32 len, u32 delay);
-int fts_flash_read_buf(u32 saddr, u8 *buf, u32 len);
-int fts_fwupg_upgrade(struct fts_upgrade *upg);
 #endif

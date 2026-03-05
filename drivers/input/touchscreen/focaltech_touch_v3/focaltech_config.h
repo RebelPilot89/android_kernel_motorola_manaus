@@ -182,8 +182,8 @@
 /*
  * choose your ic chip type of focaltech
  */
-#define FTS_CHIP_TYPE   _FT3681
-#define FTS_CHIP_NAME   "ft3681"
+#define FTS_CHIP_TYPE   _FT8006S_AN
+#define FTS_CHIP_NAME   "ft8006s_an"
 
 /******************* Enables *********************/
 /*********** 1 to enable, 0 to disable ***********/
@@ -216,10 +216,12 @@
  * Gesture function enable
  * default: disable
  */
-#ifdef FOCALTECH_SENSOR_EN
-#define FTS_GESTURE_EN                          1
-#else
 #define FTS_GESTURE_EN                          0
+
+#ifdef FOCALTECH_FB_PANEL_EN
+#define FTS_FB_PANEL				1
+#else
+#define FTS_FB_PANEL				0
 #endif
 
 /*
@@ -232,20 +234,24 @@
  * Host test enable
  * 1: enable, 0:disable(default)
  */
+#ifdef FTS_TEST_SUPPORT
 #define FTS_TEST_EN                             1
+#else
+#define FTS_TEST_EN                             0
+#endif
 
 /*
  * Pinctrl enable
  * default: disable
  */
-#define FTS_PINCTRL_EN                          1
+#define FTS_PINCTRL_EN                          0
 
 /*
  * Customer power enable
  * enable it when customer need control TP power
  * default: disable
  */
-#define FTS_POWER_SOURCE_CUST_EN                1
+#define FTS_POWER_SOURCE_CUST_EN                0
 
 /****************************************************/
 
@@ -264,11 +270,6 @@
  * Numbers of modules support
  */
 #define FTS_GET_MODULE_NUM                      0
-
-/*
- * Usb detect support
- */
-#define FTS_USB_DETECT_EN                       1
 
 /*
  * module_id: mean vendor_id generally, also maybe gpio or lcm_id...

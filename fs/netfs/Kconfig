@@ -1,0 +1,9 @@
+menu "NetFS (Network Filesystem Support)"
+
+config NETFS_SUPPORT
+	tristate "NetFS support layer"
+	help
+	  Support for caching and higher-level I/O management for network
+	  filesystems.
+
+endmenu

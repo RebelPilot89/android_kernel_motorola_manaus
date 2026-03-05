@@ -15,8 +15,9 @@
   *
   */
 #include "goodix_ts_core.h"
+#if defined(CONFIG_INPUT_TOUCHSCREEN_MMI)
 #include "goodix_ts_mmi.h"
-
+#endif
 /* berlin_A SPI mode setting */
 #define GOODIX_SPI_MODE_REG			0xC900
 #define GOODIX_SPI_NORMAL_MODE_0	0x01
@@ -202,6 +203,11 @@ static int brl_power_on(struct goodix_ts_core *cd, bool on)
 		if (iovdd_gpio > 0) {
 			gpio_direction_output(iovdd_gpio, 1);
 		} else if (cd->iovdd) {
+			ret = regulator_set_voltage(cd->iovdd, 1800000, 1800000);
+			if (ret) {
+				ts_err("set iovdd voltage fail");
+				goto power_off;
+			}
 			ret = regulator_enable(cd->iovdd);
 			if (ret < 0) {
 				ts_err("Failed to enable iovdd:%d", ret);
@@ -1079,6 +1085,7 @@ static int brl_esd_check(struct goodix_ts_core *cd)
 #define GOODIX_GESTURE_EVENT		0x20
 #define POINT_TYPE_STYLUS_HOVER		0x01
 #define POINT_TYPE_STYLUS			0x03
+#define GOODIX_PALM_FLAG			0x10
 
 static void goodix_parse_finger(struct goodix_touch_data *touch_data,
 				u8 *buf, int touch_num)
@@ -1162,11 +1169,38 @@ static int goodix_touch_handler(struct goodix_ts_core *cd,
 #ifdef CONFIG_GTP_FOD
 	int  fp_flags = 0;
 #endif
+#ifdef GOODIX_PALM_SENSOR_EN
+	int palm_flag = 0;
+#endif
 	/* clean event buffer */
 	memset(ts_event, 0, sizeof(*ts_event));
 	/* copy pre-data to buffer */
 	memcpy(buffer, pre_buf, pre_buf_len);
 
+#ifdef CONFIG_ENABLE_GTP_PALM_CANCEL
+	if (buffer[2] & GOODIX_PALM_FLAG) {
+		ts_event->touch_data.palm_on = true;
+		ts_debug("goodix palm on, touch num %d", pre_buf[2] & 0x0F);
+	} else
+		ts_event->touch_data.palm_on = false;
+#endif
+
+#ifdef GOODIX_PALM_SENSOR_EN
+	if (cd->set_mode.palm_detection) {
+		palm_flag = buffer[2] & GOODIX_GESTURE_PALM_DETECTION;
+		if (palm_flag) {
+			mod_timer(&cd->palm_release_timer,
+				jiffies + msecs_to_jiffies(cd->palm_release_delay_ms));
+		}
+		if (atomic_read(&cd->palm_status) != palm_flag) {
+			atomic_set(&cd->palm_status, palm_flag);
+			/* call class method */
+			if (cd->imports && cd->imports->report_palm)
+				cd->imports->report_palm(palm_flag);
+			ts_info("palm detection flag changed to: 0x%x\n", palm_flag);
+		}
+	}
+#endif
 	touch_num = buffer[2] & 0x0F;
 
 	if (touch_num > GOODIX_MAX_TOUCH) {
@@ -1465,11 +1499,10 @@ static int brl_event_handler(struct goodix_ts_core *cd,
 			ts_debug("unsupported request code 0x%x", pre_buf[2]);
 	} else if (event_status & GOODIX_GESTURE_EVENT) {
 		ts_event->event_type = EVENT_GESTURE;
+		ts_event->gesture_report_info = pre_buf[2];
 		ts_event->gesture_type = pre_buf[4];
-#ifdef CONFIG_GTP_FOD
 		memcpy(ts_event->gesture_data, &pre_buf[8],
 				GOODIX_GESTURE_DATA_LEN);
-#endif
 	} else {
 		ts_info("Unsupported event status");
 		return -EINVAL;

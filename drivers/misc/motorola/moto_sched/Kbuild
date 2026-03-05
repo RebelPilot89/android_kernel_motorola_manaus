@@ -1,4 +1,4 @@
-ccflags-y += -Wall
+ccflags-y += -Wall -I$(srctree)/kernel/sched
 
 obj-$(CONFIG_MOTO_SCHED) += moto_sched.o
 

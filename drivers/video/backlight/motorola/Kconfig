@@ -1,0 +1,19 @@
+menu "Motorola Backlight Support"
+
+config BACKLIGHT_AW99703
+	tristate "Awinic AW99703 Backlight support"
+	depends on I2C
+
+config BACKLIGHT_KTD3136
+	tristate "Kinetix KTD3136 Backlight support"
+	depends on I2C
+
+config BACKLIGHT_LM3697
+	tristate "TI LM3697 Backlight support"
+	depends on I2C
+
+config BACKLIGHT_SM5350
+	tristate "Silicon Mitus SM5350 Backlight support"
+	depends on I2C
+
+endmenu

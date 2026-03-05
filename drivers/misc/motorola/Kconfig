@@ -119,3 +119,42 @@ source "drivers/misc/motorola/moto_swap/Kconfig"
 source "drivers/misc/motorola/moto_sched/Kconfig"
 
 endmenu
+
+config MOTO_HALL
+	tristate "Motorola Hall sensor support"
+	depends on I2C
+
+config MOTO_PEN
+	tristate "Motorola Pen support"
+	depends on I2C
+
+config MOTO_ABOV
+	tristate "Motorola Abov MCU support"
+	depends on I2C
+
+config MOTO_AW9610X
+	tristate "Awinic AW9610X SAR sensor support"
+	depends on I2C
+
+config MOTO_SX9310
+	tristate "Semtech SX9310 SAR sensor support"
+	depends on I2C
+
+config MOTO_SX9325
+	tristate "Semtech SX9325 SAR sensor support"
+	depends on I2C
+
+config MOTO_SX933X
+	tristate "Semtech SX933X SAR sensor support"
+	depends on I2C
+
+config MOTO_SIGPRINT
+	tristate "Motorola Signature Print support"
+
+config MOTO_TPS61280
+	tristate "TI TPS61280 Boost converter support"
+	depends on I2C
+
+config INPUT_DRV2624_MMI
+	tristate "Motorola DRV2624 haptic support"
+	depends on I2C

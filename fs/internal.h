@@ -36,7 +36,7 @@ static inline int __sync_blockdev(struct block_device *bdev, int wait)
 	return 0;
 }
 static inline void iterate_bdevs(void (*f)(struct block_device *, void *),
-		void *arg)
+				 void *arg)
 {
 }
 static inline int emergency_thaw_bdev(struct super_block *sb)
@@ -52,7 +52,7 @@ static inline void bd_forget(struct inode *inode)
  * buffer.c
  */
 extern int __block_write_begin_int(struct page *page, loff_t pos, unsigned len,
-		get_block_t *get_block, struct iomap *iomap);
+				   get_block_t *get_block, struct iomap *iomap);
 
 /*
  * char_dev.c
@@ -72,8 +72,12 @@ extern int finish_clean_context(struct fs_context *fc);
  */
 extern int filename_lookup(int dfd, struct filename *name, unsigned flags,
 			   struct path *path, struct path *root);
-extern int vfs_path_lookup(struct dentry *, struct vfsmount *,
-			   const char *, unsigned int, struct path *);
+extern struct filename *filename_parentat(int dfd, struct filename *name,
+					  unsigned int flags,
+					  struct path *parent,
+					  struct qstr *last, int *type);
+extern int vfs_path_lookup(struct dentry *, struct vfsmount *, const char *,
+			   unsigned int, struct path *);
 long do_rmdir(int dfd, struct filename *name);
 long do_unlinkat(int dfd, struct filename *name);
 int may_linkat(struct path *link);
@@ -95,8 +99,8 @@ extern void __mnt_drop_write_file(struct file *);
 
 extern void dissolve_on_fput(struct vfsmount *);
 
-int path_mount(const char *dev_name, struct path *path,
-		const char *type_page, unsigned long flags, void *data_page);
+int path_mount(const char *dev_name, struct path *path, const char *type_page,
+	       unsigned long flags, void *data_page);
 int path_umount(struct path *path, int flags);
 
 /*
@@ -129,9 +133,9 @@ struct open_flags {
 	int lookup_flags;
 };
 extern struct file *do_filp_open(int dfd, struct filename *pathname,
-		const struct open_flags *op);
+				 const struct open_flags *op);
 extern struct file *do_file_open_root(struct dentry *, struct vfsmount *,
-		const char *, const struct open_flags *);
+				      const char *, const struct open_flags *);
 extern struct open_how build_open_how(int flags, umode_t mode);
 extern int build_open_flags(const struct open_how *how, struct open_flags *op);
 extern int __close_fd_get_file(unsigned int fd, struct file **res);
@@ -162,7 +166,7 @@ extern int invalidate_inodes(struct super_block *, bool);
 extern int d_set_mounted(struct dentry *dentry);
 extern long prune_dcache_sb(struct super_block *sb, struct shrink_control *sc);
 extern struct dentry *d_alloc_cursor(struct dentry *);
-extern struct dentry * d_alloc_pseudo(struct super_block *, const struct qstr *);
+extern struct dentry *d_alloc_pseudo(struct super_block *, const struct qstr *);
 extern char *simple_dname(struct dentry *, char *, int);
 extern void dput_to_list(struct dentry *, struct list_head *);
 extern void shrink_dentry_list(struct list_head *);

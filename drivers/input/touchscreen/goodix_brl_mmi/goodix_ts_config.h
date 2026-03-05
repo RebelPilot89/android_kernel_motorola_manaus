@@ -13,7 +13,9 @@
 #ifndef __GOODIX_TS_CONFIG_H__
 #define __GOODIX_TS_CONFIG_H__
 
-#include <linux/touchscreen_mmi.h>
+#if defined(CONFIG_INPUT_TOUCHSCREEN_MMI)
+#include <linux/touchscreen_u_mmi.h>
+#endif
 #include "goodix_ts_core.h"
 
 #define MAX_REPORT_RATE_CONFIG 12

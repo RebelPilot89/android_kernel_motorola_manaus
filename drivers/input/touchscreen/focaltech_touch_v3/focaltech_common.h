@@ -56,7 +56,7 @@
 
 #define FTS_MAX_CHIP_IDS        8
 
-#define FTS_CHIP_TYPE_MAPPING {{0x8A, 0x56, 0x62, 0x56, 0x62, 0x56, 0xE2, 0x00, 0x00}}
+#define FTS_CHIP_TYPE_MAPPING {{0x22, 0xF0, 0xC6, 0xF0, 0xC6, 0xF0, 0xD6, 0x00, 0x00}}
 
 
 #define FILE_NAME_LENGTH                    128
@@ -82,8 +82,6 @@
 #define FTS_REG_CHIP_ID                     0xA3
 #define FTS_REG_CHIP_ID2                    0x9F
 #define FTS_REG_POWER_MODE                  0xA5
-#define FTS_REG_POWER_MODE_ACTIVE           0
-#define FTS_REG_POWER_MODE_STANDBY          0x02
 #define FTS_REG_POWER_MODE_SLEEP            0x03
 #define FTS_REG_FW_VER                      0xA6
 #define FTS_REG_VENDOR_ID                   0xA8
