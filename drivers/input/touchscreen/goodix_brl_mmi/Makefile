@@ -29,6 +29,6 @@ else
 	goodix_brl_mmi-objs += goodix_ts_gesture.o
 endif
 
-ifeq ($(CONFIG_INPUT_TOUCHSCREEN_MMI),y)
+ifeq ($(CONFIG_TOUCHSCREEN_MMI),y)
 	goodix_brl_mmi-objs += goodix_ts_mmi.o
 endif
