@@ -24,7 +24,16 @@ enum iter_type {
 	ITER_BVEC = 16,
 	ITER_PIPE = 32,
 	ITER_DISCARD = 64,
+	ITER_XARRAY = 128,
 };
+
+/*
+ * Direction qualifiers for iov_iter; ITER_SOURCE means the iterator is a
+ * data source (written to), ITER_DEST means the iterator is a data
+ * destination (read from). Aliases for READ/WRITE.
+ */
+#define ITER_SOURCE	1	/* == WRITE; the iter is a source of data */
+#define ITER_DEST	0	/* == READ;  the iter is a destination for data */
 
 struct iov_iter_state {
 	size_t iov_offset;
@@ -46,6 +55,7 @@ struct iov_iter {
 		const struct kvec *kvec;
 		const struct bio_vec *bvec;
 		struct pipe_inode_info *pipe;
+		struct xarray *xarray;
 	};
 	union {
 		unsigned long nr_segs;
@@ -53,12 +63,18 @@ struct iov_iter {
 			unsigned int head;
 			unsigned int start_head;
 		};
+		loff_t xarray_start;
 	};
 };
 
 static inline enum iter_type iov_iter_type(const struct iov_iter *i)
 {
 	return i->type & ~(READ | WRITE);
+}
+
+static inline bool iov_iter_is_xarray(const struct iov_iter *i)
+{
+	return iov_iter_type(i) == ITER_XARRAY;
 }
 
 static inline void iov_iter_save_state(struct iov_iter *iter,
@@ -235,6 +251,8 @@ void iov_iter_bvec(struct iov_iter *i, unsigned int direction, const struct bio_
 void iov_iter_pipe(struct iov_iter *i, unsigned int direction, struct pipe_inode_info *pipe,
 			size_t count);
 void iov_iter_discard(struct iov_iter *i, unsigned int direction, size_t count);
+void iov_iter_xarray(struct iov_iter *i, unsigned int direction, struct xarray *xarray,
+			loff_t start, size_t count);
 ssize_t iov_iter_get_pages(struct iov_iter *i, struct page **pages,
 			size_t maxsize, unsigned maxpages, size_t *start);
 ssize_t iov_iter_get_pages_alloc(struct iov_iter *i, struct page ***pages,

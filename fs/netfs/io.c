@@ -103,7 +103,7 @@ static void netfs_rreq_completed(struct netfs_io_request *rreq, bool was_async)
 
 /*
  * Deal with the completion of writing the data to the cache.  We have to clear
- * the PG_fscache bits on the folios involved and release the caller's ref.
+ * the PG_fscache bits on the pages involved and release the caller's ref.
  *
  * May be called in softirq mode and we inherit a ref from the caller.
  */
@@ -111,7 +111,7 @@ static void netfs_rreq_unmark_after_write(struct netfs_io_request *rreq,
 					  bool was_async)
 {
 	struct netfs_io_subrequest *subreq;
-	struct folio *folio;
+	struct page *page;
 	pgoff_t unlocked = 0;
 	bool have_unlocked = false;
 
@@ -120,17 +120,17 @@ static void netfs_rreq_unmark_after_write(struct netfs_io_request *rreq,
 	list_for_each_entry(subreq, &rreq->subrequests, rreq_link) {
 		XA_STATE(xas, &rreq->mapping->i_pages, subreq->start / PAGE_SIZE);
 
-		xas_for_each(&xas, folio, (subreq->start + subreq->len - 1) / PAGE_SIZE) {
-			if (xas_retry(&xas, folio))
+		xas_for_each(&xas, page, (subreq->start + subreq->len - 1) / PAGE_SIZE) {
+			if (xas_retry(&xas, page))
 				continue;
 
-			/* We might have multiple writes from the same huge
-			 * folio, but we mustn't unlock a folio more than once.
+			/* We might have multiple writes from the same compound
+			 * page, but we mustn't unlock a page more than once.
 			 */
-			if (have_unlocked && folio_index(folio) <= unlocked)
+			if (have_unlocked && page->index <= unlocked)
 				continue;
-			unlocked = folio_index(folio);
-			folio_end_fscache(folio);
+			unlocked = page->index;
+			end_page_fscache(page);
 			have_unlocked = true;
 		}
 	}

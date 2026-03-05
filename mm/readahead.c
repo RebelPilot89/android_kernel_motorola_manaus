@@ -650,3 +650,69 @@ SYSCALL_DEFINE3(readahead, int, fd, loff_t, offset, size_t, count)
 {
 	return ksys_readahead(fd, offset, count);
 }
+
+/**
+ * readahead_expand - Expand a readahead request
+ * @ractl: The readahead control to expand
+ * @new_start: Start of the expanded readahead window
+ * @new_len:   Length of the expanded readahead window
+ *
+ * Attempt to expand the readahead window to start at @new_start and finish
+ * at @new_start + @new_len.  The original window is guaranteed to be a
+ * subset of the new window.  @new_start must be less than or equal to the
+ * original start and @new_start + @new_len must be greater than or equal
+ * to the original end.
+ *
+ * Locks are taken on new pages and they are added at the head and tail of
+ * the readahead control.  If a new page cannot be grabbed, expansion is
+ * aborted.
+ */
+void readahead_expand(struct readahead_control *ractl,
+		      loff_t new_start, size_t new_len)
+{
+	struct address_space *mapping = ractl->mapping;
+	pgoff_t new_index, new_nr_pages;
+	pgoff_t head;
+
+	new_index = new_start / PAGE_SIZE;
+	new_nr_pages = (new_start + new_len - 1) / PAGE_SIZE - new_index + 1;
+
+	/* Expand at the front */
+	head = ractl->_index;
+	while (new_index < head) {
+		struct page *page;
+
+		head--;
+		/* Do not overwrite an existing page */
+		page = xa_load(&mapping->i_pages, head);
+		if (page && !xa_is_value(page))
+			return;
+		page = pagecache_get_page(mapping, head,
+					  FGP_LOCK | FGP_CREAT | FGP_NOFS,
+					  mapping_gfp_mask(mapping));
+		if (!page)
+			return;
+
+		ractl->_index = head;
+		ractl->_nr_pages++;
+	}
+
+	/* Expand at the rear */
+	while (ractl->_index + ractl->_nr_pages < new_index + new_nr_pages) {
+		struct page *page;
+		pgoff_t tail = ractl->_index + ractl->_nr_pages;
+
+		/* Do not overwrite an existing page */
+		page = xa_load(&mapping->i_pages, tail);
+		if (page && !xa_is_value(page))
+			return;
+		page = pagecache_get_page(mapping, tail,
+					  FGP_LOCK | FGP_CREAT | FGP_NOFS,
+					  mapping_gfp_mask(mapping));
+		if (!page)
+			return;
+
+		ractl->_nr_pages++;
+	}
+}
+EXPORT_SYMBOL(readahead_expand);

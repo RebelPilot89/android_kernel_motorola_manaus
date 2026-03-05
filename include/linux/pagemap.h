@@ -659,6 +659,10 @@ static inline __sched int lock_page_or_retry(struct page *page, struct mm_struct
 extern void wait_on_page_bit(struct page *page, int bit_nr);
 extern int wait_on_page_bit_killable(struct page *page, int bit_nr);
 
+extern void unlock_page_private_2(struct page *page);
+extern void wait_on_page_private_2(struct page *page);
+extern int wait_on_page_private_2_killable(struct page *page);
+
 /* 
  * Wait for a page to be unlocked.
  *
@@ -814,6 +818,8 @@ void page_cache_sync_ra(struct readahead_control *, struct file_ra_state *,
 		unsigned long req_count);
 void page_cache_async_ra(struct readahead_control *, struct file_ra_state *,
 		struct page *, unsigned long req_count);
+void readahead_expand(struct readahead_control *ractl,
+		      loff_t new_start, size_t new_len);
 
 /**
  * page_cache_sync_readahead - generic file readahead

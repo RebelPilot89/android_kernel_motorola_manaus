@@ -1351,6 +1351,53 @@ __sched int wait_on_page_bit_killable(struct page *page, int bit_nr)
 }
 EXPORT_SYMBOL(wait_on_page_bit_killable);
 
+/**
+ * unlock_page_private_2 - Unlock a page's PG_private_2 bit and wake waiters.
+ * @page: The page.
+ *
+ * Clear the PG_private_2 (aka PG_fscache) bit on @page and wake up any
+ * sleepers waiting for that bit.  Intended for use by network filesystems
+ * to indicate that a write to the local cache has completed.
+ */
+void unlock_page_private_2(struct page *page)
+{
+	page = compound_head(page);
+	clear_bit_unlock(PG_private_2, &page->flags);
+	smp_mb__after_atomic();
+	wake_up_page_bit(page, PG_private_2);
+}
+EXPORT_SYMBOL(unlock_page_private_2);
+
+/**
+ * wait_on_page_private_2 - Wait for PG_private_2 to be cleared on a page.
+ * @page: The page to wait on.
+ *
+ * Wait for PG_private_2 (aka PG_fscache) to be cleared on @page.  This is
+ * used to wait for a cache write that is in progress to complete.
+ */
+void wait_on_page_private_2(struct page *page)
+{
+	wait_on_page_bit(compound_head(page), PG_private_2);
+}
+EXPORT_SYMBOL(wait_on_page_private_2);
+
+/**
+ * wait_on_page_private_2_killable - Wait, killably, for PG_private_2 to be cleared.
+ * @page: The page to wait on.
+ *
+ * Wait for PG_private_2 (aka PG_fscache) to be cleared on @page or for a
+ * fatal signal to be received.
+ *
+ * Return:
+ * - 0 if successful.
+ * - -EINTR if a fatal signal was encountered.
+ */
+int wait_on_page_private_2_killable(struct page *page)
+{
+	return wait_on_page_bit_killable(compound_head(page), PG_private_2);
+}
+EXPORT_SYMBOL(wait_on_page_private_2_killable);
+
 static int __wait_on_page_locked_async(struct page *page,
 				       struct wait_page_queue *wait, bool set)
 {

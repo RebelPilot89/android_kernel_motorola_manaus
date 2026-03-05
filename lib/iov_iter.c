@@ -9,6 +9,7 @@
 #include <linux/vmalloc.h>
 #include <linux/splice.h>
 #include <linux/compat.h>
+#include <linux/xarray.h>
 #include <net/checksum.h>
 #include <linux/scatterlist.h>
 #include <linux/instrumented.h>
@@ -972,6 +973,30 @@ size_t iov_iter_zero(size_t bytes, struct iov_iter *i)
 {
 	if (unlikely(iov_iter_is_pipe(i)))
 		return pipe_zero(bytes, i);
+	if (unlikely(iov_iter_is_xarray(i))) {
+		struct page *page;
+		loff_t pos = i->xarray_start + i->iov_offset;
+		pgoff_t index = pos >> PAGE_SHIFT;
+		pgoff_t last = (pos + bytes - 1) >> PAGE_SHIFT;
+		size_t done = 0;
+		XA_STATE(xas, i->xarray, index);
+
+		rcu_read_lock();
+		xas_for_each(&xas, page, last) {
+			size_t off, len;
+
+			if (xas_retry(&xas, page))
+				continue;
+			off = (pos + done) & ~PAGE_MASK;
+			len = min_t(size_t, PAGE_SIZE - off, bytes - done);
+			zero_user_segment(page, off, off + len);
+			done += len;
+		}
+		rcu_read_unlock();
+		i->iov_offset += done;
+		i->count -= done;
+		return done;
+	}
 	iterate_and_advance(i, bytes, v,
 		clear_user(v.iov_base, v.iov_len),
 		memzero_page(v.bv_page, v.bv_offset, v.bv_len),
@@ -1218,6 +1243,34 @@ void iov_iter_discard(struct iov_iter *i, unsigned int direction, size_t count)
 	i->iov_offset = 0;
 }
 EXPORT_SYMBOL(iov_iter_discard);
+
+/**
+ * iov_iter_xarray - Initialise an I/O iterator to use the pages in an xarray
+ * @i: The iterator to initialise.
+ * @direction: The direction of the transfer: %ITER_SOURCE or %ITER_DEST.
+ * @xarray: The xarray to access.
+ * @start: The start file position.
+ * @count: The size of the initial transfer.
+ *
+ * Set up an iterator to either extract data from the pages attached to an
+ * inode or to inject data into those pages.  The pages will be accessed as
+ * described by the page table.
+ *
+ * @direction must be %ITER_SOURCE (if the pages are a data source) or
+ * %ITER_DEST (if the pages are a data destination).  This can be given
+ * as simply READ or WRITE as well.
+ */
+void iov_iter_xarray(struct iov_iter *i, unsigned int direction,
+		     struct xarray *xarray, loff_t start, size_t count)
+{
+	BUG_ON(direction & ~1);
+	i->type = ITER_XARRAY | (direction & 1);
+	i->xarray = xarray;
+	i->xarray_start = start;
+	i->count = count;
+	i->iov_offset = start & ~PAGE_MASK;
+}
+EXPORT_SYMBOL(iov_iter_xarray);
 
 unsigned long iov_iter_alignment(const struct iov_iter *i)
 {

@@ -24,7 +24,6 @@ enum netfs_sreq_ref_trace;
  * Overload PG_private_2 to give us PG_fscache - this is used to indicate that
  * a page is currently backed by a local disk cache
  */
-#define folio_test_fscache(folio)	folio_test_private_2(folio)
 #define PageFsCache(page)		PagePrivate2((page))
 #define SetPageFsCache(page)		SetPagePrivate2((page))
 #define ClearPageFsCache(page)		ClearPagePrivate2((page))
@@ -32,80 +31,60 @@ enum netfs_sreq_ref_trace;
 #define TestClearPageFsCache(page)	TestClearPagePrivate2((page))
 
 /**
- * folio_start_fscache - Start an fscache write on a folio.
- * @folio: The folio.
+ * set_page_fscache - Start an fscache write on a page.
+ * @page: The page.
  *
- * Call this function before writing a folio to a local cache.  Starting a
+ * Call this function before writing a page to a local cache.  Starting a
  * second write before the first one finishes is not allowed.
  */
-static inline void folio_start_fscache(struct folio *folio)
+static inline void set_page_fscache(struct page *page)
 {
-	VM_BUG_ON_FOLIO(folio_test_private_2(folio), folio);
-	folio_get(folio);
-	folio_set_private_2(folio);
+	VM_BUG_ON_PAGE(PagePrivate2(page), page);
+	get_page(page);
+	SetPagePrivate2(page);
 }
 
 /**
- * folio_end_fscache - End an fscache write on a folio.
- * @folio: The folio.
+ * end_page_fscache - End an fscache write on a page.
+ * @page: The page.
  *
- * Call this function after the folio has been written to the local cache.
- * This will wake any sleepers waiting on this folio.
+ * Call this function after the page has been written to the local cache.
+ * This will wake any sleepers waiting on this page.
  */
-static inline void folio_end_fscache(struct folio *folio)
+static inline void end_page_fscache(struct page *page)
 {
-	folio_end_private_2(folio);
+	unlock_page_private_2(page);
 }
 
 /**
- * folio_wait_fscache - Wait for an fscache write on this folio to end.
- * @folio: The folio.
+ * wait_on_page_fscache - Wait for an fscache write on this page to end.
+ * @page: The page.
  *
- * If this folio is currently being written to a local cache, wait for
+ * If this page is currently being written to a local cache, wait for
  * the write to finish.  Another write may start after this one finishes,
- * unless the caller holds the folio lock.
+ * unless the caller holds the page lock.
  */
-static inline void folio_wait_fscache(struct folio *folio)
+static inline void wait_on_page_fscache(struct page *page)
 {
-	folio_wait_private_2(folio);
+	wait_on_page_private_2(page);
 }
 
 /**
- * folio_wait_fscache_killable - Wait for an fscache write on this folio to end.
- * @folio: The folio.
+ * wait_on_page_fscache_killable - Wait for an fscache write on this page to end.
+ * @page: The page.
  *
- * If this folio is currently being written to a local cache, wait
+ * If this page is currently being written to a local cache, wait
  * for the write to finish or for a fatal signal to be received.
  * Another write may start after this one finishes, unless the caller
- * holds the folio lock.
+ * holds the page lock.
  *
  * Return:
  * - 0 if successful.
  * - -EINTR if a fatal signal was encountered.
  */
-static inline int folio_wait_fscache_killable(struct folio *folio)
-{
-	return folio_wait_private_2_killable(folio);
-}
-
-static inline void set_page_fscache(struct page *page)
-{
-	folio_start_fscache(page_folio(page));
-}
-
-static inline void end_page_fscache(struct page *page)
-{
-	folio_end_private_2(page_folio(page));
-}
-
-static inline void wait_on_page_fscache(struct page *page)
-{
-	folio_wait_private_2(page_folio(page));
-}
-
 static inline int wait_on_page_fscache_killable(struct page *page)
 {
-	return folio_wait_private_2_killable(page_folio(page));
+	return wait_on_page_private_2_killable(page);
 }
 
 enum netfs_io_source {
@@ -214,7 +193,7 @@ struct netfs_request_ops {
 	void (*issue_read)(struct netfs_io_subrequest *subreq);
 	bool (*is_still_valid)(struct netfs_io_request *rreq);
 	int (*check_write_begin)(struct file *file, loff_t pos, unsigned len,
-				 struct folio **foliop, void **_fsdata);
+				 struct page **pagep, void **_fsdata);
 	void (*done)(struct netfs_io_request *rreq);
 };
 
@@ -277,10 +256,10 @@ struct netfs_cache_ops {
 
 struct readahead_control;
 void netfs_readahead(struct readahead_control *);
-int netfs_read_folio(struct file *, struct folio *);
+int netfs_read_page(struct file *, struct page *);
 int netfs_write_begin(struct netfs_inode *, struct file *,
 		struct address_space *, loff_t pos, unsigned int len,
-		struct folio **, void **fsdata);
+		struct page **, void **fsdata);
 
 void netfs_subreq_terminated(struct netfs_io_subrequest *, ssize_t, bool);
 void netfs_get_subrequest(struct netfs_io_subrequest *subreq,

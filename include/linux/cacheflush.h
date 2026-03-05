@@ -4,14 +4,21 @@
 
 #include <asm/cacheflush.h>
 
-struct folio;
-
 #if ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE
+extern void flush_dcache_page(struct page *);
+
 #ifndef ARCH_IMPLEMENTS_FLUSH_DCACHE_FOLIO
-void flush_dcache_folio(struct folio *folio);
+struct page;
+static inline void flush_dcache_folio(struct page *folio)
+{
+	flush_dcache_page(folio);
+}
+#define ARCH_IMPLEMENTS_FLUSH_DCACHE_FOLIO 1
 #endif
+
 #else
-static inline void flush_dcache_folio(struct folio *folio)
+struct page;
+static inline void flush_dcache_folio(struct page *folio)
 {
 }
 #define ARCH_IMPLEMENTS_FLUSH_DCACHE_FOLIO 0
