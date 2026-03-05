@@ -1,1 +1,1 @@
-obj-y += MobiCoreDriver/
+obj-$(CONFIG_MOBICORE_DRIVER) += MobiCoreDriver/
