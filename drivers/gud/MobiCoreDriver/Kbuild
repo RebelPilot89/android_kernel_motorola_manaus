@@ -30,7 +30,7 @@ ifneq ($(filter m y,$(RSU_INTERNAL_CLOCK)),)
  EXTRA_CFLAGS += -DRSU_INTERNAL_CLOCK
 endif
 
-obj-m += mcDrvModule.o
+obj-$(CONFIG_TRUSTONIC_TEE_SUPPORT) += mcDrvModule.o
 
 
 mcDrvModule-y := \

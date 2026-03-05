@@ -1,5 +1,5 @@
 # add -Wall to try to catch everything we can.
-EXTRA_CFLAGS += -Wall
-EXTRA_CFLAGS += -I$(ANDROID_BUILD_TOP)/motorola/kernel/modules/include
+ccflags-y += -Wall
+ccflags-y += -I$(srctree)/drivers/misc/motorola/include
 
-obj-m = mmi_sigprint.o
+obj-$(CONFIG_MMI_SIGPRINT) += mmi_sigprint.o

@@ -128,7 +128,7 @@ TRACE_EVENT(rq_sched_log,
 #endif /* _TRACE_IO_MOT_H */
 
 #undef TRACE_INCLUDE_PATH
-#define TRACE_INCLUDE_PATH drivers / misc / motorola / mm_iosched
+#define TRACE_INCLUDE_PATH ../../ drivers / misc / motorola / mm_iosched
 #undef TRACE_INCLUDE_FILE
 #define TRACE_INCLUDE_FILE mot_io_trace
 

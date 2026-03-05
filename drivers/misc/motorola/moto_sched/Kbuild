@@ -1,4 +1,5 @@
 ccflags-y += -Wall -I$(srctree)/kernel/sched
+ccflags-y += -I$(srctree)/drivers/misc/motorola/moto_sched
 
 obj-$(CONFIG_MOTO_SCHED) += moto_sched.o
 

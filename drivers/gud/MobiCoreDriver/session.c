@@ -26,11 +26,11 @@
 #include <linux/file.h>
 #include <linux/fs.h>
 #include <linux/net.h>
-#include <net/sock.h>		/* sockfd_lookup */
+#include <net/sock.h> /* sockfd_lookup */
 #include <linux/version.h>
 #if KERNEL_VERSION(4, 11, 0) <= LINUX_VERSION_CODE
-#include <linux/sched/clock.h>	/* local_clock */
-#include <linux/sched/task.h>	/* put_task_struct */
+#include <linux/sched/clock.h> /* local_clock */
+#include <linux/sched/task.h> /* put_task_struct */
 #endif
 
 #include "public/mc_user.h"
@@ -69,14 +69,14 @@ static inline bool gid_lt(kgid_t left, kgid_t right)
 }
 #endif
 #include "main.h"
-#include "mmu.h"		/* tee_mmu_buffer, tee_mmu_debug_structs */
+#include "mmu.h" /* tee_mmu_buffer, tee_mmu_debug_structs */
 #include "iwp.h"
 #include "mcp.h"
-#include "client.h"		/* *cbuf* */
+#include "client.h" /* *cbuf* */
 #include "session.h"
-#include "mci/mcimcp.h"		/* WSM_INVALID */
+#include "mci/mcimcp.h" /* WSM_INVALID */
 
-#define SHA1_HASH_SIZE       20
+#define SHA1_HASH_SIZE 20
 
 static int wsm_create(struct tee_session *session, struct tee_wsm *wsm,
 		      const struct mc_ioctl_buffer *buf)
@@ -137,8 +137,8 @@ static void wsm_free(struct tee_session *session, struct tee_wsm *wsm)
 		return;
 	}
 
-	mc_dev_devel("free wsm %p: mmu %p cbuf %p va %lx len %u sva %x",
-		     wsm, wsm->mmu, wsm->cbuf, wsm->va, wsm->len, wsm->sva);
+	mc_dev_devel("free wsm %p: mmu %p cbuf %p va %lx len %u sva %x", wsm,
+		     wsm->mmu, wsm->cbuf, wsm->va, wsm->len, wsm->sva);
 	/* Free MMU table */
 	tee_mmu_put(wsm->mmu);
 	if (wsm->cbuf)
@@ -204,7 +204,7 @@ static int hash_path_and_data(struct task_struct *task, u8 *hash,
 	}
 
 	desc->tfm = tfm;
-	desc->flags = CRYPTO_TFM_REQ_MAY_SLEEP;
+	// desc->flags = CRYPTO_TFM_REQ_MAY_SLEEP; // Removed in current kernel
 	crypto_shash_init(desc);
 	crypto_shash_update(desc, (u8 *)path, path_len);
 	if (data) {
@@ -407,9 +407,8 @@ static int check_prepare_identity(const struct mc_identity *identity,
 	 * That buffer is expected to contain a NWd computed hash containing the
 	 * CA identity
 	 */
-	if (supplied_ca_identity &&
-	    memcmp(identity->login_data, zero_buffer,
-		   sizeof(identity->login_data)) != 0) {
+	if (supplied_ca_identity && memcmp(identity->login_data, zero_buffer,
+					   sizeof(identity->login_data)) != 0) {
 		memcpy(&mcp_id->login_data, identity->login_data,
 		       sizeof(mcp_id->login_data));
 	} else if (application) {
@@ -468,8 +467,7 @@ struct tee_session *session_create(struct tee_client *client,
 	kref_init(&session->kref);
 	INIT_LIST_HEAD(&session->list);
 	mutex_init(&session->wsms_lock);
-	mc_dev_devel("created session %p: client %p",
-		     session, session->client);
+	mc_dev_devel("created session %p: client %p", session, session->client);
 	return session;
 }
 
@@ -530,12 +528,12 @@ static int wsm_debug_structs(struct kasnprintf_buf *buf, struct tee_wsm *wsm,
 
 	ret = kasnprintf(buf, "\t\t");
 	if (no < 0)
-		ret = kasnprintf(buf, "tci %pK: cbuf %pK va %pK len %u\n",
-				 wsm, wsm->cbuf, (void *)wsm->va, wsm->len);
+		ret = kasnprintf(buf, "tci %pK: cbuf %pK va %pK len %u\n", wsm,
+				 wsm->cbuf, (void *)wsm->va, wsm->len);
 	else if (wsm->in_use)
 		ret = kasnprintf(buf,
-				 "wsm #%d: cbuf %pK va %pK len %u sva %x\n",
-				 no, wsm->cbuf, (void *)wsm->va, wsm->len,
+				 "wsm #%d: cbuf %pK va %pK len %u sva %x\n", no,
+				 wsm->cbuf, (void *)wsm->va, wsm->len,
 				 wsm->sva);
 
 	if (ret < 0)
@@ -573,8 +571,8 @@ int session_mc_open_session(struct tee_session *session,
 			return ret;
 
 		tci_in_use = true;
-		mc_dev_devel("wrapped tci: mmu %p len %u flags %x",
-			     wsm->mmu, wsm->len, wsm->flags);
+		mc_dev_devel("wrapped tci: mmu %p len %u flags %x", wsm->mmu,
+			     wsm->len, wsm->flags);
 	}
 
 	/* Create mapping for TCI */
@@ -688,8 +686,8 @@ int session_mc_map(struct tee_session *session, struct tee_mmu *mmu,
 		ret = wsm_wrap(session, wsm, mmu);
 
 	if (ret) {
-		mc_dev_devel("maps[%d] va=%llx create failed: %d",
-			     i, buf->va, ret);
+		mc_dev_devel("maps[%d] va=%llx create failed: %d", i, buf->va,
+			     ret);
 		goto out;
 	}
 
@@ -722,16 +720,15 @@ int session_mc_unmap(struct tee_session *session,
 	mutex_lock(&session->wsms_lock);
 	/* Look for buffer in the session WSMs array */
 	for (i = 0; i < MC_MAP_MAX; i++)
-		if (session->wsms[i].in_use &&
-		    buf->va == session->wsms[i].va &&
+		if (session->wsms[i].in_use && buf->va == session->wsms[i].va &&
 		    buf->len == session->wsms[i].len &&
 		    buf->sva == session->wsms[i].sva)
 			break;
 
 	if (i == MC_MAP_MAX) {
 		ret = -EINVAL;
-		mc_dev_devel("maps[%d] va=%llx sva=%llx not found",
-			     i, buf[i].va, buf[i].sva);
+		mc_dev_devel("maps[%d] va=%llx sva=%llx not found", i,
+			     buf[i].va, buf[i].sva);
 		goto out;
 	}
 
@@ -792,8 +789,8 @@ static int map_gp_bufs(struct tee_session *session,
 			ret = wsm_create(session, &session->wsms[i], &bufs[i]);
 			if (ret) {
 				mc_dev_devel(
-					"maps[%d] va=%llx create failed: %d",
-					i, bufs[i].va, ret);
+					"maps[%d] va=%llx create failed: %d", i,
+					bufs[i].va, ret);
 				break;
 			}
 
@@ -935,8 +932,8 @@ int session_gp_invoke_command(struct tee_session *session, u32 command_id,
 	return ret;
 }
 
-int session_gp_invoke_command_domu(struct tee_session *session,
-				   u64 started, struct interworld_session *iws,
+int session_gp_invoke_command_domu(struct tee_session *session, u64 started,
+				   struct interworld_session *iws,
 				   struct tee_mmu **mmus,
 				   struct gp_return *gp_ret)
 {
@@ -988,9 +985,9 @@ int session_debug_structs(struct kasnprintf_buf *buf,
 		type = "MC";
 	}
 
-	ret = kasnprintf(buf, "\tsession %pK [%d]: %4x %s ec %d%s\n",
-			 session, kref_read(&session->kref), session_id, type,
-			 err, is_closing ? " <closing>" : "");
+	ret = kasnprintf(buf, "\tsession %pK [%d]: %4x %s ec %d%s\n", session,
+			 kref_read(&session->kref), session_id, type, err,
+			 is_closing ? " <closing>" : "");
 	if (ret < 0)
 		return ret;
 

@@ -729,13 +729,13 @@ static int ktd3136_probe(struct i2c_client *client,
 			 const struct i2c_device_id *id)
 {
 	struct ktd3136_data *drvdata;
+	int err = 0;
 #ifdef KERNEL_ABOVE_4_14
 	struct backlight_device *bl_dev;
 	struct backlight_properties props;
 #endif
 
 	(void)bl_dev;
-	int err = 0;
 
 	pr_info("%s enter!\n", __func__);
 	if (!i2c_check_functionality(client->adapter, I2C_FUNC_I2C)) {

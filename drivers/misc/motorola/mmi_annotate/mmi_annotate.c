@@ -92,12 +92,12 @@ static ssize_t mmi_annotate_write(struct file *file, const char __user *buf,
 	return count;
 }
 
-static const struct file_operations mmi_annotate_operations = {
-	.open = mmi_annotate_open,
-	.read = seq_read,
-	.write = mmi_annotate_write,
-	.llseek = seq_lseek,
-	.release = single_release,
+static const struct proc_ops mmi_annotate_operations = {
+	.proc_open = mmi_annotate_open,
+	.proc_read = seq_read,
+	.proc_write = mmi_annotate_write,
+	.proc_lseek = seq_lseek,
+	.proc_release = single_release,
 };
 
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 4, 0)

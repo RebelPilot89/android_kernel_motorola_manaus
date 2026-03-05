@@ -3,11 +3,11 @@
  * Copyright (C) 2024 Moto. All rights reserved.
  */
 
-#include <include/linux/sched.h>
-#include <kernel/sched/sched.h>
-#include <include/linux/hrtimer.h>
-#include <include/linux/futex.h>
-#include <include/linux/sched/task.h>
+#include <linux/sched.h>
+#include "sched.h"
+#include <linux/hrtimer.h>
+#include <linux/futex.h>
+#include <linux/sched/task.h>
 #include <linux/pid.h>
 #include <trace/hooks/futex.h>
 
@@ -15,11 +15,10 @@
 #include "locking_main.h"
 
 #ifdef CONFIG_MMU
-# define FLAGS_SHARED		0x01
+#define FLAGS_SHARED 0x01
 #else
-# define FLAGS_SHARED		0x00
+#define FLAGS_SHARED 0x00
 #endif
-
 
 /*
  * Note:
@@ -56,31 +55,34 @@ struct futex_q {
 
 #define INHERIT_SET (1)
 #define INHERIT_INC (2)
-static int futex_set_inherit_ux_refs(struct task_struct *holder, struct task_struct *p)
+static int futex_set_inherit_ux_refs(struct task_struct *holder,
+				     struct task_struct *p)
 {
 	if (unlikely(!holder || !p))
 		return 0;
 
 	if (task_is_important_ux(p)) {
 		cond_trace_printk(moto_sched_debug,
-			"futex_set_inherit_ux %d -> %d\n", p->pid, holder->pid);
-		task_add_ux_type(holder, UX_TYPE_INHERIT_FUTEX);
+				  "futex_set_inherit_ux %d -> %d\n", p->pid,
+				  holder->pid);
+		task_add_ux_type(holder, UX_TYPE_INHERIT_LOCK);
 		return INHERIT_SET;
 	}
 
 	return 0;
 }
 
-static void futex_unset_inherit_ux_refs(struct task_struct *p, int value, int path)
+static void futex_unset_inherit_ux_refs(struct task_struct *p, int value,
+					int path)
 {
-	cond_trace_printk(moto_sched_debug,
-		"futex_unset_inherit_ux %d\n", p->pid);
-	task_clr_ux_type(p, UX_TYPE_INHERIT_FUTEX);
+	cond_trace_printk(moto_sched_debug, "futex_unset_inherit_ux %d\n",
+			  p->pid);
+	task_clr_ux_type(p, UX_TYPE_INHERIT_LOCK);
 }
 
-static inline bool curr_is_inherit_futex(void)
+static inline bool curr_is_inherit_lock(void)
 {
-	return task_get_ux_type(current) & UX_TYPE_INHERIT_FUTEX;
+	return task_get_ux_type(current) & UX_TYPE_INHERIT_LOCK;
 }
 
 static bool boost_holder(struct task_struct *holder, struct task_struct *waiter)
@@ -121,10 +123,9 @@ static bool boost_holder(struct task_struct *holder, struct task_struct *waiter)
  */
 static inline int match_futex(union futex_key *key1, union futex_key *key2)
 {
-	return (key1 && key2
-		&& key1->both.word == key2->both.word
-		&& key1->both.ptr == key2->both.ptr
-		&& key1->both.offset == key2->both.offset);
+	return (key1 && key2 && key1->both.word == key2->both.word &&
+		key1->both.ptr == key2->both.ptr &&
+		key1->both.offset == key2->both.offset);
 }
 
 static struct task_struct *futex_find_task_by_pid(unsigned int pid)
@@ -197,12 +198,12 @@ out_put_waiter:
  **/
 #define WAKE_MSG (64)
 #define NOTIFY_WAITER_SHIFT (16)
-#define NOTIFY_OWNER_MASK   ((1 << NOTIFY_WAITER_SHIFT)-1)
-#define FLAGS_OWNER_SHIFT		(8)
+#define NOTIFY_OWNER_MASK ((1 << NOTIFY_WAITER_SHIFT) - 1)
+#define FLAGS_OWNER_SHIFT (8)
 extern int thread_info_ctrl;
 
 static void android_vh_do_futex_handler(void *unused, int cmd,
-		  unsigned int *flags, u32 __user *uaddr2)
+					unsigned int *flags, u32 __user *uaddr2)
 {
 	unsigned long waiter_pid;
 	char wake_msg[WAKE_MSG];
@@ -214,18 +215,21 @@ static void android_vh_do_futex_handler(void *unused, int cmd,
 	case FUTEX_WAIT_BITSET:
 		if (NULL != uaddr2) {
 			if (copy_from_user(&info, uaddr2, sizeof(info))) {
-				cond_trace_printk(moto_sched_debug,
-						"copy from user failed, uaddr2 = 0x%lx \n",
-						(unsigned long)uaddr2);
+				cond_trace_printk(
+					moto_sched_debug,
+					"copy from user failed, uaddr2 = 0x%lx \n",
+					(unsigned long)uaddr2);
 				return;
 			}
 			memset(&info.inform_user, 0, sizeof(info.inform_user));
 			/* owner_tid part:*/
-			if ((info.cmd & MAGIC_MASK)  == MAGIC_NUM) {
+			if ((info.cmd & MAGIC_MASK) == MAGIC_NUM) {
 				if (info.cmd & OWNER_BIT) {
 					/* owner_tid != 0 indicate that there is an owner to be set. */
-					if (info.owner_tid > 0 && info.owner_tid <= PID_MAX_LIMIT) {
-						*flags += info.owner_tid << FLAGS_OWNER_SHIFT;
+					if (info.owner_tid > 0 &&
+					    info.owner_tid <= PID_MAX_LIMIT) {
+						*flags += info.owner_tid
+							  << FLAGS_OWNER_SHIFT;
 					} else {
 						pr_err("Set owner failed, invailid tid.\n");
 					}
@@ -238,24 +242,29 @@ static void android_vh_do_futex_handler(void *unused, int cmd,
 		futex_notify_waiter(waiter_pid);
 		break;
 	case FUTEX_WAKE:
-		if ((uaddr2 != NULL) && !copy_from_user(wake_msg, uaddr2, WAKE_MSG - 1))
-			wake_msg[WAKE_MSG-1] = '\0';
+		if ((uaddr2 != NULL) &&
+		    !copy_from_user(wake_msg, uaddr2, WAKE_MSG - 1))
+			wake_msg[WAKE_MSG - 1] = '\0';
 		break;
 	}
 }
 
-static void android_vh_futex_wait_start_handler(void *unused, unsigned int flags,
-		  u32 bitset)
+static void android_vh_futex_wait_start_handler(void *unused,
+						unsigned int flags, u32 bitset)
 {
 	struct task_struct *holder;
 
 	cond_trace_printk(moto_sched_debug,
-			"current_is_important_ux %d, set_holder %d -> %d\n", current_is_important_ux(), current->pid, (flags & ~(0x3 << LOCK_TYPE_SHIFT)) >> FLAGS_OWNER_SHIFT);
+			  "current_is_important_ux %d, set_holder %d -> %d\n",
+			  current_is_important_ux(), current->pid,
+			  (flags & ~(0x3 << LOCK_TYPE_SHIFT)) >>
+				  FLAGS_OWNER_SHIFT);
 
 	if (!current_is_important_ux())
 		return;
 
-	holder = futex_find_task_by_pid((flags & ~(0x3 << LOCK_TYPE_SHIFT)) >> FLAGS_OWNER_SHIFT);
+	holder = futex_find_task_by_pid((flags & ~(0x3 << LOCK_TYPE_SHIFT)) >>
+					FLAGS_OWNER_SHIFT);
 	if (!holder)
 		return;
 
@@ -263,7 +272,7 @@ static void android_vh_futex_wait_start_handler(void *unused, unsigned int flags
 }
 
 static void android_vh_futex_wait_end_handler(void *unused, unsigned int flags,
-		  u32 bitset)
+					      u32 bitset)
 {
 	struct moto_task_struct *mts;
 
@@ -281,8 +290,10 @@ static void android_vh_futex_wait_end_handler(void *unused, unsigned int flags,
 	}
 }
 
-void android_vh_alter_futex_plist_add_handler(void *unused, struct plist_node *node,
-		    struct plist_head *head, bool *already_on_hb)
+void android_vh_alter_futex_plist_add_handler(void *unused,
+					      struct plist_node *node,
+					      struct plist_head *head,
+					      bool *already_on_hb)
 {
 	struct sched_entity *se;
 	struct rq *rq;
@@ -303,12 +314,12 @@ void android_vh_alter_futex_plist_add_handler(void *unused, struct plist_node *n
 	if (mts->lkinfo.holder)
 		boost_holder(mts->lkinfo.holder, current);
 
-	cur = (struct futex_q *) node;
+	cur = (struct futex_q *)node;
 	/*
 	 * Find out the first normal thread in &hb->chain(FIFO if it's a normal node),
 	 * make sure &hb->lock is held.
 	 */
-	plist_for_each_entry_safe(this, next, head, list) {
+	plist_for_each_entry_safe (this, next, head, list) {
 		struct plist_node *tmp = &this->list;
 
 		if (match_futex(&this->key, &cur->key)) {
@@ -351,7 +362,7 @@ re_init:
 }
 
 static void android_vh_futex_sleep_start_handler(void *unused,
-		  struct task_struct *p)
+						 struct task_struct *p)
 {
 	struct moto_task_struct *mts;
 
@@ -360,8 +371,9 @@ static void android_vh_futex_sleep_start_handler(void *unused,
 		return;
 }
 
-static void android_vh_futex_wake_traverse_plist_handler(void *unused, struct plist_head *chain,
-		  int *target_nr, union futex_key key, u32 bitset)
+static void android_vh_futex_wake_traverse_plist_handler(
+	void *unused, struct plist_head *chain, int *target_nr,
+	union futex_key key, u32 bitset)
 {
 	struct futex_q *this, *next;
 	struct task_struct *p;
@@ -369,33 +381,36 @@ static void android_vh_futex_wake_traverse_plist_handler(void *unused, struct pl
 	int idx = 0;
 
 	*target_nr = 0;
-	if (likely(!curr_is_inherit_futex()))
+	if (likely(!curr_is_inherit_lock()))
 		return;
 
 	/*
-	 * If waker is an inherit-futex ux thread, see how many ux waiters in this chain,
+	 * If waker is an inherit-lock ux thread, see how many ux waiters in this chain,
 	 * make sure &hb->lock is held.
 	 */
-	plist_for_each_entry_safe(this, next, chain, list) {
+	plist_for_each_entry_safe (this, next, chain, list) {
 		if (match_futex(&this->key, &key)) {
 			p = this->task;
 			mts = get_moto_task_struct(p);
 			if (unlikely(IS_ERR_OR_NULL(mts)))
 				continue;
 
-			if ((mts->lkinfo.holder == current) && mts->lkinfo.ux_contrib) {
+			if ((mts->lkinfo.holder == current) &&
+			    mts->lkinfo.ux_contrib) {
 				*target_nr += 1;
 				mts->lkinfo.ux_contrib = false;
 			}
-			cond_trace_printk(moto_sched_debug,
+			cond_trace_printk(
+				moto_sched_debug,
 				"idx=%d this=%-12s pid=%d tgid=%d nr=%d\n",
 				++idx, p->comm, p->pid, p->tgid, *target_nr);
 		}
 	}
 }
 
-static void android_vh_futex_wake_this_handler(void *unused, int ret, int nr_wake, int target_nr,
-		  struct task_struct *p)
+static void android_vh_futex_wake_this_handler(void *unused, int ret,
+					       int nr_wake, int target_nr,
+					       struct task_struct *p)
 {
 	struct moto_task_struct *mts;
 
@@ -408,14 +423,14 @@ static void android_vh_futex_wake_this_handler(void *unused, int ret, int nr_wak
 		mts->lkinfo.ux_contrib = false;
 	}
 
-	if (likely(!curr_is_inherit_futex()))
+	if (likely(!curr_is_inherit_lock()))
 		return;
 }
 
 static void android_vh_futex_wake_up_q_finish_handler(void *unused, int nr_wake,
-		  int target_nr)
+						      int target_nr)
 {
-	if (likely(!curr_is_inherit_futex()))
+	if (likely(!curr_is_inherit_lock()))
 		return;
 
 	/* Owner will be changed, remove current's inherit count. */
@@ -426,56 +441,38 @@ static void android_vh_futex_wake_up_q_finish_handler(void *unused, int nr_wake,
 
 void register_futex_vendor_hooks(void)
 {
-	register_trace_android_vh_do_futex(
-		android_vh_do_futex_handler,
-		NULL);
+	register_trace_android_vh_do_futex(android_vh_do_futex_handler, NULL);
 	register_trace_android_vh_futex_wait_start(
-		android_vh_futex_wait_start_handler,
-		NULL);
+		android_vh_futex_wait_start_handler, NULL);
 	register_trace_android_vh_futex_wait_end(
-		android_vh_futex_wait_end_handler,
-		NULL);
+		android_vh_futex_wait_end_handler, NULL);
 	register_trace_android_vh_alter_futex_plist_add(
-		android_vh_alter_futex_plist_add_handler,
-		NULL);
+		android_vh_alter_futex_plist_add_handler, NULL);
 	register_trace_android_vh_futex_sleep_start(
-		android_vh_futex_sleep_start_handler,
-		NULL);
+		android_vh_futex_sleep_start_handler, NULL);
 	register_trace_android_vh_futex_wake_traverse_plist(
-		android_vh_futex_wake_traverse_plist_handler,
-		NULL);
+		android_vh_futex_wake_traverse_plist_handler, NULL);
 	register_trace_android_vh_futex_wake_this(
-		android_vh_futex_wake_this_handler,
-		NULL);
+		android_vh_futex_wake_this_handler, NULL);
 	register_trace_android_vh_futex_wake_up_q_finish(
-		android_vh_futex_wake_up_q_finish_handler,
-		NULL);
+		android_vh_futex_wake_up_q_finish_handler, NULL);
 }
 
 void unregister_futex_vendor_hooks(void)
 {
-	unregister_trace_android_vh_do_futex(
-		android_vh_do_futex_handler,
-		NULL);
+	unregister_trace_android_vh_do_futex(android_vh_do_futex_handler, NULL);
 	unregister_trace_android_vh_futex_wait_start(
-		android_vh_futex_wait_start_handler,
-		NULL);
+		android_vh_futex_wait_start_handler, NULL);
 	unregister_trace_android_vh_futex_wait_end(
-		android_vh_futex_wait_end_handler,
-		NULL);
+		android_vh_futex_wait_end_handler, NULL);
 	unregister_trace_android_vh_alter_futex_plist_add(
-		android_vh_alter_futex_plist_add_handler,
-		NULL);
+		android_vh_alter_futex_plist_add_handler, NULL);
 	unregister_trace_android_vh_futex_sleep_start(
-		android_vh_futex_sleep_start_handler,
-		NULL);
+		android_vh_futex_sleep_start_handler, NULL);
 	unregister_trace_android_vh_futex_wake_traverse_plist(
-		android_vh_futex_wake_traverse_plist_handler,
-		NULL);
+		android_vh_futex_wake_traverse_plist_handler, NULL);
 	unregister_trace_android_vh_futex_wake_this(
-		android_vh_futex_wake_this_handler,
-		NULL);
+		android_vh_futex_wake_this_handler, NULL);
 	unregister_trace_android_vh_futex_wake_up_q_finish(
-		android_vh_futex_wake_up_q_finish_handler,
-		NULL);
+		android_vh_futex_wake_up_q_finish_handler, NULL);
 }

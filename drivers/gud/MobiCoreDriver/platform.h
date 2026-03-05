@@ -27,53 +27,75 @@
 #define USE_SHM_BRIDGE
 #endif
 
+#if defined(CONFIG_ARCH_QCOM)
 #include <soc/qcom/scm.h>
 #include <soc/qcom/qseecomi.h>
 #if defined USE_SHM_BRIDGE
 #include <soc/qcom/qtee_shmbridge.h>
 #endif
+#elif defined(CONFIG_ARCH_MEDIATEK)
+#include <linux/arm-smccc.h>
+#endif
+
 /*--------------- Implementation -------------- */
 /* MobiCore Interrupt for Qualcomm (DT IRQ has priority if present) */
-#define MC_INTR_SSIQ	280
+#define MC_INTR_SSIQ 280
 
 /* Use SMC for fastcalls */
 #define MC_SMC_FASTCALL
 
-#define SCM_MOBIOS_FNID(s, c) (((((s) & 0xFF) << 8) | ((c) & 0xFF)) \
-		| 0x33000000)
+#define SCM_MOBIOS_FNID(s, c)                                                  \
+	(((((s) & 0xFF) << 8) | ((c) & 0xFF)) | 0x33000000)
 
-#define TZ_EXECUTIVE_EXT_ID_PARAM_ID \
-	TZ_SYSCALL_CREATE_PARAM_ID_4( \
-			TZ_SYSCALL_PARAM_TYPE_BUF_RW, \
-			TZ_SYSCALL_PARAM_TYPE_VAL, \
-			TZ_SYSCALL_PARAM_TYPE_BUF_RW, \
-			TZ_SYSCALL_PARAM_TYPE_VAL)
+#define TZ_EXECUTIVE_EXT_ID_PARAM_ID 0 /* Not used on MTK */
 
 /* from following file */
-#define SCM_SVC_MOBICORE		250
-#define SCM_CMD_MOBICORE		1
+#define SCM_SVC_MOBICORE 250
+#define SCM_CMD_MOBICORE 1
 
 static inline int smc_fastcall(void *fc_generic, size_t size)
 {
+#if defined(CONFIG_ARCH_MEDIATEK)
+	struct arm_smccc_res res;
+	static void *scm_buf;
+	static phys_addr_t scm_buf_pa;
+
+	if (!scm_buf) {
+		scm_buf = kzalloc(PAGE_ALIGN(size), GFP_KERNEL);
+		if (!scm_buf)
+			return -ENOMEM;
+		scm_buf_pa = virt_to_phys(scm_buf);
+	}
+
+	memcpy(scm_buf, fc_generic, size);
+	// dmac_flush_range is often not needed with coherent memory or handled via arch_sync_dma_for_device
+	// but we use the generic barrier here if available or assume cache coherence for this specific MTK TEE path
+
+	arm_smccc_smc(SCM_MOBIOS_FNID(SCM_SVC_MOBICORE, SCM_CMD_MOBICORE),
+		      scm_buf_pa, size, 0, 0, 0, 0, 0, &res);
+
+	memcpy(fc_generic, scm_buf, size);
+	return (int)res.a0;
+#else
 #if !defined(USE_SHM_BRIDGE)
 	if (is_scm_armv8()) {
 #endif
-		struct scm_desc desc = {0};
+		struct scm_desc desc = { 0 };
 		int ret;
 		static void *scm_buf;
 		static phys_addr_t scm_buf_pa;
 
 		if (!scm_buf) {
 #if defined USE_SHM_BRIDGE
-			static struct qtee_shm scm_shm = {0};
+			static struct qtee_shm scm_shm = { 0 };
 
 			ret = qtee_shmbridge_allocate_shm(PAGE_ALIGN(size),
 							  &scm_shm);
 			scm_buf = scm_shm.vaddr;
 			scm_buf_pa = scm_shm.paddr;
 #else
-			scm_buf = kzalloc(PAGE_ALIGN(size), GFP_KERNEL);
-			scm_buf_pa = virt_to_phys(scm_buf);
+		scm_buf = kzalloc(PAGE_ALIGN(size), GFP_KERNEL);
+		scm_buf_pa = virt_to_phys(scm_buf);
 #endif
 		}
 		if (!scm_buf)
@@ -87,8 +109,8 @@ static inline int smc_fastcall(void *fc_generic, size_t size)
 		desc.args[2] = scm_buf_pa;
 		desc.args[3] = (u32)size;
 
-		ret = scm_call2(
-			SCM_MOBIOS_FNID(SCM_SVC_MOBICORE, SCM_CMD_MOBICORE),
+		ret = scm_call2(SCM_MOBIOS_FNID(SCM_SVC_MOBICORE,
+						SCM_CMD_MOBICORE),
 				&desc);
 
 		dmac_flush_range(scm_buf, scm_buf + size);
@@ -97,9 +119,9 @@ static inline int smc_fastcall(void *fc_generic, size_t size)
 		return ret;
 #if !defined(USE_SHM_BRIDGE)
 	}
-	return scm_call(SCM_SVC_MOBICORE, SCM_CMD_MOBICORE,
-			fc_generic, size,
+	return scm_call(SCM_SVC_MOBICORE, SCM_CMD_MOBICORE, fc_generic, size,
 			fc_generic, size);
+#endif
 #endif
 }
 
@@ -151,7 +173,7 @@ static inline int smc_fastcall(void *fc_generic, size_t size)
 #define CPU_SELECTION
 #if defined CPU_SELECTION
 #define NB_CPU 4
-#define CPU_IDS {0x0, 0x1, 0x2, 0x3}
+#define CPU_IDS { 0x0, 0x1, 0x2, 0x3 }
 #endif
 
 #else

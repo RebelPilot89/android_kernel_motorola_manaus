@@ -18,38 +18,37 @@
 #include <linux/of_device.h>
 #include <uapi/linux/uleds.h>
 
-#define LM3697_REV			0x0
-#define LM3697_RESET			0x1
-#define LM3697_OUTPUT_CONFIG		0x10
-#define LM3697_CTRL_A_B_BRT_CFG		0x16
-#define LM3697_FEEDBACK_ENABLE		0x19
-#define LM3697_BOOST_CTRL		0x1a
-#define LM3697_PWM_CONFIG		0x1c
-#define LM3697_CONTROL_A_RAMP		0x11
-#define LM3697_CONTROL_B_RAMP		0x12
-#define LM3697_CONTROL_A_RUN_RAMP	0x13
-#define LM3697_CONTROL_A_FS_SETTING	0x17
+#define LM3697_REV 0x0
+#define LM3697_RESET 0x1
+#define LM3697_OUTPUT_CONFIG 0x10
+#define LM3697_CTRL_A_B_BRT_CFG 0x16
+#define LM3697_FEEDBACK_ENABLE 0x19
+#define LM3697_BOOST_CTRL 0x1a
+#define LM3697_PWM_CONFIG 0x1c
+#define LM3697_CONTROL_A_RAMP 0x11
+#define LM3697_CONTROL_B_RAMP 0x12
+#define LM3697_CONTROL_A_RUN_RAMP 0x13
+#define LM3697_CONTROL_A_FS_SETTING 0x17
 
+#define LM3697_CTRL_A_BRT_LSB 0x20
+#define LM3697_CTRL_A_BRT_MSB 0x21
+#define LM3697_CTRL_ENABLE 0x24
 
-#define LM3697_CTRL_A_BRT_LSB		0x20
-#define LM3697_CTRL_A_BRT_MSB		0x21
-#define LM3697_CTRL_ENABLE		0x24
+#define LM3697_SW_RESET BIT(0)
 
-#define LM3697_SW_RESET		BIT(0)
+#define LM3697_CTRL_A_EN BIT(0)
+#define LM3697_CTRL_B_EN BIT(1)
+#define LM3697_CTRL_A_B_EN (LM3697_CTRL_A_EN | LM3697_CTRL_B_EN)
 
-#define LM3697_CTRL_A_EN	BIT(0)
-#define LM3697_CTRL_B_EN	BIT(1)
-#define LM3697_CTRL_A_B_EN	(LM3697_CTRL_A_EN | LM3697_CTRL_B_EN)
+#define LM3697_MAX_LED_STRINGS 3
 
-#define LM3697_MAX_LED_STRINGS	3
-
-#define LM3697_CONTROL_A	0
+#define LM3697_CONTROL_A 0
 #define LM3697_MAX_CONTROL_BANKS 2
-#define LMU_11BIT_LSB_MASK	(BIT(0) | BIT(1) | BIT(2))
-#define LMU_11BIT_MSB_SHIFT	3
+#define LMU_11BIT_LSB_MASK (BIT(0) | BIT(1) | BIT(2))
+#define LMU_11BIT_MSB_SHIFT 3
 
-#define MAX_BRIGHTNESS_8BIT	255
-#define MAX_BRIGHTNESS_11BIT	2047
+#define MAX_BRIGHTNESS_8BIT 255
+#define MAX_BRIGHTNESS_11BIT 2047
 
 #define LM3697_LED_DEV "lm3697-bl"
 #define LM3697_NAME "lm3697-bl"
@@ -58,7 +57,7 @@
 #define KERNEL_ABOVE_4_14
 #endif
 
-#define LM3697_DEBUG	0
+#define LM3697_DEBUG 0
 
 struct lm3697 {
 	int enable_gpio;
@@ -86,14 +85,14 @@ struct lm3697 {
 	unsigned int pwm_config;
 	unsigned int ctrl_bank_en;
 	unsigned int bl_map;
-	int  enabled;
+	int enabled;
 	bool using_lsb;
 };
 
 struct lm3697 *ext_lm3697_data;
 
 static int platform_read_i2c_block(struct i2c_client *client, char *writebuf,
-	int writelen, char *readbuf, int readlen)
+				   int writelen, char *readbuf, int readlen)
 {
 	int ret;
 	unsigned char cnt = 0;
@@ -101,24 +100,24 @@ static int platform_read_i2c_block(struct i2c_client *client, char *writebuf,
 	if (writelen > 0) {
 		struct i2c_msg msgs[] = {
 			{
-				 .addr = client->addr,
-				 .flags = 0,
-				 .len = writelen,
-				 .buf = writebuf,
-			 },
+				.addr = client->addr,
+				.flags = 0,
+				.len = writelen,
+				.buf = writebuf,
+			},
 			{
-				 .addr = client->addr,
-				 .flags = I2C_M_RD,
-				 .len = readlen,
-				 .buf = readbuf,
-			 },
+				.addr = client->addr,
+				.flags = I2C_M_RD,
+				.len = readlen,
+				.buf = readbuf,
+			},
 		};
 
 		while (cnt < 5) {
 			ret = i2c_transfer(client->adapter, msgs, 2);
 			if (ret < 0)
 				dev_err(&client->dev, "%s: i2c read error\n",
-								__func__);
+					__func__);
 			else
 				break;
 
@@ -128,17 +127,17 @@ static int platform_read_i2c_block(struct i2c_client *client, char *writebuf,
 	} else {
 		struct i2c_msg msgs[] = {
 			{
-				 .addr = client->addr,
-				 .flags = I2C_M_RD,
-				 .len = readlen,
-				 .buf = readbuf,
-			 },
+				.addr = client->addr,
+				.flags = I2C_M_RD,
+				.len = readlen,
+				.buf = readbuf,
+			},
 		};
 		while (cnt < 5) {
 			ret = i2c_transfer(client->adapter, msgs, 1);
 			if (ret < 0)
 				dev_err(&client->dev, "%s:i2c read error.\n",
-								__func__);
+					__func__);
 			else
 				break;
 
@@ -154,25 +153,25 @@ static int lm3697_i2c_read(struct i2c_client *client, u8 addr, u8 *val)
 	return platform_read_i2c_block(client, &addr, 1, val, 1);
 }
 
-static int platform_write_i2c_block(struct i2c_client *client,
-		char *writebuf, int writelen)
+static int platform_write_i2c_block(struct i2c_client *client, char *writebuf,
+				    int writelen)
 {
 	int ret;
 	unsigned char cnt = 0;
 
 	struct i2c_msg msgs[] = {
 		{
-			 .addr = client->addr,
-			 .flags = 0,
-			 .len = writelen,
-			 .buf = writebuf,
-		 },
+			.addr = client->addr,
+			.flags = 0,
+			.len = writelen,
+			.buf = writebuf,
+		},
 	};
 	while (cnt < 5) {
 		ret = i2c_transfer(client->adapter, msgs, 1);
 		if (ret < 0)
 			dev_err(&client->dev, "%s: i2c write error.\n",
-								__func__);
+				__func__);
 		else
 			break;
 
@@ -185,7 +184,7 @@ static int platform_write_i2c_block(struct i2c_client *client,
 
 static int lm3697_i2c_write(struct i2c_client *client, u8 addr, const u8 val)
 {
-	u8 buf[2] = {0};
+	u8 buf[2] = { 0 };
 
 	buf[0] = addr;
 	buf[1] = val;
@@ -219,7 +218,7 @@ static int lm3697_read_chipid(struct lm3697 *priv)
 		ret = lm3697_i2c_read(priv->client, LM3697_REV, &value);
 		if (ret < 0) {
 			pr_err("%s: failed to read reg LM3697_REG_ID: %d\n",
-				__func__, ret);
+			       __func__, ret);
 		}
 		switch (value) {
 		case 0x01:
@@ -265,7 +264,7 @@ static int lm3697_brightness_map(unsigned int level)
 	if (ext_lm3697_data->bl_map == 3)
 		return level;
 
-	return  level;
+	return level;
 }
 
 static int lm3697_gpio_init(struct lm3697 *priv)
@@ -278,7 +277,7 @@ static int lm3697_gpio_init(struct lm3697 *priv)
 			pr_err("%s: failed to request gpio\n", __func__);
 			return -1;
 		}
-/*
+		/*
 		ret = gpio_direction_output(priv->enable_gpio, 0);
 		pr_info(" request gpio init\n");
 		if (ret < 0) {
@@ -299,31 +298,47 @@ static int lm3697_gpio_init(struct lm3697 *priv)
 
 static int lm3697_init(struct lm3697 *priv)
 {
-
 	pr_info("LM3697 %s\n", __func__);
 
 #if LM3697_DEBUG
-	pr_info("LM3697 %s:dbg01:0x%2x=0x%02x\n", __func__, LM3697_OUTPUT_CONFIG, priv->output_config);
-	pr_info("LM3697 %s:dbg01:0x%2x=0x%02x\n", __func__, LM3697_CONTROL_A_RAMP, priv->ctrl_a_ramp);
-	pr_info("LM3697 %s:dbg01:0x%2x=0x%02x\n", __func__, LM3697_CONTROL_B_RAMP, priv->ctrl_b_ramp);
-	pr_info("LM3697 %s:dbg01:0x%2x=0x%02x\n", __func__, LM3697_CONTROL_A_RUN_RAMP, priv->runtime_ramp);
-	pr_info("LM3697 %s:dbg01:0x%2x=0x%02x\n", __func__, LM3697_CONTROL_A_FS_SETTING, priv->bl_fscal);
+	pr_info("LM3697 %s:dbg01:0x%2x=0x%02x\n", __func__,
+		LM3697_OUTPUT_CONFIG, priv->output_config);
+	pr_info("LM3697 %s:dbg01:0x%2x=0x%02x\n", __func__,
+		LM3697_CONTROL_A_RAMP, priv->ctrl_a_ramp);
+	pr_info("LM3697 %s:dbg01:0x%2x=0x%02x\n", __func__,
+		LM3697_CONTROL_B_RAMP, priv->ctrl_b_ramp);
+	pr_info("LM3697 %s:dbg01:0x%2x=0x%02x\n", __func__,
+		LM3697_CONTROL_A_RUN_RAMP, priv->runtime_ramp);
+	pr_info("LM3697 %s:dbg01:0x%2x=0x%02x\n", __func__,
+		LM3697_CONTROL_A_FS_SETTING, priv->bl_fscal);
 
-	pr_info("LM3697 %s:dbg01:0x%2x=0x%02x\n", __func__, LM3697_CTRL_A_B_BRT_CFG, priv->ctrl_brt_cfg);
-	pr_info("LM3697 %s:dbg01:0x%2x=0x%02x\n", __func__, LM3697_FEEDBACK_ENABLE, priv->feedback_enable);
-	pr_info("LM3697 %s:dbg01:0x%2x=0x%02x\n", __func__, LM3697_BOOST_CTRL, priv->boost_control);
-	pr_info("LM3697 %s:dbg01:0x%2x=0x%02x\n", __func__, LM3697_PWM_CONFIG, priv->pwm_config);
-	pr_info("LM3697 %s:dbg01:0x%2x=0x%02x\n", __func__, LM3697_CTRL_ENABLE, priv->ctrl_bank_en);
+	pr_info("LM3697 %s:dbg01:0x%2x=0x%02x\n", __func__,
+		LM3697_CTRL_A_B_BRT_CFG, priv->ctrl_brt_cfg);
+	pr_info("LM3697 %s:dbg01:0x%2x=0x%02x\n", __func__,
+		LM3697_FEEDBACK_ENABLE, priv->feedback_enable);
+	pr_info("LM3697 %s:dbg01:0x%2x=0x%02x\n", __func__, LM3697_BOOST_CTRL,
+		priv->boost_control);
+	pr_info("LM3697 %s:dbg01:0x%2x=0x%02x\n", __func__, LM3697_PWM_CONFIG,
+		priv->pwm_config);
+	pr_info("LM3697 %s:dbg01:0x%2x=0x%02x\n", __func__, LM3697_CTRL_ENABLE,
+		priv->ctrl_bank_en);
 #endif
 
-	lm3697_i2c_write(priv->client, LM3697_OUTPUT_CONFIG, priv->output_config);
-	lm3697_i2c_write(priv->client, LM3697_CONTROL_A_RAMP, priv->ctrl_a_ramp);
-	lm3697_i2c_write(priv->client, LM3697_CONTROL_B_RAMP, priv->ctrl_b_ramp);
-	lm3697_i2c_write(priv->client, LM3697_CONTROL_A_RUN_RAMP, priv->runtime_ramp);
-	lm3697_i2c_write(priv->client, LM3697_CONTROL_A_FS_SETTING, priv->bl_fscal);
+	lm3697_i2c_write(priv->client, LM3697_OUTPUT_CONFIG,
+			 priv->output_config);
+	lm3697_i2c_write(priv->client, LM3697_CONTROL_A_RAMP,
+			 priv->ctrl_a_ramp);
+	lm3697_i2c_write(priv->client, LM3697_CONTROL_B_RAMP,
+			 priv->ctrl_b_ramp);
+	lm3697_i2c_write(priv->client, LM3697_CONTROL_A_RUN_RAMP,
+			 priv->runtime_ramp);
+	lm3697_i2c_write(priv->client, LM3697_CONTROL_A_FS_SETTING,
+			 priv->bl_fscal);
 	/* Change BLK to Linear mode. 0x00 = exponential, 0x01 = Linear */
-	lm3697_i2c_write(priv->client, LM3697_CTRL_A_B_BRT_CFG, priv->ctrl_brt_cfg);
-	lm3697_i2c_write(priv->client, LM3697_FEEDBACK_ENABLE, priv->feedback_enable);
+	lm3697_i2c_write(priv->client, LM3697_CTRL_A_B_BRT_CFG,
+			 priv->ctrl_brt_cfg);
+	lm3697_i2c_write(priv->client, LM3697_FEEDBACK_ENABLE,
+			 priv->feedback_enable);
 	lm3697_i2c_write(priv->client, LM3697_BOOST_CTRL, priv->boost_control);
 	lm3697_i2c_write(priv->client, LM3697_PWM_CONFIG, priv->pwm_config);
 	lm3697_i2c_write(priv->client, LM3697_CTRL_ENABLE, priv->ctrl_bank_en);
@@ -331,7 +346,7 @@ static int lm3697_init(struct lm3697 *priv)
 	return 0;
 }
 
-int  lm3697_set_brightness(struct lm3697 *drvdata, int brt_val)
+int lm3697_set_brightness(struct lm3697 *drvdata, int brt_val)
 {
 	int ret = -1;
 	pr_info("%s brt_val is %d\n", __func__, brt_val);
@@ -339,7 +354,7 @@ int  lm3697_set_brightness(struct lm3697 *drvdata, int brt_val)
 	if (!ext_lm3697_data)
 		return 0;
 
-	if(ext_lm3697_data->enabled == 0) {
+	if (ext_lm3697_data->enabled == 0) {
 		if (brt_val == 0) {
 			//avoid duplicate standy process
 			return 0;
@@ -352,60 +367,61 @@ int  lm3697_set_brightness(struct lm3697 *drvdata, int brt_val)
 
 	if (brt_val == 0) {
 		ext_lm3697_data->enabled = 0;
-		lm3697_i2c_write(ext_lm3697_data->client, LM3697_CONTROL_A_RAMP, 0x00);
-		lm3697_i2c_write(ext_lm3697_data->client, LM3697_CONTROL_B_RAMP, 0x00);
-		lm3697_i2c_write(ext_lm3697_data->client, LM3697_CONTROL_A_RUN_RAMP, 0x00);
+		lm3697_i2c_write(ext_lm3697_data->client, LM3697_CONTROL_A_RAMP,
+				 0x00);
+		lm3697_i2c_write(ext_lm3697_data->client, LM3697_CONTROL_B_RAMP,
+				 0x00);
+		lm3697_i2c_write(ext_lm3697_data->client,
+				 LM3697_CONTROL_A_RUN_RAMP, 0x00);
 	}
 
 	pr_info("%s LM3697_level is %d\n", __func__, brt_val);
 
-	lm3697_i2c_write(ext_lm3697_data->client,
-				LM3697_CTRL_A_BRT_LSB,
-				brt_val&0x0007);
+	lm3697_i2c_write(ext_lm3697_data->client, LM3697_CTRL_A_BRT_LSB,
+			 brt_val & 0x0007);
 
-	lm3697_i2c_write(ext_lm3697_data->client,
-				LM3697_CTRL_A_BRT_MSB,
-				(brt_val >> 3)&0xff);
+	lm3697_i2c_write(ext_lm3697_data->client, LM3697_CTRL_A_BRT_MSB,
+			 (brt_val >> 3) & 0xff);
 
 #if LM3697_DEBUG
-	pr_info("%s LM3697_CTRL_A_BRT_LSB:0x%2x \n", __func__, brt_val&0x0007);
-	pr_info("%s LM3697_CTRL_A_BRT_MSB:0x%2x \n", __func__, (brt_val >> 3)&0xff);
+	pr_info("%s LM3697_CTRL_A_BRT_LSB:0x%2x \n", __func__,
+		brt_val & 0x0007);
+	pr_info("%s LM3697_CTRL_A_BRT_MSB:0x%2x \n", __func__,
+		(brt_val >> 3) & 0xff);
 #endif
 
 	return ret;
-
 }
 
 #ifdef KERNEL_ABOVE_4_14
 static int lm3697_bl_get_brightness(struct backlight_device *bl_dev)
 {
-		return bl_dev->props.brightness;
+	return bl_dev->props.brightness;
 }
 
 static int lm3697_bl_update_status(struct backlight_device *bl_dev)
 {
-		struct lm3697 *drvdata = bl_get_data(bl_dev);
-		int brt;
+	struct lm3697 *drvdata = bl_get_data(bl_dev);
+	int brt;
 
-		if (bl_dev->props.state & BL_CORE_SUSPENDED)
-				bl_dev->props.brightness = 0;
+	if (bl_dev->props.state & BL_CORE_SUSPENDED)
+		bl_dev->props.brightness = 0;
 
-		brt = bl_dev->props.brightness;
-		/*
+	brt = bl_dev->props.brightness;
+	/*
 		 * Brightness register should always be written
 		 * not only register based mode but also in PWM mode.
 		 */
-		return lm3697_set_brightness(drvdata, brt);
+	return lm3697_set_brightness(drvdata, brt);
 }
 
 static const struct backlight_ops lm3697_bl_ops = {
-		.update_status = lm3697_bl_update_status,
-		.get_brightness = lm3697_bl_get_brightness,
+	.update_status = lm3697_bl_update_status,
+	.get_brightness = lm3697_bl_get_brightness,
 };
 #endif
 
-static void __lm3697_work(struct lm3697 *led,
-				enum led_brightness value)
+static void __lm3697_work(struct lm3697 *led, enum led_brightness value)
 {
 	mutex_lock(&led->lock);
 	lm3697_set_brightness(led, value);
@@ -414,14 +430,13 @@ static void __lm3697_work(struct lm3697 *led,
 
 static void lm3697_work(struct work_struct *work)
 {
-	struct lm3697 *drvdata = container_of(work,
-					struct lm3697, work);
+	struct lm3697 *drvdata = container_of(work, struct lm3697, work);
 
 	__lm3697_work(drvdata, drvdata->led_dev.brightness);
 }
 
 static void lm3697_brightness_set(struct led_classdev *led_cdev,
-			enum led_brightness brt_val)
+				  enum led_brightness brt_val)
 {
 	struct lm3697 *drvdata;
 
@@ -436,15 +451,16 @@ static void lm3697_probe_dt(struct device *dev, struct lm3697 *priv)
 	u32 temp;
 
 	priv->enable_gpio = of_get_named_gpio(np, "lm3697,hwen-gpio", 0);
-	pr_info("%s priv->enable_gpio --<0x%2x>\n", __func__, priv->enable_gpio);
+	pr_info("%s priv->enable_gpio --<0x%2x>\n", __func__,
+		priv->enable_gpio);
 
 	rc = of_property_read_u32(np, "lm3697,output-config", &temp);
 	if (rc) {
 		pr_err("lm3697,output-config read fail!\n");
 	} else {
 		priv->output_config = temp;
-		pr_info("%s lm3697,output-config --<%x >\n",
-			__func__, priv->output_config);
+		pr_info("%s lm3697,output-config --<%x >\n", __func__,
+			priv->output_config);
 	}
 
 	rc = of_property_read_u32(np, "lm3697,control-a-ramp", &temp);
@@ -452,8 +468,8 @@ static void lm3697_probe_dt(struct device *dev, struct lm3697 *priv)
 		pr_err("lm3697,control-a-ramp read fail!\n");
 	} else {
 		priv->ctrl_a_ramp = temp;
-		pr_info("%s lm3697,control-a-ramp --<%x >\n",
-			__func__, priv->ctrl_a_ramp);
+		pr_info("%s lm3697,control-a-ramp --<%x >\n", __func__,
+			priv->ctrl_a_ramp);
 	}
 
 	rc = of_property_read_u32(np, "lm3697,control-b-ramp", &temp);
@@ -461,8 +477,8 @@ static void lm3697_probe_dt(struct device *dev, struct lm3697 *priv)
 		pr_err("lm3697,control-b-ramp read fail!\n");
 	} else {
 		priv->ctrl_b_ramp = temp;
-		pr_info("%s lm3697,control-b-ramp --<%x >\n",
-			__func__, priv->ctrl_b_ramp);
+		pr_info("%s lm3697,control-b-ramp --<%x >\n", __func__,
+			priv->ctrl_b_ramp);
 	}
 
 	rc = of_property_read_u32(np, "lm3697,run-time-ramp", &temp);
@@ -470,8 +486,8 @@ static void lm3697_probe_dt(struct device *dev, struct lm3697 *priv)
 		pr_err("lm3697,control-b-ramp read fail!\n");
 	} else {
 		priv->runtime_ramp = temp;
-		pr_info("%s lm3697,run-time-ramp --<%x >\n",
-			__func__, priv->runtime_ramp);
+		pr_info("%s lm3697,run-time-ramp --<%x >\n", __func__,
+			priv->runtime_ramp);
 	}
 
 	rc = of_property_read_u32(np, "lm3697,bl-fscal-led", &temp);
@@ -479,18 +495,19 @@ static void lm3697_probe_dt(struct device *dev, struct lm3697 *priv)
 		pr_err("lm3697,bl-fscal-led read fail!\n");
 	} else {
 		priv->bl_fscal = temp;
-		pr_info("%s lm3697,bl-fscal-led --<%x >\n",
-			__func__, priv->bl_fscal);
+		pr_info("%s lm3697,bl-fscal-led --<%x >\n", __func__,
+			priv->bl_fscal);
 	}
 
 	rc = of_property_read_u32(np, "lm3697,default-brightness", &temp);
 	if (rc != 0) {
 		priv->default_brightness = priv->max_brightness;
-		pr_err("%s default-brightness not found, set to max %d\n", __func__, priv->default_brightness);
-	}
-	else {
+		pr_err("%s default-brightness not found, set to max %d\n",
+		       __func__, priv->default_brightness);
+	} else {
 		priv->default_brightness = temp;
-		pr_info("%s default_brightness=%d\n", __func__, priv->default_brightness);
+		pr_info("%s default_brightness=%d\n", __func__,
+			priv->default_brightness);
 	}
 
 	rc = of_property_read_u32(np, "lm3697,ctrl_a_b_brt_cfg", &temp);
@@ -498,8 +515,8 @@ static void lm3697_probe_dt(struct device *dev, struct lm3697 *priv)
 		pr_err("lm3697,ctrl_a_b_brt_cfg read fail!\n");
 	} else {
 		priv->ctrl_brt_cfg = temp;
-		pr_info("%s lm3697,ctrl_a_b_brt_cfg --<%x >\n",
-			__func__, priv->ctrl_brt_cfg);
+		pr_info("%s lm3697,ctrl_a_b_brt_cfg --<%x >\n", __func__,
+			priv->ctrl_brt_cfg);
 	}
 
 	rc = of_property_read_u32(np, "lm3697,feedback-enable", &temp);
@@ -507,8 +524,8 @@ static void lm3697_probe_dt(struct device *dev, struct lm3697 *priv)
 		pr_err("lm3697,feedback-enable read fail!\n");
 	} else {
 		priv->feedback_enable = temp;
-		pr_info("%s lm3697,feedback-enable --<%x >\n",
-			__func__, priv->feedback_enable);
+		pr_info("%s lm3697,feedback-enable --<%x >\n", __func__,
+			priv->feedback_enable);
 	}
 
 	rc = of_property_read_u32(np, "lm3697,boost-control", &temp);
@@ -516,8 +533,8 @@ static void lm3697_probe_dt(struct device *dev, struct lm3697 *priv)
 		pr_err("lm3697,boost-control read fail!\n");
 	} else {
 		priv->boost_control = temp;
-		pr_info("%s lm3697,boost-control --<%x >\n",
-			__func__, priv->boost_control);
+		pr_info("%s lm3697,boost-control --<%x >\n", __func__,
+			priv->boost_control);
 	}
 
 	rc = of_property_read_u32(np, "lm3697,pwm-config", &temp);
@@ -525,8 +542,8 @@ static void lm3697_probe_dt(struct device *dev, struct lm3697 *priv)
 		pr_err("lm3697,pwm_config read fail!\n");
 	} else {
 		priv->pwm_config = temp;
-		pr_info("%s lm3697,pwm_config --<%x >\n",
-			__func__, priv->pwm_config);
+		pr_info("%s lm3697,pwm_config --<%x >\n", __func__,
+			priv->pwm_config);
 	}
 
 	rc = of_property_read_u32(np, "lm3697,ctrl-bank-en", &temp);
@@ -534,8 +551,8 @@ static void lm3697_probe_dt(struct device *dev, struct lm3697 *priv)
 		pr_err("lm3697,ctrl-bank-en read fail!\n");
 	} else {
 		priv->ctrl_bank_en = temp;
-		pr_info("%s lm3697,ctrl-bank-en --<%x >\n",
-			__func__, priv->ctrl_bank_en);
+		pr_info("%s lm3697,ctrl-bank-en --<%x >\n", __func__,
+			priv->ctrl_bank_en);
 	}
 
 	rc = of_property_read_u32(np, "lm3697,bl_map", &temp);
@@ -543,8 +560,7 @@ static void lm3697_probe_dt(struct device *dev, struct lm3697 *priv)
 		pr_err("lm3697,bl_map read fail!\n");
 	} else {
 		priv->bl_map = temp;
-		pr_info("%s lm3697,bl_map --<%x >\n",
-			__func__, priv->bl_map);
+		pr_info("%s lm3697,bl_map --<%x >\n", __func__, priv->bl_map);
 	}
 
 	priv->using_lsb = of_property_read_bool(np, "lm3697,using-lsb");
@@ -557,7 +573,6 @@ static void lm3697_probe_dt(struct device *dev, struct lm3697 *priv)
 		priv->brightness = 0xff;
 		priv->max_brightness = 255;
 	}
-
 }
 /******************************************************
  *
@@ -565,32 +580,29 @@ static void lm3697_probe_dt(struct device *dev, struct lm3697 *priv)
  *
  ******************************************************/
 static ssize_t lm3697_i2c_reg_store(struct device *dev,
-		struct device_attribute *attr, const char *buf, size_t count)
+				    struct device_attribute *attr,
+				    const char *buf, size_t count)
 {
 	struct lm3697 *led = dev_get_drvdata(dev);
 
-	unsigned int databuf[2] = {0, 0};
+	unsigned int databuf[2] = { 0, 0 };
 
 	if (sscanf(buf, "%x %x", &databuf[0], &databuf[1]) == 2) {
-		lm3697_i2c_write(led->client,
-				(unsigned char)databuf[0],
-				(unsigned char)databuf[1]);
+		lm3697_i2c_write(led->client, (unsigned char)databuf[0],
+				 (unsigned char)databuf[1]);
 	}
 
 	return count;
 }
 
 static ssize_t lm3697_i2c_reg_show(struct device *dev,
-			struct device_attribute *attr, char *buf)
+				   struct device_attribute *attr, char *buf)
 {
 	return 0;
 }
 
 static DEVICE_ATTR(reg, 0664, lm3697_i2c_reg_show, lm3697_i2c_reg_store);
-static struct attribute *lm3697_attributes[] = {
-	&dev_attr_reg.attr,
-	NULL
-};
+static struct attribute *lm3697_attributes[] = { &dev_attr_reg.attr, NULL };
 
 static struct attribute_group lm3697_attribute_group = {
 	.attrs = lm3697_attributes
@@ -639,8 +651,7 @@ static int lm3697_probe(struct i2c_client *client,
 	lm3697_gpio_init(led);
 
 	ret = lm3697_read_chipid(led);
-	if(ret < 0)
-	{
+	if (ret < 0) {
 		pr_err("Failed to read lm3697 chipid: %d\n", ret);
 		goto err_init;
 	}
@@ -651,14 +662,14 @@ static int lm3697_probe(struct i2c_client *client,
 	}
 	led->enabled = 1;
 
-
 #ifdef KERNEL_ABOVE_4_14
 	memset(&props, 0, sizeof(struct backlight_properties));
 	props.type = BACKLIGHT_PLATFORM;
 	props.brightness = MAX_BRIGHTNESS_11BIT;
 	props.max_brightness = MAX_BRIGHTNESS_11BIT;
-	bl_dev = backlight_device_register(LM3697_NAME, &client->dev,
-					led, &lm3697_bl_ops, &props);
+	bl_dev = backlight_device_register(LM3697_NAME, &client->dev, led,
+					   &lm3697_bl_ops, &props);
+	(void)bl_dev;
 #endif
 	ext_lm3697_data = led;
 	lm3697_init(led);
@@ -667,7 +678,7 @@ static int lm3697_probe(struct i2c_client *client,
 	ret = sysfs_create_group(&client->dev.kobj, &lm3697_attribute_group);
 	if (ret < 0) {
 		dev_info(&client->dev, "%s error creating sysfs attr files\n",
-			__func__);
+			 __func__);
 		goto err_init;
 	}
 	pr_info("%s exit\n", __func__);
@@ -689,7 +700,7 @@ static int lm3697_remove(struct i2c_client *client)
 
 	ret = lm3697_i2c_write(client, LM3697_CTRL_ENABLE, 0);
 	if (ret) {
-		pr_err( "Failed to disable the device\n");
+		pr_err("Failed to disable the device\n");
 		return ret;
 	}
 	led_classdev_unregister(&led->led_dev);
@@ -699,14 +710,13 @@ static int lm3697_remove(struct i2c_client *client)
 	return 0;
 }
 
-static const struct i2c_device_id lm3697_id[] = {
-	{ "lm3697", 0 },
-	{ }
-};
+static const struct i2c_device_id lm3697_id[] = { { "lm3697", 0 }, {} };
 MODULE_DEVICE_TABLE(i2c, lm3697_id);
 
 static const struct of_device_id of_lm3697_leds_match[] = {
-	{ .compatible = "ti,lm3697-bl", },
+	{
+		.compatible = "ti,lm3697-bl",
+	},
 	{},
 };
 

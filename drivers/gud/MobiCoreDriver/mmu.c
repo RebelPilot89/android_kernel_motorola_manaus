@@ -36,43 +36,56 @@
 #include "mci/mcimcp.h"
 
 #include "main.h"
-#include "mcp.h"	/* mcp_buffer_map */
+#include "mcp.h" /* mcp_buffer_map */
 #include "mmu.h"
 
 #define PHYS_48BIT_MASK (BIT(48) - 1)
 
 /* Common */
-#define MMU_BUFFERABLE		BIT(2)		/* AttrIndx[0] */
-#define MMU_CACHEABLE		BIT(3)		/* AttrIndx[1] */
-#define MMU_EXT_NG		BIT(11)		/* ARMv6 and higher */
+#define MMU_BUFFERABLE BIT(2) /* AttrIndx[0] */
+#define MMU_CACHEABLE BIT(3) /* AttrIndx[1] */
+#define MMU_EXT_NG BIT(11) /* ARMv6 and higher */
 
 /* LPAE */
-#define MMU_TYPE_PAGE		(3 << 0)
-#define MMU_NS			BIT(5)
-#define MMU_AP_RW_ALL		BIT(6) /* AP[2:1], RW, at any privilege level */
-#define	MMU_AP2_RO		BIT(7)
-#define MMU_EXT_SHARED_64	(3 << 8)	/* SH[1:0], inner shareable */
-#define MMU_EXT_AF		BIT(10)		/* Access Flag */
-#define MMU_EXT_XN		(((u64)1) << 54) /* XN */
+#define MMU_TYPE_PAGE (3 << 0)
+#define MMU_NS BIT(5)
+#define MMU_AP_RW_ALL BIT(6) /* AP[2:1], RW, at any privilege level */
+#define MMU_AP2_RO BIT(7)
+#define MMU_EXT_SHARED_64 (3 << 8) /* SH[1:0], inner shareable */
+#define MMU_EXT_AF BIT(10) /* Access Flag */
+#define MMU_EXT_XN (((u64)1) << 54) /* XN */
 
 /* Non-LPAE */
-#define MMU_TYPE_EXT		(3 << 0)	/* v5 */
-#define MMU_TYPE_SMALL		(2 << 0)
-#define MMU_EXT_AP0		BIT(4)
-#define MMU_EXT_AP1		(2 << 4)
-#define MMU_EXT_AP2		BIT(9)
-#define MMU_EXT_TEX(x)		((x) << 6)	/* v5 */
-#define MMU_EXT_SHARED_32	BIT(10)		/* ARMv6 and higher */
+#define MMU_TYPE_EXT (3 << 0) /* v5 */
+#define MMU_TYPE_SMALL (2 << 0)
+#define MMU_EXT_AP0 BIT(4)
+#define MMU_EXT_AP1 (2 << 4)
+#define MMU_EXT_AP2 BIT(9)
+#define MMU_EXT_TEX(x) ((x) << 6) /* v5 */
+#define MMU_EXT_SHARED_32 BIT(10) /* ARMv6 and higher */
 
 /* ION */
 /* Trustonic Specific flag to detect ION mem */
-#define MMU_ION_BUF		BIT(24)
+#define MMU_ION_BUF BIT(24)
 
 /*
  * Specific case for kernel 4.4.168 that does not have the same
  * get_user_pages() implementation
  */
-#if KERNEL_VERSION(4, 4, 167) < LINUX_VERSION_CODE && \
+#if KERNEL_VERSION(5, 9, 0) <= LINUX_VERSION_CODE
+static inline long gup_local(struct mm_struct *mm, uintptr_t start,
+			     unsigned long nr_pages, int write,
+			     struct page **pages)
+{
+	unsigned int gup_flags = 0;
+
+	if (write)
+		gup_flags |= FOLL_WRITE;
+
+	return get_user_pages_remote(mm, start, nr_pages, gup_flags, pages,
+				     NULL, NULL);
+}
+#elif KERNEL_VERSION(4, 4, 167) < LINUX_VERSION_CODE &&                        \
 	KERNEL_VERSION(4, 5, 0) > LINUX_VERSION_CODE
 static inline long gup_local(struct mm_struct *mm, uintptr_t start,
 			     unsigned long nr_pages, int write,
@@ -84,7 +97,7 @@ static inline long gup_local(struct mm_struct *mm, uintptr_t start,
 		gup_flags |= FOLL_WRITE;
 
 	return get_user_pages(NULL, mm, start, nr_pages, gup_flags, pages,
-					NULL);
+			      NULL);
 }
 #elif KERNEL_VERSION(4, 6, 0) > LINUX_VERSION_CODE
 static inline long gup_local(struct mm_struct *mm, uintptr_t start,
@@ -104,8 +117,8 @@ static inline long gup_local(struct mm_struct *mm, uintptr_t start,
 		gup_flags |= FOLL_WRITE;
 	/* gup_flags |= FOLL_CMA; */
 
-	return get_user_pages_remote(NULL, mm, start, nr_pages, gup_flags,
-				    0, pages, NULL);
+	return get_user_pages_remote(NULL, mm, start, nr_pages, gup_flags, 0,
+				     pages, NULL);
 }
 #elif KERNEL_VERSION(4, 10, 0) > LINUX_VERSION_CODE
 static inline long gup_local(struct mm_struct *mm, uintptr_t start,
@@ -118,7 +131,7 @@ static inline long gup_local(struct mm_struct *mm, uintptr_t start,
 		gup_flags |= FOLL_WRITE;
 
 	return get_user_pages_remote(NULL, mm, start, nr_pages, gup_flags,
-				    pages, NULL);
+				     pages, NULL);
 }
 #else
 static inline long gup_local(struct mm_struct *mm, uintptr_t start,
@@ -131,7 +144,7 @@ static inline long gup_local(struct mm_struct *mm, uintptr_t start,
 		gup_flags |= FOLL_WRITE;
 
 	return get_user_pages_remote(NULL, mm, start, nr_pages, gup_flags,
-				    pages, NULL, NULL);
+				     pages, NULL, NULL);
 }
 #endif
 
@@ -156,15 +169,15 @@ static inline long gup_local_repeat(struct mm_struct *mm, uintptr_t start,
  * A table that could be either a pmd or pte
  */
 union mmu_table {
-	u64		*entries;	/* Array of PTEs */
+	u64 *entries; /* Array of PTEs */
 	/* Array of pages */
-	struct page	**pages;
+	struct page **pages;
 	/* Array of VAs */
-	uintptr_t	*vas;
+	uintptr_t *vas;
 	/* Address of table */
-	void		*addr;
+	void *addr;
 	/* Page for table */
-	unsigned long	page;
+	unsigned long page;
 };
 
 /*
@@ -175,27 +188,27 @@ union mmu_table {
  * the MMU table and a handle for this table is returned to the user.
  */
 struct tee_mmu {
-	struct kref			kref;
+	struct kref kref;
 	/* Array of pages that hold buffer ptes*/
-	union mmu_table			pte_tables[PMD_ENTRIES_MAX];
+	union mmu_table pte_tables[PMD_ENTRIES_MAX];
 	/* Actual number of ptes tables */
-	size_t				nr_pmd_entries;
+	size_t nr_pmd_entries;
 	/* Contains phys @ of ptes tables */
-	union mmu_table			pmd_table;
-	struct tee_deleter		*deleter;	/* Xen map to free */
-	unsigned long			nr_pages;
-	int				pages_created;	/* Leak check */
-	int				pages_locked;	/* Leak check */
-	u32				offset;
-	u32				length;
-	u32				flags;
+	union mmu_table pmd_table;
+	struct tee_deleter *deleter; /* Xen map to free */
+	unsigned long nr_pages;
+	int pages_created; /* Leak check */
+	int pages_locked; /* Leak check */
+	u32 offset;
+	u32 length;
+	u32 flags;
 	/* Pages are from user space */
-	bool				user;
-	bool				use_pages_and_vas;
+	bool user;
+	bool use_pages_and_vas;
 	/* ION case only */
-	struct dma_buf			*dma_buf;
-	struct dma_buf_attachment	*attach;
-	struct sg_table			*sgt;
+	struct dma_buf *dma_buf;
+	struct dma_buf_attachment *attach;
+	struct sg_table *sgt;
 };
 
 static void tee_mmu_delete(struct tee_mmu *mmu)
@@ -316,10 +329,10 @@ static struct tee_mmu *tee_mmu_create_common(const struct mcp_buffer_map *b_map)
 
 	/* Pages info */
 	mmu->nr_pages = b_map->nr_pages;
-	mmu->nr_pmd_entries = (mmu->nr_pages + PTE_ENTRIES_MAX - 1) /
-			    PTE_ENTRIES_MAX;
-	mc_dev_devel("mmu->nr_pages %lu num_ptes_pages %zu",
-		     mmu->nr_pages, mmu->nr_pmd_entries);
+	mmu->nr_pmd_entries =
+		(mmu->nr_pages + PTE_ENTRIES_MAX - 1) / PTE_ENTRIES_MAX;
+	mc_dev_devel("mmu->nr_pages %lu num_ptes_pages %zu", mmu->nr_pages,
+		     mmu->nr_pmd_entries);
 
 	/* Allocate a page for the L1 table, always used for DomU */
 	mmu->pmd_table.page = get_zeroed_page(GFP_KERNEL);
@@ -371,19 +384,19 @@ err_attach:
 struct tee_mmu *tee_mmu_create(struct mm_struct *mm,
 			       const struct mc_ioctl_buffer *buf)
 {
-	struct tee_mmu	*mmu;
-	const void	*data = (const void *)(uintptr_t)buf->va;
-	const void	*reader = (const void *)((uintptr_t)data & PAGE_MASK);
-	struct page	**pages;	/* Same as below, conveniently typed */
-	unsigned long	pages_page = 0;	/* Page to contain the page pointers */
-	unsigned long	chunk;
+	struct tee_mmu *mmu;
+	const void *data = (const void *)(uintptr_t)buf->va;
+	const void *reader = (const void *)((uintptr_t)data & PAGE_MASK);
+	struct page **pages; /* Same as below, conveniently typed */
+	unsigned long pages_page = 0; /* Page to contain the page pointers */
+	unsigned long chunk;
 	struct mcp_buffer_map b_map = {
 		.offset = (u32)(buf->va & ~PAGE_MASK),
 		.length = buf->len,
 		.flags = buf->flags,
 	};
-	bool		writeable = buf->flags & MC_IO_MAP_OUTPUT;
-	int		ret = 0;
+	bool writeable = buf->flags & MC_IO_MAP_OUTPUT;
+	int ret = 0;
 
 #ifndef CONFIG_DMA_SHARED_BUFFER
 	if (buf->flags & MMU_ION_BUF) {
@@ -451,11 +464,10 @@ struct tee_mmu *tee_mmu_create(struct mm_struct *mm,
 
 		/* Add page address to pmd table if needed */
 		if (mmu->use_pages_and_vas)
-			mmu->pmd_table.vas[chunk] =
-				mmu->pte_tables[chunk].page;
+			mmu->pmd_table.vas[chunk] = mmu->pte_tables[chunk].page;
 		else
 			mmu->pmd_table.entries[chunk] =
-			       virt_to_phys(mmu->pte_tables[chunk].addr);
+				virt_to_phys(mmu->pte_tables[chunk].addr);
 
 		/* Get pages */
 		if (mmu->dma_buf) {
@@ -464,18 +476,19 @@ struct tee_mmu *tee_mmu_create(struct mm_struct *mm,
 			struct page **page_ptr;
 
 			page_ptr = &pages[0];
-			sg_miter_start(&miter, mmu->sgt->sgl,
-				       mmu->sgt->nents,
+			sg_miter_start(&miter, mmu->sgt->sgl, mmu->sgt->nents,
 				       SG_MITER_FROM_SG);
 			while (sg_miter_next(&miter))
 				*page_ptr++ = miter.page;
 
-			sg_miter_stop(&miter);
 		} else if (mm) {
 			long gup_ret;
-
 			/* Buffer was allocated in user space */
+#if KERNEL_VERSION(5, 8, 0) > LINUX_VERSION_CODE
 			down_read(&mm->mmap_sem);
+#else
+			mmap_read_lock(mm);
+#endif
 			/*
 			 * Always try to map read/write from a Linux PoV, so
 			 * Linux creates (page faults) the underlying pages if
@@ -489,11 +502,15 @@ struct tee_mmu *tee_mmu_create(struct mm_struct *mm,
 				 * is to be shared as input only, try to map
 				 * again read-only.
 				 */
-				gup_ret = gup_local_repeat(mm,
-							   (uintptr_t)reader,
-							   nr_pages, 0, pages);
+				gup_ret =
+					gup_local_repeat(mm, (uintptr_t)reader,
+							 nr_pages, 0, pages);
 			}
+#if KERNEL_VERSION(5, 8, 0) > LINUX_VERSION_CODE
 			up_read(&mm->mmap_sem);
+#else
+			mmap_read_unlock(mm);
+#endif
 			if (gup_ret < 0) {
 				ret = gup_ret;
 				mc_dev_err(ret, "failed to get user pages @%p",
@@ -501,15 +518,10 @@ struct tee_mmu *tee_mmu_create(struct mm_struct *mm,
 				goto end;
 			}
 
+		if (gup_ret != nr_pages) {
 			/* check if we could lock all pages. */
-			if (gup_ret != nr_pages) {
-				mc_dev_err((int)gup_ret,
-					   "failed to get user pages");
-#if KERNEL_VERSION(4, 15, 0) > LINUX_VERSION_CODE
-				release_pages(pages, gup_ret, 0);
-#else
+			mc_dev_err((int)gup_ret, "failed to get user pages");
 				release_pages(pages, gup_ret);
-#endif
 				ret = -EINVAL;
 				goto end;
 			}
@@ -548,7 +560,7 @@ struct tee_mmu *tee_mmu_create(struct mm_struct *mm,
 		} else {
 			for (i = 0; i < nr_pages; i++) {
 				mmu->pte_tables[chunk].entries[i] =
-						page_to_phys(pages[i]);
+					page_to_phys(pages[i]);
 			}
 		}
 	}
@@ -624,9 +636,8 @@ struct tee_mmu *tee_mmu_wrap(struct tee_deleter *deleter, struct page **pages,
 	}
 
 	mmu->deleter = deleter;
-	mc_dev_devel("wrapped mmu %p: len %u off %u flg %x pmd table %lx",
-		     mmu, mmu->length, mmu->offset, mmu->flags,
-		     mmu->pmd_table.page);
+	mc_dev_devel("wrapped mmu %p: len %u off %u flg %x pmd table %lx", mmu,
+		     mmu->length, mmu->offset, mmu->flags, mmu->pmd_table.page);
 	return mmu;
 
 err:
@@ -644,9 +655,9 @@ static void tee_mmu_release(struct kref *kref)
 {
 	struct tee_mmu *mmu = container_of(kref, struct tee_mmu, kref);
 
-	mc_dev_devel("free mmu %p: %s len %u off %u pmd table %lx",
-		     mmu, mmu->user ? "user" : "kernel", mmu->length,
-		     mmu->offset, mmu->pmd_table.page);
+	mc_dev_devel("free mmu %p: %s len %u off %u pmd table %lx", mmu,
+		     mmu->user ? "user" : "kernel", mmu->length, mmu->offset,
+		     mmu->pmd_table.page);
 	tee_mmu_delete(mmu);
 }
 
@@ -678,8 +689,7 @@ void tee_mmu_buffer(struct tee_mmu *mmu, struct mcp_buffer_map *map)
 
 int tee_mmu_debug_structs(struct kasnprintf_buf *buf, const struct tee_mmu *mmu)
 {
-	return kasnprintf(buf,
-			  "\t\t\tmmu %pK: %s len %u off %u table %pK\n",
+	return kasnprintf(buf, "\t\t\tmmu %pK: %s len %u off %u table %pK\n",
 			  mmu, mmu->user ? "user" : "kernel", mmu->length,
 			  mmu->offset, (void *)mmu->pmd_table.page);
 }

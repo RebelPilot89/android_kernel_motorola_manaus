@@ -8,26 +8,26 @@
 
 #include "msched_common.h"
 
-#define MAGIC_NUM       (0xdead0000)
-#define MAGIC_MASK      (0xffff0000)
-#define MAGIC_SHIFT     (16)
-#define OWNER_BIT       (1 << 0)
+#define MAGIC_NUM (0xdead0000)
+#define MAGIC_MASK (0xffff0000)
+#define MAGIC_SHIFT (16)
+#define OWNER_BIT (1 << 0)
 #define THREAD_INFO_BIT (1 << 1)
-#define TYPE_BIT        (1 << 2)
+#define TYPE_BIT (1 << 2)
 
-#define UX_FLAG_BIT       (1<<0)
-#define SS_FLAG_BIT       (1<<1)
-#define GRP_SHIFT         (2)
-#define GRP_FLAG_MASK     (7 << GRP_SHIFT)
-#define U_GRP_OTHER       (1 << GRP_SHIFT)
-#define U_GRP_BACKGROUND  (2 << GRP_SHIFT)
-#define U_GRP_FRONDGROUD  (3 << GRP_SHIFT)
-#define U_GRP_TOP_APP     (4 << GRP_SHIFT)
+#define UX_FLAG_BIT (1 << 0)
+#define SS_FLAG_BIT (1 << 1)
+#define GRP_SHIFT (2)
+#define GRP_FLAG_MASK (7 << GRP_SHIFT)
+#define U_GRP_OTHER (1 << GRP_SHIFT)
+#define U_GRP_BACKGROUND (2 << GRP_SHIFT)
+#define U_GRP_FRONDGROUD (3 << GRP_SHIFT)
+#define U_GRP_TOP_APP (4 << GRP_SHIFT)
 
 #define LOCK_TYPE_SHIFT (30)
-#define INVALID_TYPE    (0)
-#define LOCK_ART        (1)
-#define LOCK_JUC        (2)
+#define INVALID_TYPE (0)
+#define LOCK_ART (1)
+#define LOCK_JUC (2)
 
 struct futex_uinfo {
 	u32 cmd;
@@ -48,8 +48,9 @@ extern atomic64_t futex_inherit_useless_times;
 extern atomic64_t futex_low_count;
 extern atomic64_t futex_high_count;
 
-static inline bool locking_opt_enable(void)
+static inline bool locking_opt_enable(int opt)
 {
+	(void)opt;
 	return is_enabled(UX_ENABLE_LOCK);
 }
 

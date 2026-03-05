@@ -2,4 +2,4 @@
 EXTRA_CFLAGS += -Wall
 EXTRA_CFLAGS += -I$(TOP)/motorola/kernel/modules/include
 
-obj-m += leds_lm3697.o
+obj-$(CONFIG_BACKLIGHT_LM3697) += leds_lm3697.o

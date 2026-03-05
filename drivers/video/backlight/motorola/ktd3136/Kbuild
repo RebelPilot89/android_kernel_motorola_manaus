@@ -2,4 +2,4 @@
 EXTRA_CFLAGS += -Wall
 EXTRA_CFLAGS += -I$(TOP)/motorola/kernel/modules/include
 
-obj-m += ktd3136_bl.o
+obj-$(CONFIG_BACKLIGHT_KTD3136) += ktd3136_bl.o

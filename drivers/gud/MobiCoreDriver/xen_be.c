@@ -25,12 +25,12 @@
 #include <xen/balloon.h>
 #endif
 
-#include "platform.h"		/* MC_XENBUS_MAP_RING_VALLOC_4_1 */
+#include "platform.h" /* MC_XENBUS_MAP_RING_VALLOC_4_1 */
 #include "main.h"
-#include "admin.h"		/* tee_object* */
-#include "client.h"		/* Consider other VMs as clients */
+#include "admin.h" /* tee_object* */
+#include "client.h" /* Consider other VMs as clients */
 #include "mmu.h"
-#include "mcp.h"		/* mcp_get_version */
+#include "mcp.h" /* mcp_get_version */
 #include "nq.h"
 #include "xen_common.h"
 #include "xen_be.h"
@@ -38,21 +38,21 @@
 #define vaddr(page) ((unsigned long)pfn_to_kaddr(page_to_pfn(page)))
 
 static struct {
-	struct list_head	xfes;
-	struct mutex		xfes_mutex;	/* Protect the above */
+	struct list_head xfes;
+	struct mutex xfes_mutex; /* Protect the above */
 } l_ctx;
 
 /* Maps */
 
 struct xen_be_map {
-	struct page		**pages;
-	grant_handle_t		*handles;
-	unsigned long		nr_pages;
-	u32			flags;
-	bool			pages_allocd;
-	bool			refs_mapped;
+	struct page **pages;
+	grant_handle_t *handles;
+	unsigned long nr_pages;
+	u32 flags;
+	bool pages_allocd;
+	bool refs_mapped;
 	/* To auto-delete */
-	struct tee_deleter	deleter;
+	struct tee_deleter deleter;
 };
 
 static void xen_be_map_delete(struct xen_be_map *map)
@@ -118,8 +118,8 @@ static struct xen_be_map *be_map_create(const struct xen_be_map *pte_map,
 	if (!map->pages)
 		goto out;
 
-	map->handles = kcalloc(map->nr_pages, sizeof(*map->handles),
-			       GFP_KERNEL);
+	map->handles =
+		kcalloc(map->nr_pages, sizeof(*map->handles), GFP_KERNEL);
 	if (!map->handles)
 		goto out;
 
@@ -146,22 +146,22 @@ static struct xen_be_map *be_map_create(const struct xen_be_map *pte_map,
 			if (nr_refs > pte_entries_max)
 				nr_refs = pte_entries_max;
 
-			for (j = 0;  j < nr_refs; j++) {
-				mc_dev_devel("map [%d, %d] -> %d ref %u",
-					     i, j, k, refs[j]);
+			for (j = 0; j < nr_refs; j++) {
+				mc_dev_devel("map [%d, %d] -> %d ref %u", i, j,
+					     k, refs[j]);
 #ifdef DEBUG
 				/* Relax serial interface to not kill the USB */
 				usleep_range(100, 200);
 #endif
-				gnttab_set_map_op(
-					&maps[k], vaddr(map->pages[k]),
-					map->flags, refs[j], dom_id);
+				gnttab_set_map_op(&maps[k],
+						  vaddr(map->pages[k]),
+						  map->flags, refs[j], dom_id);
 				nr_refs_left--;
 				k++;
 			}
 		}
 	} else {
-		for (i = 0;  i < map->nr_pages; i++) {
+		for (i = 0; i < map->nr_pages; i++) {
 			mc_dev_devel("map table %d ref %u", i, refs[i]);
 			gnttab_set_map_op(&maps[i], vaddr(map->pages[i]),
 					  map->flags, refs[i], dom_id);
@@ -174,7 +174,7 @@ static struct xen_be_map *be_map_create(const struct xen_be_map *pte_map,
 
 	map->refs_mapped = true;
 	/* Pin pages */
-	for (i = 0;  i < map->nr_pages; i++) {
+	for (i = 0; i < map->nr_pages; i++) {
 		get_page(map->pages[i]);
 		map->handles[i] = maps[i].handle;
 	}
@@ -214,7 +214,7 @@ static struct xen_be_map *xen_be_map_create(struct tee_xen_buffer *buffer,
 	if (!IS_ERR(map)) {
 		/* Auto-delete */
 		map->deleter.object = map;
-		map->deleter.delete = (void(*)(void *))xen_be_map_delete;
+		map->deleter.delete = (void (*)(void *))xen_be_map_delete;
 	}
 
 	return map;
@@ -310,8 +310,7 @@ static inline int xen_be_mc_open_session(struct tee_xfe *xfe)
 
 		/* Shall be freed by session */
 		b_map.nr_pages = map->nr_pages;
-		info.tci_mmu = tee_mmu_wrap(&map->deleter, map->pages,
-					    &b_map);
+		info.tci_mmu = tee_mmu_wrap(&map->deleter, map->pages, &b_map);
 		if (IS_ERR(info.tci_mmu)) {
 			ret = PTR_ERR(info.tci_mmu);
 			info.tci_mmu = NULL;
@@ -327,8 +326,8 @@ out:
 	if (info.tci_mmu)
 		tee_mmu_put(info.tci_mmu);
 
-	mc_dev_devel("session %x, exit with %d",
-		     xfe->ring->domu.session_id, ret);
+	mc_dev_devel("session %x, exit with %d", xfe->ring->domu.session_id,
+		     ret);
 	return ret;
 }
 
@@ -395,8 +394,8 @@ out:
 
 	xen_be_map_delete(ta_map);
 
-	mc_dev_devel("session %x, exit with %d",
-		     xfe->ring->domu.session_id, ret);
+	mc_dev_devel("session %x, exit with %d", xfe->ring->domu.session_id,
+		     ret);
 	return ret;
 }
 
@@ -412,11 +411,11 @@ static inline int xen_be_mc_notify(struct tee_xfe *xfe)
 
 /* mc_wait cannot keep the ring busy while waiting, so we use a worker */
 struct mc_wait_work {
-	struct work_struct	work;
-	struct tee_xfe		*xfe;
-	u32			session_id;
-	s32			timeout;
-	u32			id;
+	struct work_struct work;
+	struct tee_xfe *xfe;
+	u32 session_id;
+	s32 timeout;
+	u32 id;
 };
 
 static void xen_be_mc_wait_worker(struct work_struct *work)
@@ -431,8 +430,8 @@ static void xen_be_mc_wait_worker(struct work_struct *work)
 				       wait_work->timeout, false);
 
 	/* Send return code */
-	mc_dev_devel("MC wait session done %x, ret %d",
-		     wait_work->session_id, ret);
+	mc_dev_devel("MC wait session done %x, ret %d", wait_work->session_id,
+		     ret);
 	ring_get(xfe);
 	/* In */
 	xfe->ring->dom0.session_id = wait_work->session_id;
@@ -497,8 +496,8 @@ static inline int xen_be_mc_map(struct tee_xfe *xfe)
 	if (!ret)
 		buffer->info->sva = buf.sva;
 
-	mc_dev_devel("session %x, exit with %d",
-		     xfe->ring->domu.session_id, ret);
+	mc_dev_devel("session %x, exit with %d", xfe->ring->domu.session_id,
+		     ret);
 	return ret;
 }
 
@@ -513,8 +512,8 @@ static inline int xen_be_mc_unmap(struct tee_xfe *xfe)
 
 	ret = client_mc_unmap(xfe->client, xfe->ring->domu.session_id, &buf);
 
-	mc_dev_devel("session %x, exit with %d",
-		     xfe->ring->domu.session_id, ret);
+	mc_dev_devel("session %x, exit with %d", xfe->ring->domu.session_id,
+		     ret);
 	return ret;
 }
 
@@ -522,9 +521,8 @@ static inline int xen_be_mc_get_err(struct tee_xfe *xfe)
 {
 	int ret;
 
-	ret = client_get_session_exitcode(xfe->client,
-					  xfe->ring->domu.session_id,
-					  &xfe->ring->domu.err);
+	ret = client_get_session_exitcode(
+		xfe->client, xfe->ring->domu.session_id, &xfe->ring->domu.err);
 	mc_dev_devel("session %x err %d, exit with %d",
 		     xfe->ring->domu.session_id, xfe->ring->domu.err, ret);
 	return ret;
@@ -569,8 +567,8 @@ static inline int xen_be_gp_register_shared_mem(struct tee_xfe *xfe)
 					    &xfe->ring->domu.gp_ret);
 	/* Releasing the MMU shall also clear the map */
 	tee_mmu_put(mmu);
-	mc_dev_devel("session %x, exit with %d",
-		     xfe->ring->domu.session_id, ret);
+	mc_dev_devel("session %x, exit with %d", xfe->ring->domu.session_id,
+		     ret);
 	return ret;
 }
 
@@ -592,14 +590,14 @@ static inline int xen_be_gp_release_shared_mem(struct tee_xfe *xfe)
 
 /* GP functions cannot keep the ring busy while waiting, so we use a worker */
 struct gp_work {
-	struct work_struct		work;
-	struct tee_xfe			*xfe;
-	u64				operation_id;
-	struct interworld_session	iws;
-	struct tee_mmu			*mmus[4];
-	struct mc_uuid_t		uuid;
-	u32				session_id;
-	u32				id;
+	struct work_struct work;
+	struct tee_xfe *xfe;
+	u64 operation_id;
+	struct interworld_session iws;
+	struct tee_mmu *mmus[4];
+	struct mc_uuid_t uuid;
+	u32 session_id;
+	u32 id;
 };
 
 static void xen_be_gp_open_session_worker(struct work_struct *work)
@@ -662,8 +660,8 @@ static inline int xen_be_gp_open_session(struct tee_xfe *xfe)
 
 		/* Shall be freed by session */
 		b_map.nr_pages = map->nr_pages;
-		gp_work->mmus[i] = tee_mmu_wrap(&map->deleter, map->pages,
-						&b_map);
+		gp_work->mmus[i] =
+			tee_mmu_wrap(&map->deleter, map->pages, &b_map);
 		if (IS_ERR(gp_work->mmus[i])) {
 			xen_be_map_delete(map);
 			ret = PTR_ERR(gp_work->mmus[i]);
@@ -790,8 +788,8 @@ static inline int xen_be_gp_invoke_command(struct tee_xfe *xfe)
 
 		/* Shall be freed by session */
 		b_map.nr_pages = map->nr_pages;
-		gp_work->mmus[i] = tee_mmu_wrap(&map->deleter, map->pages,
-						&b_map);
+		gp_work->mmus[i] =
+			tee_mmu_wrap(&map->deleter, map->pages, &b_map);
 		if (IS_ERR(gp_work->mmus[i])) {
 			xen_be_map_delete(map);
 			ret = PTR_ERR(gp_work->mmus[i]);
@@ -845,8 +843,8 @@ static void xen_be_irq_handler_domu_bh(struct work_struct *data)
 	struct tee_xfe *xfe = container_of(data, struct tee_xfe, work);
 
 	xfe->ring->domu.otherend_ret = -EINVAL;
-	mc_dev_devel("DomU -> Dom0 command %u id %u",
-		     xfe->ring->domu.cmd, xfe->ring->domu.id);
+	mc_dev_devel("DomU -> Dom0 command %u id %u", xfe->ring->domu.cmd,
+		     xfe->ring->domu.id);
 	switch (xfe->ring->domu.cmd) {
 	case TEE_XEN_DOMU_NONE:
 		return;
@@ -905,18 +903,14 @@ static void xen_be_irq_handler_domu_bh(struct work_struct *data)
 		break;
 	}
 
-	mc_dev_devel("DomU -> Dom0 result %u id %u ret %d",
-		     xfe->ring->domu.cmd, xfe->ring->domu.id,
-		     xfe->ring->domu.otherend_ret);
+	mc_dev_devel("DomU -> Dom0 result %u id %u ret %d", xfe->ring->domu.cmd,
+		     xfe->ring->domu.id, xfe->ring->domu.otherend_ret);
 	notify_remote_via_irq(xfe->irq_domu);
 }
 
 /* Device */
 
-static const struct xenbus_device_id xen_be_ids[] = {
-	{ "tee_xen" },
-	{ "" }
-};
+static const struct xenbus_device_id xen_be_ids[] = { { "tee_xen" }, { "" } };
 
 /* Called when a front-end is created */
 static int xen_be_probe(struct xenbus_device *xdev,
@@ -989,8 +983,8 @@ static int xen_be_remove(struct xenbus_device *xdev)
 static inline int xen_be_map_ring_valloc(struct xenbus_device *dev,
 					 grant_ref_t ref, void **vaddr)
 {
-#if KERNEL_VERSION(4, 1, 0) <= LINUX_VERSION_CODE || \
-		defined(MC_XENBUS_MAP_RING_VALLOC_4_1)
+#if KERNEL_VERSION(4, 1, 0) <= LINUX_VERSION_CODE ||                           \
+	defined(MC_XENBUS_MAP_RING_VALLOC_4_1)
 	return xenbus_map_ring_valloc(dev, &ref, 1, vaddr);
 #else
 	return xenbus_map_ring_valloc(dev, ref, vaddr);
@@ -1004,15 +998,15 @@ static inline void frontend_attach(struct tee_xfe *xfe)
 	int i;
 
 	if (xenbus_read_driver_state(xfe->xdev->nodename) !=
-			XenbusStateInitialised)
+	    XenbusStateInitialised)
 		return;
 
-	ret = xenbus_gather(XBT_NIL, xfe->xdev->otherend,
-			    "ring-ref", "%u", &xfe->ring_ref,
-			    "pte-entries-max", "%u", &xfe->pte_entries_max,
-			    "event-channel-domu", "%u", &xfe->evtchn_domu,
-			    "event-channel-dom0", "%u", &xfe->evtchn_dom0,
-			    "domu-version", "%u", &domu_version, NULL);
+	ret = xenbus_gather(XBT_NIL, xfe->xdev->otherend, "ring-ref", "%u",
+			    &xfe->ring_ref, "pte-entries-max", "%u",
+			    &xfe->pte_entries_max, "event-channel-domu", "%u",
+			    &xfe->evtchn_domu, "event-channel-dom0", "%u",
+			    &xfe->evtchn_dom0, "domu-version", "%u",
+			    &domu_version, NULL);
 	if (ret) {
 		xenbus_dev_fatal(xfe->xdev, ret,
 				 "failed to gather other domain info");
@@ -1052,7 +1046,7 @@ static inline void frontend_attach(struct tee_xfe *xfe)
 		xfe->buffers[i].info = &xfe->ring->domu.buffers[i];
 	}
 
-	ret = bind_interdomain_evtchn_to_irqhandler(
+	ret = bind_interdomain_evtchn_to_irqhandler_lateeoi(
 		xfe->xdev->otherend_id, xfe->evtchn_domu,
 		xen_be_irq_handler_domu_th, 0, "tee_be_domu", xfe);
 	if (ret < 0) {
@@ -1064,7 +1058,7 @@ static inline void frontend_attach(struct tee_xfe *xfe)
 	xfe->irq_domu = ret;
 	mc_dev_devel("bound DomU IRQ %d", xfe->irq_domu);
 
-	ret = bind_interdomain_evtchn_to_irqhandler(
+	ret = bind_interdomain_evtchn_to_irqhandler_lateeoi(
 		xfe->xdev->otherend_id, xfe->evtchn_dom0,
 		xen_be_irq_handler_dom0_th, 0, "tee_be_dom0", xfe);
 	if (ret < 0) {
@@ -1131,7 +1125,7 @@ static void xen_be_frontend_changed(struct xenbus_device *xdev,
 }
 
 static struct xenbus_driver xen_be_driver = {
-	.ids  = xen_be_ids,
+	.ids = xen_be_ids,
 	.probe = xen_be_probe,
 	.remove = xen_be_remove,
 	.otherend_changed = xen_be_frontend_changed,

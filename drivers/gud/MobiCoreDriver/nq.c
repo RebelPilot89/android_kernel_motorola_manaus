@@ -24,10 +24,18 @@
 #include <linux/version.h>
 #include <linux/sched.h>
 #if KERNEL_VERSION(4, 11, 0) <= LINUX_VERSION_CODE
-#include <linux/sched/clock.h>	/* local_clock */
+#include <linux/sched/clock.h> /* local_clock */
 #endif
 
-#include "platform.h"			/* CPU-related information */
+#if KERNEL_VERSION(5, 0, 0) <= LINUX_VERSION_CODE
+#include <linux/time64.h>
+#include <linux/timekeeping.h>
+#define timespec timespec64
+#define getnstimeofday(ts) ktime_get_real_ts64(ts)
+#define getrawmonotonic(ts) ktime_get_raw_ts64(ts)
+#endif
+
+#include "platform.h" /* CPU-related information */
 
 #include "public/mc_user.h"
 
@@ -35,7 +43,7 @@
 #include "mci/mciiwp.h"
 #include "mci/mcimcp.h"
 #include "mci/mcinq.h"
-#include "mci/mcitime.h"		/* struct mcp_time */
+#include "mci/mcitime.h" /* struct mcp_time */
 
 #include "main.h"
 #include "clock.h"
@@ -43,12 +51,12 @@
 #include "logging.h"
 #include "nq.h"
 
-#define NQ_NUM_ELEMS		64
-#define SCHEDULING_FREQ		5	/**< N-SIQ every n-th time */
-#define DEFAULT_TIMEOUT_MS	20000	/* We do nothing on timeout anyway */
+#define NQ_NUM_ELEMS 64
+#define SCHEDULING_FREQ 5 /**< N-SIQ every n-th time */
+#define DEFAULT_TIMEOUT_MS 20000 /* We do nothing on timeout anyway */
 
 static struct {
-	struct mutex buffer_mutex;	/* Lock on SWd communication buffer */
+	struct mutex buffer_mutex; /* Lock on SWd communication buffer */
 	struct mcp_buffer *mcp_buffer;
 	struct interworld_session *iwp_buffer;
 	struct task_struct *irq_bh_thread;
@@ -61,7 +69,7 @@ static struct {
 	/* MobiCore MCI information */
 	unsigned int order;
 	union {
-		void		*mci;
+		void *mci;
 		struct {
 			struct notification_queue *tx;
 			struct notification_queue *rx;
@@ -72,38 +80,38 @@ static struct {
 	 * notification queue overflows, so no session gets its notification
 	 * lost, especially MCP.
 	 */
-	struct mutex		notifications_mutex;
-	struct list_head	notifications;
+	struct mutex notifications_mutex;
+	struct list_head notifications;
 	/* Dump buffer */
-	char			*tee_version;
-	struct kasnprintf_buf	dump;
+	char *tee_version;
+	struct kasnprintf_buf dump;
 	/* Time */
-	struct mcp_time		*time;
+	struct mcp_time *time;
 
 	/* Scheduler */
-	struct task_struct	*tee_scheduler_thread;
-	bool			tee_scheduler_run;
-	bool			tee_hung;
-	int			boot_ret;
-	struct completion	boot_complete;	/* Signal end of boot */
-	struct completion	idle_complete;	/* Unblock scheduler thread */
-	struct completion	sleep_complete;	/* Wait for sleep status */
-	struct mutex		sleep_mutex;	/* Protect sleep request */
-	struct mutex		request_mutex;	/* Protect all below */
+	struct task_struct *tee_scheduler_thread;
+	bool tee_scheduler_run;
+	bool tee_hung;
+	int boot_ret;
+	struct completion boot_complete; /* Signal end of boot */
+	struct completion idle_complete; /* Unblock scheduler thread */
+	struct completion sleep_complete; /* Wait for sleep status */
+	struct mutex sleep_mutex; /* Protect sleep request */
+	struct mutex request_mutex; /* Protect all below */
 	/* The order of this enum matters */
 	enum sched_command {
-		NONE,		/* No specific request */
-		YIELD,		/* Run the SWd */
-		NSIQ,		/* Schedule the SWd */
-		SUSPEND,	/* Suspend the SWd */
-		RESUME,		/* Resume the SWd */
-	}			request;
-	bool			suspended;
+		NONE, /* No specific request */
+		YIELD, /* Run the SWd */
+		NSIQ, /* Schedule the SWd */
+		SUSPEND, /* Suspend the SWd */
+		RESUME, /* Resume the SWd */
+	} request;
+	bool suspended;
 
 	/* Logging */
-	phys_addr_t		log_buffer;
-	u32			log_buffer_size;
-	bool			log_buffer_busy;
+	phys_addr_t log_buffer;
+	u32 log_buffer_size;
+	bool log_buffer_busy;
 } l_ctx;
 
 static inline bool is_iwp_id(u32 id)
@@ -236,8 +244,8 @@ static int irq_bh_worker(void *arg)
 		while ((rx->hdr.write_cnt - rx->hdr.read_cnt) > 0) {
 			struct notification nf;
 
-			nf = rx->notification[
-				rx->hdr.read_cnt % rx->hdr.queue_size];
+			nf = rx->notification[rx->hdr.read_cnt %
+					      rx->hdr.queue_size];
 
 			/*
 			 * Ensure read_cnt writing happens after buffer read
@@ -316,8 +324,8 @@ int nq_session_notify(struct nq_session *session, u32 id, u32 payload)
 					   session->id, session->payload,
 					   payload);
 			} else {
-				mc_dev_devel("skip %x payload %x",
-					     session->id, payload);
+				mc_dev_devel("skip %x payload %x", session->id,
+					     payload);
 			}
 		} else {
 			mc_dev_devel("push %x payload %x", session->id,
@@ -401,51 +409,49 @@ static void nq_dump_status(void)
 		const char *msg;
 	} status_map[] = {
 		/**< MobiCore control flags */
-		{ MC_EXT_INFO_ID_FLAGS, "flags"},
+		{ MC_EXT_INFO_ID_FLAGS, "flags" },
 		/**< MobiCore halt condition code */
-		{ MC_EXT_INFO_ID_HALT_CODE, "haltCode"},
+		{ MC_EXT_INFO_ID_HALT_CODE, "haltCode" },
 		/**< MobiCore halt condition instruction pointer */
-		{ MC_EXT_INFO_ID_HALT_IP, "haltIp"},
+		{ MC_EXT_INFO_ID_HALT_IP, "haltIp" },
 		/**< MobiCore fault counter */
-		{ MC_EXT_INFO_ID_FAULT_CNT, "faultRec.cnt"},
+		{ MC_EXT_INFO_ID_FAULT_CNT, "faultRec.cnt" },
 		/**< MobiCore last fault cause */
-		{ MC_EXT_INFO_ID_FAULT_CAUSE, "faultRec.cause"},
+		{ MC_EXT_INFO_ID_FAULT_CAUSE, "faultRec.cause" },
 		/**< MobiCore last fault meta */
-		{ MC_EXT_INFO_ID_FAULT_META, "faultRec.meta"},
+		{ MC_EXT_INFO_ID_FAULT_META, "faultRec.meta" },
 		/**< MobiCore last fault threadid */
-		{ MC_EXT_INFO_ID_FAULT_THREAD, "faultRec.thread"},
+		{ MC_EXT_INFO_ID_FAULT_THREAD, "faultRec.thread" },
 		/**< MobiCore last fault instruction pointer */
-		{ MC_EXT_INFO_ID_FAULT_IP, "faultRec.ip"},
+		{ MC_EXT_INFO_ID_FAULT_IP, "faultRec.ip" },
 		/**< MobiCore last fault stack pointer */
-		{ MC_EXT_INFO_ID_FAULT_SP, "faultRec.sp"},
+		{ MC_EXT_INFO_ID_FAULT_SP, "faultRec.sp" },
 		/**< MobiCore last fault ARM arch information */
-		{ MC_EXT_INFO_ID_FAULT_ARCH_DFSR, "faultRec.arch.dfsr"},
+		{ MC_EXT_INFO_ID_FAULT_ARCH_DFSR, "faultRec.arch.dfsr" },
 		/**< MobiCore last fault ARM arch information */
-		{ MC_EXT_INFO_ID_FAULT_ARCH_ADFSR, "faultRec.arch.adfsr"},
+		{ MC_EXT_INFO_ID_FAULT_ARCH_ADFSR, "faultRec.arch.adfsr" },
 		/**< MobiCore last fault ARM arch information */
-		{ MC_EXT_INFO_ID_FAULT_ARCH_DFAR, "faultRec.arch.dfar"},
+		{ MC_EXT_INFO_ID_FAULT_ARCH_DFAR, "faultRec.arch.dfar" },
 		/**< MobiCore last fault ARM arch information */
-		{ MC_EXT_INFO_ID_FAULT_ARCH_IFSR, "faultRec.arch.ifsr"},
+		{ MC_EXT_INFO_ID_FAULT_ARCH_IFSR, "faultRec.arch.ifsr" },
 		/**< MobiCore last fault ARM arch information */
-		{ MC_EXT_INFO_ID_FAULT_ARCH_AIFSR, "faultRec.arch.aifsr"},
+		{ MC_EXT_INFO_ID_FAULT_ARCH_AIFSR, "faultRec.arch.aifsr" },
 		/**< MobiCore last fault ARM arch information */
-		{ MC_EXT_INFO_ID_FAULT_ARCH_IFAR, "faultRec.arch.ifar"},
+		{ MC_EXT_INFO_ID_FAULT_ARCH_IFAR, "faultRec.arch.ifar" },
 		/**< MobiCore configured by Daemon via fc_init flag */
-		{ MC_EXT_INFO_ID_MC_CONFIGURED, "mcData.flags"},
+		{ MC_EXT_INFO_ID_MC_CONFIGURED, "mcData.flags" },
 		/**< MobiCore exception handler last partner */
-		{ MC_EXT_INFO_ID_MC_EXC_PARTNER, "mcExcep.partner"},
+		{ MC_EXT_INFO_ID_MC_EXC_PARTNER, "mcExcep.partner" },
 		/**< MobiCore exception handler last peer */
-		{ MC_EXT_INFO_ID_MC_EXC_IPCPEER, "mcExcep.peer"},
+		{ MC_EXT_INFO_ID_MC_EXC_IPCPEER, "mcExcep.peer" },
 		/**< MobiCore exception handler last IPC message */
-		{ MC_EXT_INFO_ID_MC_EXC_IPCMSG, "mcExcep.cause"},
+		{ MC_EXT_INFO_ID_MC_EXC_IPCMSG, "mcExcep.cause" },
 		/**< MobiCore exception handler last IPC data */
-		{MC_EXT_INFO_ID_MC_EXC_IPCDATA, "mcExcep.meta"},
+		{ MC_EXT_INFO_ID_MC_EXC_IPCDATA, "mcExcep.meta" },
 		/**< MobiCore last crashing task offset */
-		{MC_EXT_INFO_ID_TASK_OFFSET,
-		"faultRec.offset.task"},
+		{ MC_EXT_INFO_ID_TASK_OFFSET, "faultRec.offset.task" },
 		/**< MobiCore last crashing task's mcLib offset */
-		{MC_EXT_INFO_ID_MCLIB_OFFSET,
-		"faultRec.offset.mclib"},
+		{ MC_EXT_INFO_ID_MCLIB_OFFSET, "faultRec.offset.mclib" },
 	};
 
 	char uuid_str[33];
@@ -661,7 +667,8 @@ static int nq_scheduler_pm_command(enum sched_command command)
 static int nq_boot_tee(void)
 {
 	size_t q_len = ALIGN(2 * (sizeof(struct notification_queue_header) +
-		NQ_NUM_ELEMS * sizeof(struct notification)), 4);
+				  NQ_NUM_ELEMS * sizeof(struct notification)),
+			     4);
 	struct irq_data *irq_d = irq_get_irq_data(l_ctx.irq);
 	int ret;
 
@@ -683,8 +690,7 @@ static int nq_boot_tee(void)
 		l_ctx.mcp_buffer->message.init_values.irq = irq_d->hwirq;
 	l_ctx.mcp_buffer->message.init_values.time_ofs =
 		(u32)((uintptr_t)l_ctx.time - (uintptr_t)l_ctx.mci);
-	l_ctx.mcp_buffer->message.init_values.time_len =
-			sizeof(*l_ctx.time);
+	l_ctx.mcp_buffer->message.init_values.time_len = sizeof(*l_ctx.time);
 
 	l_ctx.mcp_buffer->message.init_values.flags |= MC_IV_FLAG_IWP;
 	l_ctx.mcp_buffer->message.init_values.iws_buf_ofs =
@@ -991,8 +997,8 @@ int nq_start(void)
 
 	/* Scheduler */
 	l_ctx.tee_scheduler_run = true;
-	l_ctx.tee_scheduler_thread = kthread_create(tee_scheduler, NULL,
-						    "tee_scheduler");
+	l_ctx.tee_scheduler_thread =
+		kthread_create(tee_scheduler, NULL, "tee_scheduler");
 	if (IS_ERR(l_ctx.tee_scheduler_thread)) {
 		ret = PTR_ERR(l_ctx.tee_scheduler_thread);
 		mc_dev_err(ret, "tee_scheduler thread creation failed");
@@ -1055,12 +1061,11 @@ int nq_init(void)
 
 	/* NQ_NUM_ELEMS must be power of 2 */
 	q_len = ALIGN(2 * (sizeof(struct notification_queue_header) +
-			   NQ_NUM_ELEMS * sizeof(struct notification)), 4);
+			   NQ_NUM_ELEMS * sizeof(struct notification)),
+		      4);
 
-	mci_len = q_len +
-		sizeof(*l_ctx.time) +
-		sizeof(*l_ctx.mcp_buffer) +
-		MAX_IW_SESSION * sizeof(struct interworld_session);
+	mci_len = q_len + sizeof(*l_ctx.time) + sizeof(*l_ctx.mcp_buffer) +
+		  MAX_IW_SESSION * sizeof(struct interworld_session);
 
 	l_ctx.order = get_order(mci_len);
 
@@ -1071,12 +1076,12 @@ int nq_init(void)
 	l_ctx.nq.tx = (struct notification_queue *)mci;
 	l_ctx.nq.tx->hdr.queue_size = NQ_NUM_ELEMS;
 	mci += sizeof(struct notification_queue_header) +
-	    l_ctx.nq.tx->hdr.queue_size * sizeof(struct notification);
+	       l_ctx.nq.tx->hdr.queue_size * sizeof(struct notification);
 
 	l_ctx.nq.rx = (struct notification_queue *)mci;
 	l_ctx.nq.rx->hdr.queue_size = NQ_NUM_ELEMS;
 	mci += sizeof(struct notification_queue_header) +
-	    l_ctx.nq.rx->hdr.queue_size * sizeof(struct notification);
+	       l_ctx.nq.rx->hdr.queue_size * sizeof(struct notification);
 
 	l_ctx.mcp_buffer = (void *)ALIGN(mci, 8);
 	mci += sizeof(struct mcp_buffer);

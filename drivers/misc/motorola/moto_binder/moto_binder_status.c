@@ -134,10 +134,12 @@ void binder_reply_handler(void *data, struct binder_proc *target_proc,
 	}
 }
 
-void binder_alloc_handler(size_t size, struct binder_alloc *alloc, int is_async)
+void binder_alloc_handler(void *data, size_t size, struct binder_alloc *alloc,
+			  int is_async)
 {
 	struct task_struct *p = NULL;
 
+	(void)data;
 	if (alloc == NULL) {
 		return;
 	}

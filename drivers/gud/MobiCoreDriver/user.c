@@ -17,7 +17,7 @@
 #include <linux/device.h>
 #include <linux/export.h>
 #include <linux/fs.h>
-#include <linux/mm_types.h>	/* struct vm_area_struct */
+#include <linux/mm_types.h> /* struct vm_area_struct */
 #include <linux/uaccess.h>
 
 #include "public/mc_user.h"
@@ -25,7 +25,7 @@
 #include "main.h"
 #include "user.h"
 #include "client.h"
-#include "mcp.h"	/* mcp_get_version */
+#include "mcp.h" /* mcp_get_version */
 
 /*
  * Get client object from file pointer
@@ -90,9 +90,9 @@ static inline int ioctl_check_pointer(unsigned int cmd, int __user *uarg)
 	int err = 0;
 
 	if (_IOC_DIR(cmd) & _IOC_READ)
-		err = !access_ok(VERIFY_WRITE, uarg, _IOC_SIZE(cmd));
+		err = !access_ok(uarg, _IOC_SIZE(cmd));
 	else if (_IOC_DIR(cmd) & _IOC_WRITE)
-		err = !access_ok(VERIFY_READ, uarg, _IOC_SIZE(cmd));
+		err = !access_ok(uarg, _IOC_SIZE(cmd));
 
 	if (err)
 		return -EFAULT;
@@ -140,9 +140,8 @@ static long user_ioctl(struct file *file, unsigned int id, unsigned long arg)
 			break;
 		}
 
-		ret = client_mc_open_session(client, &session.uuid,
-					     session.tci, session.tcilen,
-					     &session.sid);
+		ret = client_mc_open_session(client, &session.uuid, session.tci,
+					     session.tcilen, &session.sid);
 		if (ret)
 			break;
 
@@ -318,8 +317,8 @@ static long user_ioctl(struct file *file, unsigned int id, unsigned long arg)
 
 		ret = client_gp_open_session(client, &session.uuid,
 					     &session.operation,
-					     &session.identity,
-					     &session.ret, &session.session_id);
+					     &session.identity, &session.ret,
+					     &session.session_id);
 
 		if (copy_to_user(uarg, &session, sizeof(session))) {
 			ret = -EFAULT;
@@ -392,9 +391,8 @@ static int user_mmap(struct file *file, struct vm_area_struct *vmarea)
 	}
 
 	/* Alloc contiguous buffer for this client */
-	return client_cbuf_create(client,
-				  (u32)(vmarea->vm_end - vmarea->vm_start),
-				  NULL, vmarea);
+	return client_cbuf_create(
+		client, (u32)(vmarea->vm_end - vmarea->vm_start), NULL, vmarea);
 }
 
 static const struct file_operations mc_user_fops = {

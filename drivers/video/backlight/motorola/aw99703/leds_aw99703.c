@@ -665,13 +665,13 @@ static int aw99703_probe(struct i2c_client *client,
 			 const struct i2c_device_id *id)
 {
 	struct aw99703_data *drvdata;
+	int err = 0;
 #ifdef KERNEL_ABOVE_4_14
 	struct backlight_device *bl_dev;
 	struct backlight_properties props;
 #endif
 
 	(void)bl_dev;
-	int err = 0;
 	pr_err("%s enter! driver version %s\n", __func__, AW99703_VERSION);
 	if (!i2c_check_functionality(client->adapter, I2C_FUNC_I2C)) {
 		pr_err("%s : I2C_FUNC_I2C not supported\n", __func__);

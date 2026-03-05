@@ -817,6 +817,7 @@ static void invalidate_sub(struct fsg_lun *curlun)
 	unsigned long rc;
 
 	rc = invalidate_mapping_pages(inode->i_mapping, 0, -1);
+	(void)rc;
 	VLDBG(curlun, "invalidate_mapping_pages -> %ld\n", rc);
 }
 
@@ -3327,7 +3328,7 @@ static struct usb_function_instance *fsg_alloc_inst(void)
 
 release_buffers:
 	fsg_common_free_buffers(opts->common);
-release_common:
+	//release_common:
 	kfree(opts->common);
 release_opts:
 	kfree(opts);
