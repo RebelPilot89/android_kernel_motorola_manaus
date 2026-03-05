@@ -1,0 +1,5 @@
+# add -Wall to try to catch everything we can.
+ccflags-y += -Wall
+
+obj-$(CONFIG_MOTO_SMART_BATTERY) += smart_battery.o
+smart_battery-objs += smart_battery_core.o

@@ -1,0 +1,4 @@
+# add -Wall to try to catch everything we can.
+ccflags-y += -Wall
+
+obj-$(CONFIG_MOTO_FM_CTRL) += fm_ctrl.o

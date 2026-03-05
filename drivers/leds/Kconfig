@@ -40,6 +40,12 @@ config LEDS_CLASS_MULTICOLOR
 	  for multicolor LEDs that are grouped together. This class is not
 	  intended for single color LEDs. It can be built as a module.
 
+config LEDS_MOTO_PMIC
+	tristate "Motorola PMIC LED support"
+	depends on LEDS_CLASS && OF
+	help
+	  This option enables Motorola PMIC LED control driver.
+
 config LEDS_BRIGHTNESS_HW_CHANGED
 	bool "LED Class brightness_hw_changed attribute support"
 	depends on LEDS_CLASS

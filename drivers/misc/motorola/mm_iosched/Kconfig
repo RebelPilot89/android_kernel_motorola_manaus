@@ -1,0 +1,9 @@
+# SPDX-License-Identifier: GPL-2.0
+
+config MOTO_IOSCHED
+  bool "Motorola io sched"
+  depends on BLOCK && MOTO_SCHED
+  default n
+  help
+    Motorola I/O scheduler extension integrated with moto sched hints.
+

@@ -1,0 +1,9 @@
+ccflags-y += -Wall
+
+obj-$(CONFIG_MMI_INFO) += mmi_info.o
+
+mmi_info-y += mmi_storage_info.o
+mmi_info-y += mmi_ram_info.o
+mmi_info-y += mmi_unit_info.o
+mmi_info-y += mmi_boot_info.o
+mmi_info-y += mmi_info_main.o

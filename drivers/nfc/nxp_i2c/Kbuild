@@ -1,0 +1,4 @@
+ccflags-y += -Wall
+
+obj-$(CONFIG_NXP_NFC_I2C) += nxp_i2c.o
+nxp_i2c-objs := common.o common_ese.o i2c_drv.o

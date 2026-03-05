@@ -1,0 +1,4 @@
+# add -Wall to try to catch everything we can.
+ccflags-y += -Wall
+
+obj-$(CONFIG_MMI_GAUGE_CLASS) += nfg1000_fg_mmi.o

@@ -15,6 +15,31 @@ config POWER_SUPPLY_DEBUG
 	  Say Y here to enable debugging messages for power supply class
 	  and drivers.
 
+config MMI_GAUGE_CLASS
+	bool "Motorola gauge class support"
+	depends on POWER_SUPPLY
+	help
+	  Enables Motorola gauge class interface shared by vendor fuel-gauge
+	  drivers.
+
+config MOTO_SMART_BATTERY
+	bool "Motorola smart battery manager"
+	depends on POWER_SUPPLY && MMI_GAUGE_CLASS
+	help
+	  Enables Motorola smart battery integration used on manaus.
+
+config MOTO_BQ25980_MMI
+	bool "Motorola BQ25980 charger integration"
+	depends on POWER_SUPPLY && I2C
+	help
+	  Enables Motorola integration layer for BQ25980 charging path.
+
+config QPNP_ADAPTIVE_CHARGE
+	bool "Qualcomm adaptive charging policy"
+	depends on POWER_SUPPLY
+	help
+	  Enables adaptive charging policy control used by Motorola charging.
+
 config POWER_SUPPLY_HWMON
 	bool
 	prompt "Expose power supply sensors as hwmon device"

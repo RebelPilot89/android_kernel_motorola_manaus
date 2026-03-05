@@ -1,0 +1,4 @@
+ccflags-y += -Wall
+
+obj-$(CONFIG_MOTO_MM) += moto_mm.o
+

@@ -1,0 +1,24 @@
+# SPDX-License-Identifier: GPL-2.0
+
+config MOTO_FUTEX_INHERIT
+  bool "futex inherit"
+  depends on MOTO_SCHED
+  default n
+  help
+    Boost futex owner for the blocked UX thread.
+
+config MOTO_RWSEM_INHERIT
+  bool "rwsem inherit"
+  depends on MOTO_SCHED
+  default y if MTK_SCHED_VIP_TASK
+  default n
+  help
+    Boost rwsem owner for the blocked UX thread.
+
+config MOTO_MUTEX_INHERIT
+  bool "mutex inherit"
+  depends on MOTO_SCHED
+  default y if MTK_SCHED_VIP_TASK
+  default n
+  help
+    Boost mutex owner for the blocked UX thread.

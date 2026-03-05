@@ -989,6 +989,14 @@ config GPIO_PCA953X_IRQ
 	  Say yes here to enable the pca953x to be used as an interrupt
 	  controller. It requires the driver to be built in the kernel.
 
+config GPIO_PCAL6408
+	bool "Motorola PCAL6408/TCA6418 GPIO expander"
+	depends on OF_GPIO
+	select REGMAP_I2C
+	help
+	  Say yes here to enable Motorola's PCAL6408/TCA6418 I2C GPIO
+	  expander driver.
+
 config GPIO_PCA9570
 	tristate "PCA9570 4-Bit I2C GPO expander"
 	help

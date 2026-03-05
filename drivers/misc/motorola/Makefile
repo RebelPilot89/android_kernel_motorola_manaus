@@ -1,0 +1,18 @@
+# SPDX-License-Identifier: GPL-2.0
+
+obj-$(CONFIG_MMI_RELAY) += mmi_relay/
+obj-$(CONFIG_MOTO_BINDER) += moto_binder/
+obj-$(CONFIG_MOTO_MMAP_FAULT) += moto_mmap_fault/
+obj-$(CONFIG_MOTO_MM) += moto_mm/
+obj-$(CONFIG_MOTO_SCHED) += moto_sched/
+obj-$(CONFIG_HYBRIDSWAP_ZRAM) += moto_swap/
+obj-$(CONFIG_MOTO_F_MASS_STORAGE) += moto_f_mass_storage/
+obj-$(CONFIG_MOTO_F_USBNET) += moto_f_usbnet/
+obj-$(CONFIG_MOTO_CON_DFPAR) += moto_con_dfpar/
+obj-$(CONFIG_MMI_INFO) += mmi_info/
+obj-$(CONFIG_MMI_ANNOTATE) += mmi_annotate/
+obj-$(CONFIG_MMI_MUC_UART) += mmi_muc_uart/
+obj-$(CONFIG_MOTO_FM_CTRL) += fm/
+obj-$(CONFIG_MOTO_UWB_SR100) += uwb/
+obj-$(CONFIG_MOTO_SENSORS_CLASS) += sensors/
+obj-$(CONFIG_MOTO_IOSCHED) += mm_iosched/

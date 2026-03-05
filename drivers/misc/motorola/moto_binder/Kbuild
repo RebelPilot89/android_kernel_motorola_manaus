@@ -1,0 +1,5 @@
+# SPDX-License-Identifier: GPL-2.0
+
+obj-$(CONFIG_MOTO_BINDER) += moto_binder.o
+moto_binder-y := moto_binder_status.o moto_binder_sysfs.o moto_binder_main.o moto_binder_netfilter.o
+

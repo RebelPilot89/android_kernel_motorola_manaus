@@ -102,6 +102,7 @@ obj-$(CONFIG_LEDS_REGULATOR_VIBRATOR)	+= regulator-vibrator.o
 obj-$(CONFIG_LEDS_MTK)			+= leds-mtk.o
 obj-$(CONFIG_LEDS_MTK_PWM)		+= leds-mtk-pwm.o
 obj-$(CONFIG_LEDS_MTK_DISP)		+= leds-mtk-disp.o
+obj-$(CONFIG_LEDS_MOTO_PMIC)		+= moto-leds-pmic/
 
 subdir-ccflags-y += -I$(srctree)/drivers/misc/mediatek/flashlight
 subdir-ccflags-y += -I$(srctree)/drivers/power/supply

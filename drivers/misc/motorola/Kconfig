@@ -1,0 +1,95 @@
+# SPDX-License-Identifier: GPL-2.0-only
+
+menu "Motorola misc drivers"
+
+config MMI_RELAY
+	tristate "Motorola MMI relay driver"
+	depends on OF
+	help
+	  This driver provides the Motorola internal notifier relay used by
+	  vendor subsystems.
+
+config MOTO_BINDER
+	tristate "Motorola binder optimization driver"
+	depends on ANDROID_BINDER_IPC && NET && PROC_FS
+	help
+	  This driver adds Motorola binder telemetry and optimization hooks.
+
+config MOTO_MMAP_FAULT
+	tristate "Motorola mmap fault tuning driver"
+	depends on ANDROID_VENDOR_HOOKS
+	help
+	  This driver tunes mmap readaround behavior through Android vendor
+	  trace hooks.
+
+config MOTO_MM
+	tristate "Motorola memory management hooks"
+	depends on ANDROID_VENDOR_HOOKS
+	help
+	  Enables Motorola memory tuning hooks for vmscan policies.
+
+config MOTO_SCHED
+	tristate "Motorola scheduler optimizations"
+	depends on PROC_FS
+	help
+	  Enables Motorola scheduler optimization and ux inheritance logic.
+
+config MOTO_F_MASS_STORAGE
+	bool "Motorola USB mass storage function"
+	depends on USB_GADGET && USB_CONFIGFS
+	help
+	  Enables Motorola mass storage USB gadget function integration.
+
+config MOTO_F_USBNET
+	bool "Motorola USB usbnet function"
+	depends on USB_GADGET && USB_CONFIGFS && NET
+	help
+	  Enables Motorola usbnet USB gadget function integration.
+
+config MOTO_CON_DFPAR
+	bool "Motorola con_dfpar network diagnostics"
+	depends on NET && NETFILTER && PROC_FS
+	help
+	  Enables Motorola connectivity packet diagnostics hooks.
+
+config MMI_INFO
+	bool "Motorola mmi info"
+	depends on OF
+	help
+	  Exposes Motorola device information helpers and boot properties.
+
+config MMI_ANNOTATE
+	bool "Motorola mmi annotate"
+	depends on OF && PROC_FS
+	help
+	  Exposes persistent and runtime annotation interface for debugging.
+
+config MMI_MUC_UART
+	bool "Motorola MUC UART"
+	depends on OF && TTY && POWER_SUPPLY && FW_LOADER
+	help
+	  Enables Motorola Mod/USB controller UART communication stack.
+
+config MOTO_FM_CTRL
+	bool "Motorola FM control interface"
+	depends on OF && PINCTRL
+	help
+	  Enables Motorola FM control interface driver (ELNA pinctrl toggling).
+
+config MOTO_UWB_SR100
+	bool "Motorola UWB SR100 interface"
+	depends on OF && SPI
+	help
+	  Enables Motorola SR100 UWB control interface over SPI.
+
+config MOTO_SENSORS_CLASS
+	bool "Motorola sensors class"
+	depends on SYSFS
+	help
+	  Enables Motorola sensors class interface used by vendor sensor drivers.
+
+source "drivers/misc/motorola/mm_iosched/Kconfig"
+source "drivers/misc/motorola/moto_swap/Kconfig"
+source "drivers/misc/motorola/moto_sched/Kconfig"
+
+endmenu

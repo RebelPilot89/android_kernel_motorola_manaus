@@ -1,0 +1,4 @@
+# add -Wall to try to catch everything we can.
+ccflags-y += -Wall
+
+obj-$(CONFIG_QPNP_ADAPTIVE_CHARGE) += qpnp_adaptive_charge.o

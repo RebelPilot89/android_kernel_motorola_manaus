@@ -127,6 +127,11 @@ mtk_pep50-objs := mtk_pe5.o mtk_pe5_hal.o
 obj-$(CONFIG_MOTO_WLC_ALG_SUPPORT) += moto_wlc_alg.o
 moto_wlc_alg-objs := moto_wlc.o moto_wlc_hal.o
 obj-$(CONFIG_MOTO_CHG_TCMD_SUPPORT) += moto_chg_tcmd.o
+obj-$(CONFIG_MMI_GAUGE_CLASS) += mmi_gauge_class/
+obj-$(CONFIG_MMI_GAUGE_CLASS) += nfg1000_fg_mmi/
+obj-$(CONFIG_MOTO_SMART_BATTERY) += smart_battery/
+obj-$(CONFIG_MOTO_BQ25980_MMI) += bq25980_mmi/
+obj-$(CONFIG_QPNP_ADAPTIVE_CHARGE) += qpnp_adaptive_charge/
 
 ifneq ($(wildcard $(srctree)/$(src)/k6983v1_64_alpha),)
 obj-$(CONFIG_GAUGE_MT6983_ALPHA_SUPPORT) += k6983v1_64_alpha/

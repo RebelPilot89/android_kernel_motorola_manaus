@@ -1,0 +1,5 @@
+# add -Wall to try to catch everything we can.
+ccflags-y += -Wall
+ccflags-y += -I$(srctree)/drivers/power/supply
+
+obj-$(CONFIG_MOTO_BQ25980_MMI) += bq25980_mmi.o

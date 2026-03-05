@@ -1,0 +1,12 @@
+ccflags-y += -Wall
+
+ZRAM_SRC := zram-5.15
+
+obj-$(CONFIG_HYBRIDSWAP_ZRAM) += moto_swap.o
+
+moto_swap-y += $(ZRAM_SRC)/zram_drv.o
+moto_swap-y += hybridswap/hybridswap_main.o
+moto_swap-y += hybridswap/hybridswap_eswap.o
+
+moto_swap-y += hybridswap/hybridswap_swapd.o
+moto_swap-y += $(ZRAM_SRC)/zcomp.o

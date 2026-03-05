@@ -1,0 +1,1 @@
+obj-$(CONFIG_GPIO_PCAL6408) += gpio-pcal6408.o

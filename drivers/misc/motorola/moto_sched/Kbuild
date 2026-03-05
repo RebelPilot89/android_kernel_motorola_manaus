@@ -1,0 +1,10 @@
+ccflags-y += -Wall
+
+obj-$(CONFIG_MOTO_SCHED) += moto_sched.o
+
+moto_sched-y := msched_main.o msched_sysfs.o msched_common.o
+
+moto_sched-y += locking/locking_main.o
+moto_sched-$(CONFIG_MOTO_MUTEX_INHERIT) += locking/mutex.o
+moto_sched-$(CONFIG_MOTO_RWSEM_INHERIT) += locking/rwsem.o
+moto_sched-$(CONFIG_MOTO_FUTEX_INHERIT) += locking/futex.o
