@@ -1,5 +1,6 @@
 ccflags-y += -Wall
 ccflags-y += -I$(srctree)
+ccflags-y += -I$(src)
 
 obj-$(CONFIG_MOTO_IOSCHED) += mm_iosched.o
 mm_iosched-y := iosched.o iosched_sysctl.o iosched_cgroup.o iosched_util.o
