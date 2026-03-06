@@ -241,7 +241,7 @@
 		pinctrl-names = "default";
 		port {
 			panel_in2: endpoint {
-				remote-endpoint = <&dsi_out>;
+				remote-endpoint = <&dsi_out2>;
 			};
 		};
 	};
@@ -249,6 +249,9 @@
 		port {
 			dsi_out: endpoint {
 				remote-endpoint = <&panel_in1>;
+			};
+			dsi_out2: endpoint@1 {
+				remote-endpoint = <&panel_in2>;
 			};
 		};
 	};
