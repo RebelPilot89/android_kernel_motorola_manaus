@@ -23,6 +23,8 @@
  */
 
 &reserved_memory {
+	#address-cells = <2>;
+	#size-cells = <2>;
 	ramoops: ramoops@48000000 {
 		compatible = "ramoops";
 		reg = <0 0x48000000 0 0x200000>;
