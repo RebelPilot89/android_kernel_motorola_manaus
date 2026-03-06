@@ -145,3 +145,6 @@ drivers/*/.github/
 dtbo.img
 motorola-kernel-modules/
 Analisis/
+arch/arm64/configs/anterior_fail
+tools/kerneldev-mcp/
+work/
