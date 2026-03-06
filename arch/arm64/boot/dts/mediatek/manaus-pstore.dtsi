@@ -1,0 +1,40 @@
+/* SPDX-License-Identifier: GPL-2.0 */
+/*
+ * Motorola Edge 40 Neo (manaus / MT6879 Dimensity 7030)
+ * pstore / ramoops persistent crash-log configuration.
+ *
+ * The Motorola/MediaTek bootloader reserves 2 MiB at physical address
+ * 0x48000000 for persistent kernel logging (mblock-11-pstore). The stock
+ * firmware exposes this region as "mediatek,pstore", which is not supported
+ * by the upstream Linux pstore subsystem.
+ *
+ * This file replaces that binding with the standard "ramoops" compatible so
+ * that /sys/fs/pstore/ is populated after a panic or oops.
+ *
+ * Memory layout (total = 0x200000 = 2 MiB):
+ *   console : 0x80000  (512 KiB) - last kernel console output
+ *   pmsg    : 0x40000  (256 KiB) - /dev/pmsg0 userspace messages
+ *   ftrace  : 0x40000  (256 KiB) - function-tracer log (CONFIG_PSTORE_FTRACE)
+ *   records : 0x100000 (1 MiB)   -> 4 x 256 KiB oops/panic records
+ *
+ * The no-map attribute prevents the kernel from zeroing or otherwise
+ * touching the region during boot, preserving the previous session's log.
+ * The ramoops driver transparently handles no-map memory via ioremap().
+ */
+
+&reserved_memory {
+	ramoops: ramoops@48000000 {
+		compatible = "ramoops";
+		reg = <0 0x48000000 0 0x200000>;
+		no-map;
+
+		/* 256 KiB per oops/panic record; 4 records = 1 MiB total */
+		record-size  = <0x40000>;
+		/* 512 KiB ring-buffer for kernel console (CONFIG_PSTORE_CONSOLE) */
+		console-size = <0x80000>;
+		/* 256 KiB for /dev/pmsg0 userspace messages (CONFIG_PSTORE_PMSG) */
+		pmsg-size    = <0x40000>;
+		/* 256 KiB for function-tracer log (CONFIG_PSTORE_FTRACE) */
+		ftrace-size  = <0x40000>;
+	};
+};
