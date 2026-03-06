@@ -17,6 +17,7 @@
 #include "mediatek/manaus-wl2864c.dtsi"
 #include "mediatek/tee_ld20.dtsi"
 #include "mediatek/trusty.dtsi"
+#include "mediatek/manaus-pstore.dtsi"
 
 /*Remove unused i2c device*/
 &rt6160 {
