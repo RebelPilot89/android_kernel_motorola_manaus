@@ -30,18 +30,63 @@ jobs:
             bc bison flex libssl-dev libelf-dev \
             python3 python3-pip \
             gcc-aarch64-linux-gnu gcc-arm-linux-gnueabi \
-            make cpio lz4 zstd
+            make cpio lz4 zstd \
+            device-tree-compiler
 
-      - name: Download Neutron Clang 23
+      - name: Validate DTS (manaus overlays - 0 warnings/errors)
+        run: |
+          DTS_DIR=arch/arm64/boot/dts/mediatek
+          # Match the kernel build system's DTC flags (scripts/Makefile.lib):
+          #   -Wno-interrupt_provider, -Wno-unit_address_vs_reg
+          # The -Wno-unit_address_vs_reg suppression is intentional: it matches
+          # what the kernel itself does because pin-controller state nodes and
+          # media-graph port/endpoint nodes conventionally use @N as a
+          # disambiguator without a corresponding reg property.
+          DTC_EXTRA="-Wno-interrupt_provider -Wno-unit_address_vs_reg"
+          PASS=0; FAIL=0
+          for dts in \
+            mt6879-manaus-docomo-evt1-overlay.dts \
+            mt6879-manaus-evb-overlay.dts \
+            mt6879-manaus-dvt1-overlay.dts \
+            mt6879-manaus-dvt1a-overlay.dts \
+            mt6879-manaus-dvt2-overlay.dts; do
+            pp=$(mktemp /tmp/dts_XXXXXX.pp)
+            dtb=$(mktemp /tmp/dts_XXXXXX.dtb)
+            cpp -nostdinc \
+              -Iinclude \
+              -Iarch/arm64/boot/dts \
+              -I"$DTS_DIR" \
+              -undef -x assembler-with-cpp \
+              "$DTS_DIR/$dts" -o "$pp" 2>&1
+            # Capture only stderr (where dtc writes warnings/errors) to
+            # avoid false positives from any stdout noise.
+            OUT=$(dtc -@ $DTC_EXTRA \
+                       -I dts -O dtb -o "$dtb" "$pp" 2>&1 >/dev/null)
+            rm -f "$pp" "$dtb"
+            # Use case-insensitive match to catch both 'Warning' and 'warning:',
+            # 'Error' and 'error:', etc.
+            if echo "$OUT" | grep -qiE "warning|error"; then
+              echo "FAIL: $dts"
+              echo "$OUT" | grep -iE "warning|error"
+              FAIL=$((FAIL+1))
+            else
+              echo "OK:   $dts"
+              PASS=$((PASS+1))
+            fi
+          done
+          echo "Passed: $PASS  Failed: $FAIL"
+          [ "$FAIL" -eq 0 ]
+
+      - name: Download Neutron Clang (latest via AntMan)
         run: |
           sudo mkdir -p /opt/neutron-clang
           sudo chown "$USER" /opt/neutron-clang
-          # Download the latest Neutron Clang release
-          CLANG_URL="https://github.com/Neutron-Toolchains/clang-build-catalogue/releases/download/02032024/neutron-clang-02032024.tar.zst"
-          curl -fsSL -o /tmp/neutron-clang.tar.zst "$CLANG_URL" || \
-          wget -q -O /tmp/neutron-clang.tar.zst "$CLANG_URL"
-          tar --use-compress-program=zstd -xf /tmp/neutron-clang.tar.zst -C /opt/neutron-clang
-          rm /tmp/neutron-clang.tar.zst
+          # Use AntMan to download the latest Neutron Clang build dynamically.
+          # AntMan reads latest.txt from the catalogue so the tag is always current.
+          cd /opt/neutron-clang
+          curl -fsSL "https://raw.githubusercontent.com/Neutron-Toolchains/antman/main/antman" -o antman
+          chmod +x antman
+          ./antman -S=latest  # -S=latest: download from catalogue/latest.txt (dynamic)
           echo "Clang version:"
           /opt/neutron-clang/bin/clang --version
 

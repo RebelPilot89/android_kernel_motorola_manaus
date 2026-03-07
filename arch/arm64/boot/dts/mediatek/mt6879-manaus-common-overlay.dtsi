@@ -15,8 +15,12 @@
 #include "mediatek/manaus-display.dtsi"
 #include "mediatek/manaus-sensor.dtsi"
 #include "mediatek/manaus-wl2864c.dtsi"
+/* tee_ld20.dtsi: sets trustonic,real-drv = <1> on the mobicore node, activating
+ * the Trustonic MobiCore TEE driver interface. The base DTB already provides the
+ * trusty/nebula root nodes via mt6879.dts -> trusty.dtsi; do NOT re-include
+ * trusty.dtsi here or the bootloader DT overlay merger will create duplicate
+ * root-level trusty/nebula nodes which can prevent the device from booting. */
 #include "mediatek/tee_ld20.dtsi"
-#include "mediatek/trusty.dtsi"
 #include "mediatek/manaus-pstore.dtsi"
 
 /*Remove unused i2c device*/

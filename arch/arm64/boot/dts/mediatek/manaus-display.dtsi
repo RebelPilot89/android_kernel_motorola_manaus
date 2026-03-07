@@ -123,7 +123,7 @@
 		};
 	};
 
-	panel2@0 {
+	panel2@1 {
 		/delete-property/ compatible;
 		/delete-property/ pm-enable-gpios;
 		/delete-property/ reset-gpios;
@@ -145,7 +145,7 @@
 		};
 	};
 
-	panel3@0 {
+	panel3@2 {
 		/delete-property/ compatible;
 		/delete-property/ pm-enable-gpios;
 		/delete-property/ reset-gpios;
@@ -167,7 +167,7 @@
 		};
 	};
 
-	panel4@0 {
+	panel4@3 {
 		/delete-property/ compatible;
 		/delete-property/ pm-enable-gpios;
 		/delete-property/ reset-gpios;
@@ -190,13 +190,20 @@
 
 	ports {
 		port {
+			// Matching the base DTB's #address-cells/#size-cells so DTC
+			// can validate reg values when checking this overlay alone.
+			#address-cells = <1>;
+			#size-cells = <0>;
 			dsi_out2: endpoint@1 {
+				reg = <1>;
 				remote-endpoint = <&panel_in2>;
 			};
 			dsi_out3: endpoint@2 {
+				reg = <2>;
 				remote-endpoint = <&panel_in3>;
 			};
 			dsi_out4: endpoint@3 {
+				reg = <3>;
 				remote-endpoint = <&panel_in4>;
 			};
 		};

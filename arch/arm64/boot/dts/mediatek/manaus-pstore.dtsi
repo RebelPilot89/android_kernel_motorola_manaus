@@ -11,6 +11,10 @@
  * This file replaces that binding with the standard "ramoops" compatible so
  * that /sys/fs/pstore/ is populated after a panic or oops.
  *
+ * Upstream Linux pstore (CONFIG_PSTORE + CONFIG_PSTORE_RAM) is used instead
+ * of the MediaTek-specific mtk_ram_console driver. The ramoops driver is
+ * fully upstream and requires no vendor driver migration.
+ *
  * Memory layout (total = 0x200000 = 2 MiB):
  *   console : 0x80000  (512 KiB) - last kernel console output
  *   pmsg    : 0x40000  (256 KiB) - /dev/pmsg0 userspace messages
@@ -20,6 +24,10 @@
  * The no-map attribute prevents the kernel from zeroing or otherwise
  * touching the region during boot, preserving the previous session's log.
  * The ramoops driver transparently handles no-map memory via ioremap().
+ *
+ * NOTE: The physical address 0x48000000 corresponds to the bootloader's
+ * mblock-11-pstore reservation. If this address changes across firmware
+ * versions, verify it against the bootloader memory block table.
  */
 
 &reserved_memory {
