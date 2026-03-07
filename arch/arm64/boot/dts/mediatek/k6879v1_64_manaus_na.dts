@@ -232,7 +232,7 @@
 			};
 		};
 	};
-	panel2@0 {
+	panel2@1 {
 		compatible = "jdi,nt36672e,vdo,144hz,hfp";
 		reg = <1>;
 		pm-enable-gpios = <&pio 163 0>;
@@ -247,10 +247,14 @@
 	};
 	ports {
 		port {
-			dsi_out: endpoint {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			dsi_out: endpoint@0 {
+				reg = <0>;
 				remote-endpoint = <&panel_in1>;
 			};
 			dsi_out2: endpoint@1 {
+				reg = <1>;
 				remote-endpoint = <&panel_in2>;
 			};
 		};
