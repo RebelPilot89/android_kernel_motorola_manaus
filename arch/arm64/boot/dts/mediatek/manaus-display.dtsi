@@ -20,13 +20,15 @@
 	/delete-property/ gate_enable;
 	/delete-property/ pwm_config;
 
-	compatible = "mediatek,disp-leds";
+	compatible = "mediatek,i2c-leds";
 	backlight {
 		label = "lcd-backlight";
-		led_mode = <4>;
+		led_mode = <6>;
+		gate_enable = <1>;
 		max-brightness = <4095>;
 		max-hw-brightness = <4095>;
 		default-brightness = <2577>;
+		pwm_config = <0 1 0 0 0>;
 	};
 };
 
@@ -52,6 +54,7 @@
 	pinctrl-5 = <&mtkfb_pins_oled_avdd_en1>;
 	status = "okay";
 
+	mmi,panel-on-delay = <20>;
 };
 
 &pio {
