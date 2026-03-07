@@ -40,6 +40,7 @@
 #include <linux/of.h>
 #include <linux/proc_fs.h>
 #include <linux/seq_file.h>
+#include <linux/sizes.h>
 #include <linux/slab.h>
 #include <linux/string.h>
 
@@ -47,17 +48,17 @@
 
 #define MTK_RAM_CONSOLE_TAG	"[mtk_ram_console] "
 
-/* -----------------------------------------------------------------------
- * Bootloader SRAM descriptor (matches the layout passed via /chosen).
- * This mirrors struct mem_desc_t in mboot_params.c; we redeclare it here
- * to avoid a direct dependency on that translation-unit-private struct.
- * ----------------------------------------------------------------------- */
-struct mtk_ram_console_bl_desc {
-	u32 start;
-	u32 size;
-	u32 def_type;
-	u32 offset;
-};
+/*
+ * Index constants for the "ram_console" DT property cells.
+ * The property encodes a struct mem_desc_t as four __be32 cells:
+ *   [0] = start (physical address)
+ *   [1] = size
+ *   [2] = def_type
+ *   [3] = offset
+ * of_property_read_u32_index() performs the required be32_to_cpu() conversion.
+ */
+#define BL_DESC_IDX_START	0
+#define BL_DESC_IDX_SIZE	1
 
 /* Mapped virtual address and length of the bootloader SRAM log (optional) */
 static void __iomem *bl_sram_va;
@@ -96,8 +97,34 @@ static int last_kmsg_show(struct seq_file *m, void *v)
 
 out_sram:
 	/* Optionally append the bootloader SRAM log */
-	if (bl_sram_va && bl_sram_size)
-		seq_write(m, bl_sram_va, bl_sram_size);
+	if (bl_sram_va && bl_sram_size) {
+		/*
+		 * seq_write() uses normal memory copy; IO memory must be
+		 * read with memcpy_fromio() into a temporary kernel buffer
+		 * before passing to seq_write().
+		 * Limit the allocation to 4 MiB as a sanity cap against
+		 * corrupted DT values.
+		 */
+		void *tmp;
+
+		if (bl_sram_size > SZ_4M) {
+			pr_warn(MTK_RAM_CONSOLE_TAG
+				"bl_sram_size 0x%x exceeds 4 MiB sanity limit, clamping\n",
+				bl_sram_size);
+			bl_sram_size = SZ_4M;
+		}
+
+		tmp = kmalloc(bl_sram_size, GFP_KERNEL);
+		if (tmp) {
+			memcpy_fromio(tmp, bl_sram_va, bl_sram_size);
+			seq_write(m, tmp, bl_sram_size);
+			kfree(tmp);
+		} else {
+			pr_warn(MTK_RAM_CONSOLE_TAG
+				"failed to allocate %u bytes for SRAM read buffer\n",
+				bl_sram_size);
+		}
+	}
 
 	return 0;
 }
@@ -121,8 +148,8 @@ static const struct proc_ops last_kmsg_fops = {
 static void __init mtk_ram_console_map_bl_sram(void)
 {
 	struct device_node *chosen;
-	const struct mtk_ram_console_bl_desc *desc;
-	int len;
+	u32 bl_start = 0, bl_size = 0;
+	int ret;
 
 	chosen = of_find_node_by_path("/chosen");
 	if (!chosen)
@@ -130,34 +157,42 @@ static void __init mtk_ram_console_map_bl_sram(void)
 	if (!chosen)
 		return;
 
-	desc = (const struct mtk_ram_console_bl_desc *)
-		of_get_property(chosen, "ram_console", &len);
+	/*
+	 * DT property cells are big-endian (__be32).  Use
+	 * of_property_read_u32_index() which calls be32_to_cpu() internally,
+	 * avoiding the endianness bug that a direct struct cast would cause.
+	 */
+	ret = of_property_read_u32_index(chosen, "ram_console",
+					 BL_DESC_IDX_START, &bl_start);
+	if (!ret)
+		ret = of_property_read_u32_index(chosen, "ram_console",
+						 BL_DESC_IDX_SIZE, &bl_size);
 	of_node_put(chosen);
 
-	if (!desc || len < (int)sizeof(*desc)) {
+	if (ret) {
 		pr_debug(MTK_RAM_CONSOLE_TAG
 			 "no valid ram_console DT property\n");
 		return;
 	}
 
-	if (!desc->start || !desc->size) {
+	if (!bl_start || !bl_size) {
 		pr_debug(MTK_RAM_CONSOLE_TAG
 			 "ram_console DT property has zero start/size\n");
 		return;
 	}
 
-	bl_sram_va = ioremap_wc((phys_addr_t)desc->start, desc->size);
+	bl_sram_va = ioremap_wc((phys_addr_t)bl_start, bl_size);
 	if (!bl_sram_va) {
 		pr_warn(MTK_RAM_CONSOLE_TAG
 			"failed to map bootloader SRAM 0x%x+0x%x\n",
-			desc->start, desc->size);
+			bl_start, bl_size);
 		return;
 	}
 
-	bl_sram_size = desc->size;
+	bl_sram_size = bl_size;
 	pr_info(MTK_RAM_CONSOLE_TAG
 		"mapped bootloader SRAM log: 0x%x @ 0x%x\n",
-		desc->size, desc->start);
+		bl_size, bl_start);
 }
 
 /* -----------------------------------------------------------------------
