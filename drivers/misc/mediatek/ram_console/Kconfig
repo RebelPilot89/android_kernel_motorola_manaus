@@ -1,0 +1,23 @@
+# SPDX-License-Identifier: GPL-2.0
+
+config MTK_RAM_CONSOLE
+	bool "MediaTek RAM console (last-kmsg via pstore/ramoops)"
+	depends on PSTORE_RAM
+	depends on MTK_AEE_IPANIC
+	default n
+	help
+	  Enables the MediaTek RAM console driver for the Dimensity 7030
+	  (MT6879) platform. The driver:
+	
+	    * Exposes the previous boot kernel console as /proc/last_kmsg
+	      so Android init and bugreport tools can retrieve it early.
+	
+	    * Reads the bootloader "ram_console" property from /chosen
+	      (if present) and appends that SRAM/DRAM log region.
+	
+	  The persistent write path is provided by aee_sram_printk() from
+	  the MTK AEE/mrdump subsystem (CONFIG_MTK_AEE_IPANIC), while
+	  CONFIG_PSTORE_RAM plus the ramoops node keeps cross-reboot logs.
+	
+	  Say Y here to enable debugging of custom-kernel boot failures.
+	  If unsure, say N.

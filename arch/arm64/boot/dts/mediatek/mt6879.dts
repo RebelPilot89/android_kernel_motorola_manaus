@@ -721,6 +721,35 @@
 			alignment = <0 0x200000>;
 			alloc-ranges = <0 0x80000000 0 0xc0000000>;
 		};
+
+		/*
+		 * pstore / ramoops persistent crash-log region.
+		 *
+		 * The Motorola/MediaTek bootloader reserves 2 MiB at physical
+		 * address 0x48000000 (mblock-11-pstore) for persistent kernel
+		 * logging. Keep this in the base DTB so logs survive even when
+		 * custom DTBO flashing is not possible.
+		 */
+		ramoops: ramoops@48000000 {
+			compatible = "ramoops";
+			reg = <0 0x48000000 0 0x200000>;
+			no-map;
+
+			record-size = <0x40000>;
+			console-size = <0x80000>;
+			pmsg-size = <0x40000>;
+			ftrace-size = <0x40000>;
+		};
+
+		/*
+		 * AEE debug-kinfo region used by mrdump to persist crash metadata.
+		 */
+		aee_debug_kinfo: aee-debug-kinfo-reserve {
+			compatible = "mediatek,aee_debug_kinfo";
+			no-map;
+			size = <0 0x10000>;
+			alignment = <0 0x10000>;
+		};
 	};
 	memory_ssmr_features: memory-ssmr-features {
 		compatible = "mediatek,memory-ssmr-features";
