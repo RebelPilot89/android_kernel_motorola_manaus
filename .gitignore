@@ -148,3 +148,4 @@ Analisis/
 arch/arm64/configs/anterior_fail
 tools/kerneldev-mcp/
 work/
+android-mkdtimg/
