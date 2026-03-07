@@ -38,10 +38,9 @@ extern void aee_rr_rec_clk(int id, u32 val);
 extern int aee_rr_reboot_reason_show(struct seq_file *m, void *v);
 extern int aee_rr_last_fiq_step(void);
 extern void aee_rr_rec_exp_type(unsigned int type);
-/* Persistent kernel console ring-buffer access (used by mtk_ram_console) */
-extern void get_mbootlog_buffer(unsigned long *addr, unsigned long *size,
-				unsigned long *start);
 extern unsigned int aee_rr_curr_exp_type(void);
+extern void get_mbootlog_buffer(unsigned long *addr, unsigned long *size,
+				 unsigned long *start);
 extern void aee_rr_rec_kick(uint32_t kick_bit);
 extern void aee_rr_rec_check(uint32_t check_bit);
 extern void aee_rr_rec_scp(void);
@@ -241,6 +240,12 @@ static inline void aee_rr_rec_exp_type(unsigned int type)
 static inline unsigned int aee_rr_curr_exp_type(void)
 {
 	return 0;
+}
+
+static inline void get_mbootlog_buffer(unsigned long *addr,
+				       unsigned long *size,
+				       unsigned long *start)
+{
 }
 
 static inline void aee_rr_rec_kick(uint32_t kick_bit)
