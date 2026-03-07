@@ -302,7 +302,6 @@ void get_mbootlog_buffer(unsigned long *addr, unsigned long *size,
 	if (mbootlog_size >= mbootlog_buf_len)
 		*start = (unsigned long)&mbootlog_first_idx;
 }
-EXPORT_SYMBOL(get_mbootlog_buffer);
 
 void sram_log_save(const char *msg, int count)
 {

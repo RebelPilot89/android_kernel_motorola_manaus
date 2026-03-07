@@ -11,17 +11,9 @@
  * This file replaces that binding with the standard "ramoops" compatible so
  * that /sys/fs/pstore/ is populated after a panic or oops.
  *
- * NOTE: The ramoops@48000000 and aee-debug-kinfo-reserve nodes are also
- * defined directly in the base DTB (arch/arm64/boot/dts/mediatek/mt6879.dts)
- * because the stock dtbo.img on the Motorola Edge 40 Neo cannot be replaced
- * (flashing a custom dtbo.img bricks the device).  Having both definitions
- * is safe: DT overlay merging is idempotent for identical nodes.  This file
- * is kept so that once the DTBO can be flashed the overlay self-describes the
- * memory layout.
- *
- * Upstream Linux pstore (CONFIG_PSTORE + CONFIG_PSTORE_RAM) is used together
- * with the MediaTek-specific CONFIG_MTK_RAM_CONSOLE driver (which provides
- * /proc/last_kmsg).
+ * Upstream Linux pstore (CONFIG_PSTORE + CONFIG_PSTORE_RAM) is used instead
+ * of the MediaTek-specific mtk_ram_console driver. The ramoops driver is
+ * fully upstream and requires no vendor driver migration.
  *
  * Memory layout (total = 0x200000 = 2 MiB):
  *   console : 0x80000  (512 KiB) - last kernel console output
@@ -54,17 +46,5 @@
 		pmsg-size    = <0x40000>;
 		/* 256 KiB for function-tracer log (CONFIG_PSTORE_FTRACE) */
 		ftrace-size  = <0x40000>;
-	};
-
-	/*
-	 * AEE (Android Exception Engine) debug-kinfo region.
-	 * Required by drivers/misc/mediatek/aee/mrdump/ for crash metadata
-	 * persistence (kallsyms, reboot-reason, etc.) across panics.
-	 */
-	aee_debug_kinfo: aee-debug-kinfo-reserve {
-		compatible = "mediatek,aee_debug_kinfo";
-		no-map;
-		size = <0 0x10000>;
-		alignment = <0 0x10000>;
 	};
 };

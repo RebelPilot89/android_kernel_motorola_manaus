@@ -721,50 +721,6 @@
 			alignment = <0 0x200000>;
 			alloc-ranges = <0 0x80000000 0 0xc0000000>;
 		};
-
-		/*
-		 * pstore / ramoops persistent crash-log region.
-		 *
-		 * The Motorola/MediaTek bootloader reserves 2 MiB at physical
-		 * address 0x48000000 (mblock-11-pstore) for persistent kernel
-		 * logging.  This node is placed in the base DTB (not only in
-		 * the DTBO overlay) so that crash and console logs are preserved
-		 * across reboots even when the custom DTBO cannot be flashed.
-		 *
-		 * Memory layout (total = 0x200000 = 2 MiB):
-		 *   console : 0x80000  (512 KiB) – last kernel console output
-		 *   pmsg    : 0x40000  (256 KiB) – /dev/pmsg0 userspace msgs
-		 *   ftrace  : 0x40000  (256 KiB) – function-tracer log
-		 *   records : 4 × 0x40000 (1 MiB) – oops/panic records
-		 *
-		 * no-map prevents the kernel from zeroing the region during
-		 * boot, preserving the previous session's log.
-		 */
-		ramoops: ramoops@48000000 {
-			compatible = "ramoops";
-			reg = <0 0x48000000 0 0x200000>;
-			no-map;
-
-			record-size  = <0x40000>;
-			console-size = <0x80000>;
-			pmsg-size    = <0x40000>;
-			ftrace-size  = <0x40000>;
-		};
-
-		/*
-		 * AEE (Android Exception Engine) debug-kinfo region.
-		 *
-		 * Used by drivers/misc/mediatek/aee/mrdump/ to persist crash
-		 * metadata (kallsyms, reboot reason, etc.) across panics.
-		 * Size must be at least sizeof(struct kernel_all_info) rounded
-		 * up to a page boundary; 64 KiB is sufficient.
-		 */
-		aee_debug_kinfo: aee-debug-kinfo-reserve {
-			compatible = "mediatek,aee_debug_kinfo";
-			no-map;
-			size = <0 0x10000>;
-			alignment = <0 0x10000>;
-		};
 	};
 	memory_ssmr_features: memory-ssmr-features {
 		compatible = "mediatek,memory-ssmr-features";
