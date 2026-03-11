@@ -16,9 +16,9 @@
 
 GUD_ROOT_FOLDER := $(srctree)/drivers/tee/gud/$(CONFIG_TRUSTONIC_TEE_VERSION)
 
-# Single in-tree module.  ARM FFA transport (CONFIG_ARM_FFA_TRANSPORT) is not
-# present in 5.10 MTK; platform.h will leave MC_FFA_FASTCALL undefined and
-# ffa_dummy.c compiles to empty stubs, so ffa.o is replaced by ffa_dummy.o.
+# Single in-tree module.  When CONFIG_ARM_FFA_TRANSPORT is enabled the real
+# ffa.c is compiled (MC_FFA_FASTCALL becomes active via platform.h /
+# IS_REACHABLE); otherwise ffa_dummy.c provides empty stubs.
 obj-$(CONFIG_TRUSTONIC_TEE_SUPPORT) += mcDrvModule.o
 
 mcDrvModule-y := \
@@ -27,7 +27,6 @@ mcDrvModule-y := \
 	clientlib.o \
 	clock.o \
 	fastcall.o \
-	ffa_dummy.o \
 	iwp.o \
 	logging.o \
 	main.o \
@@ -49,6 +48,13 @@ mcDrvModule-y := \
 	raite_be.o \
 	raite_common.o \
 	raite_fe.o
+
+# FFA backend: use the real implementation when ARM FFA transport is present
+ifneq ($(filter y m,$(CONFIG_ARM_FFA_TRANSPORT)),)
+mcDrvModule-y += ffa.o
+else
+mcDrvModule-y += ffa_dummy.o
+endif
 
 # Release mode by default
 ccflags-y += -DNDEBUG

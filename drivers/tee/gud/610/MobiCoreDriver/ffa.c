@@ -25,11 +25,12 @@
 #include "public/mc_user.h"
 
 #ifdef MC_FFA_FASTCALL
-#ifdef MTK_ADAPTED
-#include "ffa_v11/arm_ffa.h"
-#else
+/*
+ * Always use the upstream arm_ffa.h (FFA 1.1 ops struct style).
+ * The MTK ffa_v11/ in-tree header is not needed in the 5.10 in-tree build.
+ */
+#define TRUSTONIC_USES_FFA_1_1
 #include <linux/arm_ffa.h>
-#endif
 #include "public/trustonic_ffa_api.h"
 
 #define KINIBI_FFA_TAG_SHARED		0

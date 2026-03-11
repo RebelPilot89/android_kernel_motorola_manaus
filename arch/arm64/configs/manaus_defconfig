@@ -639,6 +639,8 @@ CONFIG_ARM_PSCI_FW=y
 CONFIG_HAVE_ARM_SMCCC=y
 CONFIG_HAVE_ARM_SMCCC_DISCOVERY=y
 CONFIG_ARM_SMCCC_SOC_ID=y
+# ARM Firmware Framework for Arm (FF-A) — DTS-agnostic SMC transport for MobiCore 610
+CONFIG_ARM_FFA_TRANSPORT=y
 
 #
 # Tegra firmware driver
