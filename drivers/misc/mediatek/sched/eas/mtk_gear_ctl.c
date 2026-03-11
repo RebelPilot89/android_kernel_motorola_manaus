@@ -20,18 +20,19 @@
 #include <sched/sched.h>
 
 #include "eas_plus.h"
+#include "../sugov/cpufreq.h"
 
 /* MT6879 (Dimensity 7030) has 3 frequency domains (little/mid/big). */
-#define MTK_MAX_GEARS	MAX_PD_COUNT
+#define MTK_MAX_GEARS MAX_PD_COUNT
 
 /* ------------------------------------------------------------------ */
 /* Gear topology                                                        */
 /* ------------------------------------------------------------------ */
 
 static DEFINE_MUTEX(gear_tbl_lock);
-static bool            gear_tbl_ready;
-static unsigned int    nr_gears_val;
-static struct cpumask  gear_cpumask_arr[MTK_MAX_GEARS];
+static bool gear_tbl_ready;
+static unsigned int nr_gears_val;
+static struct cpumask gear_cpumask_arr[MTK_MAX_GEARS];
 
 static void build_gear_table(void)
 {
@@ -40,9 +41,9 @@ static void build_gear_table(void)
 	int g = 0;
 
 	gear_tbl_ready = false;
-	nr_gears_val   = 0;
+	nr_gears_val = 0;
 
-	for_each_possible_cpu(cpu) {
+	for_each_possible_cpu (cpu) {
 		policy = cpufreq_cpu_get(cpu);
 		if (!policy)
 			continue;
@@ -106,8 +107,8 @@ EXPORT_SYMBOL_GPL(get_gear_cpumask);
 /* Per-gear uclamp-max control                                          */
 /* ------------------------------------------------------------------ */
 
-static int          gear_uclamp_ctrl_on;
-static int          curr_uclamp_ctrl_on;
+static int gear_uclamp_ctrl_on;
+static int curr_uclamp_ctrl_on;
 static unsigned int gear_uclamp_max_val[MTK_MAX_GEARS];
 
 /**
@@ -166,9 +167,9 @@ EXPORT_SYMBOL_GPL(get_gear_uclamp_max);
  * MTK EAS supports multiple workload types (idle / foreground / game /
  * camera / …).  Five types cover the range used by C2PS.
  */
-#define MTK_NR_WL_TYPES  5
+#define MTK_NR_WL_TYPES 5
 
-static int wl_type_manual_val = -1;	/* -1 = automatic selection */
+static int wl_type_manual_val = -1; /* -1 = automatic selection */
 
 /**
  * set_wl_type_manual - override the active workload type
@@ -194,8 +195,8 @@ EXPORT_SYMBOL_GPL(get_nr_wl_type);
 /* ------------------------------------------------------------------ */
 
 static bool flt_ctrl_force_val;
-static u32  group_mode_val;
-static int  grp_dvfs_ctrl_val;
+static u32 group_mode_val;
+static int grp_dvfs_ctrl_val;
 static bool ignore_idle_ctrl_val;
 
 /* flt_ctrl_force_get - read the EAS filter-force state */
