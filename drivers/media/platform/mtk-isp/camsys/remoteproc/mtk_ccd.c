@@ -11,6 +11,7 @@
 #include <linux/remoteproc/mtk_ccd_mem.h>
 #include <linux/rpmsg/mtk_ccd_rpmsg.h>
 #include <uapi/linux/mtk_ccd_controls.h>
+#include "../../../../../iommu/arm/arm-smmu-v3/mtk-smmu-v3.h"
 
 #include "remoteproc_internal.h"
 #include "iommu_debug.h"
@@ -134,7 +135,16 @@ static void ccd_add_rpmsg_subdev(struct mtk_ccd *ccd)
 static void ccd_remove_rpmsg_subdev(struct mtk_ccd *ccd)
 {
 	if (ccd->rpmsg_subdev) {
-		mtk_rpmsg_destroy_rpmsgdev(ccd->rpmsg_subdev);
+		struct mtk_rpmsg_rproc_subdev *mtk_subdev;
+		struct rpmsg_channel_info rp_info = {
+			.src = RPMSG_ADDR_ANY,
+			.dst = RPMSG_ADDR_ANY,
+		};
+
+		mtk_subdev = to_mtk_subdev(ccd->rpmsg_subdev);
+		strscpy(rp_info.name, "mtk_ccd_msgdev", RPMSG_NAME_SIZE);
+		rp_info.src = mtk_subdev->ccd_msgdev_addr;
+		mtk_destroy_client_msgdevice(ccd->rpmsg_subdev, &rp_info);
 
 		rproc_remove_subdev(ccd->rproc, ccd->rpmsg_subdev);
 		mtk_rpmsg_destroy_rproc_subdev(ccd->rpmsg_subdev);
@@ -452,8 +462,6 @@ static int ccd_probe(struct platform_device *pdev)
 	ret = rproc_add(rproc);
 	if (ret)
 		goto remove_subdev;
-
-	mtk_create_client_msgdevice(ccd->rpmsg_subdev);
 
 	return 0;
 

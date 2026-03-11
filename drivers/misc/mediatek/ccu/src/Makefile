@@ -18,6 +18,9 @@ $(warning CCU_MAKE_FILE_CALLED_2_1_1)
 $(info $(CONFIG_MTK_CAMERA_ISP_PLATFORM))
 
 platform = $(subst $\",,$(CONFIG_MTK_CAMERA_ISP_PLATFORM))
+# folder_name es solo para plataformas ISP6S antiguas (mt6873, etc.).
+# MT6879 (Dimensity 7030 / isp71) usa CONFIG_MTK_CCU_RPROC → isp71/
+# NO activar CONFIG_MTK_CCU en manaus_defconfig.
 folder_name = isp6s
 obj-$(CONFIG_MTK_CCU) += $(subst ",,$(folder_name))/
 

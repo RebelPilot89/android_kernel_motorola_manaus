@@ -36,7 +36,10 @@ struct mtk_ccd_rpmsg_endpoint {
 	struct mtk_ccd_channel_info mchinfo;
 	struct mtk_rpmsg_rproc_subdev *mtk_subdev;
 	wait_queue_head_t worker_readwq;
+	wait_queue_head_t ccd_paramswq;
+	atomic_t ccd_params_rdy;	/* Should be 0 or 1 */
 	struct mtk_ccd_queue pending_sendq;
+	atomic_t worker_read_rdy;	/* Should be 0 or 1 */
 	atomic_t ccd_cmd_sent;	/* Should be 0, 1, ..., N */
 	atomic_t ccd_mep_state;	/* enum ccd_mept_state */
 };
@@ -52,5 +55,9 @@ struct mtk_ccd_mchinfo_entry {
 int ccd_msgdev_init(void);
 
 void __ept_release(struct kref *kref);
+
+int
+mtk_rpmsg_destroy_rpmsgdev(struct mtk_rpmsg_rproc_subdev *mtk_subdev,
+			   struct rpmsg_channel_info *info);
 
 #endif

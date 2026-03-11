@@ -33,7 +33,6 @@ struct mtk_ccd_buf {
 	struct sg_table *dma_sgt;
 	struct dma_buf *dbuf;
 	struct dma_buf_attachment *db_attach;
-	struct iosys_map map;
 };
 
 static struct mtk_ccd_buf *mtk_ccd_buf_alloc(
@@ -41,7 +40,7 @@ static struct mtk_ccd_buf *mtk_ccd_buf_alloc(
 {
 	struct mtk_ccd_buf *buf;
 	struct dma_heap *dma_heap;
-	struct iosys_map map = {}; 
+	void *vaddr;
 
 	buf = kzalloc(sizeof(*buf), GFP_KERNEL);
 	if (!buf)
@@ -73,13 +72,13 @@ static struct mtk_ccd_buf *mtk_ccd_buf_alloc(
 		goto fail_map_attach;
 	}
 
-	if (dma_buf_vmap(buf->dbuf, &map) < 0) {
+	vaddr = dma_buf_vmap(buf->dbuf);
+	if (!vaddr) {
 		pr_info("dma_heap vmap failed\n");
 		goto fail_vmap;
 	}
 
-	buf->vaddr = map.vaddr;
-	buf->map = map;
+	buf->vaddr = vaddr;
 	buf->dma_addr = sg_dma_address(buf->dma_sgt->sgl);
 	buf->dev = get_device(dev);
 	buf->size = size;
@@ -99,7 +98,7 @@ static void mtk_ccd_buf_put(struct mtk_ccd_buf *buf)
 {
 	/* free va */
 	if (buf->vaddr) {
-		dma_buf_vunmap(buf->dbuf, &buf->map);
+		dma_buf_vunmap(buf->dbuf, buf->vaddr);
 	}
 
 	/* free iova */
@@ -125,11 +124,11 @@ static dma_addr_t mtk_ccd_buf_get_daddr(struct mtk_ccd_buf *buf)
 static void *mtk_ccd_buf_get_vaddr(struct mtk_ccd_buf *buf)
 {
 	if (!buf->vaddr && buf->db_attach) {
-		if (dma_buf_vmap(buf->db_attach->dmabuf, &buf->map) < 0) {
+		buf->vaddr = dma_buf_vmap(buf->db_attach->dmabuf);
+		if (!buf->vaddr) {
 			pr_info("dma_heap vmap failed\n");
 			return NULL;
 		}
-		buf->vaddr = buf->map.vaddr;
 	}
 
 	return buf->vaddr;
