@@ -172,11 +172,16 @@ static int ffa_share_continuous_buffer(const void *buf,
 	struct page	**pages = NULL;  /* Same as below, conveniently typed */
 	unsigned long	pages_page = 0;	/* Page to contain the page pointers */
 	struct page	*page = NULL;
-	struct tee_mmu mmu;
+	struct tee_mmu	*mmu;		/* Heap-allocated to avoid large stack frame */
 	int		ret = 0;
 	int		i = 0;
 
-	memset(&mmu, 0, sizeof(mmu));
+	/* Allocate mmu struct on heap: struct tee_mmu is ~4 KB due to
+	 * pte_tables[PMD_ENTRIES_MAX] and must not live on the stack.
+	 */
+	mmu = kzalloc(sizeof(*mmu), GFP_KERNEL);
+	if (!mmu)
+		return -ENOMEM;
 
 	/* Get a page to store page pointers */
 	pages_page = get_zeroed_page(GFP_KERNEL);
@@ -190,17 +195,18 @@ static int ffa_share_continuous_buffer(const void *buf,
 	for (i = 0; i < n_cont_pages; i++)
 		pages[i] = page++;
 
-	ret = ffa_shm_register(pages, n_cont_pages, &mmu,
+	ret = ffa_shm_register(pages, n_cont_pages, mmu,
 			       KINIBI_FFA_TAG_SHARED);
 	if (ret)
 		goto end;
 
 	if (ffa_handle)
-		*ffa_handle = mmu.handle;
+		*ffa_handle = mmu->handle;
 
 end:
 	if (pages_page)
 		free_page(pages_page);
+	kfree(mmu);
 
 	return ret;
 }

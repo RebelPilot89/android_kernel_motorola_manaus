@@ -355,3 +355,28 @@ void hal_tui_post_start(struct tlc_tui_response_t *rsp)
 {
 	pr_info("%s\n", __func__);
 }
+
+/*
+ * Weak fallback definitions for touch-panel TUI entry/exit hooks.
+ * These are overridden by a real touch driver when
+ * CONFIG_TOUCHSCREEN_MTK_TUI_COMMON_API (tui-common.c) is compiled in.
+ */
+int __weak tpd_enter_tui(void)
+{
+	return 0;
+}
+
+int __weak tpd_exit_tui(void)
+{
+	return 0;
+}
+
+int __weak display_enter_tui(void)
+{
+	return 0;
+}
+
+int __weak display_exit_tui(void)
+{
+	return 0;
+}
