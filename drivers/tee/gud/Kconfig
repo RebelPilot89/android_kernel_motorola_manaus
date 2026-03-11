@@ -12,7 +12,12 @@ config TRUSTONIC_TEE_SUPPORT
 config TRUSTONIC_TEE_VERSION
 	string "TRUSTONIC TEE Version"
 	depends on TRUSTONIC_TEE_SUPPORT
-	default "510"
+	default "610"
+	help
+	  Select the MobiCore/Kinibi driver version that matches the TEE binary
+	  in /vendor.  Supported values: 500, 510, 600, 610.
+	  600: Kinibi 600 series (adds ARM FFA stubs, protocol_version.h).
+	  610: Kinibi 610 series (600 + RAITE backend).
 
 config TRUSTONIC_TEE_DEBUG
 	bool "Trustonic TEE driver debug mode"
@@ -31,6 +36,15 @@ config TRUSTONIC_TRUSTED_UI
 	  Trustonic TUI features was based on Trustonic TEE mechanism to protect
 	  Touch/Display inside TEE, to prevent malicious access of sensitive
 	  data used by APPs like Banking.
+
+config TRUSTONIC_TRUSTED_UI_FB_BLANK
+	bool "Trustonic Trusted UI with fb_blank"
+	depends on TRUSTONIC_TRUSTED_UI
+	help
+	  Blank the framebuffer before starting a TUI session.
+	  Trustonic TUI features was based on Trustonic TEE mechanism to protect
+	  Touch/Display inside TEE, to prevent malicious access of sensitive data
+	  used by APPs like Banking.
 
 config FSCRYPT_WRAPED_KEY_MODE_SUPPORT
 	bool "Wrapped Key support for FSCRYPT V2"

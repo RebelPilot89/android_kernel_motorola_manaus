@@ -1,0 +1,21 @@
+# SPDX-License-Identifier: GPL-2.0-only
+#
+# Arm Firmware Framework for Arm (FF-A) Transport
+#
+
+config ARM_FFA_TRANSPORT
+	tristate "Arm Firmware Framework for Arm (FF-A) driver"
+	depends on ARM64
+	select ARM_PSCI_FW
+	help
+	  This driver implements the Arm Firmware Framework for Arm (FF-A 1.0,
+	  DEN0077A) secure-world transport.  It detects FFA support by probing
+	  the FFA_VERSION Secure Monitor Call (SMC) at boot — no Device Tree
+	  node is required.  When FFA support is confirmed the driver maps the
+	  mandatory RXTX buffer pair, discovers Secure-world partitions, and
+	  registers them on the FFA virtual bus so that client drivers (e.g.
+	  Trustonic MobiCore 610) can bind to them.
+
+	  Say Y if your platform uses an FFA-capable Secure Monitor (e.g. the
+	  Trustonic Kinibi 600/610 TEE on MediaTek MT6879/Dimensity 7030).
+	  Say M to build as a module.

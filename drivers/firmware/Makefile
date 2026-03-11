@@ -34,3 +34,4 @@ obj-y				+= psci/
 obj-y				+= smccc/
 obj-y				+= tegra/
 obj-y				+= xilinx/
+obj-$(CONFIG_ARM_FFA_TRANSPORT)	+= arm_ffa/
