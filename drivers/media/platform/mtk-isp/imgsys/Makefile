@@ -7,6 +7,7 @@ ccflags-y += -I$(srctree)/drivers/media/platform/mtk-isp/mtk-hcp
 ccflags-y += -I$(srctree)/drivers/misc/mediatek/cmdq/mailbox/
 ccflags-y += -I$(srctree)/drivers/media/platform/mtk-isp/imgsys/platforms/
 ccflags-y += -I$(srctree)/drivers/media/platform/mtk-isp/imgsys/platforms/isp71
+ccflags-y += -I$(srctree)/drivers/media/platform/mtk-isp/imgsys/
 ccflags-y += -I$(srctree)/drivers/media/platform/mtk-isp/mtk-ipesys-me/
 ccflags-y += -I$(srctree)/drivers/misc/mediatek/mtk-interconnect/
 ccflags-y += -I$(srctree)/drivers/iommu
@@ -47,3 +48,37 @@ mtk_imgsys_util.o \
 mtk_imgsys_hw_isp71.o
 
 obj-${CONFIG_VIDEO_MTK_ISP_IMGSYS} += mtk_imgsys_v4l2.o
+
+mtk_imgsys_isp7s-objs := \
+mtk_imgsys-isp7s.o \
+platforms/isp7s/mtk_imgsys-debug.o \
+platforms/isp7s/modules/mtk_imgsys-dip.o \
+platforms/isp7s/modules/mtk_imgsys-traw.o \
+platforms/isp7s/modules/mtk_imgsys-pqdip.o \
+platforms/isp7s/modules/mtk_imgsys-wpe.o \
+platforms/isp7s/modules/mtk_imgsys-me.o \
+platforms/isp7s/modules/mtk_imgsys-adl.o
+
+obj-${CONFIG_VIDEO_MTK_ISP_IMGSYS_7S} += mtk_imgsys_isp7s.o
+
+mtk_imgsys_isp7sp-objs := \
+mtk_imgsys-isp7sp.o \
+platforms/isp7sp/mtk_imgsys-debug.o \
+platforms/isp7sp/modules/mtk_imgsys-dip.o \
+platforms/isp7sp/modules/mtk_imgsys-traw.o \
+platforms/isp7sp/modules/mtk_imgsys-pqdip.o \
+platforms/isp7sp/modules/mtk_imgsys-wpe.o \
+platforms/isp7sp/modules/mtk_imgsys-me.o \
+platforms/isp7sp/modules/mtk_imgsys-adl.o
+
+obj-${CONFIG_VIDEO_MTK_ISP_IMGSYS_7SP} += mtk_imgsys_isp7sp.o
+
+mtk_imgsys_cmdq-objs := \
+mtk_imgsys-cmdq.o \
+mtk_imgsys-trace.o \
+platforms/isp71/mtk_imgsys-cmdq-plat.o \
+platforms/isp7s/mtk_imgsys-cmdq-plat.o \
+platforms/isp7sp/mtk_imgsys-cmdq-plat.o \
+platforms/isp7sp/mtk_imgsys-cmdq-qof.o
+
+obj-$(CONFIG_VIDEO_MTK_ISP_IMGSYS_CMDQ) += mtk_imgsys_cmdq.o

@@ -1,3 +1,5 @@
+
+
 #
 # Automatically generated file; DO NOT EDIT.
 # Linux/arm64 5.10.168 Kernel Configuration
@@ -508,7 +510,7 @@ CONFIG_STACKPROTECTOR_PER_TASK=y
 #
 # Boot options
 #
-CONFIG_CMDLINE="stack_depot_disable=on kasan.stacktrace=off kvm-arm.mode=protected cgroup_disable=pressure cgroup.memory=nokmem"
+CONFIG_CMDLINE="stack_depot_disable=on kasan.stacktrace=off kvm-arm.mode=protected cgroup_disable=pressure cgroup.memory=nokmem earlycon=uart8250,mmio32,0xFF1A0000 ignore_loglevel loglevel=8 printk.time=1"
 # CONFIG_CMDLINE_FROM_BOOTLOADER is not set
 CONFIG_CMDLINE_EXTEND=y
 # CONFIG_CMDLINE_FORCE is not set
@@ -2236,9 +2238,9 @@ CONFIG_MTK_MDDP_SUPPORT=y
 CONFIG_MTK_USB_TYPEC=y
 # CONFIG_TCPC_CLASS is not set
 CONFIG_MTK_USB_TYPEC_MUX=y
-# CONFIG_TYPEC_MUX_FUSB304 is not set
+CONFIG_TYPEC_MUX_FUSB304=y
 # CONFIG_TYPEC_MUX_PTN36241G is not set
-# CONFIG_TYPEC_MUX_PS5169 is not set
+CONFIG_TYPEC_MUX_PS5169=y
 # CONFIG_TYPEC_MUX_PS5170 is not set
 # CONFIG_TYPEC_MUX_DP_SELECTOR is not set
 CONFIG_MTK_USB_TYPEC_DP_MUX=y
@@ -2979,7 +2981,7 @@ CONFIG_TOUCHSCREEN_ATMEL_MXT=y
 CONFIG_TOUCHSCREEN_GOODIX_BRL=y
 CONFIG_TOUCHSCREEN_GOODIX_BRL_SPI=y
 CONFIG_GTP_FOD=y
-# CONFIG_TOUCHSCREEN_FTS is not set
+CONFIG_TOUCHSCREEN_FTS=y
 CONFIG_TOUCHSCREEN_MTK_TOUCH="GT9896S"
 # CONFIG_TOUCHSCREEN_MT6983_ALPHA_SUPPORT is not set
 # CONFIG_TOUCHSCREEN_MT6895_ALPHA_SUPPORT is not set
@@ -4743,7 +4745,7 @@ CONFIG_SND_SOC_I2C_AND_SPI=y
 # CONFIG_SND_SOC_PCM512x_SPI is not set
 # CONFIG_SND_SOC_RK3328 is not set
 # CONFIG_SND_SOC_RT1308_SDW is not set
-# CONFIG_SND_SOC_RT5512 is not set
+CONFIG_SND_SOC_RT5512=y
 # CONFIG_SND_SOC_RT5616 is not set
 # CONFIG_SND_SOC_RT5631 is not set
 # CONFIG_SND_SOC_RT5682_SDW is not set

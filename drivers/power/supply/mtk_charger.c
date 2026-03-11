@@ -5587,6 +5587,10 @@ static int psy_charger_get_property(struct power_supply *psy,
 	case POWER_SUPPLY_PROP_INPUT_CURRENT_LIMIT:
 		val->intval = get_charger_input_current(info, chg);
 		break;
+	case POWER_SUPPLY_PROP_INPUT_POWER_LIMIT:
+		/* return stored input power limit in uW (stored in mW in mmi) */
+		val->intval = info->mmi.pd_pmax_mw * 1000;
+		return 0;
 	case POWER_SUPPLY_PROP_USB_TYPE:
 		val->intval = info->chr_type;
 		break;
@@ -5745,8 +5749,11 @@ int psy_charger_set_property(struct power_supply *psy,
 		break;
 	case POWER_SUPPLY_PROP_INPUT_POWER_LIMIT:
 		info->mmi.adaptive_charging_disable_ichg = !!val->intval;
-		pr_info("%s: adaptive charging disable ichg %d\n", __func__,
-			info->mmi.adaptive_charging_disable_ichg);
+		/* store input power limit: incoming value is in uW, store as mW */
+		info->mmi.pd_pmax_mw = val->intval / 1000;
+		pr_info("%s: adaptive charging disable ichg %d, input_power_limit=%d uW (%d mW)\n",
+			__func__, info->mmi.adaptive_charging_disable_ichg,
+			val->intval, info->mmi.pd_pmax_mw);
 		break;
 	case POWER_SUPPLY_PROP_CURRENT_MAX:
 		info->mmi.adaptive_charging_disable_ibat = !!val->intval;
@@ -6161,6 +6168,9 @@ static int mtk_charger_probe(struct platform_device *pdev)
 #endif
 	init_waitqueue_head(&info->wait_que);
 	info->polling_interval = CHARGING_INTERVAL;
+
+	/* default input power limit: 30000 mW (30W) */
+	info->mmi.pd_pmax_mw = 30000;
 
 #ifdef CONFIG_MOTO_CHG_FFC_5V10W_SUPPORT
 	INIT_DELAYED_WORK(&info->ffc_enable_charge_work,

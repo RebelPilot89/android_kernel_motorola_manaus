@@ -52,6 +52,18 @@ config VIDEO_MTK_ISP_CAMSYS_DUBUG
 	    the first capture image buffer in Mediatek's camera system.
 	    This configuration provides more debug information.
 
+config VIDEO_MTK_ISP_CAMSYS_7S
+	tristate "Mediatek camsys ISP7S support"
+	depends on VIDEO_MTK_ISP_CAMSYS
+	help
+	    Enable ISP7S camsys implementation in-tree.
+
+config VIDEO_MTK_ISP_CAMSYS_7SP
+	tristate "Mediatek camsys ISP7SP support"
+	depends on VIDEO_MTK_ISP_CAMSYS
+	help
+	    Enable ISP7SP camsys implementation in-tree.
+
 config VIDEO_MTK_ISP_HCP
 	tristate "Mediatek hcp processing function"
 	help
@@ -67,6 +79,24 @@ config VIDEO_MTK_ISP_IMGSYS
 	    and/or statistics for better image qualities
 	    such as noise reduction, edge enhencement,
 	    and motion estimation, etc.
+
+config VIDEO_MTK_ISP_IMGSYS_7S
+	tristate "Mediatek imgsys ISP7S support"
+	depends on VIDEO_MTK_ISP_IMGSYS
+	help
+	    Enable ISP7S imgsys implementation in-tree.
+
+config VIDEO_MTK_ISP_IMGSYS_7SP
+	tristate "Mediatek imgsys ISP7SP support"
+	depends on VIDEO_MTK_ISP_IMGSYS
+	help
+	    Enable ISP7SP imgsys implementation in-tree.
+
+config VIDEO_MTK_ISP_IMGSYS_CMDQ
+	tristate "Mediatek imgsys CMDQ support"
+	depends on VIDEO_MTK_ISP_IMGSYS
+	help
+	    Enable imgsys command queue support for ISP7x variants.
 
 config VIDEO_MTK_ISP_IPESYS
 	tristate "Mediatek ipesys processing function"

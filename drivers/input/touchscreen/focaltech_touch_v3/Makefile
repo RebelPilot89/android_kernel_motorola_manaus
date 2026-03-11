@@ -10,7 +10,7 @@ ccflags-y += -DCONFIG_INPUT_TOUCHSCREEN_MMI
 ccflags-y += -DCONFIG_INPUT_FOCALTECH_V3_MMI_IC_NAME_FT3681
 ccflags-y += -DPRODUCT_MANAUS
 
-obj-$(CONFIG_TOUCHSCREEN_FTS_V3) += focaltech_v3.o
+obj-$(CONFIG_TOUCHSCREEN_FTS) += focaltech_v3.o
 
 focaltech_v3-objs := \
 	focaltech_core.o \
