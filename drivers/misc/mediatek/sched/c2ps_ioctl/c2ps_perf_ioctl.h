@@ -17,9 +17,10 @@
 #include <linux/sched.h>
 #include <linux/slab.h>
 #include <linux/ioctl.h>
+#include <linux/threads.h>
 
 #define MAX_TASK_NAME_SIZE 10
-#define MAX_CPU_NUM CONFIG_MAX_NR_CPUS
+#define MAX_CPU_NUM NR_CPUS
 
 extern int debug_log_on;
 
@@ -69,21 +70,21 @@ typedef struct C2PS_SINGLE_SHOT_PARAM {
 } C2PS_SINGLE_SHOT_PARAM;
 
 #define C2PS_IOCTL_MAGIC 'g'
-#define C2PS_ACTIVATE       _IOW(C2PS_IOCTL_MAGIC, 27, C2PS_INIT_PARAM)
-#define C2PS_ADD_TASK       _IOW(C2PS_IOCTL_MAGIC, 28, C2PS_TASK_INIT_PARAMS)
-#define C2PS_TASK_START     _IOW(C2PS_IOCTL_MAGIC, 29, C2PS_PACKAGE)
-#define C2PS_TASK_END       _IOW(C2PS_IOCTL_MAGIC, 30, C2PS_PACKAGE)
-#define C2PS_TASK_CHANGE    _IOW(C2PS_IOCTL_MAGIC, 31, C2PS_PACKAGE)
-#define C2PS_DESTROY        _IOW(C2PS_IOCTL_MAGIC, 32, C2PS_UNINIT_PARAM)
-#define C2PS_NOTIFY_VSYNC   _IOW(C2PS_IOCTL_MAGIC, 33, C2PS_INFO_NOTIFY)
-#define C2PS_NOTIFY_CAMFPS  _IOW(C2PS_IOCTL_MAGIC, 34, C2PS_INFO_NOTIFY)
-#define C2PS_TASK_SINGLE_SHOT    _IOW(C2PS_IOCTL_MAGIC, 35, C2PS_SINGLE_SHOT_PARAM)
+#define C2PS_ACTIVATE _IOW(C2PS_IOCTL_MAGIC, 27, C2PS_INIT_PARAM)
+#define C2PS_ADD_TASK _IOW(C2PS_IOCTL_MAGIC, 28, C2PS_TASK_INIT_PARAMS)
+#define C2PS_TASK_START _IOW(C2PS_IOCTL_MAGIC, 29, C2PS_PACKAGE)
+#define C2PS_TASK_END _IOW(C2PS_IOCTL_MAGIC, 30, C2PS_PACKAGE)
+#define C2PS_TASK_CHANGE _IOW(C2PS_IOCTL_MAGIC, 31, C2PS_PACKAGE)
+#define C2PS_DESTROY _IOW(C2PS_IOCTL_MAGIC, 32, C2PS_UNINIT_PARAM)
+#define C2PS_NOTIFY_VSYNC _IOW(C2PS_IOCTL_MAGIC, 33, C2PS_INFO_NOTIFY)
+#define C2PS_NOTIFY_CAMFPS _IOW(C2PS_IOCTL_MAGIC, 34, C2PS_INFO_NOTIFY)
+#define C2PS_TASK_SINGLE_SHOT _IOW(C2PS_IOCTL_MAGIC, 35, C2PS_SINGLE_SHOT_PARAM)
 
-#define C2PS_LOGD(fmt, ...)                                             \
-    do {                                                                \
-		if (debug_log_on)                                               \
-			pr_debug("[C2PS_IOCTL]: %s " fmt, __func__, ##__VA_ARGS__); \
+#define C2PS_LOGD(fmt, ...)                                                    \
+	do {                                                                   \
+		if (debug_log_on)                                              \
+			pr_debug("[C2PS_IOCTL]: %s " fmt, __func__,            \
+				 ##__VA_ARGS__);                               \
 	} while (0)
 
-#endif  // C2PS_IOCTL_C2PS_PERF_IOCTL_H_
-
+#endif // C2PS_IOCTL_C2PS_PERF_IOCTL_H_
