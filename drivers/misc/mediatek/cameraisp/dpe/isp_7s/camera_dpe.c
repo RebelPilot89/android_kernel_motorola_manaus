@@ -306,7 +306,7 @@ static int nr_DPE_devs;
 struct platform_device *DPE_pdev;
 #endif
 #ifdef KERNEL_DMA_BUFFER
-struct device *gdev;
+static struct device *gdev;
 struct dma_buf *dbuf;
 struct vb2_dc_buf {
 	struct device			*dev;
@@ -336,7 +336,7 @@ dma_addr_t *g_dpewb_asfrm_Buffer_pa;
 dma_addr_t *g_dpewb_asfrmext_Buffer_pa;
 dma_addr_t *g_dpewb_wmfhf_Buffer_pa;
 #else
-struct device *gdev;
+static struct device *gdev;
 #endif
 static unsigned int g_u4EnableClockCount;
 static unsigned int g_SuspendCnt;

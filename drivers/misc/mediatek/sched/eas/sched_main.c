@@ -135,6 +135,39 @@ static void __maybe_unused sched_queue_task_hook(void *data, struct rq *rq,
 #endif
 }
 
+/*
+ * mtk_uclamp_hint_handler - android_rvh_uclamp_eff_get handler
+ *
+ * Original MTK Implementation (Backported from 6.6)
+ *
+ * Intercepts the kernel's uclamp effective-value calculation for tasks
+ * that have been marked by set_curr_uclamp_hint().  When the hint is
+ * active, the handler substitutes the task's own requested UCLAMP_MAX
+ * value and sets *ret = 1, signalling uclamp_eff_get() to use that
+ * value instead of being capped by the system default.
+ *
+ * This enables C2PS camera pipeline tasks to drive their CPU frequency
+ * to the level they need, bypassing sysctl_sched_util_clamp_max.
+ */
+#if IS_ENABLED(CONFIG_UCLAMP_TASK)
+static void mtk_uclamp_hint_handler(void *data,
+				    struct task_struct *p,
+				    enum uclamp_id clamp_id,
+				    struct uclamp_se *uclamp_max,
+				    struct uclamp_se *uclamp_eff,
+				    int *ret)
+{
+	if (clamp_id != UCLAMP_MAX)
+		return;
+	if (READ_ONCE(p->android_vendor_data1[MTK_UCLAMP_HINT_IDX]) == 0ULL)
+		return;
+
+	/* Let the task's own requested uclamp_max pass through uncapped. */
+	*uclamp_eff = p->uclamp_req[UCLAMP_MAX];
+	*ret = 1;
+}
+#endif /* CONFIG_UCLAMP_TASK */
+
 static void mtk_sched_trace_init(void)
 {
 	int ret = 0;
@@ -263,12 +296,27 @@ static int __init mtk_scheduler_init(void)
 
 	mtk_sched_trace_init();
 
+#if IS_ENABLED(CONFIG_UCLAMP_TASK) && IS_ENABLED(CONFIG_ANDROID_VENDOR_HOOKS)
+	ret = register_trace_android_rvh_uclamp_eff_get(
+		mtk_uclamp_hint_handler, NULL);
+	if (ret)
+		pr_info("register android_rvh_uclamp_eff_get failed\n");
+#endif
+
 	return ret;
 }
 
 static void __exit mtk_scheduler_exit(void)
 {
 	mtk_sched_trace_exit();
+
+	/*
+	 * Note: android_rvh_uclamp_eff_get is a RESTRICTED_HOOK.
+	 * DECLARE_RESTRICTED_HOOK intentionally does not generate an
+	 * unregister_trace_* function ("vendor hooks cannot be unregistered").
+	 * The handler stays live for the module lifetime — this is safe
+	 * because the scheduler module is never unloaded in production.
+	 */
 
 #if IS_ENABLED(CONFIG_ANDROID_VENDOR_HOOKS)
 	unregister_trace_android_vh_scheduler_tick(hook_scheduler_tick, NULL);

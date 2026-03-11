@@ -16,6 +16,7 @@
 #include "sched/sched.h"
 #include "c2ps_common.h"
 #include "c2ps_sysfs.h"
+#include "common.h"
 
 #ifndef CREATE_TRACE_POINTS
 #define CREATE_TRACE_POINTS
@@ -1070,4 +1071,63 @@ void exit_c2ps_common(void)
 	c2ps_sysfs_remove_file(base_kobj, &kobj_attr_task_info);
 	c2ps_sysfs_remove_file(base_kobj, &kobj_attr_gear_uclamp_max);
 	c2ps_sysfs_remove_dir(&base_kobj);
+}
+
+/* ------------------------------------------------------------------ */
+/* Current-task uclamp hint                                            */
+/* ------------------------------------------------------------------ */
+
+/*
+ * Original MTK Implementation (Backported from 6.6)
+ *
+ * The uclamp hint mechanism allows a camera pipeline task to bypass the
+ * system-wide sysctl_sched_util_clamp_max cap.  The hint state is stored
+ * in the task's android_vendor_data1[MTK_UCLAMP_HINT_IDX] slot, defined
+ * in drivers/misc/mediatek/sched/common.h.
+ *
+ * The actual cap bypass is performed by the android_rvh_uclamp_eff_get
+ * handler registered in the MTK scheduler module (eas/sched_main.c):
+ * when a task has the hint set and the kernel queries its UCLAMP_MAX,
+ * the handler substitutes the task's own requested uclamp_max, overriding
+ * the global ceiling.
+ *
+ * Flag lifecycle:
+ *   set_curr_uclamp_hint(pid, 1) — called on task-start by c2ps_regulator
+ *   set_curr_uclamp_hint(pid, 0) — called on task-end by c2ps_monitor
+ */
+
+/*
+ * set_curr_uclamp_hint_wo_lock - mark or unmark task @p for uclamp-max bypass
+ * @p:   target task; caller must hold a reference (get_task_struct done)
+ * @set: non-zero to enable the bypass hint, zero to clear it
+ *
+ * Writes atomically to android_vendor_data1[MTK_UCLAMP_HINT_IDX].
+ * Returns 0 on success.
+ */
+int set_curr_uclamp_hint_wo_lock(struct task_struct *p, int set)
+{
+	WRITE_ONCE(p->android_vendor_data1[MTK_UCLAMP_HINT_IDX], (u64)!!set);
+	return 0;
+}
+
+/*
+ * set_curr_uclamp_hint - pid-based entry point for uclamp-max bypass hint
+ * @pid: virtual PID of the target task
+ * @set: non-zero to enable the bypass hint, zero to clear it
+ *
+ * Uses find_get_task_by_vpid() for safe, RCU-free task lookup that
+ * already acquires a reference before returning the pointer.
+ * Returns 0 on success, -ESRCH when the task cannot be found.
+ */
+int set_curr_uclamp_hint(int pid, int set)
+{
+	struct task_struct *p;
+
+	p = find_get_task_by_vpid(pid);
+	if (!p)
+		return -ESRCH;
+
+	set_curr_uclamp_hint_wo_lock(p, set);
+	put_task_struct(p);
+	return 0;
 }

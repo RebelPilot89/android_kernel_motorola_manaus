@@ -353,10 +353,121 @@ void mtk_map_util_freq(void *data, unsigned long util, unsigned long freq,
 	}
 }
 EXPORT_SYMBOL_GPL(mtk_map_util_freq);
-#endif
-#else
+#endif /* CONFIG_NONLINEAR_FREQ_CTL */
+
+/**
+ * pd_get_util_freq - convert a utilization value to the CPU frequency
+ *                   needed to serve it
+ * @cpu:  target CPU
+ * @util: utilization in capacity units (0 ... caps[0])
+ *
+ * Uses the OPP capacity table populated by init_opp_cap_info().
+ * Returns 0 when the CPU or the table cannot be found.
+ */
+unsigned long pd_get_util_freq(int cpu, unsigned long util)
+{
+	int i;
+	struct pd_capacity_info *info;
+
+	for (i = 0; i < pd_count; i++) {
+		info = &pd_capacity_tbl[i];
+		if (!cpumask_test_cpu(cpu, &info->cpus))
+			continue;
+		if (!info->util_freq)
+			break;
+		/* Clamp to the maximum capacity of this domain. */
+		util = min(util, info->caps[0]);
+		return (unsigned long)info->util_freq[util];
+	}
+	return 0;
+}
+EXPORT_SYMBOL_GPL(pd_get_util_freq);
+
+/**
+ * pd_get_freq_util - return the capacity a CPU can deliver at a given
+ *                    frequency
+ * @cpu:  target CPU
+ * @freq: CPU frequency in kHz; use 0 for the minimum, ULONG_MAX for
+ *        the maximum
+ *
+ * Scans util_freq[] in descending order to find the highest capacity
+ * level whose mapped frequency does not exceed @freq.
+ * Returns 0 when the CPU or the table cannot be found.
+ */
+unsigned long pd_get_freq_util(unsigned int cpu, unsigned long freq)
+{
+	int i;
+	struct pd_capacity_info *info;
+
+	for (i = 0; i < pd_count; i++) {
+		int k;
+
+		info = &pd_capacity_tbl[i];
+		if (!cpumask_test_cpu(cpu, &info->cpus))
+			continue;
+		if (!info->util_freq)
+			break;
+		/*
+		 * freq == 0 means "minimum frequency"; map it to capacity 0
+		 * (the minimum deliverable capacity), consistent with how
+		 * c2ps_get_cpu_min_uclamp() uses this function.
+		 */
+		if (freq == 0)
+			return 0;
+		/*
+		 * util_freq[k] is non-decreasing in k.  Walk from the
+		 * highest capacity downward to find the largest k whose
+		 * frequency budget is within @freq.
+		 */
+		for (k = (int)info->caps[0]; k >= 0; k--) {
+			if ((unsigned long)info->util_freq[k] <= freq)
+				return (unsigned long)k;
+		}
+		return 0;
+	}
+	return 0;
+}
+EXPORT_SYMBOL_GPL(pd_get_freq_util);
+
+/**
+ * get_adaptive_margin - per-CPU frequency-selection overhead margin
+ * @cpu: target CPU (argument reserved for future per-cluster tuning)
+ *
+ * Returns the scaling factor applied to a utilization value before it
+ * is converted to a frequency.  1280 equals a 25 % headroom margin,
+ * matching the default util_scale used by the MTK non-linear sugov.
+ * The value is expressed in SCHED_CAPACITY_SCALE units (1024 = 1.0×).
+ */
+unsigned int get_adaptive_margin(int cpu)
+{
+	return 1280;
+}
+EXPORT_SYMBOL_GPL(get_adaptive_margin);
+
+#else /* !CONFIG_MTK_OPP_CAP_INFO */
 
 static int init_opp_cap_info(struct proc_dir_entry *dir) { return 0; }
 #define clear_opp_cap_info()
 
-#endif
+/* Fallback stubs used when CONFIG_MTK_OPP_CAP_INFO=n.
+ * pd_get_util_freq: returning 0 Hz for any util is a safe no-op —
+ *   callers treat 0 as "no frequency boost needed".
+ * pd_get_freq_util: returning 0 capacity for freq=0 (min) is correct;
+ *   for any positive freq returning SCHED_CAPACITY_SCALE signals "max
+ *   capacity", keeping c2ps uclamp calculations sane.
+ * get_adaptive_margin: returns 1280 (25 % headroom) identical to the
+ *   full implementation so division-by-margin never produces zero.
+ */
+unsigned long pd_get_util_freq(int cpu, unsigned long util) { return 0; }
+EXPORT_SYMBOL_GPL(pd_get_util_freq);
+
+unsigned long pd_get_freq_util(unsigned int cpu, unsigned long freq)
+{
+	return freq ? (unsigned long)SCHED_CAPACITY_SCALE : 0;
+}
+EXPORT_SYMBOL_GPL(pd_get_freq_util);
+
+unsigned int get_adaptive_margin(int cpu) { return 1280; }
+EXPORT_SYMBOL_GPL(get_adaptive_margin);
+
+#endif /* CONFIG_MTK_OPP_CAP_INFO */
