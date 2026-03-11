@@ -11,12 +11,14 @@
 # GNU General Public License for more details.
 
 #
-# Makefile for the Kinibi core driver
+# Makefile for the Kinibi core driver (backported to kernel 5.10)
 #
 
 GUD_ROOT_FOLDER := $(srctree)/drivers/tee/gud/$(CONFIG_TRUSTONIC_TEE_VERSION)
 
-# add our modules to kernel.
+# Single in-tree module.  ARM FFA transport (CONFIG_ARM_FFA_TRANSPORT) is not
+# present in 5.10 MTK; platform.h will leave MC_FFA_FASTCALL undefined and
+# ffa_dummy.c compiles to empty stubs, so ffa.o is replaced by ffa_dummy.o.
 obj-$(CONFIG_TRUSTONIC_TEE_SUPPORT) += mcDrvModule.o
 
 mcDrvModule-y := \
@@ -45,52 +47,15 @@ mcDrvModule-y := \
 	xen_common.o \
 	xen_fe.o
 
-# add our ffa modules to kernel.
-ifneq ($(filter y m,$(CONFIG_ARM64)),)
-obj-$(CONFIG_TRUSTONIC_TEE_SUPPORT) += mcDrvModule-ffa.o
-
-mcDrvModule-ffa-y := \
-	admin.o \
-	client.o \
-	clientlib.o \
-	clock.o \
-	fastcall.o \
-	ffa.o \
-	iwp.o \
-	logging.o \
-	main.o \
-	mcp.o \
-	mmu.o \
-	nq.o \
-	protocol.o \
-	protocol_be.o \
-	protocol_fe.o \
-	session.o \
-	teeclientapi.o \
-	user.o \
-	vlx_be.o \
-	vlx_common.o \
-	vlx_fe.o \
-	xen_be.o \
-	xen_common.o \
-	xen_fe.o
-
-endif # CONFIG_ARM64
-
 # Support HW wrapped key mode for FBE.
-mcDrvModule-ffa-$(CONFIG_FSCRYPT_WRAPED_KEY_MODE_SUPPORT) += hwkm.o
 mcDrvModule-$(CONFIG_FSCRYPT_WRAPED_KEY_MODE_SUPPORT) += hwkm.o
 
 # Release mode by default
 ccflags-y += -DNDEBUG
 ccflags-y += -Wno-declaration-after-statement
-ccflags-y += $(KBUILD_CFLAGS_TRUSTONIC)
 ccflags-y += -I$(srctree)/drivers/misc/mediatek/trusted_mem/
 
 ccflags-$(CONFIG_TRUSTONIC_TEE_DEBUG) += -DDEBUG
-
-# VLX Driver includes
-KBUILD_CFLAGS += -I${VLM_VDRIVERS}/drivers/vlx
 
 # MobiCore Driver includes
 ccflags-y += -I$(GUD_ROOT_FOLDER)/MobiCoreDriver
