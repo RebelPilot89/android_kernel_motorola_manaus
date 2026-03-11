@@ -988,6 +988,20 @@ config DRM_PANEL_TXD_ILI7807S_650_FHDP_DPHY_VDO_120HZ
           Say Y here if you want to enable support for DRM_PANEL_TXD_ILI7807S_650_FHDP_DPHY_VDO_120HZ
           panel. It provides a MIPI DSI interface to host.
 
+config DRM_PANEL_BOE_HX83102J_VDO
+	tristate "BOE HX83102J 1200x2000 VDO 120HZ panel"
+	depends on OF
+	depends on DRM_MIPI_DSI
+	depends on BACKLIGHT_CLASS_DEVICE
+	depends on MTK_GATE_IC
+	default n
+	help
+	  Say Y here if you want to enable support for the BOE HX83102J
+	  VDO mode panel used in the Motorola Edge 40 Neo (MT6879/manaus).
+	  The panel has a 1200x2000 resolution with DSC compression and
+	  supports 30/60/120 Hz dynamic frame rate. It provides a MIPI DSI
+	  interface to the host and uses the MediaTek gate IC for bias supply.
+
 config DRM_MEDIATEK_PANEL
 	tristate "drm panel common driver"
 	depends on OF

@@ -188,6 +188,20 @@
 		};
 	};
 
+	panel5@4 {
+		compatible = "boe,hx83102j,vdo,120hz";
+		reg = <4>;
+		pm-enable-gpios = <&pio 163 0>;
+		reset-gpios = <&pio 97 0>;
+		gate-ic = <4831>;	/* RT4831A gate IC (bias + backlight via I2C) */
+		pinctrl-names = "default";
+		port {
+			panel_in5: endpoint {
+				remote-endpoint = <&dsi_out5>;
+			};
+		};
+	};
+
 	ports {
 		port {
 			// Matching the base DTB's #address-cells/#size-cells so DTC
@@ -205,6 +219,10 @@
 			dsi_out4: endpoint@3 {
 				reg = <3>;
 				remote-endpoint = <&panel_in4>;
+			};
+			dsi_out5: endpoint@4 {
+				reg = <4>;
+				remote-endpoint = <&panel_in5>;
 			};
 		};
 	};
