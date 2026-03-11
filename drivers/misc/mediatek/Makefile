@@ -119,7 +119,4 @@ obj-$(CONFIG_TRUSTY) += trusty/
 endif
 
 # SCP subsystem (AOV - Always-On Vision)
-obj- += scpsys/
-
-# SCP subsystem (AOV - Always-On Vision)
 obj-$(CONFIG_VIDEO_MTK_ISP_AOV) += scpsys/

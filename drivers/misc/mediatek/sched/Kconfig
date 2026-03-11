@@ -109,9 +109,9 @@ config MTK_CORE_CTL
 	  please set n.
 
 config MTK_C2PS
-tristate "MTK C2PS - Camera 2-Phase Scheduler"
-help
-  Camera 2-Phase Scheduler (C2PS) for MediaTek camera pipelines.
-  Provides camera-aware CPU frequency and uclamp regulation to
-  meet latency requirements for ISP7S/ISP7SP camera processing.
-  Required for smooth camera preview and capture on MT6879/Dimensity 7030.
+	tristate "MTK C2PS - Camera 2-Phase Scheduler"
+	help
+	  Camera 2-Phase Scheduler (C2PS) for MediaTek camera pipelines.
+	  Provides camera-aware CPU frequency and uclamp regulation to
+	  meet latency requirements for ISP7S/ISP7SP camera processing.
+	  Required for smooth camera preview and capture on MT6879/Dimensity 7030.
