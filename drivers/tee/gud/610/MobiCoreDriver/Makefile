@@ -56,6 +56,10 @@ else
 mcDrvModule-y += ffa_dummy.o
 endif
 
+# Hardware Key Manager (HWKM): TEE-backed wrapped-key operations used by
+# the UFS inline crypto driver (ufshcd-moto-crypto.c).
+mcDrvModule-y += hwkm.o
+
 # Release mode by default
 ccflags-y += -DNDEBUG
 ccflags-y += -Wno-declaration-after-statement

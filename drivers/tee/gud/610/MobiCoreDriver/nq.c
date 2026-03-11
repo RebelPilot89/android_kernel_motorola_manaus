@@ -819,7 +819,7 @@ void nq_signal_tee_hung(void)
 	wake_up_all(&l_ctx.workers_wq);
 }
 
-static int nq_boot_tee(void)
+static noinline int nq_boot_tee(void)
 {
 #ifdef MTK_ADAPTED
 	struct irq_data *irq_d = NULL;
