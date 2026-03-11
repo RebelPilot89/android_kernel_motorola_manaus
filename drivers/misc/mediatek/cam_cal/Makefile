@@ -13,3 +13,4 @@
 
 
 obj-$(CONFIG_MTK_CAM_CAL) += src/
+obj-$(CONFIG_MTK_CAM_CAL_V4L2) += src_v4l2/

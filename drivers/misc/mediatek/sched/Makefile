@@ -18,6 +18,10 @@ subdir-ccflags-y += -I$(srctree)/kernel/
 subdir-ccflags-y += -I$(srctree)/drivers/thermal/mediatek
 subdir-ccflags-y += -I$(srctree)/drivers/misc/mediatek/sched/
 
+# C2PS - Camera 2-Phase Scheduler
+obj-$(CONFIG_MTK_C2PS) += c2ps/
+obj-$(CONFIG_MTK_C2PS) += c2ps_ioctl/
+
 obj-$(CONFIG_MTK_CORE_CTL) += mtk_core_ctl.o
 mtk_core_ctl-y += core_ctl/sched_avg.o
 mtk_core_ctl-y += core_ctl/core_ctl.o

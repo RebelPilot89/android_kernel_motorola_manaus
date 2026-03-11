@@ -21,6 +21,9 @@ platform = $(subst $\",,$(CONFIG_MTK_CAMERA_ISP_PLATFORM))
 folder_name = isp6s
 obj-$(CONFIG_MTK_CCU) += $(subst ",,$(folder_name))/
 
+# ISP71 CCU driver (mt6879/Dimensity 7030)
+obj-$(CONFIG_MTK_CCU_RPROC) += isp71/
+
 $(info CCU_MAKE_FILE_CALLED)
 $(info $(CONFIG_MTK_CCU))
 $(info $(CONFIG_MTK_PLATFORM))

@@ -24,6 +24,8 @@ ccflags-y += -I$(srctree)/drivers/staging/android/ion \
 ccflags-y += -I$(srctree)/drivers/misc/mediatek/smi/
 ccflags-$(CONFIG_MTK_IOMMU_V2) += -I$(srctree)/drivers/iommu
 ccflags-$(CONFIG_MTK_IOMMU_V2) += -I$(srctree)/drivers/misc/mediatek/include/mt-plat/$(MTK_PLATFORM)/include/
+ccflags-y += -I$(srctree)/drivers/iommu/
+ccflags-y += -I$(srctree)/drivers/misc/mediatek/iommu/
 
 
 
@@ -44,3 +46,17 @@ camera_dpe_isp60-objs += isp_60/engine_request.o
 camera_dpe_isp60-objs  += isp_60/camera_dpe.o
 camera_dpe_isp60-objs += isp_60/videobuf2-dma-contig.o
 endif
+
+# ISP7S DPE driver (MT6879/Dimensity 7030)
+obj-$(CONFIG_MTK_CAMERA_DPE_ISP7S) += camera_dpe_isp7s.o
+
+camera_dpe_isp7s-objs += isp_7s/engine_request.o
+camera_dpe_isp7s-objs += isp_7s/camera_dpe.o
+camera_dpe_isp7s-objs += isp_7s/videobuf2-dma-contig.o
+
+# ISP7SP DPE driver
+obj-$(CONFIG_MTK_CAMERA_DPE_ISP7SP) += camera_dpe_isp7sp.o
+
+camera_dpe_isp7sp-objs += isp_7sp/engine_request.o
+camera_dpe_isp7sp-objs += isp_7sp/camera_dpe.o
+camera_dpe_isp7sp-objs += isp_7sp/videobuf2-dma-contig.o

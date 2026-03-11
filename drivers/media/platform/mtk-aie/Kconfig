@@ -8,3 +8,14 @@ config MTK_CAMERA_FD_ISP7
 		AIE driver is a V4L2 memory-to-memory device driver which
 		provides hardware accelerated face detection function,
 		it can detect different sizes of faces in a raw image.
+
+config MTK_CAMERA_FD_ISP7S_ISP7SP
+	tristate "Mediatek AI engine for ISP7S/ISP7SP"
+	select V4L2_MEM2MEM_DEV
+	depends on VIDEOBUF2_DMA_CONTIG
+	help
+		Support the AI engine (AIE) feature for ISP7S and ISP7SP SoCs.
+
+		This driver provides hardware accelerated face detection for
+		MediaTek ISP7S (MT6879/Dimensity 7030) and ISP7SP platforms,
+		including the isp7s and isp7sp driver variants.
