@@ -310,10 +310,13 @@ static void __exit mtk_scheduler_exit(void)
 {
 	mtk_sched_trace_exit();
 
-#if IS_ENABLED(CONFIG_UCLAMP_TASK) && IS_ENABLED(CONFIG_ANDROID_VENDOR_HOOKS)
-	unregister_trace_android_rvh_uclamp_eff_get(
-		mtk_uclamp_hint_handler, NULL);
-#endif
+	/*
+	 * Note: android_rvh_uclamp_eff_get is a RESTRICTED_HOOK.
+	 * DECLARE_RESTRICTED_HOOK intentionally does not generate an
+	 * unregister_trace_* function ("vendor hooks cannot be unregistered").
+	 * The handler stays live for the module lifetime — this is safe
+	 * because the scheduler module is never unloaded in production.
+	 */
 
 #if IS_ENABLED(CONFIG_ANDROID_VENDOR_HOOKS)
 	unregister_trace_android_vh_scheduler_tick(hook_scheduler_tick, NULL);
