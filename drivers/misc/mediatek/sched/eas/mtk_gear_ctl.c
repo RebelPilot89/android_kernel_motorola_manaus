@@ -39,7 +39,8 @@ static void build_gear_table(void)
 	unsigned int cpu;
 	int g = 0;
 
-	memset(gear_cpumask_arr, 0, sizeof(gear_cpumask_arr));
+	gear_tbl_ready = false;
+	nr_gears_val   = 0;
 
 	for_each_possible_cpu(cpu) {
 		policy = cpufreq_cpu_get(cpu);
@@ -272,13 +273,17 @@ EXPORT_SYMBOL_GPL(set_ignore_idle_ctrl);
  */
 void set_task_basic_vip(int pid)
 {
-	/* No-op: C2PS uclamp management handles priority for VIP tasks. */
+	/*
+	 * No-op: C2PS uclamp management handles camera-task priority via
+	 * sched_setattr_nocheck().  The caller is responsible for providing
+	 * a valid pid > 0; this function does not perform task lookup.
+	 */
 }
 EXPORT_SYMBOL_GPL(set_task_basic_vip);
 
-/**
+/*
  * unset_task_basic_vip - remove the camera VIP mark from a task
- * @pid: PID of the task to demote
+ * @pid: PID of the task to demote; must be > 0 (caller's responsibility)
  */
 void unset_task_basic_vip(int pid)
 {

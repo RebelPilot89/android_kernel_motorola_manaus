@@ -24,4 +24,21 @@ __always_inline
 unsigned long mtk_uclamp_rq_util_with(struct rq *rq, unsigned long util,
 				  struct task_struct *p);
 
+/*
+ * MTK uclamp hint — android_vendor_data1[] slot assignments
+ *
+ * This index MUST be kept in sync across all MTK modules that read or
+ * write the per-task uclamp-hint flag:
+ *   - drivers/misc/mediatek/sched/eas/sched_main.c  (hook handler)
+ *   - drivers/misc/mediatek/sched/c2ps/common/src/c2ps_common.c (setter)
+ *
+ * Existing allocations in android_vendor_data1[]:
+ *   [0]  reserved / unused
+ *   [1]  cache-auditor: MPAM partid  (mpam_proto.c)
+ *   [2]  cache-auditor: task rank    (mpam_proto.c)
+ *   [3]  EAS big-task rotation ts   (eas/rotate.c)
+ *   [4]  MTK uclamp hint flag       (this file)
+ */
+#define MTK_UCLAMP_HINT_IDX  4
+
 #endif /* _SCHED_COMMON_H */

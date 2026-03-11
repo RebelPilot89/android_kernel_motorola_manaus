@@ -407,6 +407,11 @@ unsigned long pd_get_freq_util(unsigned int cpu, unsigned long freq)
 			continue;
 		if (!info->util_freq)
 			break;
+		/*
+		 * freq == 0 means "minimum frequency"; map it to capacity 0
+		 * (the minimum deliverable capacity), consistent with how
+		 * c2ps_get_cpu_min_uclamp() uses this function.
+		 */
 		if (freq == 0)
 			return 0;
 		/*
@@ -444,11 +449,22 @@ EXPORT_SYMBOL_GPL(get_adaptive_margin);
 static int init_opp_cap_info(struct proc_dir_entry *dir) { return 0; }
 #define clear_opp_cap_info()
 
-/* Fallback stubs: return safe neutral values so callers do not crash. */
+/* Fallback stubs used when CONFIG_MTK_OPP_CAP_INFO=n.
+ * pd_get_util_freq: returning 0 Hz for any util is a safe no-op —
+ *   callers treat 0 as "no frequency boost needed".
+ * pd_get_freq_util: returning 0 capacity for freq=0 (min) is correct;
+ *   for any positive freq returning SCHED_CAPACITY_SCALE signals "max
+ *   capacity", keeping c2ps uclamp calculations sane.
+ * get_adaptive_margin: returns 1280 (25 % headroom) identical to the
+ *   full implementation so division-by-margin never produces zero.
+ */
 unsigned long pd_get_util_freq(int cpu, unsigned long util) { return 0; }
 EXPORT_SYMBOL_GPL(pd_get_util_freq);
 
-unsigned long pd_get_freq_util(unsigned int cpu, unsigned long freq) { return 0; }
+unsigned long pd_get_freq_util(unsigned int cpu, unsigned long freq)
+{
+	return freq ? (unsigned long)SCHED_CAPACITY_SCALE : 0;
+}
 EXPORT_SYMBOL_GPL(pd_get_freq_util);
 
 unsigned int get_adaptive_margin(int cpu) { return 1280; }
