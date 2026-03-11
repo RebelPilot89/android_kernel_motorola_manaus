@@ -25,8 +25,8 @@ struct usb_policy {
 };
 
 static struct icc_path *usb_icc_path;
-unsigned int peak_bw;
-struct device *gdev;
+static unsigned int peak_bw;
+static struct device *gdev;
 
 static int freq_hold(struct act_arg_obj *arg)
 {

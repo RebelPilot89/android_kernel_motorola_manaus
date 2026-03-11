@@ -37,9 +37,6 @@ EXPORT_SYMBOL_GPL(c2ps_notify_task_single_shot_fp);
 struct proc_dir_entry *c2ps_ioctl_root;
 EXPORT_SYMBOL(c2ps_ioctl_root);
 
-int debug_log_on = 0;
-module_param(debug_log_on, int, 0644);
-
 static u64 perfctl_copy_from_user(void *pvTo,
     const void __user *pvFrom, u64 ulBytes)
 {
