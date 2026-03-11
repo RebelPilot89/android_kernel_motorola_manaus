@@ -27,14 +27,14 @@
 #include <asm/page.h>
 
 /* Forward declaration from bus.c */
-int  __init arm_ffa_bus_init(void);
+int __init arm_ffa_bus_init(void);
 void __exit arm_ffa_bus_exit(void);
 
 /* ----------------------------------------------------------------------- */
 /* FFA version negotiation                                                  */
 /* ----------------------------------------------------------------------- */
 
-static u32 ffa_version_compiled = FFA_VERSION_1_0;
+static u32 ffa_version_compiled;
 
 /* ----------------------------------------------------------------------- */
 /* RXTX buffer management                                                   */
@@ -46,9 +46,9 @@ static u32 ffa_version_compiled = FFA_VERSION_1_0;
  * (guaranteed to be page-aligned and physically contiguous for order-0).
  */
 struct ffa_rxtx {
-	void    *tx;		/* normal-memory, kernel-mapped TX page */
-	void    *rx;		/* normal-memory, kernel-mapped RX page */
-	struct mutex lock;	/* serialises access while tx/rx in use */
+	void *tx; /* normal-memory, kernel-mapped TX page */
+	void *rx; /* normal-memory, kernel-mapped RX page */
+	struct mutex lock; /* serialises access while tx/rx in use */
 };
 
 static struct ffa_rxtx g_rxtx;
@@ -61,16 +61,26 @@ static u16 g_vm_id;
 static int ffa_to_linux_errno(int errno_ffa)
 {
 	switch (errno_ffa) {
-	case FFA_RET_SUCCESS:        return 0;
-	case FFA_RET_NOT_SUPPORTED:  return -EOPNOTSUPP;
-	case FFA_RET_INVALID_PARAMETERS: return -EINVAL;
-	case FFA_RET_NO_MEMORY:      return -ENOMEM;
-	case FFA_RET_BUSY:           return -EBUSY;
-	case FFA_RET_INTERRUPTED:    return -EINTR;
-	case FFA_RET_DENIED:         return -EACCES;
-	case FFA_RET_RETRY:          return -EAGAIN;
-	case FFA_RET_ABORTED:        return -ECANCELED;
-	default:                     return -EIO;
+	case FFA_RET_SUCCESS:
+		return 0;
+	case FFA_RET_NOT_SUPPORTED:
+		return -EOPNOTSUPP;
+	case FFA_RET_INVALID_PARAMETERS:
+		return -EINVAL;
+	case FFA_RET_NO_MEMORY:
+		return -ENOMEM;
+	case FFA_RET_BUSY:
+		return -EBUSY;
+	case FFA_RET_INTERRUPTED:
+		return -EINTR;
+	case FFA_RET_DENIED:
+		return -EACCES;
+	case FFA_RET_RETRY:
+		return -EAGAIN;
+	case FFA_RET_ABORTED:
+		return -ECANCELED;
+	default:
+		return -EIO;
 	}
 }
 
@@ -121,16 +131,15 @@ static int ffa_version_check(u32 *ver)
 
 static int ffa_rxtx_map(phys_addr_t tx_phys, phys_addr_t rx_phys)
 {
-	return ffa_smc(FFA_FN_NATIVE(RXTX_MAP),
-		       (unsigned long)tx_phys,
-		       (unsigned long)rx_phys,
-		       1 /* number of 4 KiB pages */, 0, 0, 0, NULL);
+	return ffa_smc(FFA_FN_NATIVE(RXTX_MAP), (unsigned long)tx_phys,
+		       (unsigned long)rx_phys, 1 /* number of 4 KiB pages */, 0,
+		       0, 0, NULL);
 }
 
 static void ffa_rxtx_unmap(u16 vm_id)
 {
-	ffa_smc(FFA_RXTX_UNMAP, FIELD_PREP(GENMASK(31, 16), (u32)vm_id),
-		0, 0, 0, 0, 0, NULL);
+	ffa_smc(FFA_RXTX_UNMAP, FIELD_PREP(GENMASK(31, 16), (u32)vm_id), 0, 0,
+		0, 0, 0, NULL);
 }
 
 static int ffa_rx_release(void)
@@ -159,7 +168,7 @@ static int ffa_id_get(u16 *vm_id)
 /* FFA_PARTITION_INFO_GET                                                   */
 /* ----------------------------------------------------------------------- */
 
-#define MAX_FFA_PARTITIONS	16
+#define MAX_FFA_PARTITIONS 16
 
 static int ffa_partition_info_get(const uuid_t *uuid,
 				  struct ffa_partition_info *partitions,
@@ -172,10 +181,9 @@ static int ffa_partition_info_get(const uuid_t *uuid,
 
 	uu = (const u32 *)uuid;
 
-	ret = ffa_smc(FFA_PARTITION_INFO_GET,
-		      le32_to_cpu(uu[0]), le32_to_cpu(uu[1]),
-		      le32_to_cpu(uu[2]), le32_to_cpu(uu[3]),
-		      0, 0, &res);
+	ret = ffa_smc(FFA_PARTITION_INFO_GET, le32_to_cpu(uu[0]),
+		      le32_to_cpu(uu[1]), le32_to_cpu(uu[2]),
+		      le32_to_cpu(uu[3]), 0, 0, &res);
 	if (ret)
 		return ret;
 
@@ -187,8 +195,7 @@ static int ffa_partition_info_get(const uuid_t *uuid,
 	}
 
 	n = min(total, (unsigned int)MAX_FFA_PARTITIONS);
-	memcpy(partitions, g_rxtx.rx,
-	       n * sizeof(struct ffa_partition_info));
+	memcpy(partitions, g_rxtx.rx, n * sizeof(struct ffa_partition_info));
 
 	ffa_rx_release();
 
@@ -220,14 +227,13 @@ static int ffa_memory_ops(struct ffa_mem_ops_args *args, bool lend)
 	u32 n_sg, ep_count;
 	unsigned int i;
 	struct arm_smccc_res res;
-	int ret;
 	u32 func;
 
 	ep_count = args->nattrs;
 
 	/* Count scatter-gather entries */
 	n_sg = 0;
-	for_each_sg(args->sg, sg, sg_nents(args->sg), i)
+	for_each_sg (args->sg, sg, sg_nents(args->sg), i)
 		n_sg++;
 
 	/* Compute total descriptor size */
@@ -238,32 +244,33 @@ static int ffa_memory_ops(struct ffa_mem_ops_args *args, bool lend)
 	memset(g_rxtx.tx, 0, FFA_PAGE_SIZE);
 
 	region = g_rxtx.tx;
-	region->sender_id  = 0; /* filled by secure world */
-	region->attributes = FFA_MEM_NORMAL | FFA_MEM_WRITE_BACK
-			     | FFA_MEM_INNER_SHAREABLE;
-	region->flags      = args->flags;
-	region->handle     = 0;
-	region->tag        = args->tag;
-	region->ep_count   = ep_count;
+	region->sender_id = 0; /* filled by secure world */
+	region->attributes =
+		FFA_MEM_NORMAL | FFA_MEM_WRITE_BACK | FFA_MEM_INNER_SHAREABLE;
+	region->flags = args->flags;
+	region->handle = 0;
+	region->tag = args->tag;
+	region->ep_count = ep_count;
 
 	for (i = 0; i < ep_count; i++) {
-		region->ep_mem_access[i].receiver     = args->attrs[i].receiver;
-		region->ep_mem_access[i].attrs        = args->attrs[i].attrs;
+		region->ep_mem_access[i].receiver = args->attrs[i].receiver;
+		region->ep_mem_access[i].attrs = args->attrs[i].attrs;
 		region->ep_mem_access[i].composite_off =
 			(u32)COMPOSITE_OFFSET(ep_count);
 	}
 
-	composite = (struct ffa_composite_mem_region *)
-		((u8 *)g_rxtx.tx + COMPOSITE_OFFSET(ep_count));
-	composite->total_pg_cnt  = 0;
+	composite =
+		(struct ffa_composite_mem_region *)((u8 *)g_rxtx.tx +
+						    COMPOSITE_OFFSET(ep_count));
+	composite->total_pg_cnt = 0;
 	composite->addr_range_cnt = n_sg;
 
 	constituents = composite->constituents;
 	i = 0;
-	for_each_sg(args->sg, sg, sg_nents(args->sg), i) {
-		constituents[i].address    = (u64)sg_phys(sg);
-		constituents[i].pg_cnt     = sg->length >> PAGE_SHIFT;
-		composite->total_pg_cnt   += constituents[i].pg_cnt;
+	for_each_sg (args->sg, sg, sg_nents(args->sg), i) {
+		constituents[i].address = (u64)sg_phys(sg);
+		constituents[i].pg_cnt = sg->length >> PAGE_SHIFT;
+		composite->total_pg_cnt += constituents[i].pg_cnt;
 	}
 
 	region_sz = needed_sz;
@@ -271,8 +278,8 @@ static int ffa_memory_ops(struct ffa_mem_ops_args *args, bool lend)
 	func = lend ? FFA_FN_NATIVE(MEM_LEND) : FFA_FN_NATIVE(MEM_SHARE);
 
 	arm_smccc_smc(func,
-		      (unsigned long)region_sz,	/* total fragment length */
-		      (unsigned long)region_sz,	/* fragment length = total */
+		      (unsigned long)region_sz, /* total fragment length */
+		      (unsigned long)region_sz, /* fragment length = total */
 		      0, 0, 0, 0, 0, &res);
 
 	if ((u32)res.a0 == (u32)FFA_ERROR)
@@ -305,8 +312,7 @@ static int ffa_memory_share(struct ffa_mem_ops_args *args)
 
 static int ffa_memory_reclaim(u64 handle, u32 flags)
 {
-	return ffa_smc(FFA_MEM_RECLAIM,
-		       HANDLE_LOW(handle), HANDLE_HIGH(handle),
+	return ffa_smc(FFA_MEM_RECLAIM, HANDLE_LOW(handle), HANDLE_HIGH(handle),
 		       (unsigned long)flags, 0, 0, 0, NULL);
 }
 
@@ -317,19 +323,24 @@ static int ffa_memory_reclaim(u64 handle, u32 flags)
 static int ffa_sync_send_receive(struct ffa_device *dev,
 				 struct ffa_send_direct_data *data)
 {
-	struct arm_smccc_res res;
+	struct arm_smccc_1_2_regs args = {};
+	struct arm_smccc_1_2_regs res = {};
 	unsigned long func;
 
 	func = dev->mode_32bit ? FFA_MSG_SEND_DIRECT_REQ :
 				 FFA_FN_NATIVE(MSG_SEND_DIRECT_REQ);
 
-	arm_smccc_smc(func,
-		      FIELD_PREP(GENMASK(31, 16), 0) |		/* src id */
-		      FIELD_PREP(GENMASK(15,  0), (u32)dev->vm_id),
-		      0,
-		      data->data0, data->data1,
-		      data->data2, data->data3,
-		      data->data4, &res);
+	args.a0 = func;
+	args.a1 = FIELD_PREP(GENMASK(31, 16), 0) | /* src id */
+		  FIELD_PREP(GENMASK(15, 0), (u32)dev->vm_id);
+	args.a2 = 0;
+	args.a3 = data->data0;
+	args.a4 = data->data1;
+	args.a5 = data->data2;
+	args.a6 = data->data3;
+	args.a7 = data->data4;
+
+	arm_smccc_1_2_smc(&args, &res);
 
 	if ((u32)res.a0 == (u32)FFA_ERROR)
 		return ffa_to_linux_errno((int)res.a2);
@@ -379,25 +390,25 @@ static int ffa_partition_info_get_wrapper(const char *uuid_str,
 /* ----------------------------------------------------------------------- */
 
 static const struct ffa_info_ops g_info_ops = {
-	.api_version_get    = ffa_api_version_get,
+	.api_version_get = ffa_api_version_get,
 	.partition_info_get = ffa_partition_info_get_wrapper,
 };
 
 static const struct ffa_msg_ops g_msg_ops = {
-	.mode_32bit_set     = ffa_mode_32bit_set,
-	.sync_send_receive  = ffa_sync_send_receive,
+	.mode_32bit_set = ffa_mode_32bit_set,
+	.sync_send_receive = ffa_sync_send_receive,
 };
 
 static const struct ffa_mem_ops g_mem_ops = {
 	.memory_reclaim = ffa_memory_reclaim,
-	.memory_share   = ffa_memory_share,
-	.memory_lend    = ffa_memory_lend,
+	.memory_share = ffa_memory_share,
+	.memory_lend = ffa_memory_lend,
 };
 
 static const struct ffa_ops g_ffa_ops = {
 	.info_ops = &g_info_ops,
-	.msg_ops  = &g_msg_ops,
-	.mem_ops  = &g_mem_ops,
+	.msg_ops = &g_msg_ops,
+	.mem_ops = &g_mem_ops,
 };
 
 /* ----------------------------------------------------------------------- */
@@ -429,8 +440,7 @@ static int ffa_register_partition(const uuid_t *uuid)
 		/* The partition_info uuid is stored as four LE u32 words */
 		memcpy(&part_uuid, parts[i].uuid, sizeof(part_uuid));
 
-		ffa_dev = ffa_device_register(&part_uuid,
-					      (int)parts[i].id,
+		ffa_dev = ffa_device_register(&part_uuid, (int)parts[i].id,
 					      &g_ffa_ops);
 		if (IS_ERR(ffa_dev)) {
 			pr_err("arm_ffa: failed to register partition %04x: %ld\n",
@@ -456,12 +466,14 @@ static int ffa_init(void)
 	phys_addr_t tx_phys, rx_phys;
 	int ret;
 
+	ffa_version_compiled = FFA_VERSION_1_0;
+
 	/* Step 1 — check FFA support by issuing FFA_VERSION */
 	ret = ffa_version_check(&version);
 	if (ret) {
 		pr_debug("arm_ffa: FFA_VERSION SMC returned not-supported, "
 			 "FFA disabled\n");
-		return 0;	/* silently absent, not a fatal error */
+		return 0; /* silently absent, not a fatal error */
 	}
 
 	pr_info("arm_ffa: Firmware Framework for Arm detected (version %u.%u)\n",
@@ -512,8 +524,8 @@ static int ffa_init(void)
 	 * by the FFA bus match/probe machinery.
 	 */
 	{
-		static const uuid_t null_uuid = UUID_INIT(0, 0, 0,
-			0, 0, 0, 0, 0, 0, 0, 0);
+		static const uuid_t null_uuid =
+			UUID_INIT(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 
 		ffa_register_partition(&null_uuid);
 		/* Ignore return — absence of partitions is not fatal */

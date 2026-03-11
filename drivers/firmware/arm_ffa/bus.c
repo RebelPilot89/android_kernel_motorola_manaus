@@ -46,12 +46,13 @@ static int ffa_device_probe(struct device *dev)
 	return ffa_drv->probe(ffa_dev);
 }
 
-static void ffa_device_remove(struct device *dev)
+static int ffa_device_remove(struct device *dev)
 {
 	struct ffa_driver *ffa_drv = to_ffa_driver(dev->driver);
 
 	if (ffa_drv->remove)
 		ffa_drv->remove(to_ffa_dev(dev));
+	return 0;
 }
 
 static int ffa_device_uevent(struct device *dev, struct kobj_uevent_env *env)
@@ -59,7 +60,7 @@ static int ffa_device_uevent(struct device *dev, struct kobj_uevent_env *env)
 	struct ffa_device *ffa_dev = to_ffa_dev(dev);
 	char buf[UUID_STRING_LEN + 1];
 
-	uuid_unparse_lower(ffa_dev->uuid, buf);
+	snprintf(buf, sizeof(buf), "%pUl", &ffa_dev->uuid);
 	return add_uevent_var(env, "MODALIAS=ffa:%s", buf);
 }
 
@@ -69,7 +70,7 @@ static ssize_t modalias_show(struct device *dev, struct device_attribute *attr,
 	struct ffa_device *ffa_dev = to_ffa_dev(dev);
 	char uuid_buf[UUID_STRING_LEN + 1];
 
-	uuid_unparse_lower(ffa_dev->uuid, uuid_buf);
+	snprintf(uuid_buf, sizeof(uuid_buf), "%pUl", &ffa_dev->uuid);
 	return sysfs_emit(buf, "ffa:%s\n", uuid_buf);
 }
 static DEVICE_ATTR_RO(modalias);
@@ -88,7 +89,7 @@ static ssize_t vm_id_show(struct device *dev, struct device_attribute *attr,
 }
 static DEVICE_ATTR_RO(vm_id);
 
-static struct attribute *ffa_device_attributes[] = {
+static struct attribute *ffa_device_attrs[] = {
 	&dev_attr_modalias.attr,
 	&dev_attr_id.attr,
 	&dev_attr_vm_id.attr,
@@ -97,12 +98,12 @@ static struct attribute *ffa_device_attributes[] = {
 ATTRIBUTE_GROUPS(ffa_device);
 
 struct bus_type ffa_bus_type = {
-	.name		= "arm_ffa",
-	.match		= ffa_device_match,
-	.probe		= ffa_device_probe,
-	.remove		= ffa_device_remove,
-	.uevent		= ffa_device_uevent,
-	.dev_groups	= ffa_device_groups,
+	.name = "arm_ffa",
+	.match = ffa_device_match,
+	.probe = ffa_device_probe,
+	.remove = ffa_device_remove,
+	.uevent = ffa_device_uevent,
+	.dev_groups = ffa_device_groups,
 };
 EXPORT_SYMBOL_GPL(ffa_bus_type);
 
@@ -118,7 +119,7 @@ static void ffa_release_device(struct device *dev)
 }
 
 struct ffa_device *ffa_device_register(const uuid_t *uuid, int vm_id,
-					const struct ffa_ops *ops)
+				       const struct ffa_ops *ops)
 {
 	static atomic_t dev_cnt = ATOMIC_INIT(0);
 	struct ffa_device *ffa_dev;
@@ -130,10 +131,10 @@ struct ffa_device *ffa_device_register(const uuid_t *uuid, int vm_id,
 
 	uuid_copy(&ffa_dev->uuid, uuid);
 	ffa_dev->vm_id = vm_id;
-	ffa_dev->ops   = ops;
-	ffa_dev->id    = (u32)atomic_inc_return(&dev_cnt);
+	ffa_dev->ops = ops;
+	ffa_dev->id = (u32)atomic_inc_return(&dev_cnt);
 
-	ffa_dev->dev.bus     = &ffa_bus_type;
+	ffa_dev->dev.bus = &ffa_bus_type;
 	ffa_dev->dev.release = ffa_release_device;
 
 	id = dev_set_name(&ffa_dev->dev, "arm-ffa-%d", ffa_dev->id);
@@ -177,9 +178,9 @@ int ffa_driver_register(struct ffa_driver *driver, struct module *owner,
 	if (!driver->probe)
 		return -EINVAL;
 
-	driver->driver.bus    = &ffa_bus_type;
-	driver->driver.name   = driver->name;
-	driver->driver.owner  = owner;
+	driver->driver.bus = &ffa_bus_type;
+	driver->driver.name = driver->name;
+	driver->driver.owner = owner;
 	driver->driver.mod_name = mod_name;
 
 	return driver_register(&driver->driver);
