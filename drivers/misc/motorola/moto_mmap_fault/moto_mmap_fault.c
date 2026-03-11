@@ -26,8 +26,10 @@ MODULE_PARM_DESC(max_ra_pages, "Max read ahead pages");
  */
 
 #if defined(TUNE_MMAP_READAROUND)
-static void __nocfi tune_mmap_readaround(void *p, unsigned int ra_pages, pgoff_t pgoff,
-		pgoff_t *start, unsigned int *size, unsigned int *async_size)
+static void __nocfi tune_mmap_readaround(void *p, unsigned int ra_pages,
+					 pgoff_t pgoff, pgoff_t *start,
+					 unsigned int *size,
+					 unsigned int *async_size)
 {
 	*start = max_t(long, 0, pgoff - max_ra_pages / 2);
 	*size = max_ra_pages;
@@ -35,7 +37,8 @@ static void __nocfi tune_mmap_readaround(void *p, unsigned int ra_pages, pgoff_t
 	return;
 }
 #else
-static void __nocfi filemap_fault_get_page(void *p, struct vm_fault *vmf, struct page **page_out, bool *retry)
+static void __nocfi filemap_fault_get_page(void *p, struct vm_fault *vmf,
+					   struct page **page_out, bool *retry)
 {
 	struct file *file = vmf->vma->vm_file;
 	pgoff_t offset = vmf->pgoff;
@@ -49,7 +52,7 @@ static void __nocfi filemap_fault_get_page(void *p, struct vm_fault *vmf, struct
 		return;
 
 	ra = &file->f_ra;
-	if(!ra)
+	if (!ra)
 		return;
 
 	mapping = file->f_mapping;
@@ -57,17 +60,16 @@ static void __nocfi filemap_fault_get_page(void *p, struct vm_fault *vmf, struct
 
 	if (likely(page) && !(vmf->flags & FAULT_FLAG_TRIED)) {
 		put_page(page);
-    } else if (!page) {
+	} else if (!page) {
 		mmap_miss = READ_ONCE(ra->mmap_miss);
-		if ((vmf->vma->vm_flags & VM_RAND_READ) ||
-			(!ra->ra_pages) ||
-			(vmf->vma->vm_flags & VM_SEQ_READ) ||
-			mmap_miss > 100) {
+		if ((vmf->vma->vm_flags & VM_RAND_READ) || (!ra->ra_pages) ||
+		    (vmf->vma->vm_flags & VM_SEQ_READ) || mmap_miss > 100) {
 			return;
 		} else {
 			old_ra_pages = ra->ra_pages;
 			if (ra->ra_pages > max_ra_pages) {
-				ra->ra_pages = max_ra_pages; // reduce the read ahead limit to 8 pages
+				ra->ra_pages =
+					max_ra_pages; // reduce the read ahead limit to 8 pages
 				vmf->android_oem_data1[0] = old_ra_pages;
 				vmf->android_oem_data1[1] = max_ra_pages;
 			}
@@ -80,7 +82,8 @@ static void __nocfi filemap_fault_get_page(void *p, struct vm_fault *vmf, struct
 	return;
 }
 
-static void __nocfi filemap_fault_cache_page(void *p, struct vm_fault *vmf, struct page *page)
+static void __nocfi filemap_fault_cache_page(void *p, struct vm_fault *vmf,
+					     struct page *page)
 {
 	struct file *file = vmf->vma->vm_file;
 	struct file_ra_state *ra = NULL;
@@ -89,14 +92,17 @@ static void __nocfi filemap_fault_cache_page(void *p, struct vm_fault *vmf, stru
 		return;
 
 	ra = &file->f_ra;
-	if(!ra)
+	if (!ra)
 		return;
 
-	if ((ra->ra_pages == max_ra_pages) && (vmf->android_oem_data1[0] != 0)
-			&& (vmf->android_oem_data1[1] == max_ra_pages)) {
-			ra->ra_pages = (unsigned int)vmf->android_oem_data1[0]; //restore the old ra_pages
-			vmf->android_oem_data1[0] = 0;
-			vmf->android_oem_data1[1] = 0;
+	if ((ra->ra_pages == max_ra_pages) &&
+	    (vmf->android_oem_data1[0] != 0) &&
+	    (vmf->android_oem_data1[1] == max_ra_pages)) {
+		ra->ra_pages =
+			(unsigned int)vmf
+				->android_oem_data1[0]; //restore the old ra_pages
+		vmf->android_oem_data1[0] = 0;
+		vmf->android_oem_data1[1] = 0;
 	}
 }
 #endif
@@ -115,12 +121,16 @@ static int __nocfi __init moto_mmap_fault_init(void)
 	}
 
 #if defined(TUNE_MMAP_READAROUND)
-	pr_info("Using the new mmap fault driver, totalram size=%dGB", ramsize_GB);
-	ret = register_trace_android_vh_tune_mmap_readaround(tune_mmap_readaround, NULL);
+	pr_info("Using the new mmap fault driver, totalram size=%dGB",
+		ramsize_GB);
+	ret = register_trace_android_vh_tune_mmap_readaround(
+		tune_mmap_readaround, NULL);
 #else
-	pr_info("Using the legacy mmap fault driver, totalram size=%dGB", ramsize_GB);
+	pr_info("Using the legacy mmap fault driver, totalram size=%dGB",
+		ramsize_GB);
 	ret = register_trace_android_vh_filemap_fault_get_page(filemap_fault_get_page, NULL) ?:
-		register_trace_android_vh_filemap_fault_cache_page(filemap_fault_cache_page, NULL);
+		      register_trace_android_vh_filemap_fault_cache_page(
+			      filemap_fault_cache_page, NULL);
 #endif
 	if (ret != 0)
 		return -ENXIO;
@@ -130,10 +140,13 @@ static int __nocfi __init moto_mmap_fault_init(void)
 static void __nocfi __exit moto_mmap_fault_exit(void)
 {
 #if defined(TUNE_MMAP_READAROUND)
-	unregister_trace_android_vh_tune_mmap_readaround(tune_mmap_readaround, NULL);
+	unregister_trace_android_vh_tune_mmap_readaround(tune_mmap_readaround,
+							 NULL);
 #else
-	unregister_trace_android_vh_filemap_fault_get_page(filemap_fault_get_page, NULL);
-	unregister_trace_android_vh_filemap_fault_cache_page(filemap_fault_cache_page, NULL);
+	unregister_trace_android_vh_filemap_fault_get_page(
+		filemap_fault_get_page, NULL);
+	unregister_trace_android_vh_filemap_fault_cache_page(
+		filemap_fault_cache_page, NULL);
 #endif
 }
 
