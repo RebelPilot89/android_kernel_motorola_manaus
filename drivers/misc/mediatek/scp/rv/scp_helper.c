@@ -95,6 +95,8 @@ int scp_awake_counts[SCP_CORE_TOTAL];
 
 unsigned int scp_recovery_flag[SCP_CORE_TOTAL];
 #define SCP_A_RECOVERY_OK 0x44
+/* Mask to extract 1 MB-aligned base from an SCP CFG register address */
+#define SCP_CFG_REG_BASE_MASK 0xfff00000
 /*  scp_reset_status
  *  0: scp not in reset status
  *  1: scp in reset status
@@ -2365,7 +2367,11 @@ static int scp_device_probe(struct platform_device *pdev)
 		 scpreg.total_tcmsize);
 
 	res = platform_get_resource(pdev, IORESOURCE_MEM, 1);
-	scp_reg_base_phy = res->start & 0xfff00000;
+	if (!res) {
+		dev_err(dev, "[SCP] scpreg.cfg resource not found\n");
+		return -EINVAL;
+	}
+	scp_reg_base_phy = res->start & SCP_CFG_REG_BASE_MASK;
 	pr_notice("[SCP] scp_reg_base_phy = 0x%x\n", scp_reg_base_phy);
 	scpreg.cfg = devm_ioremap_resource(dev, res);
 	if (IS_ERR((void const *)scpreg.cfg)) {
