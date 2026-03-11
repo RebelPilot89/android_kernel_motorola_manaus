@@ -6,3 +6,12 @@ config MTK_CCU
 	  Faster control flow and
 	  Stabler frame rate.
 
+config MTK_CCU_RPROC
+	tristate "MTK CCU remoteproc driver for ISP71"
+	depends on REMOTEPROC
+	help
+	  Support CCU (Camera Control Unit) as a remoteproc device
+	  for ISP71-based platforms (MT6879/Dimensity 7030).
+	  The CCU handles 3A algorithms offloaded to a dedicated
+	  co-processor, communicating via IPI (Inter-Processor Interrupt).
+

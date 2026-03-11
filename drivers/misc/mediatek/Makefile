@@ -117,3 +117,9 @@ obj-$(CONFIG_HQ_CAMERA_LDO) += camera_ldo/
 ifneq ($(CONFIG_MTK_ENABLE_GENIEZONE),y)
 obj-$(CONFIG_TRUSTY) += trusty/
 endif
+
+# SCP subsystem (AOV - Always-On Vision)
+obj- += scpsys/
+
+# SCP subsystem (AOV - Always-On Vision)
+obj-$(CONFIG_VIDEO_MTK_ISP_AOV) += scpsys/

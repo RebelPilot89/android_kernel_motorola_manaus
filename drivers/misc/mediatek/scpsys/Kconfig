@@ -1,0 +1,9 @@
+config VIDEO_MTK_ISP_AOV
+	tristate "Mediatek Always-On Vision (AOV) driver"
+	help
+	  Always-On Vision (AOV) driver for MediaTek SoCs.
+	  Provides always-on face detection and AI vision processing
+	  on the SCP (System Control Processor) subsystem.
+	  Used with ISP7S/ISP7SP on MT6879/Dimensity 7030.
+
+	  Choose m or y to enable this driver.
