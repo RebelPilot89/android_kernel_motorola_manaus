@@ -22,7 +22,6 @@
 #include <linux/dma-heap.h>
 #include <uapi/linux/dma-heap.h>
 
-
 static struct dma_buf *tui_dma_buf[MAX_DCI_BUFFER_NUMBER];
 
 #ifdef TUI_LOCK_I2C
@@ -39,22 +38,26 @@ static int i2c_tui_clock_enable(int id)
 		i2c_device = adap->dev.parent;
 		i2c_clk_main = devm_clk_get(i2c_device, "main");
 		if (IS_ERR(i2c_clk_main)) {
-			pr_notice("[TUI-HAL] %s() cannot get i2c main clock\n", __func__);
+			pr_notice("[TUI-HAL] %s() cannot get i2c main clock\n",
+				  __func__);
 			return PTR_ERR(i2c_clk_main);
 		}
 		ret = clk_prepare_enable(i2c_clk_main);
 		if (ret) {
-			pr_notice("[TUI-HAL] %s() enable i2c main clock fail\n", __func__);
+			pr_notice("[TUI-HAL] %s() enable i2c main clock fail\n",
+				  __func__);
 			return ret;
 		}
 		i2c_clk_dma = devm_clk_get(i2c_device, "dma");
 		if (IS_ERR(i2c_clk_dma)) {
-			pr_notice("[TUI-HAL] %s() cannot get i2c dma clock\n", __func__);
+			pr_notice("[TUI-HAL] %s() cannot get i2c dma clock\n",
+				  __func__);
 			return PTR_ERR(i2c_clk_dma);
 		}
 		ret = clk_prepare_enable(i2c_clk_dma);
 		if (ret) {
-			pr_notice("[TUI-HAL] %s() enable i2c dma clock fail\n", __func__);
+			pr_notice("[TUI-HAL] %s() enable i2c dma clock fail\n",
+				  __func__);
 			return ret;
 		}
 	} else {
@@ -77,14 +80,16 @@ static int i2c_tui_clock_disable(int id)
 		i2c_device = adap->dev.parent;
 		i2c_clk_main = devm_clk_get(i2c_device, "main");
 		if (IS_ERR(i2c_clk_main)) {
-			pr_notice("[TUI-HAL] %s() cannot get i2c main clock\n", __func__);
+			pr_notice("[TUI-HAL] %s() cannot get i2c main clock\n",
+				  __func__);
 			return PTR_ERR(i2c_clk_main);
 		}
 		clk_disable_unprepare(i2c_clk_main);
 
 		i2c_clk_dma = devm_clk_get(i2c_device, "dma");
 		if (IS_ERR(i2c_clk_dma)) {
-			pr_notice("[TUI-HAL] %s() cannot get i2c dma clock\n", __func__);
+			pr_notice("[TUI-HAL] %s() cannot get i2c dma clock\n",
+				  __func__);
 			return PTR_ERR(i2c_clk_dma);
 		}
 		clk_disable_unprepare(i2c_clk_dma);
@@ -155,9 +160,9 @@ void hal_tui_exit(void)
  * the physical address of the working buffer is at index 0 of the allocbuffer
  * table (allocbuffer[0].pa).
  */
-uint32_t hal_tui_alloc(
-	struct tui_alloc_buffer_t allocbuffer[MAX_DCI_BUFFER_NUMBER],
-	size_t allocsize, uint32_t number)
+uint32_t
+hal_tui_alloc(struct tui_alloc_buffer_t allocbuffer[MAX_DCI_BUFFER_NUMBER],
+	      size_t allocsize, uint32_t number)
 {
 	uint32_t ret = TUI_DCI_ERR_INTERNAL_ERROR;
 	uint64_t pa = 0;
@@ -170,8 +175,8 @@ uint32_t hal_tui_alloc(
 		return TUI_DCI_ERR_INTERNAL_ERROR;
 	}
 
-	pr_info("%s(%d): Requested size=0x%zx x %u chunks\n",
-		 __func__, __LINE__, allocsize, number);
+	pr_info("%s(%d): Requested size=0x%zx x %u chunks\n", __func__,
+		__LINE__, allocsize, number);
 
 	if ((size_t)allocsize == 0 || number > MAX_DCI_BUFFER_NUMBER) {
 		pr_notice("%s(%d): Nothing to allocate\n", __func__, __LINE__);
@@ -185,31 +190,42 @@ uint32_t hal_tui_alloc(
 	}
 
 	for (i = 0; i < number; i++) {
-		tui_dma_buf[i] = dma_heap_buffer_alloc(dma_heap, allocsize,
-					DMA_HEAP_VALID_FD_FLAGS, DMA_HEAP_VALID_HEAP_FLAGS);
+		tui_dma_buf[i] =
+			dma_heap_buffer_alloc(dma_heap, allocsize,
+					      DMA_HEAP_VALID_FD_FLAGS,
+					      DMA_HEAP_VALID_HEAP_FLAGS);
 		if (IS_ERR(tui_dma_buf[i])) {
 			pr_notice("%s, alloc buffer fail, heap:%s", __func__,
-						dma_heap_get_name(dma_heap));
+				  dma_heap_get_name(dma_heap));
 			ret = TUI_DCI_ERR_INTERNAL_ERROR;
 			goto error;
 		}
 
 		sec_handle = dmabuf_to_secure_handle(tui_dma_buf[i]);
 		if (!sec_handle) {
-			pr_notice("%s, get tui frame buffer secure handle failed!\n", __func__);
-			ret =  TUI_DCI_ERR_INTERNAL_ERROR;
+			pr_notice(
+				"%s, get tui frame buffer secure handle failed!\n",
+				__func__);
+			ret = TUI_DCI_ERR_INTERNAL_ERROR;
 			goto error;
 		}
 
-		ret = trusted_mem_api_query_pa(0, 0, 0, 0, &sec_handle, 0, 0, 0, &pa);
+		{
+			uint32_t gz_h = (uint32_t)sec_handle;
+
+			ret = trusted_mem_api_query_pa(0, 0, 0, 0, &gz_h, 0, 0,
+						       0, &pa);
+			sec_handle = (uint64_t)gz_h;
+		}
 		if (ret == 0) {
-			allocbuffer[i].pa = (uint64_t) pa;
+			allocbuffer[i].pa = (uint64_t)pa;
 			allocbuffer[i].ffa_handle = (uint64_t)sec_handle;
 			pr_info("%s(%d):%d: buf 0x%llx, handle 0x%llx\n",
-			__func__, __LINE__, i, allocbuffer[i].pa, allocbuffer[i].ffa_handle);
+				__func__, __LINE__, i, allocbuffer[i].pa,
+				allocbuffer[i].ffa_handle);
 		} else {
 			pr_notice("%s(%d): trusted_mem_api_query_pa failed!\n",
-							 __func__, __LINE__);
+				  __func__, __LINE__);
 			ret = TUI_DCI_ERR_INTERNAL_ERROR;
 			goto error;
 		}
@@ -290,7 +306,7 @@ uint32_t hal_tui_deactivate(void)
 	}
 #endif
 
-	trustedui_set_mask(TRUSTEDUI_MODE_VIDEO_SECURED|
+	trustedui_set_mask(TRUSTEDUI_MODE_VIDEO_SECURED |
 			   TRUSTEDUI_MODE_INPUT_SECURED);
 
 	pr_debug("[TUI-HAL] %s()\n", __func__);
@@ -312,7 +328,7 @@ uint32_t hal_tui_activate(void)
 {
 	pr_info("[TUI-HAL] %s+\n", __func__);
 	/* Protect NWd */
-	trustedui_clear_mask(TRUSTEDUI_MODE_VIDEO_SECURED|
+	trustedui_clear_mask(TRUSTEDUI_MODE_VIDEO_SECURED |
 			     TRUSTEDUI_MODE_INPUT_SECURED);
 	/*
 	 * Restart NWd display here.  TUI session has ended, and therefore the

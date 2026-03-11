@@ -15,10 +15,10 @@
 
 #include <linux/device.h>
 #include <linux/debugfs.h>
-#include <linux/sched.h>	/* local_clock */
+#include <linux/sched.h> /* local_clock */
 #include <linux/version.h>
 #if KERNEL_VERSION(4, 11, 0) <= LINUX_VERSION_CODE
-#include <linux/sched/clock.h>	/* local_clock */
+#include <linux/sched/clock.h> /* local_clock */
 #endif
 
 #include "mci/mcifc.h"
@@ -42,11 +42,10 @@
 #define UNKNOWN_SMC -1
 
 /* Use the arch_extension sec pseudo op before switching to secure world */
-#if defined(__GNUC__) && \
-	defined(__GNUC_MINOR__) && \
-	defined(__GNUC_PATCHLEVEL__) && \
-	((__GNUC__ * 10000 + __GNUC_MINOR__ * 100 + __GNUC_PATCHLEVEL__)) \
-	>= 40502
+#if defined(__GNUC__) && defined(__GNUC_MINOR__) &&                            \
+	defined(__GNUC_PATCHLEVEL__) &&                                        \
+	((__GNUC__ * 10000 + __GNUC_MINOR__ * 100 + __GNUC_PATCHLEVEL__)) >=   \
+		40502
 #endif
 
 union fc_sched_init {
@@ -236,7 +235,7 @@ static inline int __smc(union fc_common *fc, const char *func)
 
 	/* Log SMC call */
 	smc_log[smc_log_index].cpu_clk = local_clock();
-	smc_log[smc_log_index].cpu_id  = raw_smp_processor_id();
+	smc_log[smc_log_index].cpu_id = raw_smp_processor_id();
 	smc_log[smc_log_index].fc = *fc;
 	if (++smc_log_index >= SMC_LOG_SIZE)
 		smc_log_index = 0;
@@ -262,18 +261,17 @@ static inline int __smc(union fc_common *fc, const char *func)
 		 * not allocate any of those registers by letting him know that
 		 * the asm code might clobber them.
 		 */
-		__asm__ volatile (
-			"smc #0\n"
-			: "+r"(reg0), "+r"(reg1), "+r"(reg2), "+r"(reg3),
-			  "+r"(reg4), "+r"(reg5), "+r"(reg6), "+r"(reg7)
-			:
-			: "x8", "x9", "x10", "x11", "x12", "x13", "x14", "x15",
-			  "x16", "x17"
-		);
+		__asm__ volatile("smc #0\n"
+				 : "+r"(reg0), "+r"(reg1), "+r"(reg2),
+				   "+r"(reg3), "+r"(reg4), "+r"(reg5),
+				   "+r"(reg6), "+r"(reg7)
+				 :
+				 : "x8", "x9", "x10", "x11", "x12", "x13",
+				   "x14", "x15", "x16", "x17");
 
 		/* set response */
-		fc->out.resp     = reg0;
-		fc->out.ret      = reg1;
+		fc->out.resp = reg0;
+		fc->out.ret = reg1;
 		fc->out.param[0] = reg2;
 		fc->out.param[1] = reg3;
 
@@ -433,7 +431,7 @@ int fc_yield(u32 session_id, u32 payload, struct fc_s_yield *resp)
 
 	if (resp) {
 		resp->resp = fc.out.resp;
-		resp->ret  = fc.out.ret;
+		resp->ret = fc.out.ret;
 		resp->code = fc.out.code;
 	}
 
@@ -441,7 +439,8 @@ int fc_yield(u32 session_id, u32 payload, struct fc_s_yield *resp)
 }
 
 #ifdef CONFIG_XEN
-static int fc_register_shm(u64 phys_addr, u32 pte_count, u64 *handle)
+static int __maybe_unused fc_register_shm(u64 phys_addr, u32 pte_count,
+					  u64 *handle)
 {
 	int ret;
 	union fc_register_buffer fc;
@@ -465,7 +464,7 @@ static int fc_register_shm(u64 phys_addr, u32 pte_count, u64 *handle)
 	return 0;
 }
 
-static int fc_reclaim_shm(u64 handle)
+static int __maybe_unused fc_reclaim_shm(u64 handle)
 {
 	int ret;
 	union fc_reclaim_buffer fc;
@@ -512,8 +511,7 @@ int fc_register_buffer(struct page **pages, struct tee_mmu *mmu, u64 tag)
 #endif
 
 	if (ret)
-		mc_dev_err(ret, "sharing buffer, handle %llx",
-			   mmu->handle);
+		mc_dev_err(ret, "sharing buffer, handle %llx", mmu->handle);
 
 	return ret;
 }
@@ -533,8 +531,7 @@ int fc_reclaim_buffer(struct tee_mmu *mmu)
 #endif
 
 	if (ret)
-		mc_dev_err(ret, "reclaiming buffer, handle %llx",
-			   mmu->handle);
+		mc_dev_err(ret, "reclaiming buffer, handle %llx", mmu->handle);
 
 	return ret;
 }
