@@ -1071,3 +1071,56 @@ void exit_c2ps_common(void)
 	c2ps_sysfs_remove_file(base_kobj, &kobj_attr_gear_uclamp_max);
 	c2ps_sysfs_remove_dir(&base_kobj);
 }
+
+/* ------------------------------------------------------------------ */
+/* Current-task uclamp hint                                            */
+/* ------------------------------------------------------------------ */
+
+/*
+ * The full MTK implementation uses a vendor hook to let individual
+ * tasks bypass the system-wide sysctl_sched_util_clamp_max cap.  That
+ * infrastructure is not present in this tree.  The stubs below satisfy
+ * the ABI expected by c2ps_monitor.c and c2ps_regulator_policy.c:
+ * returning 0 (success) is safe because C2PS already applies the
+ * desired uclamp values via sched_setattr_nocheck() and those values
+ * will be honoured up to the system uclamp_max cap (typically 1024).
+ */
+
+/**
+ * set_curr_uclamp_hint_wo_lock - hint that task @p may exceed the
+ *                                system uclamp-max cap
+ * @p:   task to hint; must have an elevated reference count
+ * @set: non-zero to enable the hint, zero to clear it
+ *
+ * Returns 0 on success (always, in this implementation).
+ */
+int set_curr_uclamp_hint_wo_lock(struct task_struct *p, int set)
+{
+	return 0;
+}
+
+/**
+ * set_curr_uclamp_hint - pid-based wrapper for set_curr_uclamp_hint_wo_lock
+ * @pid: PID of the target task
+ * @set: non-zero to enable the hint, zero to clear it
+ *
+ * Returns 0 on success, -ESRCH when the task cannot be found.
+ */
+int set_curr_uclamp_hint(int pid, int set)
+{
+	struct task_struct *p;
+	int ret = -ESRCH;
+
+	rcu_read_lock();
+	p = find_task_by_vpid(pid);
+	if (p) {
+		get_task_struct(p);
+		rcu_read_unlock();
+		ret = set_curr_uclamp_hint_wo_lock(p, set);
+		put_task_struct(p);
+	} else {
+		rcu_read_unlock();
+	}
+
+	return ret;
+}
