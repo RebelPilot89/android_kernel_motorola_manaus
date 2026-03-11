@@ -35,8 +35,8 @@ struct mtk_ccd_buf {
 	struct dma_buf_attachment *db_attach;
 };
 
-static struct mtk_ccd_buf *mtk_ccd_buf_alloc(
-					   struct device *dev, unsigned long size)
+static struct mtk_ccd_buf *mtk_ccd_buf_alloc(struct device *dev,
+					     unsigned long size)
 {
 	struct mtk_ccd_buf *buf;
 	struct dma_heap *dma_heap;
@@ -52,8 +52,8 @@ static struct mtk_ccd_buf *mtk_ccd_buf_alloc(
 		goto fail_alloc;
 	}
 
-	buf->dbuf = dma_heap_buffer_alloc(dma_heap, size,
-			O_RDWR | O_CLOEXEC, DMA_HEAP_VALID_HEAP_FLAGS);
+	buf->dbuf = dma_heap_buffer_alloc(dma_heap, size, O_RDWR | O_CLOEXEC,
+					  DMA_HEAP_VALID_HEAP_FLAGS);
 	if (IS_ERR(buf->dbuf)) {
 		pr_info("dma_heap buffer alloc fail\n");
 		goto fail_alloc;
@@ -65,8 +65,8 @@ static struct mtk_ccd_buf *mtk_ccd_buf_alloc(
 		goto fail_alloc;
 	}
 
-	buf->dma_sgt = dma_buf_map_attachment(buf->db_attach,
-				DMA_BIDIRECTIONAL);
+	buf->dma_sgt =
+		dma_buf_map_attachment(buf->db_attach, DMA_BIDIRECTIONAL);
 	if (IS_ERR(buf->dma_sgt)) {
 		pr_info("dma_heap map failed\n");
 		goto fail_map_attach;
@@ -85,8 +85,8 @@ static struct mtk_ccd_buf *mtk_ccd_buf_alloc(
 	return buf;
 
 fail_vmap:
-	dma_buf_unmap_attachment(
-		buf->db_attach, buf->dma_sgt, DMA_BIDIRECTIONAL);
+	dma_buf_unmap_attachment(buf->db_attach, buf->dma_sgt,
+				 DMA_BIDIRECTIONAL);
 fail_map_attach:
 	dma_buf_detach(buf->dbuf, buf->db_attach);
 fail_alloc:
@@ -103,8 +103,8 @@ static void mtk_ccd_buf_put(struct mtk_ccd_buf *buf)
 
 	/* free iova */
 	if (buf->db_attach && buf->dma_sgt)
-		dma_buf_unmap_attachment(
-			buf->db_attach, buf->dma_sgt, DMA_BIDIRECTIONAL);
+		dma_buf_unmap_attachment(buf->db_attach, buf->dma_sgt,
+					 DMA_BIDIRECTIONAL);
 
 	if (buf->dbuf && buf->db_attach)
 		dma_buf_detach(buf->dbuf, buf->db_attach);
@@ -167,8 +167,7 @@ void mtk_ccd_mem_release(struct mtk_ccd *ccd)
 }
 EXPORT_SYMBOL_GPL(mtk_ccd_mem_release);
 
-void *mtk_ccd_get_buffer(struct mtk_ccd *ccd,
-			 struct mem_obj *mem_buff_data)
+void *mtk_ccd_get_buffer(struct mtk_ccd *ccd, struct mem_obj *mem_buff_data)
 {
 	void *va;
 	dma_addr_t da;
@@ -183,23 +182,22 @@ void *mtk_ccd_get_buffer(struct mtk_ccd *ccd,
 	mutex_lock(&ccd_memory->mmap_lock);
 	buffers = ccd_memory->num_buffers;
 	if (mem_buff_data->len > CCD_ALLOCATE_MAX_BUFFER_SIZE ||
-	    mem_buff_data->len == 0U ||
-	    buffers >= MAX_NUMBER_OF_BUFFER) {
+	    mem_buff_data->len == 0U || buffers >= MAX_NUMBER_OF_BUFFER) {
 		dev_info(ccd_memory->dev,
-			"%s: Failed: buffer len = %u num_buffers = %d !!\n",
+			 "%s: Failed: buffer len = %u num_buffers = %d !!\n",
 			 __func__, mem_buff_data->len, buffers);
 		mutex_unlock(&ccd_memory->mmap_lock);
 		return ERR_PTR(-EINVAL);
 	}
 
 	ccd_buffer = &ccd_memory->bufs[buffers];
-	attach_dev = ccd->smmu_dev ? : ccd_memory->dev;
+	attach_dev = ccd->smmu_dev ?: ccd_memory->dev;
 	buf = mtk_ccd_buf_alloc(attach_dev, mem_buff_data->len);
 	ccd_buffer->mem_priv = buf;
 	ccd_buffer->size = mem_buff_data->len;
 	if (IS_ERR(ccd_buffer->mem_priv)) {
 		dev_info(ccd_memory->dev, "%s: CCD buf allocation failed\n",
-			__func__);
+			 __func__);
 		mutex_unlock(&ccd_memory->mmap_lock);
 		return ERR_PTR(-ENOMEM);
 	}
@@ -211,18 +209,16 @@ void *mtk_ccd_get_buffer(struct mtk_ccd *ccd,
 	ccd_memory->num_buffers++;
 	mutex_unlock(&ccd_memory->mmap_lock);
 	dev_info(ccd_memory->dev,
-		"Num_bufs = %d iova = %pad va = %p size = %d priv = %p\n",
+		 "Num_bufs = %d iova = %pad va = %p size = %d priv = %p\n",
 		 ccd_memory->num_buffers, &mem_buff_data->iova,
-		 mem_buff_data->va,
-		 (unsigned int)ccd_buffer->size,
+		 mem_buff_data->va, (unsigned int)ccd_buffer->size,
 		 ccd_buffer->mem_priv);
 
 	return ccd_buffer->mem_priv;
 }
 EXPORT_SYMBOL_GPL(mtk_ccd_get_buffer);
 
-int mtk_ccd_put_buffer(struct mtk_ccd *ccd,
-			struct mem_obj *mem_buff_data)
+int mtk_ccd_put_buffer(struct mtk_ccd *ccd, struct mem_obj *mem_buff_data)
 {
 	struct mtk_ccd_buf *buf;
 	void *va;
@@ -241,12 +237,14 @@ int mtk_ccd_put_buffer(struct mtk_ccd *ccd,
 			va = mtk_ccd_buf_get_vaddr(buf);
 			da = mtk_ccd_buf_get_daddr(buf);
 			if (mem_buff_data->va == va &&
-				mem_buff_data->len == ccd_buffer->size) {
-				dev_info(ccd_memory->dev,
+			    mem_buff_data->len == ccd_buffer->size) {
+				dev_info(
+					ccd_memory->dev,
 					"Free buff = %d iova = %pad va = %p, queue_num = %d, f_count = %ld\n",
-					 buffer, &mem_buff_data->iova,
-					 mem_buff_data->va,
-					 num_buffers, atomic_long_read(&buf->dbuf->file->f_count));
+					buffer, &mem_buff_data->iova,
+					mem_buff_data->va, num_buffers,
+					atomic_long_read(
+						&buf->dbuf->file->f_count));
 				mtk_ccd_buf_put(buf);
 				last_buffer = num_buffers - 1U;
 				if (last_buffer != buffer)
@@ -264,7 +262,7 @@ int mtk_ccd_put_buffer(struct mtk_ccd *ccd,
 
 	if (ret != 0)
 		dev_info(ccd_memory->dev,
-			"Can not free memory va %p iova %pad len %u!\n",
+			 "Can not free memory va %p iova %pad len %u!\n",
 			 mem_buff_data->va, &mem_buff_data->iova,
 			 mem_buff_data->len);
 
@@ -282,7 +280,7 @@ int mtk_ccd_get_buffer_fd(struct mtk_ccd *ccd, void *mem_priv)
 		return -EINVAL;
 	}
 
-	fd = dma_buf_fd(buf->dbuf,  O_RDWR | O_CLOEXEC);
+	fd = dma_buf_fd(buf->dbuf, O_RDWR | O_CLOEXEC);
 	if (fd < 0) {
 		pr_info("mtk_ccd couldn't get fd from dma_buf\n");
 		return -EINVAL;

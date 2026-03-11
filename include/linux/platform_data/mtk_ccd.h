@@ -9,9 +9,7 @@
 #include <linux/platform_device.h>
 #include <linux/cdev.h>
 
-typedef void (*ccd_ipi_handler_t) (void *data,
-				   unsigned int len,
-				   void *priv);
+typedef void (*ccd_ipi_handler_t)(void *data, unsigned int len, void *priv);
 
 struct dma_buf;
 struct mtk_ccd_memory;
@@ -85,10 +83,8 @@ struct mtk_ccd {
  *
  * Return: Return 0 if ipi registers successfully, otherwise it is failed.
  */
-int ccd_ipi_register(struct platform_device *pdev,
-		     enum ccd_ipi_id id,
-		     ccd_ipi_handler_t handler,
-		     void *priv);
+int ccd_ipi_register(struct platform_device *pdev, enum ccd_ipi_id id,
+		     ccd_ipi_handler_t handler, void *priv);
 
 /**
  * ccd_ipi_unregister - unregister an ipi function
@@ -117,20 +113,18 @@ void ccd_ipi_unregister(struct platform_device *pdev, enum ccd_ipi_id id);
  * Return: Return 0 if sending data successfully, otherwise it is failed.
  **/
 int rpmsg_ccd_ipi_send(struct mtk_rpmsg_rproc_subdev *mtk_subdev,
-		       struct mtk_ccd_rpmsg_endpoint *mept,
-		       void *buf, unsigned int len, unsigned int wait);
+		       struct mtk_ccd_rpmsg_endpoint *mept, void *buf,
+		       unsigned int len, unsigned int wait);
 
 void ccd_master_listen(struct mtk_ccd *ccd,
-			      struct ccd_master_listen_item *listen_obj);
+		       struct ccd_master_listen_item *listen_obj);
 
 void ccd_master_destroy(struct mtk_ccd *ccd,
 			struct ccd_master_status_item *master_obj);
 
-int ccd_worker_read(struct mtk_ccd *ccd,
-		     struct ccd_worker_item *read_obj);
+int ccd_worker_read(struct mtk_ccd *ccd, struct ccd_worker_item *read_obj);
 
-void ccd_worker_write(struct mtk_ccd *ccd,
-		      struct ccd_worker_item *write_obj);
+void ccd_worker_write(struct mtk_ccd *ccd, struct ccd_worker_item *write_obj);
 
 /**
  * ccd_get_pdev - get CCD's platform device
@@ -157,22 +151,16 @@ struct platform_device *ccd_get_pdev(struct platform_device *pdev);
  * Return: Return ERR_PTR(-EINVAL) if mapping failed,
  * otherwise the mapped kernel virtual address
  **/
-void *ccd_mapping_dm_addr(struct platform_device *pdev,
-			  u32 mem_addr);
+void *ccd_mapping_dm_addr(struct platform_device *pdev, u32 mem_addr);
 
-void mtk_ccd_get_service(struct mtk_ccd *ccd,
-			 struct task_struct **task,
+void mtk_ccd_get_service(struct mtk_ccd *ccd, struct task_struct **task,
 			 struct files_struct **f);
 
-void *mtk_ccd_get_buffer(struct mtk_ccd *ccd,
-			 struct mem_obj *mem_buff_data);
-int mtk_ccd_put_buffer(struct mtk_ccd *ccd,
-			struct mem_obj *mem_buff_data);
+void *mtk_ccd_get_buffer(struct mtk_ccd *ccd, struct mem_obj *mem_buff_data);
+int mtk_ccd_put_buffer(struct mtk_ccd *ccd, struct mem_obj *mem_buff_data);
 
 int mtk_ccd_get_buffer_fd(struct mtk_ccd *ccd, void *mem_priv);
-int mtk_ccd_put_buffer_fd(struct mtk_ccd *ccd,
-			struct mem_obj *mem_buff_data,
-unsigned int target_fd);
-struct dma_buf *mtk_ccd_get_buffer_dmabuf(struct mtk_ccd *ccd,
-			void *mem_priv);
+int mtk_ccd_put_buffer_fd(struct mtk_ccd *ccd, struct mem_obj *mem_buff_data,
+			  unsigned int target_fd);
+struct dma_buf *mtk_ccd_get_buffer_dmabuf(struct mtk_ccd *ccd, void *mem_priv);
 #endif /* _MTK_CCD_H */

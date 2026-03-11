@@ -15,14 +15,15 @@
 #include <linux/module.h>
 #include <linux/cpufreq.h>
 #include <linux/topology.h>
+#include <linux/threads.h>
 #include <linux/time.h>
 #include <uapi/linux/sched/types.h>
 
 #define MAX_WINDOW_SIZE 70
-#define MAX_CPU_NUM CONFIG_MAX_NR_CPUS
+#define MAX_CPU_NUM NR_CPUS
 // ms
 #define BACKGROUND_MONITOR_DURATION 33
-#define MAX_NUMBER_OF_CLUSTERS CONFIG_MAX_NR_CPUS
+#define MAX_NUMBER_OF_CLUSTERS NR_CPUS
 #define MAX_TASK_NAME_SIZE 10
 #define MAX_UCLAMP 1024
 #define MIN_UCLAMP_MARGIN 50
@@ -130,24 +131,25 @@ struct regulator_req {
 	bool is_flush;
 };
 
-
-#define C2PS_LOGD(fmt, ...)                                         \
-	do {                                                            \
-		if (debug_log_on)                                           \
-			pr_debug("[C2PS]: %s " fmt, __func__, ##__VA_ARGS__);   \
+#define C2PS_LOGD(fmt, ...)                                                    \
+	do {                                                                   \
+		if (debug_log_on)                                              \
+			pr_debug("[C2PS]: %s " fmt, __func__, ##__VA_ARGS__);  \
 	} while (0)
 
-#define C2PS_LOGW(fmt, ...)                                         \
-	do {                                                            \
-		if (debug_log_on)                                           \
-			pr_warn("[C2PS]: %s " fmt, __func__, ##__VA_ARGS__);    \
+#define C2PS_LOGW(fmt, ...)                                                    \
+	do {                                                                   \
+		if (debug_log_on)                                              \
+			pr_warn("[C2PS]: %s " fmt, __func__, ##__VA_ARGS__);   \
 	} while (0)
 
-#define C2PS_LOGW_ONCE(fmt, ...) pr_warn_once("[C2PS]: %s %s %d " fmt, \
-	__FILE__, __func__, __LINE__, ##__VA_ARGS__)
+#define C2PS_LOGW_ONCE(fmt, ...)                                               \
+	pr_warn_once("[C2PS]: %s %s %d " fmt, __FILE__, __func__, __LINE__,    \
+		     ##__VA_ARGS__)
 
-#define C2PS_LOGE(fmt, ...) pr_err("[C2PS]: %s %s %d " fmt, \
-	__FILE__, __func__, __LINE__, ##__VA_ARGS__)
+#define C2PS_LOGE(fmt, ...)                                                    \
+	pr_err("[C2PS]: %s %s %d " fmt, __FILE__, __func__, __LINE__,          \
+	       ##__VA_ARGS__)
 
 int init_c2ps_common(void);
 void exit_c2ps_common(void);
@@ -188,15 +190,14 @@ bool need_update_background(void);
 void reset_need_update_status(void);
 void set_heavyloading_special_setting(void);
 void reset_heavyloading_special_setting(void);
-unsigned long c2ps_get_uclamp_freq(int cpu,  unsigned int uclamp);
+unsigned long c2ps_get_uclamp_freq(int cpu, unsigned int uclamp);
 bool c2ps_get_cur_cpu_floor(const int cpu, int *floor_uclamp, int *floor_freq);
 int c2ps_get_cpu_min_uclamp(const int cpu);
 int c2ps_get_cpu_max_uclamp(const int cpu);
 bool c2ps_boost_cur_uclamp_max(const int cluster, struct global_info *g_info);
 int c2ps_get_first_cpu_of_cluster(int cluster);
-unsigned long c2ps_get_cluster_uclamp_freq(int cluster,  unsigned int uclamp);
+unsigned long c2ps_get_cluster_uclamp_freq(int cluster, unsigned int uclamp);
 bool need_update_single_shot_uclamp_max(int *uclamp_max);
-
 
 extern void set_curr_uclamp_ctrl(int val);
 extern void set_gear_uclamp_ctrl(int val);
@@ -221,4 +222,4 @@ extern void set_grp_dvfs_ctrl(int set);
 extern bool get_ignore_idle_ctrl(void);
 extern void set_ignore_idle_ctrl(bool val);
 
-#endif  // C2PS_COMMON_INCLUDE_C2PS_COMMON_H_
+#endif // C2PS_COMMON_INCLUDE_C2PS_COMMON_H_

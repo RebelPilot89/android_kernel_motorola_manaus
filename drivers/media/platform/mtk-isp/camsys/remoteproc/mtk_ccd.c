@@ -16,10 +16,10 @@
 #include "remoteproc_internal.h"
 #include "iommu_debug.h"
 
-#define CCD_DEV_NAME	"mtk_ccd"
+#define CCD_DEV_NAME "mtk_ccd"
 #define MAX_CODE_SIZE 0x500000
 
-char ccd_firmware[100] = {0};
+char ccd_firmware[100] = { 0 };
 
 //DECLARE_BUILTIN_FIRMWARE("remoteproc_scp", ccd_firmware);
 
@@ -102,9 +102,9 @@ static int ccd_stop(struct rproc *rproc)
 }
 
 static const struct rproc_ops ccd_ops = {
-	.start		= ccd_start,
-	.stop		= ccd_stop,
-	.load		= ccd_load,
+	.start = ccd_start,
+	.stop = ccd_stop,
+	.load = ccd_load,
 };
 
 void *ccd_mapping_dm_addr(struct platform_device *pdev, u32 mem_addr)
@@ -125,9 +125,8 @@ static struct mtk_ccd_rpmsg_ops ccd_rpmsg_ops = {
 
 static void ccd_add_rpmsg_subdev(struct mtk_ccd *ccd)
 {
-	ccd->rpmsg_subdev =
-		mtk_rpmsg_create_rproc_subdev(to_platform_device(ccd->dev),
-					      &ccd_rpmsg_ops);
+	ccd->rpmsg_subdev = mtk_rpmsg_create_rproc_subdev(
+		to_platform_device(ccd->dev), &ccd_rpmsg_ops);
 	if (ccd->rpmsg_subdev)
 		rproc_add_subdev(ccd->rproc, ccd->rpmsg_subdev);
 }
@@ -152,12 +151,11 @@ static void ccd_remove_rpmsg_subdev(struct mtk_ccd *ccd)
 	}
 }
 
-static ssize_t ccd_debug_read(struct file *filp,
-			      char __user *user_buf,
+static ssize_t ccd_debug_read(struct file *filp, char __user *user_buf,
 			      size_t count, loff_t *ppos)
 {
 	char buf[256];
-	u32  len = 0;
+	u32 len = 0;
 
 	len = snprintf(buf, sizeof(buf), "ccu_debug_read\n");
 	if (len >= sizeof(buf))
@@ -166,8 +164,7 @@ static ssize_t ccd_debug_read(struct file *filp,
 	return simple_read_from_buffer(user_buf, count, ppos, buf, len);
 }
 
-static ssize_t ccd_debug_write(struct file *filp,
-			       const char __user *buffer,
+static ssize_t ccd_debug_write(struct file *filp, const char __user *buffer,
 			       size_t count, loff_t *data)
 {
 	char desc[64];
@@ -180,21 +177,18 @@ static ssize_t ccd_debug_write(struct file *filp,
 	return count;
 }
 
-static int ccd_open(struct inode *inode,
-		    struct file *filp)
+static int ccd_open(struct inode *inode, struct file *filp)
 {
 	int ret = 0;
 
-	struct mtk_ccd *ccd = container_of(inode->i_cdev,
-					   struct mtk_ccd,
-					   ccd_cdev);
+	struct mtk_ccd *ccd =
+		container_of(inode->i_cdev, struct mtk_ccd, ccd_cdev);
 	filp->private_data = ccd;
 	dev_dbg(ccd->dev, "%s: %p\n", __func__, ccd);
 	return ret;
 }
 
-static int ccd_release(struct inode *inode,
-		       struct file *filp)
+static int ccd_release(struct inode *inode, struct file *filp)
 {
 	int ret = 0;
 	struct ccd_master_status_item master_obj;
@@ -231,7 +225,8 @@ static long ccd_unlocked_ioctl(struct file *filp, unsigned int cmd,
 		break;
 	case IOCTL_CCD_MASTER_DESTROY:
 		dev_dbg(ccd->dev, "enter IOCTL_CCD_MASTER_DESTROY\n");
-		if (copy_from_user(&master_obj, user_addr, sizeof(master_obj))) {
+		if (copy_from_user(&master_obj, user_addr,
+				   sizeof(master_obj))) {
 			ret = -EFAULT;
 			break;
 		}
@@ -247,7 +242,7 @@ static long ccd_unlocked_ioctl(struct file *filp, unsigned int cmd,
 		break;
 	case IOCTL_CCD_WORKER_READ:
 		if (copy_from_user(&work_obj, user_addr,
-				sizeof(struct ccd_worker_item))) {
+				   sizeof(struct ccd_worker_item))) {
 			ret = -EFAULT;
 			break;
 		}
@@ -278,8 +273,7 @@ static long ccd_unlocked_ioctl(struct file *filp, unsigned int cmd,
 }
 
 #ifdef CONFIG_COMPAT
-static long ccd_ioctl_compat(struct file *filp,
-			     unsigned int cmd,
+static long ccd_ioctl_compat(struct file *filp, unsigned int cmd,
 			     unsigned long arg)
 {
 	long ret = 0;
@@ -287,8 +281,7 @@ static long ccd_ioctl_compat(struct file *filp,
 	if (!filp->f_op || !filp->f_op->unlocked_ioctl)
 		return -ENOTTY;
 
-	ret = filp->f_op->unlocked_ioctl(filp,
-					 cmd,
+	ret = filp->f_op->unlocked_ioctl(filp, cmd,
 					 (unsigned long)compat_ptr(arg));
 
 	return ret;
@@ -336,14 +329,12 @@ static int ccd_regcdev(struct mtk_ccd *ccd)
 		goto err_class_create;
 	}
 
-	dev = device_create(ccd->ccd_class, NULL,
-			    ccd->ccd_devno, NULL,
+	dev = device_create(ccd->ccd_class, NULL, ccd->ccd_devno, NULL,
 			    CCD_DEV_NAME);
 	if (IS_ERR(dev)) {
 		ret = PTR_ERR(dev);
 		pr_debug("Failed to create device: /dev/%s, err = %d\n",
-		       CCD_DEV_NAME,
-		       ret);
+			 CCD_DEV_NAME, ret);
 		goto err_device_create;
 	}
 
@@ -387,11 +378,7 @@ static int ccd_probe(struct platform_device *pdev)
 	int ret;
 	u32 i;
 
-	rproc = rproc_alloc(dev,
-			    np->name,
-			    &ccd_ops,
-			    fw_name,
-			    sizeof(*ccd));
+	rproc = rproc_alloc(dev, np->name, &ccd_ops, fw_name, sizeof(*ccd));
 	if (!rproc) {
 		dev_info(dev, "unable to allocate remoteproc\n");
 		return -ENOMEM;
@@ -410,14 +397,13 @@ static int ccd_probe(struct platform_device *pdev)
 		}
 	}
 
-	alloc_dev = ccd->smmu_dev ? : dev;
+	alloc_dev = ccd->smmu_dev ?: dev;
 	if (dma_set_mask_and_coherent(alloc_dev, DMA_BIT_MASK(34)))
 		dev_info(dev, "No suitable DMA available\n");
 
 	if (!alloc_dev->dma_parms) {
-		alloc_dev->dma_parms =
-			devm_kzalloc(alloc_dev,
-				sizeof(*alloc_dev->dma_parms), GFP_KERNEL);
+		alloc_dev->dma_parms = devm_kzalloc(
+			alloc_dev, sizeof(*alloc_dev->dma_parms), GFP_KERNEL);
 		if (!alloc_dev->dma_parms)
 			return -ENOMEM;
 	}
@@ -441,15 +427,11 @@ static int ccd_probe(struct platform_device *pdev)
 		ccd->map_base[i].base = res->start;
 		ccd->map_base[i].len = resource_size(res);
 		dev_info(dev, "Reg baseaddr [%d]: 0x%lx 0x%lx", i,
-			 ccd->map_base[i].base,
-			 ccd->map_base[i].len);
+			 ccd->map_base[i].base, ccd->map_base[i].len);
 	}
 
 	/* register SCP initialization IPI */
-	ret = ccd_ipi_register(pdev,
-			       CCD_IPI_INIT,
-			       ccd_init_ipi_handler,
-			       ccd);
+	ret = ccd_ipi_register(pdev, CCD_IPI_INIT, ccd_init_ipi_handler, ccd);
 	if (ret) {
 		dev_info(dev, "Failed to register IPI_SCP_INIT\n");
 		goto free_rproc;
@@ -487,7 +469,7 @@ static int ccd_remove(struct platform_device *pdev)
 }
 
 static const struct of_device_id mtk_ccd_of_match[] = {
-	{ .compatible = "mediatek,ccd"},
+	{ .compatible = "mediatek,ccd" },
 	{},
 };
 MODULE_DEVICE_TABLE(of, mtk_ccd_of_match);

@@ -60,7 +60,7 @@ struct c2ps_task_info *c2ps_find_task_info_by_tskid(int task_id)
 	}
 	C2PS_LOGD("task_id: %d\n", task_id);
 	C2PS_LOGD("find +\n");
-	hash_for_each_possible(task_info_tbl, tsk_info, hlist, task_id) {
+	hash_for_each_possible (task_info_tbl, tsk_info, hlist, task_id) {
 		if (tsk_info->task_id == task_id) {
 			C2PS_LOGD("task_id: %d\n", tsk_info->task_id);
 			goto out;
@@ -101,8 +101,7 @@ void c2ps_clear_task_info_table(void)
 		goto out;
 	}
 
-	hash_for_each_safe(
-		task_info_tbl, bkt, tmp, tsk_info, hlist) {
+	hash_for_each_safe (task_info_tbl, bkt, tmp, tsk_info, hlist) {
 		hash_del(&tsk_info->hlist);
 		kfree(tsk_info);
 		tsk_info = NULL;
@@ -117,8 +116,8 @@ int c2ps_create_task_group(int group_head, u64 task_group_target_time)
 {
 	struct task_group_info *tsk_grp_info = NULL;
 
-	C2PS_LOGD("group_head: %d, task_group_target_time: %lld",
-			group_head, task_group_target_time);
+	C2PS_LOGD("group_head: %d, task_group_target_time: %lld", group_head,
+		  task_group_target_time);
 
 	tsk_grp_info = kzalloc(sizeof(*tsk_grp_info), GFP_KERNEL);
 
@@ -128,12 +127,13 @@ int c2ps_create_task_group(int group_head, u64 task_group_target_time)
 	}
 
 	tsk_grp_info->group_head = group_head;
-	tsk_grp_info->group_target_time = task_group_target_time * NSEC_PER_MSEC;
+	tsk_grp_info->group_target_time =
+		task_group_target_time * NSEC_PER_MSEC;
 	mutex_init(&tsk_grp_info->mlock);
 
 	c2ps_task_group_info_tbl_lock(__func__);
-	hash_add(
-		task_group_info_tbl, &tsk_grp_info->hlist, tsk_grp_info->group_head);
+	hash_add(task_group_info_tbl, &tsk_grp_info->hlist,
+		 tsk_grp_info->group_head);
 	c2ps_task_group_info_tbl_unlock(__func__);
 	C2PS_LOGD("- \n");
 	return 0;
@@ -152,7 +152,8 @@ struct task_group_info *c2ps_find_task_group_info_by_grphd(int group_head)
 	}
 	C2PS_LOGD("group_head: %d\n", group_head);
 	C2PS_LOGD("find +\n");
-	hash_for_each_possible(task_group_info_tbl, tsk_grp_info, hlist, group_head) {
+	hash_for_each_possible (task_group_info_tbl, tsk_grp_info, hlist,
+				group_head) {
 		if (tsk_grp_info->group_head == group_head) {
 			C2PS_LOGD("group_head: %d\n", tsk_grp_info->group_head);
 			goto out;
@@ -199,8 +200,8 @@ void c2ps_clear_task_group_info_table(void)
 		goto out;
 	}
 
-	hash_for_each_safe(
-		task_group_info_tbl, bkt, tmp, tsk_grp_info, hlist) {
+	hash_for_each_safe (task_group_info_tbl, bkt, tmp, tsk_grp_info,
+			    hlist) {
 		hash_del(&tsk_grp_info->hlist);
 		kfree(tsk_grp_info);
 		tsk_grp_info = NULL;
@@ -318,9 +319,9 @@ void c2ps_update_task_info_hist(struct c2ps_task_info *tsk_info)
 	c2ps_info_lock(&tsk_info->mlock);
 
 	if (tsk_info->hist_proc_time_sum >=
-		tsk_info->hist_proc_time[tsk_info->nr_hist_info]) {
+	    tsk_info->hist_proc_time[tsk_info->nr_hist_info]) {
 		tsk_info->hist_proc_time_sum -=
-	                          tsk_info->hist_proc_time[tsk_info->nr_hist_info];
+			tsk_info->hist_proc_time[tsk_info->nr_hist_info];
 	} else {
 		tsk_info->hist_proc_time_sum = 0;
 	}
@@ -330,7 +331,7 @@ void c2ps_update_task_info_hist(struct c2ps_task_info *tsk_info)
 		tsk_info->hist_proc_time[tsk_info->nr_hist_info];
 	tsk_info->hist_loading[tsk_info->nr_hist_info] = tsk_info->loading;
 	++tsk_info->nr_hist_info;
-	tsk_info->nr_hist_info %= (min(proc_time_window_size , MAX_WINDOW_SIZE));
+	tsk_info->nr_hist_info %= (min(proc_time_window_size, MAX_WINDOW_SIZE));
 	c2ps_info_unlock(&tsk_info->mlock);
 	C2PS_LOGD("- \n");
 }
@@ -360,35 +361,38 @@ inline void decide_special_uclamp_max(int placeholder_type)
 
 	c2ps_info_lock(&glb_info->mlock);
 	switch (placeholder_type) {
-		// For backward compatibility, set special uclamp max to
-		// placeholder1 setting for case 0
-		case 0:
-		case 1:
-			memcpy(glb_info->special_uclamp_max, glb_info->uclamp_max_placeholder1,
-				c2ps_nr_clusters * sizeof(int));
-			break;
-		case 2:
-			memcpy(glb_info->special_uclamp_max, glb_info->uclamp_max_placeholder2,
-				c2ps_nr_clusters * sizeof(int));
-			break;
-		case 3:
-			memcpy(glb_info->special_uclamp_max, glb_info->uclamp_max_placeholder3,
-				c2ps_nr_clusters * sizeof(int));
-			break;
-		default:
-			memcpy(glb_info->special_uclamp_max, glb_info->uclamp_max_placeholder1,
-				c2ps_nr_clusters * sizeof(int));
-			break;
-
+	// For backward compatibility, set special uclamp max to
+	// placeholder1 setting for case 0
+	case 0:
+	case 1:
+		memcpy(glb_info->special_uclamp_max,
+		       glb_info->uclamp_max_placeholder1,
+		       c2ps_nr_clusters * sizeof(int));
+		break;
+	case 2:
+		memcpy(glb_info->special_uclamp_max,
+		       glb_info->uclamp_max_placeholder2,
+		       c2ps_nr_clusters * sizeof(int));
+		break;
+	case 3:
+		memcpy(glb_info->special_uclamp_max,
+		       glb_info->uclamp_max_placeholder3,
+		       c2ps_nr_clusters * sizeof(int));
+		break;
+	default:
+		memcpy(glb_info->special_uclamp_max,
+		       glb_info->uclamp_max_placeholder1,
+		       c2ps_nr_clusters * sizeof(int));
+		break;
 	}
 	memcpy(glb_info->uclamp_max_floor, glb_info->special_uclamp_max,
-				c2ps_nr_clusters * sizeof(int));
+	       c2ps_nr_clusters * sizeof(int));
 	c2ps_info_unlock(&glb_info->mlock);
-	C2PS_LOGD(
-		"special_cluster_0_util=%d special_cluster_1_util=%d "
-		"special_cluster_2_util=%d\n",
-		glb_info->special_uclamp_max[0], glb_info->special_uclamp_max[1],
-		glb_info->special_uclamp_max[2]);
+	C2PS_LOGD("special_cluster_0_util=%d special_cluster_1_util=%d "
+		  "special_cluster_2_util=%d\n",
+		  glb_info->special_uclamp_max[0],
+		  glb_info->special_uclamp_max[1],
+		  glb_info->special_uclamp_max[2]);
 }
 
 inline void set_glb_info_bg_uclamp_max(void)
@@ -402,7 +406,8 @@ inline void set_glb_info_bg_uclamp_max(void)
 		short _idx = 0;
 		for (; _idx < c2ps_nr_clusters; _idx++) {
 			glb_info->max_uclamp[_idx] = get_gear_uclamp_max(_idx);
-			glb_info->curr_max_uclamp[_idx] = glb_info->max_uclamp[_idx];
+			glb_info->curr_max_uclamp[_idx] =
+				glb_info->max_uclamp[_idx];
 		}
 	}
 	c2ps_info_unlock(&glb_info->mlock);
@@ -574,10 +579,9 @@ void c2ps_critical_task_systrace(struct c2ps_task_info *tsk_info)
 	}
 	rcu_read_unlock();
 
-	len = snprintf(buf, sizeof(buf),
-		"task_name=%s_%d util=%d freq=%ld\n",
-		tsk_info->task_name,  tsk_info->task_id,
-		curr_util, curr_freq);
+	len = snprintf(buf, sizeof(buf), "task_name=%s_%d util=%d freq=%ld\n",
+		       tsk_info->task_name, tsk_info->task_id, curr_util,
+		       curr_freq);
 
 	if (unlikely(len < 0))
 		return;
@@ -629,8 +633,10 @@ bool c2ps_get_cur_cpu_floor(const int cpu, int *floor_uclamp, int *floor_freq)
 		*floor_freq = _policy->min;
 		cpufreq_cpu_put(_policy);
 		C2PS_LOGD("cpu%d floor freq: %d", cpu, *floor_freq);
-		*floor_uclamp = (pd_get_freq_util(cpu, *floor_freq) << SCHED_CAPACITY_SHIFT) /
-						get_adaptive_margin(cpu) - MIN_UCLAMP_MARGIN;
+		*floor_uclamp = (pd_get_freq_util(cpu, *floor_freq)
+				 << SCHED_CAPACITY_SHIFT) /
+					get_adaptive_margin(cpu) -
+				MIN_UCLAMP_MARGIN;
 		return true;
 	}
 
@@ -640,13 +646,13 @@ bool c2ps_get_cur_cpu_floor(const int cpu, int *floor_uclamp, int *floor_freq)
 inline int c2ps_get_cpu_min_uclamp(const int cpu)
 {
 	return (pd_get_freq_util(cpu, 0) << SCHED_CAPACITY_SHIFT) /
-					get_adaptive_margin(cpu);
+	       get_adaptive_margin(cpu);
 }
 
 inline int c2ps_get_cpu_max_uclamp(const int cpu)
 {
 	return (pd_get_freq_util(cpu, ULONG_MAX) << SCHED_CAPACITY_SHIFT) /
-					get_adaptive_margin(cpu);
+	       get_adaptive_margin(cpu);
 }
 
 bool c2ps_boost_cur_uclamp_max(const int cluster, struct global_info *g_info)
@@ -663,23 +669,27 @@ bool c2ps_boost_cur_uclamp_max(const int cluster, struct global_info *g_info)
 	if (unlikely(cpu_index == -1))
 		return false;
 
-	if (!c2ps_get_cur_cpu_floor(cpu_index, &cur_floor_uclamp, &cur_cpu_floor_freq))
+	if (!c2ps_get_cur_cpu_floor(cpu_index, &cur_floor_uclamp,
+				    &cur_cpu_floor_freq))
 		return false;
 
 	cur_uclamp_max_freq = c2ps_get_uclamp_freq(cpu_index, *cur_uclamp_max);
 	if (cur_uclamp_max_freq < cur_cpu_floor_freq &&
-		*cur_uclamp_max < cur_floor_uclamp) {
+	    *cur_uclamp_max < cur_floor_uclamp) {
 		*cur_uclamp_max = cur_floor_uclamp;
-		*cur_uclamp_max = min(*cur_uclamp_max, c2ps_get_cpu_max_uclamp(cpu_index));
-		C2PS_LOGD("boost cpu%d uclamp max to: %d", cpu_index, *cur_uclamp_max);
-		c2ps_main_systrace("boost cpu%d uclamp max to: %d",
-							cpu_index, *cur_uclamp_max);
+		*cur_uclamp_max = min(*cur_uclamp_max,
+				      c2ps_get_cpu_max_uclamp(cpu_index));
+		C2PS_LOGD("boost cpu%d uclamp max to: %d", cpu_index,
+			  *cur_uclamp_max);
+		c2ps_main_systrace("boost cpu%d uclamp max to: %d", cpu_index,
+				   *cur_uclamp_max);
 		return true;
 	}
 	return false;
 }
 
-inline unsigned long c2ps_get_cluster_uclamp_freq(int cluster,  unsigned int uclamp)
+inline unsigned long c2ps_get_cluster_uclamp_freq(int cluster,
+						  unsigned int uclamp)
 {
 	int cpu = c2ps_get_first_cpu_of_cluster(cluster);
 
@@ -704,12 +714,26 @@ int c2ps_get_first_cpu_of_cluster(int cluster)
 	return cpu;
 }
 
+static int c2ps_get_cluster_idx_by_cpu(int cpu)
+{
+	unsigned int gear;
+
+	for (gear = 0; gear < get_nr_gears(); gear++) {
+		struct cpumask *gear_cpus = get_gear_cpumask(gear);
+
+		if (gear_cpus && cpumask_test_cpu(cpu, gear_cpus))
+			return gear;
+	}
+
+	return 0;
+}
+
 void update_cpu_idle_rate(void)
 {
 	u64 idle_time, wall_time;
 	unsigned int _cpu_index = 0, _cluster_index = 0;
-	unsigned int _num_of_cpu[MAX_NUMBER_OF_CLUSTERS] = {0};
-	unsigned int _sum_of_idlerate[MAX_NUMBER_OF_CLUSTERS] = {0};
+	unsigned int _num_of_cpu[MAX_NUMBER_OF_CLUSTERS] = { 0 };
+	unsigned int _sum_of_idlerate[MAX_NUMBER_OF_CLUSTERS] = { 0 };
 	unsigned int _total_num_of_cpu = 0;
 	unsigned int _total_idlerate = 0;
 	bool _dangerous_idle_rate_state = false;
@@ -734,15 +758,16 @@ void update_cpu_idle_rate(void)
 		idle_time = get_cpu_idle_time(_cpu_index, &wall_time, 1);
 
 		idle_rate->idle = (100 * (idle_time - idle_rate->idle_time)) /
-					(wall_time - idle_rate->wall_time);
+				  (wall_time - idle_rate->wall_time);
 
 		idle_rate->idle_time = idle_time;
 		idle_rate->wall_time = wall_time;
-		C2PS_LOGD("check idle rate: %u for cpu: %d", idle_rate->idle, _cpu_index);
+		C2PS_LOGD("check idle rate: %u for cpu: %d", idle_rate->idle,
+			  _cpu_index);
 		c2ps_main_systrace("check idle rate: %u for cpu: %d",
-									idle_rate->idle, _cpu_index);
+				   idle_rate->idle, _cpu_index);
 
-		_cluster_idx = topology_cluster_id(_cpu_index);
+		_cluster_idx = c2ps_get_cluster_idx_by_cpu(_cpu_index);
 
 		_num_of_cpu[_cluster_idx]++;
 		_sum_of_idlerate[_cluster_idx] += idle_rate->idle;
@@ -750,14 +775,16 @@ void update_cpu_idle_rate(void)
 		_total_idlerate += idle_rate->idle;
 	}
 
-	if (_total_idlerate < background_idlerate_dangerous * _total_num_of_cpu &&
-		glb_info->last_sum_idle_rate <
-						background_idlerate_dangerous * _total_num_of_cpu) {
+	if (_total_idlerate <
+		    background_idlerate_dangerous * _total_num_of_cpu &&
+	    glb_info->last_sum_idle_rate <
+		    background_idlerate_dangerous * _total_num_of_cpu) {
 		_dangerous_idle_rate_state = true;
-		c2ps_main_systrace("current idle rate:%d touches dangerous idle rate",
-							_total_idlerate/_total_num_of_cpu);
+		c2ps_main_systrace(
+			"current idle rate:%d touches dangerous idle rate",
+			_total_idlerate / _total_num_of_cpu);
 		C2PS_LOGD("current idle rate:%d touches dangerous idle rate",
-							_total_idlerate/_total_num_of_cpu);
+			  _total_idlerate / _total_num_of_cpu);
 	}
 	glb_info->last_sum_idle_rate = _total_idlerate;
 
@@ -769,19 +796,22 @@ void update_cpu_idle_rate(void)
 			glb_info->need_update_uclamp[0] = 1;
 			glb_info->need_update_uclamp[1 + _cluster_index] = 2;
 		} else if (_sum_of_idlerate[_cluster_index] <
-			_alert * _num_of_cpu[_cluster_index]) {
+			   _alert * _num_of_cpu[_cluster_index]) {
 			glb_info->need_update_uclamp[0] = 1;
 			glb_info->need_update_uclamp[1 + _cluster_index] = 1;
-			c2ps_main_systrace("cluster: %u touches alert idle rate",
-									_cluster_index);
+			c2ps_main_systrace(
+				"cluster: %u touches alert idle rate",
+				_cluster_index);
 		} else if (glb_info->curr_max_uclamp[_cluster_index] >
-					glb_info->max_uclamp[_cluster_index]) {
+			   glb_info->max_uclamp[_cluster_index]) {
 			glb_info->need_update_uclamp[0] = 1;
 			if (_sum_of_idlerate[_cluster_index] >
-					_alert * _num_of_cpu[_cluster_index] * 2)
-				glb_info->need_update_uclamp[1 + _cluster_index] = -2;
+			    _alert * _num_of_cpu[_cluster_index] * 2)
+				glb_info->need_update_uclamp[1 + _cluster_index] =
+					-2;
 			else
-				glb_info->need_update_uclamp[1 + _cluster_index] = -1;
+				glb_info->need_update_uclamp[1 + _cluster_index] =
+					-1;
 		}
 	}
 
@@ -809,13 +839,14 @@ inline bool need_update_background(void)
 				short _idx = 0;
 				for (; _idx < c2ps_nr_clusters; _idx++) {
 					glb_info->recovery_uclamp_max[_idx] =
-								glb_info->curr_max_uclamp[_idx];
+						glb_info->curr_max_uclamp[_idx];
 				}
 
 				glb_info->use_uclamp_max_floor = true;
 				if (background_idlerate_alert >= 100) {
-					glb_info->backup_idle_alert =
-							max(glb_info->backup_idle_alert / 2, 15);
+					glb_info->backup_idle_alert = max(
+						glb_info->backup_idle_alert / 2,
+						15);
 				}
 			}
 			c2ps_info_unlock(&glb_info->mlock);
@@ -836,16 +867,17 @@ inline void reset_need_update_status(void)
 		return;
 
 	if (is_release_uclamp_max &&
-		(background_idlerate_alert < 100 && !c2ps_placeholder)) {
-		int _recovery[MAX_NUMBER_OF_CLUSTERS] = {0};
+	    (background_idlerate_alert < 100 && !c2ps_placeholder)) {
+		int _recovery[MAX_NUMBER_OF_CLUSTERS] = { 0 };
 		short _cluster_idx = 0;
 
 		for (; _cluster_idx < c2ps_nr_clusters; _cluster_idx++) {
 			_recovery[_cluster_idx] =
 				max(glb_info->recovery_uclamp_max[_cluster_idx],
-					glb_info->max_uclamp[_cluster_idx]);
+				    glb_info->max_uclamp[_cluster_idx]);
 			if (recovery_uclamp_max_immediately)
-				set_gear_uclamp_max(_cluster_idx, _recovery[_cluster_idx]);
+				set_gear_uclamp_max(_cluster_idx,
+						    _recovery[_cluster_idx]);
 		};
 
 		c2ps_info_lock(&glb_info->mlock);
@@ -853,7 +885,8 @@ inline void reset_need_update_status(void)
 		if (recovery_uclamp_max_immediately) {
 			short _idx = 0;
 			for (; _idx < c2ps_nr_clusters; _idx++) {
-				glb_info->curr_max_uclamp[_idx] = _recovery[_idx];
+				glb_info->curr_max_uclamp[_idx] =
+					_recovery[_idx];
 				glb_info->recovery_uclamp_max[_idx] = 0;
 			}
 		}
@@ -869,7 +902,8 @@ inline void reset_need_update_status(void)
 void set_heavyloading_special_setting(void)
 {
 	if (likely(pre_eas_settings == NULL))
-		pre_eas_settings = kmalloc(sizeof(*pre_eas_settings), GFP_KERNEL);
+		pre_eas_settings =
+			kmalloc(sizeof(*pre_eas_settings), GFP_KERNEL);
 	if (unlikely(!pre_eas_settings)) {
 		C2PS_LOGE("pre_eas_settings OOM\n");
 		return;
@@ -898,9 +932,8 @@ void reset_heavyloading_special_setting(void)
 	set_ignore_idle_ctrl(pre_eas_settings->ignore_idle_ctrl);
 }
 
-static ssize_t task_info_show(struct kobject *kobj,
-	struct kobj_attribute *attr,
-	char *buf)
+static ssize_t task_info_show(struct kobject *kobj, struct kobj_attribute *attr,
+			      char *buf)
 {
 	struct c2ps_task_info *tsk_info;
 	char *temp = NULL;
@@ -912,36 +945,38 @@ static ssize_t task_info_show(struct kobject *kobj,
 	if (!temp)
 		goto out;
 
-    length = scnprintf(temp + pos, C2PS_SYSFS_MAX_BUFF_SIZE - pos,
-	    "\nTASKID\tPID\tTASK_NAME\tINIT_UCLAMP\tTASK_TARGET_TIME\tVIP_TASK\t");
-    pos += length;
-    length = scnprintf(temp + pos, C2PS_SYSFS_MAX_BUFF_SIZE - pos,
-	    "START_TIME\tEND_TIME\tPROC_TIME\tEXEC_TIME\tLATEST_UCLAMP\n");
-    pos += length;
+	length = scnprintf(
+		temp + pos, C2PS_SYSFS_MAX_BUFF_SIZE - pos,
+		"\nTASKID\tPID\tTASK_NAME\tINIT_UCLAMP\tTASK_TARGET_TIME\tVIP_TASK\t");
+	pos += length;
+	length = scnprintf(
+		temp + pos, C2PS_SYSFS_MAX_BUFF_SIZE - pos,
+		"START_TIME\tEND_TIME\tPROC_TIME\tEXEC_TIME\tLATEST_UCLAMP\n");
+	pos += length;
 
-    c2ps_task_info_tbl_lock(__func__);
+	c2ps_task_info_tbl_lock(__func__);
 
-    hash_for_each(task_info_tbl, bkt, tsk_info, hlist) {
-		length = scnprintf(temp + pos,
-			C2PS_SYSFS_MAX_BUFF_SIZE - pos,
-			"%-2d\t%-5d\t%*s\t%-4u\t\t%-8llu\t\t%d\t\t",
-			tsk_info->task_id, tsk_info->pid,
-			-MAX_TASK_NAME_SIZE, tsk_info->task_name,
-			tsk_info->default_uclamp, tsk_info->task_target_time,
-			tsk_info->is_vip_task);
+	hash_for_each (task_info_tbl, bkt, tsk_info, hlist) {
+		length = scnprintf(temp + pos, C2PS_SYSFS_MAX_BUFF_SIZE - pos,
+				   "%-2d\t%-5d\t%*s\t%-4u\t\t%-8llu\t\t%d\t\t",
+				   tsk_info->task_id, tsk_info->pid,
+				   -MAX_TASK_NAME_SIZE, tsk_info->task_name,
+				   tsk_info->default_uclamp,
+				   tsk_info->task_target_time,
+				   tsk_info->is_vip_task);
 		pos += length;
-		length = scnprintf(temp + pos,
-			C2PS_SYSFS_MAX_BUFF_SIZE - pos,
-			"%-12llu\t%-12llu\t%-10llu\t%-10llu\t%-4d\n",
-			tsk_info->start_time, tsk_info->end_time,
-			tsk_info->proc_time, tsk_info->real_exec_runtime,
-			tsk_info->latest_uclamp);
+		length = scnprintf(temp + pos, C2PS_SYSFS_MAX_BUFF_SIZE - pos,
+				   "%-12llu\t%-12llu\t%-10llu\t%-10llu\t%-4d\n",
+				   tsk_info->start_time, tsk_info->end_time,
+				   tsk_info->proc_time,
+				   tsk_info->real_exec_runtime,
+				   tsk_info->latest_uclamp);
 		pos += length;
-    }
+	}
 
-    c2ps_task_info_tbl_unlock(__func__);
+	c2ps_task_info_tbl_unlock(__func__);
 
-    length = scnprintf(buf, PAGE_SIZE, "%s", temp);
+	length = scnprintf(buf, PAGE_SIZE, "%s", temp);
 
 out:
 	kfree(temp);
@@ -951,8 +986,8 @@ out:
 static KOBJ_ATTR_RO(task_info);
 
 static ssize_t gear_uclamp_max_store(struct kobject *kobj,
-	struct kobj_attribute *attr,
-	const char *buf, size_t count)
+				     struct kobj_attribute *attr,
+				     const char *buf, size_t count)
 {
 	int gearid = -1;
 	int val = -1;
@@ -969,8 +1004,7 @@ static ssize_t gear_uclamp_max_store(struct kobject *kobj,
 		}
 	}
 
-	if (gearid < 0 || gearid >= get_nr_gears() ||
-		val < 0)
+	if (gearid < 0 || gearid >= get_nr_gears() || val < 0)
 		goto out;
 
 	set_gear_uclamp_max(gearid, val);
@@ -981,15 +1015,15 @@ out:
 }
 
 static ssize_t gear_uclamp_max_show(struct kobject *kobj,
-	struct kobj_attribute *attr,
-	char *buf)
+				    struct kobj_attribute *attr, char *buf)
 {
+	int i;
 	int length = 0;
 
-	for (int i = 0; i < get_nr_gears(); ++i) {
+	for (i = 0; i < get_nr_gears(); ++i) {
 		length += scnprintf(buf + length, PAGE_SIZE - length,
-				"gear: %d, uclamp_max: %d \n",
-				i, get_gear_uclamp_max(i));
+				    "gear: %d, uclamp_max: %d \n", i,
+				    get_gear_uclamp_max(i));
 	}
 
 	return length;
