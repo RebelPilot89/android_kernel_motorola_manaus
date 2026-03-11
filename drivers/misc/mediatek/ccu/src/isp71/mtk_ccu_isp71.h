@@ -3,8 +3,8 @@
  * Copyright (c) 2021 MediaTek Inc.
  */
 
-#ifndef __RPOC_MTK_CCU_IPS7_H
-#define __RPOC_MTK_CCU_IPS7_H
+#ifndef __RPROC_MTK_CCU_ISP71_H
+#define __RPROC_MTK_CCU_ISP71_H
 
 #include <linux/kernel.h>
 #include <linux/remoteproc.h>
@@ -90,4 +90,4 @@
 
 uint32_t read_ccu_info_regd(struct mtk_ccu *ccu, uint32_t addr);
 
-#endif //__RPOC_MTK_CCU_IPS7_H
+#endif /* __RPROC_MTK_CCU_ISP71_H */
