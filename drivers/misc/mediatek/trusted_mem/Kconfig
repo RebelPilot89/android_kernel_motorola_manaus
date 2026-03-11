@@ -29,6 +29,18 @@ config MTK_SECURE_MEM_SUPPORT
 	  Say Y if you would like to enable this feature.
 	  If unsure, say N.
 
+config MTK_SEC_VIDEO_PATH_SUPPORT
+	bool "MediaTek Secure Video Path (SVP) Support"
+	depends on MTK_SECURE_MEM_SUPPORT
+	default y
+	help
+	  Enable support for Secure Video Path. This protects video buffers
+	  within the SSMR (Secure Smart Memory Region) for DRM and
+	  Trusted UI content. Relies on MTK_SECURE_MEM_SUPPORT to ensure
+	  the secure memory engine is active before enabling the video path.
+	  Say Y if you would like to enable this feature.
+	  If unsure, say N.
+
 config MTK_WFD_SMEM_SUPPORT
 	bool "MTK WFD SECURE Memory Support"
 	default y

@@ -20,11 +20,10 @@ static int max_ra_pages = -1;
 module_param(max_ra_pages, int, S_IRUGO | S_IWUSR);
 MODULE_PARM_DESC(max_ra_pages, "Max read ahead pages");
 
-#if LINUX_VERSION_CODE > KERNEL_VERSION(5, 15, 104) || (LINUX_VERSION_CODE > KERNEL_VERSION(5, 10, 177) && LINUX_VERSION_CODE < KERNEL_VERSION(5, 15, 0))
-#ifndef TUNE_MMAP_READAROUND
-#define TUNE_MMAP_READAROUND
-#endif
-#endif
+/*
+ * Keep using legacy filemap fault vendor hooks on this tree.
+ * The newer android_vh_tune_mmap_readaround hook is not declared here.
+ */
 
 #if defined(TUNE_MMAP_READAROUND)
 static void __nocfi tune_mmap_readaround(void *p, unsigned int ra_pages, pgoff_t pgoff,
