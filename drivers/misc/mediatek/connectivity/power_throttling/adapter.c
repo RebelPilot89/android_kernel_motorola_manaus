@@ -14,6 +14,7 @@
 #include <linux/cdev.h>
 #include <linux/uaccess.h>
 #include <linux/kernel.h>
+#include <linux/slab.h>
 #include <linux/sched.h>
 #include <linux/sched/clock.h>
 #if IS_ENABLED(CONFIG_COMPAT)
@@ -238,7 +239,7 @@ static void delay_work_func(struct work_struct *work)
 
 	conn_pwr_set_battery_level(g_low_battery_level_cb);
 
-	kvfree(work);
+	kfree(work);
 }
 
 static void conn_pwr_delay_work(unsigned int val)
@@ -255,7 +256,7 @@ static void conn_pwr_delay_work(unsigned int val)
 	schedule_work(work);
 }
 
-static void conn_pwr_low_battery_cb(enum LOW_BATTERY_LEVEL_TAG level, void *data)
+static void conn_pwr_low_battery_cb(enum LOW_BATTERY_LEVEL_TAG level)
 {
 	conn_pwr_delay_work(level);
 }
@@ -600,7 +601,7 @@ int conn_pwr_init(struct conn_pwr_plat_info *data)
 	conn_pwr_core_init();
 
 #ifdef CONN_PWR_LOW_BATTERY_ENABLE
-	register_low_battery_notify(&conn_pwr_low_battery_cb, LOW_BATTERY_PRIO_WIFI, NULL);
+	register_low_battery_notify(&conn_pwr_low_battery_cb, LOW_BATTERY_PRIO_WIFI);
 #endif
 	conn_pwr_dev_init();
 

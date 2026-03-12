@@ -88,8 +88,9 @@ static int set_nc(void *addr, size_t size)
 	int ret = apply_to_existing_page_range(&init_mm, (unsigned long)addr,
 					       size, pte_set_nc, &count);
 
-	WARN_RATELIMIT(count == 0 && page_mapped(virt_to_page(addr)),
-		       "changing linear mapping but cacheable aliases may still exist\n");
+	WARN_RATELIMIT(
+		count == 0 && page_mapped(virt_to_page(addr)),
+		"changing linear mapping but cacheable aliases may still exist\n");
 	dsb(ishst);
 	isb();
 	__flush_dcache_area(addr, size);
@@ -102,7 +103,7 @@ static int clear_nc(void *addr, size_t size)
 					       size, pte_clear_nc, NULL);
 	dsb(ishst);
 	isb();
-	__inval_dcache_area(addr, size);
+	dcache_inval_poc((unsigned long)addr, (unsigned long)addr + size);
 	return ret;
 }
 
@@ -126,19 +127,21 @@ out_unmap:
 		swiotlb_tbl_unmap_single(dev, phys, size, PAGE_ALIGN(size), dir,
 					 attrs | DMA_ATTR_SKIP_CPU_SYNC);
 	return DMA_MAPPING_ERROR;
-
 }
 
-static void __arm64_noalias_unmap(struct device *dev, phys_addr_t phys, size_t size,
-				  enum dma_data_direction dir, unsigned long attrs)
+static void __arm64_noalias_unmap(struct device *dev, phys_addr_t phys,
+				  size_t size, enum dma_data_direction dir,
+				  unsigned long attrs)
 {
 	clear_nc(phys_to_virt(phys & PAGE_MASK), PAGE_ALIGN(size));
 	if (is_swiotlb_buffer(phys))
-		swiotlb_tbl_unmap_single(dev, phys, size, PAGE_ALIGN(size), dir, attrs);
+		swiotlb_tbl_unmap_single(dev, phys, size, PAGE_ALIGN(size), dir,
+					 attrs);
 }
 
-static void __arm64_noalias_sync_for_device(struct device *dev, phys_addr_t phys,
-					    size_t size, enum dma_data_direction dir)
+static void __arm64_noalias_sync_for_device(struct device *dev,
+					    phys_addr_t phys, size_t size,
+					    enum dma_data_direction dir)
 {
 	if (is_swiotlb_buffer(phys))
 		swiotlb_tbl_sync_single(dev, phys, size, dir, SYNC_FOR_DEVICE);
@@ -147,7 +150,8 @@ static void __arm64_noalias_sync_for_device(struct device *dev, phys_addr_t phys
 }
 
 static void __arm64_noalias_sync_for_cpu(struct device *dev, phys_addr_t phys,
-					 size_t size, enum dma_data_direction dir)
+					 size_t size,
+					 enum dma_data_direction dir)
 {
 	if (is_swiotlb_buffer(phys))
 		swiotlb_tbl_sync_single(dev, phys, size, dir, SYNC_FOR_CPU);
@@ -156,7 +160,8 @@ static void __arm64_noalias_sync_for_cpu(struct device *dev, phys_addr_t phys,
 }
 
 static void *arm64_noalias_alloc(struct device *dev, size_t size,
-				 dma_addr_t *dma_addr, gfp_t gfp, unsigned long attrs)
+				 dma_addr_t *dma_addr, gfp_t gfp,
+				 unsigned long attrs)
 {
 	struct page *page;
 	void *ret;
@@ -165,7 +170,8 @@ static void *arm64_noalias_alloc(struct device *dev, size_t size,
 		gfp |= __GFP_NOWARN;
 
 	size = PAGE_ALIGN(size);
-	page = dma_direct_alloc_pages(dev, size, dma_addr, 0, gfp & ~__GFP_ZERO);
+	page = dma_direct_alloc_pages(dev, size, dma_addr, 0,
+				      gfp & ~__GFP_ZERO);
 	if (!page)
 		return NULL;
 
@@ -187,7 +193,8 @@ static void arm64_noalias_free(struct device *dev, size_t size, void *cpu_addr,
 
 static dma_addr_t arm64_noalias_map_page(struct device *dev, struct page *page,
 					 unsigned long offset, size_t size,
-					 enum dma_data_direction dir, unsigned long attrs)
+					 enum dma_data_direction dir,
+					 unsigned long attrs)
 {
 	phys_addr_t phys = page_to_phys(page) + offset;
 	bool bounce = !dma_capable(dev, phys_to_dma(dev, phys), size, true);
@@ -211,31 +218,34 @@ static void arm64_noalias_unmap_page(struct device *dev, dma_addr_t dma_addr,
 {
 	if (dir == DMA_TO_DEVICE)
 		return;
-	__arm64_noalias_unmap(dev, dma_to_phys(dev, dma_addr), size, dir, attrs);
+	__arm64_noalias_unmap(dev, dma_to_phys(dev, dma_addr), size, dir,
+			      attrs);
 }
 
-static void arm64_noalias_unmap_sg(struct device *dev, struct scatterlist *sgl, int nents,
-				   enum dma_data_direction dir, unsigned long attrs)
+static void arm64_noalias_unmap_sg(struct device *dev, struct scatterlist *sgl,
+				   int nents, enum dma_data_direction dir,
+				   unsigned long attrs)
 {
 	struct scatterlist *sg;
 	int i;
 
 	if (dir == DMA_TO_DEVICE)
 		return;
-	for_each_sg(sgl, sg, nents, i)
+	for_each_sg (sgl, sg, nents, i)
 		__arm64_noalias_unmap(dev, dma_to_phys(dev, sg->dma_address),
 				      sg->length, dir, attrs);
 }
 
-static int arm64_noalias_map_sg(struct device *dev, struct scatterlist *sgl, int nents,
-				enum dma_data_direction dir, unsigned long attrs)
+static int arm64_noalias_map_sg(struct device *dev, struct scatterlist *sgl,
+				int nents, enum dma_data_direction dir,
+				unsigned long attrs)
 {
 	int i;
 	struct scatterlist *sg;
 
-	for_each_sg(sgl, sg, nents, i) {
-		sg->dma_address = arm64_noalias_map_page(dev, sg_page(sg), sg->offset,
-							 sg->length, dir, attrs);
+	for_each_sg (sgl, sg, nents, i) {
+		sg->dma_address = arm64_noalias_map_page(
+			dev, sg_page(sg), sg->offset, sg->length, dir, attrs);
 		if (sg->dma_address == DMA_MAPPING_ERROR)
 			goto out_unmap;
 		sg->dma_length = sg->length;
@@ -244,40 +254,47 @@ static int arm64_noalias_map_sg(struct device *dev, struct scatterlist *sgl, int
 	return nents;
 
 out_unmap:
-	arm64_noalias_unmap_sg(dev, sgl, i, dir, attrs | DMA_ATTR_SKIP_CPU_SYNC);
+	arm64_noalias_unmap_sg(dev, sgl, i, dir,
+			       attrs | DMA_ATTR_SKIP_CPU_SYNC);
 	return 0;
 }
 
-static void arm64_noalias_sync_single_for_device(struct device *dev, dma_addr_t addr,
-						 size_t size, enum dma_data_direction dir)
+static void arm64_noalias_sync_single_for_device(struct device *dev,
+						 dma_addr_t addr, size_t size,
+						 enum dma_data_direction dir)
 {
 	__arm64_noalias_sync_for_device(dev, dma_to_phys(dev, addr), size, dir);
 }
 
-static void arm64_noalias_sync_single_for_cpu(struct device *dev, dma_addr_t addr,
-					      size_t size, enum dma_data_direction dir)
+static void arm64_noalias_sync_single_for_cpu(struct device *dev,
+					      dma_addr_t addr, size_t size,
+					      enum dma_data_direction dir)
 {
 	__arm64_noalias_sync_for_cpu(dev, dma_to_phys(dev, addr), size, dir);
 }
 
-static void arm64_noalias_sync_sg_for_device(struct device *dev, struct scatterlist *sgl,
-					     int nents, enum dma_data_direction dir)
+static void arm64_noalias_sync_sg_for_device(struct device *dev,
+					     struct scatterlist *sgl, int nents,
+					     enum dma_data_direction dir)
 {
 	struct scatterlist *sg;
 	int i;
 
-	for_each_sg(sgl, sg, nents, i)
-		arm64_noalias_sync_single_for_device(dev, sg->dma_address, sg->length, dir);
+	for_each_sg (sgl, sg, nents, i)
+		arm64_noalias_sync_single_for_device(dev, sg->dma_address,
+						     sg->length, dir);
 }
 
-static void arm64_noalias_sync_sg_for_cpu(struct device *dev, struct scatterlist *sgl,
-					  int nents, enum dma_data_direction dir)
+static void arm64_noalias_sync_sg_for_cpu(struct device *dev,
+					  struct scatterlist *sgl, int nents,
+					  enum dma_data_direction dir)
 {
 	struct scatterlist *sg;
 	int i;
 
-	for_each_sg(sgl, sg, nents, i)
-		arm64_noalias_sync_single_for_cpu(dev, sg->dma_address, sg->length, dir);
+	for_each_sg (sgl, sg, nents, i)
+		arm64_noalias_sync_single_for_cpu(dev, sg->dma_address,
+						  sg->length, dir);
 }
 
 static const struct dma_map_ops arm64_noalias_ops = {
@@ -304,14 +321,16 @@ static const struct dma_map_ops arm64_noalias_ops = {
 static const struct dma_map_ops *iommu_dma_ops;
 
 static void *arm64_iommu_alloc(struct device *dev, size_t size,
-			       dma_addr_t *dma_addr, gfp_t gfp, unsigned long attrs)
+			       dma_addr_t *dma_addr, gfp_t gfp,
+			       unsigned long attrs)
 {
 	struct page **pages;
 	void *ret;
 	int i;
 
 	size = PAGE_ALIGN(size);
-	if (!gfpflags_allow_blocking(gfp) || (attrs & DMA_ATTR_FORCE_CONTIGUOUS)) {
+	if (!gfpflags_allow_blocking(gfp) ||
+	    (attrs & DMA_ATTR_FORCE_CONTIGUOUS)) {
 		ret = dma_common_alloc_pages(dev, size, dma_addr, 0, gfp);
 		return ret ? page_address(ret) : NULL;
 	}
@@ -340,7 +359,8 @@ static void arm64_iommu_free(struct device *dev, size_t size, void *cpu_addr,
 
 	size = PAGE_ALIGN(size);
 	if (!pages)
-		return dma_common_free_pages(dev, size, virt_to_page(cpu_addr), dma_addr, 0);
+		return dma_common_free_pages(dev, size, virt_to_page(cpu_addr),
+					     dma_addr, 0);
 
 	for (i = 0; i < size / PAGE_SIZE; i++)
 		clear_nc(page_address(pages[i]), PAGE_SIZE);
@@ -349,28 +369,32 @@ static void arm64_iommu_free(struct device *dev, size_t size, void *cpu_addr,
 
 static dma_addr_t arm64_iommu_map_page(struct device *dev, struct page *page,
 				       unsigned long offset, size_t size,
-				       enum dma_data_direction dir, unsigned long attrs)
+				       enum dma_data_direction dir,
+				       unsigned long attrs)
 {
 	phys_addr_t phys = page_to_phys(page) + offset;
 	dma_addr_t ret;
 
 	if (dir == DMA_TO_DEVICE)
-		return iommu_dma_ops->map_page(dev, page, offset, size, dir, attrs);
+		return iommu_dma_ops->map_page(dev, page, offset, size, dir,
+					       attrs);
 
-	phys = __arm64_noalias_map(dev, phys, size, dir, attrs, page_mapped(page));
+	phys = __arm64_noalias_map(dev, phys, size, dir, attrs,
+				   page_mapped(page));
 	if (phys == DMA_MAPPING_ERROR)
 		return DMA_MAPPING_ERROR;
 
 	attrs |= DMA_ATTR_SKIP_CPU_SYNC;
-	ret = iommu_dma_ops->map_page(dev, phys_to_page(phys), offset_in_page(phys),
-				       size, dir, attrs);
+	ret = iommu_dma_ops->map_page(dev, phys_to_page(phys),
+				      offset_in_page(phys), size, dir, attrs);
 	if (ret == DMA_MAPPING_ERROR)
 		__arm64_noalias_unmap(dev, phys, size, dir, attrs);
 	return ret;
 }
 
-static void arm64_iommu_unmap_page(struct device *dev, dma_addr_t addr, size_t size,
-				   enum dma_data_direction dir, unsigned long attrs)
+static void arm64_iommu_unmap_page(struct device *dev, dma_addr_t addr,
+				   size_t size, enum dma_data_direction dir,
+				   unsigned long attrs)
 {
 	phys_addr_t phys;
 
@@ -378,12 +402,14 @@ static void arm64_iommu_unmap_page(struct device *dev, dma_addr_t addr, size_t s
 		return iommu_dma_ops->unmap_page(dev, addr, size, dir, attrs);
 
 	phys = iommu_iova_to_phys(iommu_get_dma_domain(dev), addr);
-	iommu_dma_ops->unmap_page(dev, addr, size, dir, attrs | DMA_ATTR_SKIP_CPU_SYNC);
+	iommu_dma_ops->unmap_page(dev, addr, size, dir,
+				  attrs | DMA_ATTR_SKIP_CPU_SYNC);
 	__arm64_noalias_unmap(dev, phys, size, dir, attrs);
 }
 
-static int arm64_iommu_map_sg(struct device *dev, struct scatterlist *sgl, int nents,
-			      enum dma_data_direction dir, unsigned long attrs)
+static int arm64_iommu_map_sg(struct device *dev, struct scatterlist *sgl,
+			      int nents, enum dma_data_direction dir,
+			      unsigned long attrs)
 {
 	int i, ret;
 	struct scatterlist *sg;
@@ -396,7 +422,7 @@ static int arm64_iommu_map_sg(struct device *dev, struct scatterlist *sgl, int n
 	if (!orig_phys)
 		return 0;
 
-	for_each_sg(sgl, sg, nents, i) {
+	for_each_sg (sgl, sg, nents, i) {
 		phys_addr_t phys = sg_phys(sg);
 		/*
 		 * Note we do not have the page_mapped() check here, since
@@ -407,7 +433,8 @@ static int arm64_iommu_map_sg(struct device *dev, struct scatterlist *sgl, int n
 		 * scatterlist user to get here (disable IOMMUs if necessary),
 		 * since we can't mitigate for both conflicting use-cases.
 		 */
-		phys = __arm64_noalias_map(dev, phys, sg->length, dir, attrs, false);
+		phys = __arm64_noalias_map(dev, phys, sg->length, dir, attrs,
+					   false);
 		if (phys == DMA_MAPPING_ERROR)
 			goto out_unmap;
 
@@ -415,11 +442,12 @@ static int arm64_iommu_map_sg(struct device *dev, struct scatterlist *sgl, int n
 		sg_assign_page(sg, phys_to_page(phys));
 		sg->offset = offset_in_page(phys);
 	}
-	ret = iommu_dma_ops->map_sg(dev, sgl, nents, dir, attrs | DMA_ATTR_SKIP_CPU_SYNC);
+	ret = iommu_dma_ops->map_sg(dev, sgl, nents, dir,
+				    attrs | DMA_ATTR_SKIP_CPU_SYNC);
 	if (ret <= 0)
 		goto out_unmap;
 
-	for_each_sg(sgl, sg, nents, i) {
+	for_each_sg (sgl, sg, nents, i) {
 		sg_assign_page(sg, phys_to_page(orig_phys[i]));
 		sg->offset = offset_in_page(orig_phys[i]);
 	}
@@ -428,7 +456,7 @@ static int arm64_iommu_map_sg(struct device *dev, struct scatterlist *sgl, int n
 	return ret;
 
 out_unmap:
-	for_each_sg(sgl, sg, nents, i) {
+	for_each_sg (sgl, sg, nents, i) {
 		__arm64_noalias_unmap(dev, sg_phys(sg), sg->length, dir, attrs);
 		sg_assign_page(sg, phys_to_page(orig_phys[i]));
 		sg->offset = offset_in_page(orig_phys[i]);
@@ -437,8 +465,9 @@ out_unmap:
 	return 0;
 }
 
-static void arm64_iommu_unmap_sg(struct device *dev, struct scatterlist *sgl, int nents,
-				 enum dma_data_direction dir, unsigned long attrs)
+static void arm64_iommu_unmap_sg(struct device *dev, struct scatterlist *sgl,
+				 int nents, enum dma_data_direction dir,
+				 unsigned long attrs)
 {
 	struct iommu_domain *domain;
 	struct scatterlist *sg, *tmp;
@@ -451,21 +480,24 @@ static void arm64_iommu_unmap_sg(struct device *dev, struct scatterlist *sgl, in
 	domain = iommu_get_dma_domain(dev);
 	iova = sgl->dma_address;
 	tmp = sgl;
-	for_each_sg(sgl, sg, nents, i) {
+	for_each_sg (sgl, sg, nents, i) {
 		phys_addr_t phys = iommu_iova_to_phys(domain, iova);
 
 		__arm64_noalias_unmap(dev, phys, sg->length, dir, attrs);
 		iova += sg->length;
-		if (iova == tmp->dma_address + tmp->dma_length && !sg_is_last(tmp)) {
+		if (iova == tmp->dma_address + tmp->dma_length &&
+		    !sg_is_last(tmp)) {
 			tmp = sg_next(tmp);
 			iova = tmp->dma_address;
 		}
 	}
-	iommu_dma_ops->unmap_sg(dev, sgl, nents, dir, attrs | DMA_ATTR_SKIP_CPU_SYNC);
+	iommu_dma_ops->unmap_sg(dev, sgl, nents, dir,
+				attrs | DMA_ATTR_SKIP_CPU_SYNC);
 }
 
-static void arm64_iommu_sync_single_for_device(struct device *dev, dma_addr_t addr,
-					       size_t size, enum dma_data_direction dir)
+static void arm64_iommu_sync_single_for_device(struct device *dev,
+					       dma_addr_t addr, size_t size,
+					       enum dma_data_direction dir)
 {
 	phys_addr_t phys = iommu_iova_to_phys(iommu_get_dma_domain(dev), addr);
 
@@ -473,47 +505,52 @@ static void arm64_iommu_sync_single_for_device(struct device *dev, dma_addr_t ad
 }
 
 static void arm64_iommu_sync_single_for_cpu(struct device *dev, dma_addr_t addr,
-					    size_t size, enum dma_data_direction dir)
+					    size_t size,
+					    enum dma_data_direction dir)
 {
 	phys_addr_t phys = iommu_iova_to_phys(iommu_get_dma_domain(dev), addr);
 
 	__arm64_noalias_sync_for_cpu(dev, phys, size, dir);
 }
 
-static void arm64_iommu_sync_sg_for_device(struct device *dev, struct scatterlist *sgl,
-					   int nents, enum dma_data_direction dir)
+static void arm64_iommu_sync_sg_for_device(struct device *dev,
+					   struct scatterlist *sgl, int nents,
+					   enum dma_data_direction dir)
 {
 	struct iommu_domain *domain = iommu_get_dma_domain(dev);
 	struct scatterlist *sg, *tmp = sgl;
 	dma_addr_t iova = sgl->dma_address;
 	int i;
 
-	for_each_sg(sgl, sg, nents, i) {
+	for_each_sg (sgl, sg, nents, i) {
 		phys_addr_t phys = iommu_iova_to_phys(domain, iova);
 
 		__arm64_noalias_sync_for_device(dev, phys, sg->length, dir);
 		iova += sg->length;
-		if (iova == tmp->dma_address + tmp->dma_length && !sg_is_last(tmp)) {
+		if (iova == tmp->dma_address + tmp->dma_length &&
+		    !sg_is_last(tmp)) {
 			tmp = sg_next(tmp);
 			iova = tmp->dma_address;
 		}
 	}
 }
 
-static void arm64_iommu_sync_sg_for_cpu(struct device *dev, struct scatterlist *sgl,
-					int nents, enum dma_data_direction dir)
+static void arm64_iommu_sync_sg_for_cpu(struct device *dev,
+					struct scatterlist *sgl, int nents,
+					enum dma_data_direction dir)
 {
 	struct iommu_domain *domain = iommu_get_dma_domain(dev);
 	struct scatterlist *sg, *tmp = sgl;
 	dma_addr_t iova = sgl->dma_address;
 	int i;
 
-	for_each_sg(sgl, sg, nents, i) {
+	for_each_sg (sgl, sg, nents, i) {
 		phys_addr_t phys = iommu_iova_to_phys(domain, iova);
 
 		__arm64_noalias_sync_for_cpu(dev, phys, sg->length, dir);
 		iova += sg->length;
-		if (iova == tmp->dma_address + tmp->dma_length && !sg_is_last(tmp)) {
+		if (iova == tmp->dma_address + tmp->dma_length &&
+		    !sg_is_last(tmp)) {
 			tmp = sg_next(tmp);
 			iova = tmp->dma_address;
 		}
@@ -568,7 +605,8 @@ void arm64_noalias_setup_dma_ops(struct device *dev)
 		arm64_iommu_ops.get_sgtable = iommu_dma_ops->get_sgtable;
 		arm64_iommu_ops.map_resource = iommu_dma_ops->map_resource;
 		arm64_iommu_ops.unmap_resource = iommu_dma_ops->unmap_resource;
-		arm64_iommu_ops.get_merge_boundary = iommu_dma_ops->get_merge_boundary;
+		arm64_iommu_ops.get_merge_boundary =
+			iommu_dma_ops->get_merge_boundary;
 	}
 done:
 	arm64_noalias_prepare();
