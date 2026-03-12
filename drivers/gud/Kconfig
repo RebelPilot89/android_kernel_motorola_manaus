@@ -2,8 +2,13 @@ menu "MobiCore GUD support"
 
 config MOBICORE_DRIVER
 	tristate "MobiCore Driver"
+	depends on !TRUSTONIC_TEE_SUPPORT
 	default y
 	help
 	  MobiCore Driver for TrustZone communication.
+	  Do NOT enable together with TRUSTONIC_TEE_SUPPORT: both compile
+	  the same mcDrvModule symbols (mmu, iwp, session, etc.) and the
+	  linker will report duplicate-symbol errors.  On platforms using
+	  the Kinibi 610 stack, select TRUSTONIC_TEE_SUPPORT instead.
 
 endmenu

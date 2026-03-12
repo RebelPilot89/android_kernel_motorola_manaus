@@ -6644,7 +6644,9 @@ CONFIG_KSU_SUSFS_ENABLE_LOG=y
 #
 # MobiCore GUD support
 #
-CONFIG_MOBICORE_DRIVER=y
+# CONFIG_MOBICORE_DRIVER is not set
+# Disabled: TRUSTONIC_TEE_SUPPORT=y (tee/gud/610/) already provides the
+# same mcDrvModule symbols. Enabling both causes duplicate-symbol linker errors.
 # end of MobiCore GUD support
 # end of Device Drivers
 
