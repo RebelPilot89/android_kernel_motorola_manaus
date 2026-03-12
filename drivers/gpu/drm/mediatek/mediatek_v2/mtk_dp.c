@@ -3600,6 +3600,9 @@ int mtk_dp_hdcp_getInfo(char *buffer, int size)
 {
 	int ret = 0;
 
+	if (!g_mtk_dp)
+		return snprintf(buffer, size, "DP driver not initialized\n");
+
 	if (!g_hdcp_on)
 		ret = snprintf(buffer, size,
 			"HDCP Function is disable!\n");
@@ -3622,6 +3625,9 @@ int mtk_dp_phy_getInfo(char *buffer, int size)
 	char *phy_names[10] = {
 		"L0P0", "L0P1", "L0P2", "L0P3", "L1P0",
 		"L1P1", "L1P2", "L2P0", "L2P1", "L3P0"};
+
+	if (!g_mtk_dp)
+		return snprintf(buffer, size, "DP driver not initialized\n");
 
 	len = snprintf(buffer, size, "PHY INFO:\n");
 	for (i = 0; i < DPTX_PHY_LEVEL_COUNT; i++)
