@@ -1,0 +1,1309 @@
+[    0.130672][    T1] OF: /ccu_rproc@1b080000: could not get #interconnect-cells for /interconnect
+[    0.131679][    T1] OF: /imgsys_fw@15000000: could not get #interconnect-cells for /interconnect
+[    0.133007][    T1] OF: /soc/sspm@1C340000: could not get #interconnect-cells for /firmware/scmi/protocol@80
+[    0.133673][    T1] OF: /soc/ktf-mmdvfs-test: could not get #interconnect-cells for /interconnect
+[    0.134183][    T1] OF: /soc/pda@1a100000: could not get #interconnect-cells for /interconnect
+[    0.134298][    T1] OF: /soc/mdp_rdma0@1f003000: could not get #interconnect-cells for /interconnect
+[    0.134337][    T1] OF: /soc/mdp_wrot0@1f00f000: could not get #interconnect-cells for /interconnect
+[    0.148920][    T1] OF: /vdec@16000000: could not get #interconnect-cells for /interconnect
+[    0.149065][    T1] OF: /vdec_fmt@16080000: could not get #interconnect-cells for /interconnect
+[    0.149244][    T1] OF: /venc@17000000: could not get #interconnect-cells for /interconnect
+[    0.149382][    T1] OF: /jpgenc@17030000: could not get #interconnect-cells for /interconnect
+[    0.149594][    T1] OF: /dispsys_config@14000000: could not get #interconnect-cells for /interconnect
+[    0.149896][    T1] OF: /disp_ovl0@14002000: could not get #interconnect-cells for /interconnect
+[    0.149981][    T1] OF: /disp_ovl0_2l@14003000: could not get #interconnect-cells for /interconnect
+[    0.150197][    T1] OF: /disp_rdma0@14006000: could not get #interconnect-cells for /interconnect
+[    0.152273][    T1] OF: /disp_ovl0_2l_nwcg@1401a000: could not get #interconnect-cells for /interconnect
+[    0.155539][    T1] OF: /cam_raw_a@1a030000: could not get #interconnect-cells for /interconnect
+[    0.155726][    T1] OF: /cam_yuv_a@1a050000: could not get #interconnect-cells for /interconnect
+[    0.155915][    T1] OF: /cam_raw_b@1a070000: could not get #interconnect-cells for /interconnect
+[    0.156083][    T1] OF: /cam_yuv_b@1a090000: could not get #interconnect-cells for /interconnect
+[    0.156238][    T1] OF: /camsv1@1a110000: could not get #interconnect-cells for /interconnect
+[    0.156387][    T1] OF: /camsv2@1a111000: could not get #interconnect-cells for /interconnect
+[    0.156532][    T1] OF: /camsv3@1a112000: could not get #interconnect-cells for /interconnect
+[    0.156672][    T1] OF: /camsv4@1a113000: could not get #interconnect-cells for /interconnect
+[    0.156808][    T1] OF: /camsv5@1a114000: could not get #interconnect-cells for /interconnect
+[    0.156948][    T1] OF: /camsv6@1a115000: could not get #interconnect-cells for /interconnect
+[    0.157083][    T1] OF: /camsv7@1a116000: could not get #interconnect-cells for /interconnect
+[    0.157234][    T1] OF: /camsv8@1a117000: could not get #interconnect-cells for /interconnect
+[    0.157372][    T1] OF: /camsv9@1a180000: could not get #interconnect-cells for /interconnect
+[    0.157512][    T1] OF: /camsv10@1a181000: could not get #interconnect-cells for /interconnect
+[    0.157650][    T1] OF: /camsv11@1a182000: could not get #interconnect-cells for /interconnect
+[    0.157791][    T1] OF: /camsv12@1a183000: could not get #interconnect-cells for /interconnect
+[    0.157931][    T1] OF: /camsv13@1a184000: could not get #interconnect-cells for /interconnect
+[    0.158069][    T1] OF: /camsv14@1a185000: could not get #interconnect-cells for /interconnect
+[    0.158203][    T1] OF: /camsv15@1a186000: could not get #interconnect-cells for /interconnect
+[    0.158344][    T1] OF: /camsv16@1a187000: could not get #interconnect-cells for /interconnect
+[    0.158474][    T1] OF: /mraw1@1a130000: could not get #interconnect-cells for /interconnect
+[    0.158623][    T1] OF: /mraw2@1a140000: could not get #interconnect-cells for /interconnect
+[    0.158778][    T1] OF: /mraw3@1a150000: could not get #interconnect-cells for /interconnect
+[    0.158919][    T1] OF: /mraw4@1a160000: could not get #interconnect-cells for /interconnect
+[    0.159226][    T1] OF: /mdp@1f000000: could not get #interconnect-cells for /interconnect
+[    0.489704][    T1] Warning: unable to open an initial console.
+[    0.823071][    T1] init: softdep lines in modules.softdep must have at least 4 entries
+[    0.834442][T600001] log_store: pmic child device not found.
+[    0.952675][T600001] spmi-mtk 1c804000.spmi: IRQ pmif_irq not found
+[    0.979518][T700001] of_clk_src_onecell_get: invalid clock index 211
+[    0.979544][T700001] of_clk_src_onecell_get: invalid clock index 15
+[    0.979691][T700001] of_clk_src_onecell_get: invalid clock index 2
+[    0.979698][T700001] of_clk_src_onecell_get: invalid clock index 3
+[    0.979705][T700001] of_clk_src_onecell_get: invalid clock index 3
+[    0.979712][T700001] of_clk_src_onecell_get: invalid clock index 4
+[    0.979783][T700001] of_clk_src_onecell_get: invalid clock index 13
+[    0.979816][T700001] of_clk_src_onecell_get: invalid clock index 25
+[    0.979824][T700001] of_clk_src_onecell_get: invalid clock index 4
+[    0.979833][T700001] of_clk_src_onecell_get: invalid clock index 5
+[    0.979866][T700001] of_clk_src_onecell_get: invalid clock index 2
+[    0.980044][T700001] of_clk_src_onecell_get: invalid clock index 37
+[    0.980067][T700001] of_clk_src_onecell_get: invalid clock index 16
+[    0.980072][T700001] of_clk_src_onecell_get: invalid clock index 2
+[    0.980078][T700001] of_clk_src_onecell_get: invalid clock index 2
+[    0.980083][T700001] of_clk_src_onecell_get: invalid clock index 2
+[    0.980091][T700001] of_clk_src_onecell_get: invalid clock index 5
+[    0.980097][T700001] of_clk_src_onecell_get: invalid clock index 2
+[    0.980103][T700001] of_clk_src_onecell_get: invalid clock index 2
+[    0.980110][T700001] of_clk_src_onecell_get: invalid clock index 4
+[    0.980117][T700001] of_clk_src_onecell_get: invalid clock index 4
+[    0.980275][T700001] of_clk_src_onecell_get: invalid clock index 16
+[    0.980314][T700001] of_clk_src_onecell_get: invalid clock index 36
+[    0.980321][T700001] of_clk_src_onecell_get: invalid clock index 4
+[    0.980328][T700001] of_clk_src_onecell_get: invalid clock index 4
+[    0.980335][T700001] of_clk_src_onecell_get: invalid clock index 4
+[    0.980345][T700001] of_clk_src_onecell_get: invalid clock index 4
+[    0.980357][T700001] of_clk_src_onecell_get: invalid clock index 9
+[    0.980380][T700001] of_clk_src_onecell_get: invalid clock index 4
+[    0.980420][T700001] of_clk_src_onecell_get: invalid clock index 37
+[    0.980427][T700001] of_clk_src_onecell_get: invalid clock index 4
+[    0.980727][T700001] of_clk_src_onecell_get: invalid clock index 21
+[    1.092188][T600001] mediatek-mml 1f000000.mmlsys_config: can't request region for resource [mem 0x1f000000-0x1f000fff]
+[    1.092205][T600001] mediatek-mml 1f000000.mmlsys_config: fail to init component 4 larb ret -2
+[    1.092216][T600001] mediatek-mml 1f000000.mmlsys_config: can't request region for resource [mem 0x1f000000-0x1f000fff]
+[    1.092225][T600001] mediatek-mml 1f000000.mmlsys_config: fail to init component 13 larb ret -2
+[    1.092231][T600001] mediatek-mml 1f000000.mmlsys_config: can't request region for resource [mem 0x1f000000-0x1f000fff]
+[    1.092241][T600001] mediatek-mml 1f000000.mmlsys_config: can't request region for resource [mem 0x1f000000-0x1f000fff]
+[    1.179206][T700001] mediatek-drm 14000000.dispsys_config: no dispsys_config dispsys_num
+[    1.187683][T700001] mediatek-ddp 14001000.disp_mutex0: no mutex dispsys_num
+[    1.190408][T700001] [DISP][E]read ccorr_prim_force_linear failed
+[    1.235734][T700001] mtu3 11201000.usb0: failed to get vusb33
+[    1.238373][T700173] mtu3 11201000.usb0: failed to get vusb33
+[    1.275781][T200001] read mediatek,use-extend-type error.
+[    1.293000][T600001] wl2864c 6-0029: Success to write register: 0x1, value: 0x40 
+[    1.293268][T600001] wl2864c 6-0029: Success to write register: 0x2, value: 0x0 
+[    1.293535][T600001] wl2864c 6-0029: Success to write register: 0xa, value: 0x0 
+[    1.293799][T600001] wl2864c 6-0029: Success to write register: 0xb, value: 0x0 
+[    1.294059][T600001] wl2864c 6-0029: Success to write register: 0xc, value: 0x0 
+[    1.294313][T600001] wl2864c 6-0029: Success to write register: 0xd, value: 0x0 
+[    1.294572][T600001] wl2864c 6-0029: Success to write register: 0xf, value: 0x0 
+[    1.295116][T600001] wl2864c_regulator_init: LDO1, default value:0x28
+[    1.295379][T600001] wl2864c_regulator_init: LDO1, initial value:0x28
+[    1.296394][T600001] wl2864c_regulator_init: LDO2, default value:0x28
+[    1.296661][T600001] wl2864c_regulator_init: LDO2, initial value:0x28
+[    1.297638][T600001] wl2864c_regulator_init: LDO3, default value:0x80
+[    1.297900][T600001] wl2864c_regulator_init: LDO3, initial value:0x80
+[    1.298860][T600001] wl2864c_regulator_init: LDO4, default value:0x80
+[    1.299120][T600001] wl2864c_regulator_init: LDO4, initial value:0x80
+[    1.300077][T600001] wl2864c_regulator_init: LDO5, default value:0x80
+[    1.300335][T600001] wl2864c_regulator_init: LDO5, initial value:0x80
+[    1.301296][T600001] wl2864c_regulator_init: LDO6, default value:0x80
+[    1.301555][T600001] wl2864c_regulator_init: LDO6, initial value:0x80
+[    1.302520][T600001] wl2864c_regulator_init: LDO7, default value:0x30
+[    1.302790][T600001] wl2864c_regulator_init: LDO7, initial value:0x30
+[    1.303456][T600001] wl2864c 6-0029: ************ start dump wl2864c register ************
+[    1.303460][T600001] wl2864c 6-0029: regulator name = ldo1 
+[    1.303463][T600001] wl2864c 6-0029: register 0x00:      chip version
+[    1.303466][T600001] wl2864c 6-0029: register 0x01:      LDO CL
+[    1.303469][T600001] wl2864c 6-0029: register 0x03~0x09: LDO1~LDO7 OUT Voltage
+[    1.303472][T600001] wl2864c 6-0029: register 0x0e:      Bit[6:0] LDO7~LDO1 EN
+[    1.303777][T600001] wl2864c 6-0029: Reg[0x00] = 0x1
+[    1.304068][T600001] wl2864c 6-0029: Reg[0x01] = 0x40
+[    1.304352][T600001] wl2864c 6-0029: Reg[0x02] = 0x0
+[    1.304656][T700001] wl2864c 6-0029: Reg[0x03] = 0x28
+[    1.304951][T700001] wl2864c 6-0029: Reg[0x04] = 0x28
+[    1.305239][T700001] wl2864c 6-0029: Reg[0x05] = 0x80
+[    1.305533][T700001] wl2864c 6-0029: Reg[0x06] = 0x80
+[    1.305834][T700001] wl2864c 6-0029: Reg[0x07] = 0x80
+[    1.306115][T700001] wl2864c 6-0029: Reg[0x08] = 0x80
+[    1.306411][T700001] wl2864c 6-0029: Reg[0x09] = 0x30
+[    1.306697][T700001] wl2864c 6-0029: Reg[0x0a] = 0x0
+[    1.306990][T700001] wl2864c 6-0029: Reg[0x0b] = 0x0
+[    1.307269][T700001] wl2864c 6-0029: Reg[0x0c] = 0x0
+[    1.307557][T700001] wl2864c 6-0029: Reg[0x0d] = 0x0
+[    1.307839][T700001] wl2864c 6-0029: Reg[0x0e] = 0x0
+[    1.308118][T700001] wl2864c 6-0029: Reg[0x0f] = 0x0
+[    1.308121][T700001] wl2864c 6-0029: ************ end dump wl2864c register ************
+[    1.403604][T600001] [bq25980_probe] model_name=sc8541-master
+[    1.429522][T600001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[00] = 0x4A
+[    1.430137][T600001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[01] = 0x42
+[    1.430731][T600001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[02] = 0xEE
+[    1.431328][T600001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[03] = 0x7F
+[    1.431927][T600001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[04] = 0x00
+[    1.432526][T600001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[05] = 0x40
+[    1.433136][T600001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[06] = 0x64
+[    1.433736][T600001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[07] = 0x50
+[    1.434332][T600001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[08] = 0x0C
+[    1.434924][T600001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[09] = 0x00
+[    1.435517][T600001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[0A] = 0x0C
+[    1.436124][T600001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[0B] = 0x78
+[    1.436723][T600001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[0C] = 0x15
+[    1.437320][T600001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[0D] = 0x15
+[    1.437913][T600001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[0E] = 0x6C
+[    1.438506][T600001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[0F] = 0x02
+[    1.439112][T600001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[10] = 0x94
+[    1.439711][T600001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[11] = 0xF0
+[    1.440306][T600001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[12] = 0x62
+[    1.440908][T600001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[13] = 0x00
+[    1.441516][T600001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[14] = 0x00
+[    1.442123][T600001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[15] = 0x37
+[    1.442724][T600001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[16] = 0x00
+[    1.443330][T600001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[17] = 0x08
+[    1.443933][T600001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[18] = 0x00
+[    1.444535][T600001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[19] = 0x00
+[    1.445141][T600001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[1A] = 0x00
+[    1.445745][T600001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[1B] = 0x00
+[    1.446346][T600001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[1C] = 0x00
+[    1.446943][T600001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[1D] = 0x00
+[    1.447543][T600001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[1E] = 0x00
+[    1.448159][T600001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[1F] = 0x00
+[    1.448758][T600001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[20] = 0x00
+[    1.449353][T600001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[21] = 0x00
+[    1.449953][T600001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[22] = 0x41
+[    1.450553][T600001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[23] = 0x00
+[    1.451169][T600001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[24] = 0x06
+[    1.451761][T600001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[25] = 0x00
+[    1.452355][T600001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[26] = 0x02
+[    1.452953][T600001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[27] = 0x05
+[    1.453557][T600001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[28] = 0x5D
+[    1.454173][T600001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[29] = 0x03
+[    1.454766][T600001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[2A] = 0xF2
+[    1.455364][T600001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[2B] = 0x00
+[    1.455960][T600001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[2C] = 0x02
+[    1.456564][T600001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[2D] = 0x0D
+[    1.457176][T600001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[2E] = 0xB5
+[    1.457776][T600001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[2F] = 0x0D
+[    1.458380][T600001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[30] = 0xB6
+[    1.458983][T600001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[31] = 0x00
+[    1.459583][T600001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[32] = 0x02
+[    1.460199][T600001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[33] = 0x00
+[    1.460801][T600001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[34] = 0x00
+[    1.461413][T600001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[35] = 0x00
+[    1.462009][T600001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[36] = 0x00
+[    1.462608][T600001] bq25980-charger 0-0066: sc8541-master_dump_registe:Reg[37] = 0x00
+[    1.463329][T600001] [bq25980_probe] model_name=sc8541-slave
+[    1.494759][T600001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[00] = 0x4A
+[    1.495357][T600001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[01] = 0x42
+[    1.495952][T600001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[02] = 0xEE
+[    1.496562][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[03] = 0x7F
+[    1.497188][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[04] = 0x00
+[    1.497793][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[05] = 0x40
+[    1.498396][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[06] = 0x64
+[    1.498996][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[07] = 0x50
+[    1.499607][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[08] = 0x0C
+[    1.500209][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[09] = 0x00
+[    1.500813][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[0A] = 0x0C
+[    1.501417][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[0B] = 0x78
+[    1.502014][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[0C] = 0x15
+[    1.502620][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[0D] = 0x15
+[    1.503224][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[0E] = 0x6C
+[    1.503817][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[0F] = 0x00
+[    1.504424][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[10] = 0x94
+[    1.505029][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[11] = 0xF0
+[    1.505632][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[12] = 0x61
+[    1.506227][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[13] = 0x00
+[    1.506823][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[14] = 0x00
+[    1.507423][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[15] = 0x3C
+[    1.508030][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[16] = 0x00
+[    1.508638][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[17] = 0x08
+[    1.509236][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[18] = 0x00
+[    1.509835][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[19] = 0x00
+[    1.510436][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[1A] = 0x00
+[    1.511042][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[1B] = 0x00
+[    1.511643][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[1C] = 0x00
+[    1.512245][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[1D] = 0x00
+[    1.512850][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[1E] = 0x00
+[    1.513455][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[1F] = 0x00
+[    1.514060][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[20] = 0x00
+[    1.514663][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[21] = 0x00
+[    1.515267][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[22] = 0x41
+[    1.515868][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[23] = 0x00
+[    1.516472][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[24] = 0x06
+[    1.517070][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[25] = 0x00
+[    1.517676][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[26] = 0x02
+[    1.518282][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[27] = 0x05
+[    1.518879][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[28] = 0x5C
+[    1.519481][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[29] = 0x04
+[    1.520081][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[2A] = 0x07
+[    1.520690][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[2B] = 0x04
+[    1.521290][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[2C] = 0x07
+[    1.521889][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[2D] = 0x0D
+[    1.522490][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[2E] = 0xC1
+[    1.523094][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[2F] = 0x00
+[    1.523697][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[30] = 0x06
+[    1.524294][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[31] = 0x00
+[    1.524904][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[32] = 0x54
+[    1.525506][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[33] = 0x00
+[    1.526108][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[34] = 0x00
+[    1.526716][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[35] = 0x00
+[    1.527318][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[36] = 0x00
+[    1.527917][T700001] bq25980-charger 0-0067: sc8541-slave_dump_registe:Reg[37] = 0x00
+[    1.530981][T700001] mt6375-chg 11ed1000.i2c:mt6375@34:chg: mos_pinctrl not found
+[    1.555875][T600001] mtk_ctd_probe: --start--
+[    1.555889][T600001] mtk_ctd_parse_dt: size:0x10 tag:0x41000802 bootmode:0x0 boottype:0x2
+[    1.562275][T600001] [parse_mmi_dt]mmi cycle cv steps is not set
+[    1.562305][T600001] FFC:Zone 0,Temp 0,Volt 4200,Ich 438
+[    1.562307][T600001] FFC:Zone 1,Temp 10,Volt 4500,Ich 438
+[    1.562310][T600001] FFC:Zone 2,Temp 15,Volt 4500,Ich 438
+[    1.562313][T600001] FFC:Zone 3,Temp 25,Volt 4530,Ich 741
+[    1.562316][T600001] FFC:Zone 4,Temp 35,Volt 4530,Ich 835
+[    1.562319][T600001] FFC:Zone 5,Temp 45,Volt 4530,Ich 1175
+[    1.562321][T600001] FFC:Zone 6,Temp 60,Volt 4200,Ich 438
+[    1.562330][T600001] mmi wls_switch_en is -2 invalid
+[    1.562337][T600001] mmi wls_boost_en is -2 invalid
+[    1.562350][T600001] [parse_mmi_dt]mmi typec ntc table is not set
+[    1.576453][T600061] power_supply mtk-slv-div-chg: driver failed to report `input_power_limit' property: -22
+[    1.576478][T600061] power_supply mtk-mst-div-chg: driver failed to report `input_power_limit' property: -22
+[    1.576496][T600061] power_supply mtk-slave-charger: driver failed to report `input_power_limit' property: -22
+[    1.576515][T600061] power_supply mtk-master-charger: driver failed to report `input_power_limit' property: -22
+[    1.585353][T600001] mtk-extcon-usb extcon_usb: mtk_usb_extcon_psy_init charger psy name: primary_chg
+[    1.649645][T300287] ufshcd-mtk 112b0000.ufshci: ufshcd_print_pwr_info:[RX, TX]: gear=[1, 1], lane[1, 1], pwr[SLOWAUTO_MODE, SLOWAUTO_MODE], rate = 0
+[    1.684718][T300287] ufshcd-mtk 112b0000.ufshci: ufshcd_print_pwr_info:[RX, TX]: gear=[3, 3], lane[2, 2], pwr[FAST MODE, FAST MODE], rate = 2
+[    1.685004][T300287] ufshcd-mtk 112b0000.ufshci: ufshcd_find_max_sup_active_icc_level: Regulator capability was not set, actvIccLevel=0
+[    1.685593][T300066] ufshcd-mtk 112b0000.ufshci: ufshcd_query_attr: opcode 0x03 for idn 255 failed, index 0, err = 253
+[    1.760364][T300284] [mmi_get_prop_from_battery]Error getting battery power sypply
+[    1.760402][T300284] [mmi_charger_check_status]Error getting Batt Voltage rc = -22
+[    1.767873][T300284] mmi_updata_batt_status  No battery supply found
+[    1.795934][T700001] power_supply mtk-slave-charger: driver failed to report `input_power_limit' property: -22
+[    1.795946][T700001] power_supply mtk-slave-charger: uevent: failed to send synthetic uevent
+[    1.804095][T700001] power_supply mtk-master-charger: driver failed to report `input_power_limit' property: -22
+[    1.804108][T700001] power_supply mtk-master-charger: uevent: failed to send synthetic uevent
+[    1.811635][T700001] power_supply mtk-slv-div-chg: driver failed to report `input_power_limit' property: -22
+[    1.811640][T700001] power_supply mtk-slv-div-chg: uevent: failed to send synthetic uevent
+[    1.817094][T100001] power_supply mtk-mst-div-chg: driver failed to report `input_power_limit' property: -22
+[    1.817110][T100001] power_supply mtk-mst-div-chg: uevent: failed to send synthetic uevent
+[    1.877008][T700001] logwrapper: Cannot log to file /dev/fscklogs/log
+[    1.877016][T700001] logwrapper: 
+[    1.904423][T100001] init: Failed to copy /avb into /metadata/gsi/dsu/avb/: No such file or directory
+[    1.915248][T200001] init: [libfs_avb]: Error verifying vbmeta image: OK_NOT_SIGNED
+[    2.307690][T600001] init: Init cannot set 'ro.boot.serialno' to 'ZY22HN83V6': Read-only property was already set
+[    2.307777][T600001] init: Init cannot set 'ro.boot.mode' to 'normal': Read-only property was already set
+[    2.313567][T600001] init: Do not have permissions to set 'ro.mtk_key_manager_support' to '1' in property file '/vendor/build.prop': SELinux permission check failed
+[    2.314009][T600001] init: Could not expand filename ': property 'ro.boot.sku_variant' doesn't exist while expanding '/vendor/etc/motorola/props/sku.${ro.boot.sku_variant}.prop'
+[    2.315346][T600001] init: Do not have permissions to set 'media.settings.xml' to '/vendor/etc/media_profiles_vendor.xml' in property file '/vendor/build.prop': SELinux permission check failed
+[    2.315452][T600001] init: Could not expand filename ': property 'ro.boot.sku_variant' doesn't exist while expanding '/vendor/etc/motorola/props/sku.${ro.boot.sku_variant}.prop'
+[    2.316226][T700001] init: Could not expand filename ': property 'ro.boot.sku_variant' doesn't exist while expanding '/product/etc/motorola/props/sku.${ro.boot.sku_variant}.prop'
+[    2.316600][T700001] init: Could not expand filename ': property 'ro.boot.sku_variant' doesn't exist while expanding '/product/etc/motorola/props/sku.variant.${ro.boot.hardware.sku}.${ro.boot.sku_variant}.prop'
+[    2.359373][T700001] init: /vendor/etc/init/android.hardware.bluetooth@1.1-service-mediatek.rc: 8: ParseTriggers() failed: unexported property trigger found: vts.native_server.on
+[    2.359428][T700001] init: /vendor/etc/init/android.hardware.bluetooth@1.1-service-mediatek.rc: 10: ParseTriggers() failed: unexported property trigger found: vts.native_server.on
+[    2.359464][T700001] init: /vendor/etc/init/android.hardware.bluetooth@1.1-service-mediatek.rc: 12: ParseTriggers() failed: unexported property trigger found: vts.native_server.on
+[    2.359492][T700001] init: /vendor/etc/init/android.hardware.bluetooth@1.1-service-mediatek.rc: 14: ParseTriggers() failed: unexported property trigger found: vts.native_server.on
+[    2.436051][T700330] power_supply mtk-slave-charger: driver failed to report `input_power_limit' property: -22
+[    2.436083][T700330] power_supply mtk-slave-charger: uevent: failed to send synthetic uevent
+[    2.443529][  T331] cutils-trace: Error opening trace file: No such file or directory (2)
+[    2.444165][T700330] power_supply mtk-master-charger: driver failed to report `input_power_limit' property: -22
+[    2.444182][T700330] power_supply mtk-master-charger: uevent: failed to send synthetic uevent
+[    2.451467][T700330] power_supply mtk-slv-div-chg: uevent: failed to send synthetic uevent
+[    2.458917][  T330] power_supply mtk-mst-div-chg: uevent: failed to send synthetic uevent
+[    3.148462][T600397] scp 1c400000.scp: invalid resource
+[    3.148471][T600397] scp 1c400000.scp: invalid resource
+[    3.148493][T600397] scp 1c400000.scp: invalid resource
+[    3.148496][T600397] scp 1c400000.scp: invalid resource
+[    3.148512][T600397] scp 1c400000.scp: invalid resource
+[    3.148515][T600397] scp 1c400000.scp: invalid resource
+[    3.148540][T600397] scp 1c400000.scp: invalid resource
+[    3.148542][T600397] scp 1c400000.scp: invalid resource
+[    3.148564][T600397] scp 1c400000.scp: invalid resource
+[    3.148567][T600397] scp 1c400000.scp: invalid resource
+[    3.169160][T600397] asix: module is already loaded
+[    3.251356][T600397] Error: Driver 'ax88179_178a' is already registered, aborting...
+[    3.344216][T600397] gpueb 13c40000.gpueb: invalid resource
+[    3.344223][T600397] MBOX 0 can't find init reg
+[    3.348977][  T394] utags (write_utag): [.features] [hw] is locked
+[    3.395491][T600397] mtk-board-ntc 1c8050d4.thermal-ntc1: usb_conn_ntc_parse_lookup_table, use default usb_conn_ntc_pull_up_r:3920
+[    3.395541][T600397] mtk-board-ntc 1c8050d4.thermal-ntc1: invalid resource
+[    3.395544][T600397] mtk-board-ntc 1c8050d4.thermal-ntc1: invalid resource
+[    3.395881][T600397] mtk-board-ntc 1c8050d8.thermal-ntc2: invalid resource
+[    3.395885][T600397] mtk-board-ntc 1c8050d8.thermal-ntc2: invalid resource
+[    3.396082][T600397] mtk-board-ntc 1c8050dc.thermal-ntc3: invalid resource
+[    3.396085][T600397] mtk-board-ntc 1c8050dc.thermal-ntc3: invalid resource
+[    3.396386][T600397] mtk-board-ntc thermal-ntc4: invalid resource
+[    3.396390][T600397] mtk-board-ntc thermal-ntc4: invalid resource
+[    3.396392][T600397] mtk-board-ntc thermal-ntc4: invalid resource
+[    3.399008][T600397] mtk-board-ntc thermal-ntc5: invalid resource
+[    3.399012][T600397] mtk-board-ntc thermal-ntc5: invalid resource
+[    3.399014][T600397] mtk-board-ntc thermal-ntc5: invalid resource
+[    3.401397][T600397] mtk-board-ntc thermal-ntc6: invalid resource
+[    3.401402][T600397] mtk-board-ntc thermal-ntc6: invalid resource
+[    3.401404][T600397] mtk-board-ntc thermal-ntc6: invalid resource
+[    3.422319][T600397] adspsys 1e000000.adspsys: invalid resource
+[    3.422326][T600397] MBOX 0 can't find init reg
+[    3.422334][T600397] adspsys 1e000000.adspsys: invalid resource
+[    3.422338][T600397] adspsys 1e000000.adspsys: invalid resource
+[    3.422391][T600397] adspsys 1e000000.adspsys: invalid resource
+[    3.422394][T600397] MBOX 1 can't find init reg
+[    3.422400][T600397] adspsys 1e000000.adspsys: invalid resource
+[    3.422403][T600397] adspsys 1e000000.adspsys: invalid resource
+[    3.422439][T600397] adspsys 1e000000.adspsys: invalid resource
+[    3.422441][T600397] MBOX 2 can't find init reg
+[    3.422446][T600397] adspsys 1e000000.adspsys: invalid resource
+[    3.422449][T600397] adspsys 1e000000.adspsys: invalid resource
+[    3.422540][T600397] adspsys 1e000000.adspsys: invalid resource
+[    3.422542][T600397] MBOX 3 can't find init reg
+[    3.422548][T600397] adspsys 1e000000.adspsys: invalid resource
+[    3.422550][T600397] adspsys 1e000000.adspsys: invalid resource
+[    3.450611][  T394] utags (write_utag): [.attributes] [hw] is locked
+[    3.487879][T600397] mt6879-audio 1e100000.mt6879-afe-pcm: mt6879_afe_gpio_init(), pinctrl_lookup_state aud_gpio_i2s0_off fail, ret -19
+[    3.487887][T600397] mt6879-audio 1e100000.mt6879-afe-pcm: mt6879_afe_gpio_init(), pinctrl_lookup_state aud_gpio_i2s0_on fail, ret -19
+[    3.487891][T600397] mt6879-audio 1e100000.mt6879-afe-pcm: mt6879_afe_gpio_init(), pinctrl_lookup_state aud_gpio_i2s3_off fail, ret -19
+[    3.487893][T600397] mt6879-audio 1e100000.mt6879-afe-pcm: mt6879_afe_gpio_init(), pinctrl_lookup_state aud_gpio_i2s3_on fail, ret -19
+[    3.487895][T600397] mt6879-audio 1e100000.mt6879-afe-pcm: mt6879_afe_gpio_init(), pinctrl_lookup_state aud_gpio_i2s5_off fail, ret -19
+[    3.487897][T600397] mt6879-audio 1e100000.mt6879-afe-pcm: mt6879_afe_gpio_init(), pinctrl_lookup_state aud_gpio_i2s5_on fail, ret -19
+[    3.487900][T600397] mt6879-audio 1e100000.mt6879-afe-pcm: mt6879_afe_gpio_init(), pinctrl_lookup_state aud_gpio_i2s6_off fail, ret -19
+[    3.487902][T600397] mt6879-audio 1e100000.mt6879-afe-pcm: mt6879_afe_gpio_init(), pinctrl_lookup_state aud_gpio_i2s6_on fail, ret -19
+[    3.487904][T600397] mt6879-audio 1e100000.mt6879-afe-pcm: mt6879_afe_gpio_init(), pinctrl_lookup_state aud_gpio_i2s7_off fail, ret -19
+[    3.487906][T600397] mt6879-audio 1e100000.mt6879-afe-pcm: mt6879_afe_gpio_init(), pinctrl_lookup_state aud_gpio_i2s7_on fail, ret -19
+[    3.487908][T600397] mt6879-audio 1e100000.mt6879-afe-pcm: mt6879_afe_gpio_init(), pinctrl_lookup_state aud_gpio_i2s8_off fail, ret -19
+[    3.487910][T600397] mt6879-audio 1e100000.mt6879-afe-pcm: mt6879_afe_gpio_init(), pinctrl_lookup_state aud_gpio_i2s8_on fail, ret -19
+[    3.487913][T600397] mt6879-audio 1e100000.mt6879-afe-pcm: mt6879_afe_gpio_init(), pinctrl_lookup_state aud_gpio_i2s9_off fail, ret -19
+[    3.487915][T600397] mt6879-audio 1e100000.mt6879-afe-pcm: mt6879_afe_gpio_init(), pinctrl_lookup_state aud_gpio_i2s9_on fail, ret -19
+[    3.508100][  T294] mt6879-mt6368 sound: mt6879_mt6368_dev_probe snd_soc_register_card fail -517
+[    3.523439][T600294] mt6879-audio 1e100000.mt6879-afe-pcm: ASoC: error at soc_component_read_no_lock on 1e100000.mt6879-afe-pcm: -16
+[    3.529133][T200294] [Awinic][6-0034]aw882xx_dev_init_cali_re: out range re value: 0
+[    3.529798][T200294] [Awinic][6-0035]aw882xx_dev_init_cali_re: out range re value: 0
+[    3.536940][  T394] utags (write_utag): [.auto] [hw] is locked
+[    3.564148][T600294] mt6879-mt6368 sound: mt6879_mt6368_dev_probe snd_soc_register_card pss 0
+[    3.599882][T600397] vcp 1ea00000.vcp: invalid resource
+[    3.599901][T600397] vcp 1ea00000.vcp: invalid resource
+[    3.599944][T600397] vcp 1ea00000.vcp: invalid resource
+[    3.599948][T600397] vcp 1ea00000.vcp: invalid resource
+[    3.599979][T600397] vcp 1ea00000.vcp: invalid resource
+[    3.599983][T600397] vcp 1ea00000.vcp: invalid resource
+[    3.600009][T600397] vcp 1ea00000.vcp: invalid resource
+[    3.600015][T600397] vcp 1ea00000.vcp: invalid resource
+[    3.600051][T600397] vcp 1ea00000.vcp: invalid resource
+[    3.600055][T600397] vcp 1ea00000.vcp: invalid resource
+[    3.605168][  T394] utags (write_utag): [.cmdline] [hw] is locked
+[    3.628752][T100397] mtk-vcodec-dec 16000000.vdec: IRQ index 1 not found
+[    3.638245][T600397] mtk-vcodec-enc 17020000.venc: IRQ index 1 not found
+[    3.660223][T600397] mcupm c540000.mcupm: invalid resource
+[    3.660230][T600397] MBOX 0 can't find init reg
+[    3.671144][T200007] [GPU/GED][ERROR]fail to read gpu-freq-notify-support (-22)
+[    3.671869][T200007] [GPU/GED][ERROR]No gpu afs node.
+[    3.672313][T200007] [GPU/GED][ERROR]Failed to find gpu_dcs node
+[    3.672480][T200007] [GPU/GED][ERROR]ged_gpufreq_init: Failed to init core mask table
+[    3.692424][T100394] utags (write_utag): [.system] [hw] is locked
+[    3.700312][T600397] camera-dip 15000000.imgsys_fw: error finding dst node: -22
+[    3.700340][T600397] camera-dip 15000000.imgsys_fw: error finding dst node: -22
+[    3.700380][T600397] camera-dip 15000000.imgsys_fw: error finding dst node: -22
+[    3.700404][T600397] camera-dip 15000000.imgsys_fw: error finding dst node: -22
+[    3.700428][T600397] camera-dip 15000000.imgsys_fw: error finding dst node: -22
+[    3.700452][T600397] camera-dip 15000000.imgsys_fw: error finding dst node: -22
+[    3.700476][T600397] camera-dip 15000000.imgsys_fw: error finding dst node: -22
+[    3.700499][T600397] camera-dip 15000000.imgsys_fw: error finding dst node: -22
+[    3.700524][T600397] camera-dip 15000000.imgsys_fw: error finding dst node: -22
+[    3.700548][T600397] camera-dip 15000000.imgsys_fw: error finding dst node: -22
+[    3.700572][T600397] camera-dip 15000000.imgsys_fw: error finding dst node: -22
+[    3.700597][T600397] camera-dip 15000000.imgsys_fw: error finding dst node: -22
+[    3.700621][T600397] camera-dip 15000000.imgsys_fw: error finding dst node: -22
+[    3.700646][T600397] camera-dip 15000000.imgsys_fw: error finding dst node: -22
+[    3.700671][T600397] camera-dip 15000000.imgsys_fw: error finding dst node: -22
+[    3.700696][T600397] camera-dip 15000000.imgsys_fw: error finding dst node: -22
+[    3.700721][T600397] camera-dip 15000000.imgsys_fw: error finding dst node: -22
+[    3.700747][T600397] camera-dip 15000000.imgsys_fw: error finding dst node: -22
+[    3.700773][T600397] camera-dip 15000000.imgsys_fw: error finding dst node: -22
+[    3.700903][T600397] camera-dip 15000000.imgsys_fw: error finding dst node: -22
+[    3.700931][T600397] camera-dip 15000000.imgsys_fw: error finding dst node: -22
+[    3.700959][T600397] camera-dip 15000000.imgsys_fw: error finding dst node: -22
+[    3.700989][T600397] camera-dip 15000000.imgsys_fw: error finding dst node: -22
+[    3.701019][T600397] camera-dip 15000000.imgsys_fw: error finding dst node: -22
+[    3.701049][T600397] camera-dip 15000000.imgsys_fw: error finding dst node: -22
+[    3.701196][T600397] camera-dip 15000000.imgsys_fw: error finding dst node: -22
+[    3.701222][T600397] camera-dip 15000000.imgsys_fw: error finding dst node: -22
+[    3.701248][T600397] camera-dip 15000000.imgsys_fw: error finding dst node: -22
+[    3.701275][T600397] camera-dip 15000000.imgsys_fw: error finding dst node: -22
+[    3.701302][T600397] camera-dip 15000000.imgsys_fw: error finding dst node: -22
+[    3.701329][T600397] camera-dip 15000000.imgsys_fw: error finding dst node: -22
+[    3.701358][T600397] camera-dip 15000000.imgsys_fw: error finding dst node: -22
+[    3.701388][T600397] camera-dip 15000000.imgsys_fw: error finding dst node: -22
+[    3.701655][T600397] camera-dip 15000000.imgsys_fw: error finding dst node: -22
+[    3.701677][T600397] camera-dip 15000000.imgsys_fw: error finding dst node: -22
+[    3.701750][T600397] camera-dip 15000000.imgsys_fw: error finding dst node: -22
+[    3.750304][T600397] mot_ov50a[get_imgsensor_id 1216] i2c write id: 0x20, sensor id: 0x565043
+[    3.780082][  T394] utags (write_utag): [.range] [hw] is locked
+[    3.785427][T600397] mot_ov50a[get_default_framerate_by_scenario 1842] scenario_id = 0
+[    3.785434][T600397] mot_ov50a[get_default_framerate_by_scenario 1842] scenario_id = 1
+[    3.785436][T600397] mot_ov50a[get_default_framerate_by_scenario 1842] scenario_id = 2
+[    3.785438][T600397] mot_ov50a[get_default_framerate_by_scenario 1842] scenario_id = 3
+[    3.785440][T600397] mot_ov50a[get_default_framerate_by_scenario 1842] scenario_id = 4
+[    3.785441][T600397] mot_ov50a[get_default_framerate_by_scenario 1842] scenario_id = 5
+[    3.785443][T600397] mot_ov50a[get_default_framerate_by_scenario 1842] scenario_id = 6
+[    3.785445][T600397] mot_ov50a[get_default_framerate_by_scenario 1842] scenario_id = 7
+[    3.785447][T600397] mot_ov50a[get_default_framerate_by_scenario 1842] scenario_id = 8
+[    3.785448][T600397] mot_ov50a[get_default_framerate_by_scenario 1842] scenario_id = 9
+[    3.785450][T600397] mot_ov50a[get_default_framerate_by_scenario 1842] scenario_id = 10
+[    3.785452][T600397] mot_ov50a[get_default_framerate_by_scenario 1842] scenario_id = 11
+[    3.796221][T100397] mot_manaus_ov32b[get_imgsensor_id 585] i2c write id: 0x20, sensor id: 0x3242
+[    3.797244][T600397] mot_manaus_ov32b[get_info 822] scenario_id = 0
+[    3.810707][T600397] get_imgsensor_id:hi1336: i2c write id: 0x40, sensor id: 0x1338
+[    3.861524][T200394] utags (write_utag): [.auto] [hw] is locked
+[    3.876802][T600397] mtk-cam camsv 1a112000.camsv3: error finding dst node: -22
+[    3.876813][T600397] mtk-cam camsv 1a113000.camsv4: error finding dst node: -22
+[    3.876826][T600397] mtk-cam camsv 1a116000.camsv7: error finding dst node: -22
+[    3.876831][T600397] mtk-cam camsv 1a117000.camsv8: error finding dst node: -22
+[    3.876844][T600397] mtk-cam camsv 1a182000.camsv11: error finding dst node: -22
+[    3.876850][T600397] mtk-cam camsv 1a183000.camsv12: error finding dst node: -22
+[    3.876863][T600397] mtk-cam camsv 1a186000.camsv15: error finding dst node: -22
+[    3.876868][T600397] mtk-cam camsv 1a187000.camsv16: error finding dst node: -22
+[    3.876886][T600397] mtk-cam mraw 1a140000.mraw2: error finding dst node: -22
+[    3.876890][T600397] mtk-cam mraw 1a140000.mraw2: error finding dst node: -22
+[    3.876895][T600397] mtk-cam mraw 1a140000.mraw2: error finding dst node: -22
+[    3.876899][T600397] mtk-cam mraw 1a140000.mraw2: error finding dst node: -22
+[    3.876913][T600397] mtk-cam mraw 1a160000.mraw4: error finding dst node: -22
+[    3.876917][T600397] mtk-cam mraw 1a160000.mraw4: error finding dst node: -22
+[    3.876922][T600397] mtk-cam mraw 1a160000.mraw4: error finding dst node: -22
+[    3.876926][T600397] mtk-cam mraw 1a160000.mraw4: error finding dst node: -22
+[    3.932234][  T394] utags (write_utag): [.system] [hw] is locked
+[    3.994494][  T394] utags (write_utag): [.range] [hw] is locked
+[    4.064655][  T394] utags (write_utag): [.auto] [hw] is locked
+[    4.141471][T400394] utags (write_utag): [.system] [hw] is locked
+[    4.185898][T700397] mt6368_vio28: voltage operation not allowed
+[    4.195748][T400397] vdec-fmt 16080000.vdec_fmt: error finding src node: -22
+[    4.195779][T400397] vdec-fmt 16080000.vdec_fmt: error finding src node: -22
+[    4.201034][T200394] utags (write_utag): [.range] [hw] is locked
+[    4.262527][T500394] utags (write_utag): [.auto] [hw] is locked
+[    4.322262][T100394] utags (write_utag): [.system] [hw] is locked
+[    4.353944][  T332] sensor_list read wrong sensor info
+[    4.353960][  T332] sensor_list read wrong sensor info
+[    4.353965][  T332] sensor_list read wrong sensor info
+[    4.376774][T200394] utags (write_utag): [.range] [hw] is locked
+[    4.434609][T200394] utags (write_utag): [.auto] [hw] is locked
+[    4.488439][T100394] utags (write_utag): [.system] [hw] is locked
+[    4.544143][T200394] utags (write_utag): [.range] [hw] is locked
+[    4.600095][T200394] utags (write_utag): [.system] [hw] is locked
+[    4.656229][T100394] utags (write_utag): [.range] [hw] is locked
+[    4.714911][T100394] utags (write_utag): [.auto] [hw] is locked
+[    4.771970][T200394] utags (write_utag): [.chosen] [hw] is locked
+[    4.828220][T100394] utags (write_utag): [.system] [hw] is locked
+[    4.885220][T100394] utags (write_utag): [.range] [hw] is locked
+[    4.940010][T100394] utags (write_utag): [.auto] [hw] is locked
+[    4.999079][T200394] utags (write_utag): [.chosen] [hw] is locked
+[    5.052640][T200394] utags (write_utag): [.system] [hw] is locked
+[    5.108300][T100394] utags (write_utag): [.range] [hw] is locked
+[    5.165361][T200394] utags (write_utag): [.auto] [hw] is locked
+[    5.220224][T200394] utags (write_utag): [.chosen] [hw] is locked
+[    5.276328][T100394] utags (write_utag): [.system] [hw] is locked
+[    5.333214][T200394] utags (write_utag): [.range] [hw] is locked
+[    5.390915][T200394] utags (write_utag): [.auto] [hw] is locked
+[    5.444395][T200394] utags (write_utag): [.chosen] [hw] is locked
+[    5.500534][T100394] utags (write_utag): [.system] [hw] is locked
+[    5.557283][T200394] utags (write_utag): [.range] [hw] is locked
+[    5.612220][T200394] utags (write_utag): [.auto] [hw] is locked
+[    5.671910][T100394] utags (write_utag): [.system] [hw] is locked
+[    5.714306][T400744] utags (write_utag): [.version] [hw] is locked
+[    5.740651][T300327] init: Unable to set property 'ro.vendor.build.version.incremental' from uid:0 gid:0 pid:753: SELinux permission check failed
+[    5.925713][T600327] init: Unable to set property 'ro.vendor.hw.fps' from uid:0 gid:0 pid:810: Read-only property was already set
+[    5.946619][T600327] init: Unable to set property 'ro.vendor.hw.fps' from uid:0 gid:0 pid:813: Read-only property was already set
+[    5.953241][T700327] init: Unable to set property 'ro.vendor.hw.ecompass' from uid:0 gid:0 pid:814: Read-only property was already set
+[    6.046600][T700327] init: Unable to set property 'ro.vendor.hw.nfc' from uid:0 gid:0 pid:826: Read-only property was already set
+[    6.085139][T700327] init: Unable to set property 'ro.vendor.hw.ram' from uid:0 gid:0 pid:831: Read-only property was already set
+[    6.121642][T700327] init: Unable to set property 'ro.vendor.hw.esim' from uid:0 gid:0 pid:834: Read-only property was already set
+[    6.159740][T400327] init: Unable to set property 'ro.vendor.hw.radio' from uid:0 gid:0 pid:836: Read-only property was already set
+[    6.237291][T600327] init: Unable to set property 'ro.vendor.hw.felica' from uid:0 gid:0 pid:840: Read-only property was already set
+[    6.273724][T600327] init: Unable to set property 'ro.vendor.hw.dualsim' from uid:0 gid:0 pid:842: Read-only property was already set
+[    6.309752][T700327] init: Unable to set property 'ro.vendor.hw.storage' from uid:0 gid:0 pid:844: Read-only property was already set
+[    6.345722][T600327] init: Unable to set property 'ro.vendor.hw.ecompass' from uid:0 gid:0 pid:846: Read-only property was already set
+[    6.381636][T600327] init: Unable to set property 'ro.vendor.hw.frontcolor' from uid:0 gid:0 pid:848: Read-only property was already set
+[    6.386403][T200327] init: Unable to set property 'ro.vendor.hw.radio' from uid:0 gid:0 pid:329: Read-only property was already set
+[    6.386796][T200327] init: Unable to set property 'ro.carrier' from uid:0 gid:0 pid:329: Read-only property was already set
+[    6.388513][T200327] init: Unable to set property 'ro.product.vendor.device' from uid:0 gid:0 pid:329: Read-only property was already set
+[    6.388836][T200327] init: Unable to set property 'ro.product.vendor.name' from uid:0 gid:0 pid:329: Read-only property was already set
+[    6.390001][T200327] init: Unable to set property 'ro.vendor.boot.bl_state' from uid:0 gid:0 pid:329: SELinux permission check failed
+[    6.391009][T200327] init: Unable to set property 'ro.carrier' from uid:0 gid:0 pid:329: Read-only property was already set
+[    6.528764][T100849] [nfg1000] fg_print_buf: mac_read_block buf: 
+[    6.528776][T100849] [nfg1000] fg_print_buf: 03 00 00 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 FB 06 
+[    6.572218][T500849] awinic_sar 7-0012:  [aw_sar_comm_interface.c:aw_sar_i2c_read:62] i2c read error reg: 0xff10, ret= -6 cnt= 5
+[    6.575917][T300849] awinic_sar 7-0012:  [aw_sar_comm_interface.c:aw_sar_i2c_read:62] i2c read error reg: 0xff10, ret= -6 cnt= 4
+[    6.579213][T400849] awinic_sar 7-0012:  [aw_sar_comm_interface.c:aw_sar_i2c_read:62] i2c read error reg: 0xff10, ret= -6 cnt= 3
+[    6.582532][T400849] awinic_sar 7-0012:  [aw_sar_comm_interface.c:aw_sar_i2c_read:62] i2c read error reg: 0xff10, ret= -6 cnt= 2
+[    6.585809][T600849] awinic_sar 7-0012:  [aw_sar_comm_interface.c:aw_sar_i2c_read:62] i2c read error reg: 0xff10, ret= -6 cnt= 1
+[    6.588663][T300849] awinic_sar 7-0012:  [aw_sar_comm_interface.c:aw_sar_i2c_read:62] i2c read error reg: 0xff10, ret= -6 cnt= 0
+[    6.591705][T700849] awinic_sar 7-0012:  [aw_sar_comm_interface.c:aw_sar_i2c_read:70] i2c read error!
+[    6.591719][T700849] awinic_sar 7-0012:  [aw9610x.c:aw9610x_check_chipid:186] read CHIP ID failed: -1
+[    6.591723][T700849] awinic_sar 7-0012:  [aw9610x.c:aw9610x_check_chipid:195] unsupport dev, chipid is (0x0000)
+[    6.591989][  T849] awinic_sar 7-0012:  [aw_sar_comm_interface.c:aw_sar_i2c_read:62] i2c read error reg: 0xff00, ret= -6 cnt= 5
+[    6.595311][T100849] awinic_sar 7-0012:  [aw_sar_comm_interface.c:aw_sar_i2c_read:62] i2c read error reg: 0xff00, ret= -6 cnt= 4
+[    6.598650][  T849] awinic_sar 7-0012:  [aw_sar_comm_interface.c:aw_sar_i2c_read:62] i2c read error reg: 0xff00, ret= -6 cnt= 3
+[    6.601989][  T849] awinic_sar 7-0012:  [aw_sar_comm_interface.c:aw_sar_i2c_read:62] i2c read error reg: 0xff00, ret= -6 cnt= 2
+[    6.604709][  T849] awinic_sar 7-0012:  [aw_sar_comm_interface.c:aw_sar_i2c_read:62] i2c read error reg: 0xff00, ret= -6 cnt= 1
+[    6.608009][  T849] awinic_sar 7-0012:  [aw_sar_comm_interface.c:aw_sar_i2c_read:62] i2c read error reg: 0xff00, ret= -6 cnt= 0
+[    6.611066][  T849] awinic_sar 7-0012:  [aw_sar_comm_interface.c:aw_sar_i2c_read:70] i2c read error!
+[    6.611092][  T849] awinic_sar 7-0012:  [aw9620x.c:aw9620x_check_chipid:69] read CHIP ID failed: -1
+[    6.611358][  T849] awinic_sar 7-0012:  [aw_sar_comm_interface.c:aw_sar_i2c_read:62] i2c read error reg: 0xff10, ret= -6 cnt= 5
+[    6.614654][  T849] awinic_sar 7-0012:  [aw_sar_comm_interface.c:aw_sar_i2c_read:62] i2c read error reg: 0xff10, ret= -6 cnt= 4
+[    6.617926][  T849] awinic_sar 7-0012:  [aw_sar_comm_interface.c:aw_sar_i2c_read:62] i2c read error reg: 0xff10, ret= -6 cnt= 3
+[    6.621191][  T849] awinic_sar 7-0012:  [aw_sar_comm_interface.c:aw_sar_i2c_read:62] i2c read error reg: 0xff10, ret= -6 cnt= 2
+[    6.624465][  T849] awinic_sar 7-0012:  [aw_sar_comm_interface.c:aw_sar_i2c_read:62] i2c read error reg: 0xff10, ret= -6 cnt= 1
+[    6.627734][  T849] awinic_sar 7-0012:  [aw_sar_comm_interface.c:aw_sar_i2c_read:62] i2c read error reg: 0xff10, ret= -6 cnt= 0
+[    6.630774][  T849] awinic_sar 7-0012:  [aw_sar_comm_interface.c:aw_sar_i2c_read:70] i2c read error!
+[    6.630793][  T849] awinic_sar 7-0012:  [aw963xx.c:aw963xx_check_chipid:670] read CHIP ID failed: -1
+[    6.630805][  T849] awinic_sar 7-0012:  [aw_sar.c:aw_sar_i2c_probe:2011] chip_init error!
+[    6.951467][T700883] moto_swap: [HYB_INFO][hybridswap_pre_init]:hybridswap inited success!
+[    7.002586][T600330] ueventd: Failed to find device dev: 254:50: No such device or address
+[    7.003595][T600862] cutils-trace: Error opening trace file: No such file or directory (2)
+[    7.127527][  T327] init: Unable to set property 'ro.vendor.hw.fuelgauge' from uid:0 gid:0 pid:329: Read-only property was already set
+[    7.478035][T200327] init: Unable to set property 'ro.boottime.init.fsck.persist' from uid:0 gid:0 pid:1: Read-only property was already set
+[    7.480385][  T327] init: Unable to set property 'ro.boottime.init.mount.persist' from uid:0 gid:0 pid:1: Read-only property was already set
+[    7.611467][T700327] init: Unable to set property 'ro.lmk.swap_free_low_percentage' from uid:0 gid:0 pid:1: Read-only property was already set
+[    7.611663][T700327] init: Unable to set property 'ro.lmk.swap_util_max' from uid:0 gid:0 pid:1: Read-only property was already set
+[    7.611762][T700327] init: Unable to set property 'ro.lmk.thrashing_limit' from uid:0 gid:0 pid:1: Read-only property was already set
+[    7.611930][T700327] init: Unable to set property 'ro.lmk.thrashing_limit_decay' from uid:0 gid:0 pid:1: Read-only property was already set
+[    7.612160][T700327] init: Unable to set property 'ro.lmk.psi_complete_stall_ms' from uid:0 gid:0 pid:1: Read-only property was already set
+[    7.612412][T700327] init: Unable to set property 'ro.lmk.kill_timeout_ms' from uid:0 gid:0 pid:1: Read-only property was already set
+[    7.647893][T600957] Trustonic TEE: ERROR -1 mcp_cmd: open session: res 8
+[    7.657733][T600001] init: [libfs_mgr] mount_with_alternatives(): skipping mount due to invalid magic, mountpoint=/data blk_dev=/dev/block/sdc90 rec[7].fs_type=f2fs
+[    7.672225][T700327] init: NtQ Control message: Could not find 'aidl/android.system.keystore2.IKeystoreService/default' for ctl.interface_start from pid: 862 (/system/bin/servicemanager)
+[    7.673266][T100957] Trustonic TEE: ERROR -1 mcp_cmd: open session: res 8
+[    7.688511][T600953] [GTP-ERR][goodix_ts_stylus_clk_init:1645] stylus not support!
+[    7.688519][T600953] [GTP-ERR][goodix_ts_probe:2733] failed get goodix stylus clock
+[    7.688521][T600953] [GTP-ERR][goodix_ts_probe:2738] stylus_clk_suspend is NULL
+[    7.688521][T600953] 
+[    7.688577][T600953] goodix_ts spi3.0: ts_mmi_parse_dt: cannot read mmi,panel_id -22
+[    7.692903][T600953] [FTS_TS/E]fts_ts_probe_entry:mmi: device not supported
+[    7.692903][T600953] 
+[    7.692910][T600953] [FTS_TS/E]fts_ts_probe:Touch Screen(SPI BUS) driver probe fail
+[    7.824393][T600061] [GTP-ERR][goodix_ts_mmi_charger_mode:1025] Success to Enable charger mode
+[    7.824393][T600061] 
+[    7.991514][T100884] vold: keystore2 Keystore earlyBootEnded returned service specific error: -68
+[    8.030727][T400873] logd: FrameworkListener: read() failed (Connection reset by peer)
+[    8.234171][    T1] init: /apex/com.motorola.enterprise/etc/motoproxyd.rc: 3: ignored duplicate definition of service 'motoproxyd'
+[    8.680034][T400001] libprocessgroup: Failed to open /sys/fs/cgroup/uid_0/pid_1155/cgroup.procs: No such file or directory
+[    8.906120][T600327] init: Unable to set property 'ro.vendor.build.fingerprint' from uid:0 gid:0 pid:329: Read-only property was already set
+[    8.956767][T600001] selinux: SELinux:  Could not stat /data/dalvik-cache/riscv64: No such file or directory.
+[    8.956796][T600001] selinux: SELinux:  Could not stat /data/dalvik-cache/x86: No such file or directory.
+[    8.956814][T600001] selinux: SELinux:  Could not stat /data/dalvik-cache/x86_64: No such file or directory.
+[    9.061152][T101192] WARNING: Unprivileged eBPF is enabled, data leaks possible via Spectre v2 BHB attacks!
+[    9.137928][T201173] audit: backlog limit exceeded
+[    9.137933][T701178] audit: backlog limit exceeded
+[    9.818506][  T327] init: NtQ Control message: Could not find 'vendor.mediatek.hardware.pq@2.14::IPictureQuality/default' for ctl.interface_start from pid: 863 (/system/system_ext/bin/hwservicemanager)
+[    9.955106][  T327] init: Unable to set property 'vendor.powerhal.gpu.acp.hint' from uid:0 gid:1000 pid:1332: SELinux permission check failed
+[   10.197681][T600330] ueventd: Failed to find device dev: 254:51: No such device or address
+[   10.247441][T300329] conninfra@(conf_parse:511) failed to parse 'coex_wmt_epa_elna'.
+[   10.346350][T500327] init: Unable to set property 'persist.vendor.boot.bootseq.history' from uid:0 gid:0 pid:1506: SELinux permission check failed
+[   10.449073][T600007] configure_gpio: invalid gpio
+[   10.449080][T600007] nfc_i2c_dev_probe: unable to request nfc firm downl gpio [-2]
+[   10.460525][T700327] init: NtQ Control message: Could not find 'vendor.mediatek.hardware.pq@2.14::IPictureQuality/default' for ctl.interface_start from pid: 863 (/system/system_ext/bin/hwservicemanager)
+[   10.461417][T700327] init: NtQ Control message: Could not find 'vendor.mediatek.hardware.pq@2.14::IPictureQuality/default' for ctl.interface_start from pid: 863 (/system/system_ext/bin/hwservicemanager)
+[   10.486604][T400430] cma: cma_alloc: reserved: alloc failed, req-size: 32 pages, ret: -12
+[   10.489120][  T430] cma: cma_alloc: reserved: alloc failed, req-size: 4 pages, ret: -12
+[   10.489636][T300430] cma: cma_alloc: reserved: alloc failed, req-size: 4 pages, ret: -12
+[   10.508849][T200007] nfcc_hw_check: - NFC reset rsp : NfcNciRx 40 0 1
+[   10.508888][T200007] nfcc_hw_check: - NFCC HW not Supported
+[   10.737226][T500327] init: NtQ Control message: Could not find 'aidl/SurfaceFlingerAIDL' for ctl.interface_start from pid: 862 (/system/bin/servicemanager)
+[   10.761455][T500327] init: NtQ Control message: Could not find 'aidl/SurfaceFlingerAIDL' for ctl.interface_start from pid: 862 (/system/bin/servicemanager)
+[   10.824531][T300001] init: Could not start service 'lbs_dbg' as part of class 'main': Cannot find '/system/bin/lbs_dbg': No such file or directory
+[   11.030973][T100001] init: Could not start service 'v3avpud' as part of class 'main': Cannot find '/vendor/bin/v3avpud': No such file or directory
+[   11.040265][T100001] init: Could not start service 'vendor_flash_recovery' as part of class 'main': Cannot find '/vendor/bin/install-recovery.sh': No such file or directory
+[   11.128296][T601790] nfc : nfc_ioctl_nfcc_info r = 805372353
+[   11.280022][T701249] [Awinic][6-0034]aw882xx_dev_init_cali_re: out range re value: 0
+[   11.280030][T701249] [Awinic][6-0035]aw882xx_dev_init_cali_re: out range re value: 0
+[   11.285525][T701249] [Awinic][6-0034]aw882xx_dev_init_cali_re: out range re value: 0
+[   11.285534][T701249] [Awinic][6-0035]aw882xx_dev_init_cali_re: out range re value: 0
+[   11.303903][T701249] snd_audio_dsp snd_audio_dsp: ASoC: error at snd_soc_component_open on snd_audio_dsp: -1
+[   11.306120][T701249] snd_audio_dsp snd_audio_dsp: ASoC: error at snd_soc_component_open on snd_audio_dsp: -1
+[   11.383828][T400862] SELinux: avc:  denied  { find } for pid=1390 uid=1000 name=vendor.mediatek.hardware.composer_ext.IComposerExt/default scontext=u:r:surfaceflinger:s0 tcontext=u:object_r:default_android_service:s0 tclass=service_manager permissive=0
+[   11.478134][T400862] SELinux: avc:  denied  { find } for pid=1623 uid=1000 name=vendor.mediatek.hardware.videotelephony.IVideoTelephony/default scontext=u:r:vtservice:s0 tcontext=u:object_r:default_android_service:s0 tclass=service_manager permissive=0
+[   11.555595][T701178] audit: backlog limit exceeded
+[   11.555633][T701178] audit: backlog limit exceeded
+[   11.555670][T701178] audit: backlog limit exceeded
+[   11.602904][T200327] init: NtQ Control message: Could not find 'android.hardware.camera.provider@2.4::ICameraProvider/internal/0' for ctl.interface_start from pid: 863 (/system/system_ext/bin/hwservicemanager)
+[   11.623130][  T284] [mmi_get_battery_age]psy is not rdy
+[   11.758961][T100862] SELinux: avc:  denied  { find } for pid=1367 uid=1041 name=vendor.mediatek.hardware.audio.IMtkAudio/default scontext=u:r:audioserver:s0 tcontext=u:object_r:default_android_service:s0 tclass=service_manager permissive=0
+[   11.768267][T500862] SELinux: avc:  denied  { find } for pid=1367 uid=1041 name=vendor.mediatek.hardware.audio.IMtkAudio/default scontext=u:r:audioserver:s0 tcontext=u:object_r:default_android_service:s0 tclass=service_manager permissive=0
+[   11.771770][T500862] SELinux: avc:  denied  { find } for pid=1367 uid=1041 name=vendor.mediatek.hardware.audio.IMtkAudio/default scontext=u:r:audioserver:s0 tcontext=u:object_r:default_android_service:s0 tclass=service_manager permissive=0
+[   11.776486][T500862] SELinux: avc:  denied  { find } for pid=1367 uid=1041 name=vendor.mediatek.hardware.audio.IMtkAudio/default scontext=u:r:audioserver:s0 tcontext=u:object_r:default_android_service:s0 tclass=service_manager permissive=0
+[   12.111344][T301660] power_supply mtk-master-charger: driver failed to report `input_power_limit' property: -22
+[   12.159337][T100862] SELinux: avc:  denied  { find } for pid=1367 uid=1041 name=vendor.mediatek.hardware.audio.IMtkAudio/default scontext=u:r:audioserver:s0 tcontext=u:object_r:default_android_service:s0 tclass=service_manager permissive=0
+[   12.168745][T100862] SELinux: avc:  denied  { find } for pid=1367 uid=1041 name=vendor.mediatek.hardware.audio.IMtkAudio/default scontext=u:r:audioserver:s0 tcontext=u:object_r:default_android_service:s0 tclass=service_manager permissive=0
+[   12.175475][T100862] SELinux: avc:  denied  { find } for pid=1367 uid=1041 name=vendor.mediatek.hardware.audio.IMtkAudio/default scontext=u:r:audioserver:s0 tcontext=u:object_r:default_android_service:s0 tclass=service_manager permissive=0
+[   12.180790][T100862] SELinux: avc:  denied  { find } for pid=1367 uid=1041 name=vendor.mediatek.hardware.audio.IMtkAudio/default scontext=u:r:audioserver:s0 tcontext=u:object_r:default_android_service:s0 tclass=service_manager permissive=0
+[   12.193403][  T490] power_supply mtk-master-charger: driver failed to report `input_power_limit' property: -22
+[   12.210286][  T284] [mmi_get_battery_age]psy is not rdy
+[   12.348079][  T284] [mmi_get_battery_age]psy is not rdy
+[   12.481995][T201366] [DISP][E]not found session info for session_id:0x00010000,insert 00000000e885338f to array index:0
+[   12.652793][T400327] init: NtQ Control message: Could not find 'aidl/activity' for ctl.interface_start from pid: 862 (/system/bin/servicemanager)
+[   12.743876][  T284] [mmi_get_battery_age]psy is not rdy
+[   12.815643][T400001] init: Control message: Could not find 'emdlogger1' for ctl.start from pid: 1407 (/vendor/bin/ccci_mdinit 0)
+[   13.448935][T401730] mot_ov50a[get_default_framerate_by_scenario 1842] scenario_id = 0
+[   13.448967][T401730] mot_ov50a[feature_control 2322] SENSOR_FEATURE_GET_SEAMLESS_SCENARIOS 0 255
+[   13.449052][T201730] mot_ov50a[get_default_framerate_by_scenario 1842] scenario_id = 1
+[   13.449066][T201730] mot_ov50a[feature_control 2322] SENSOR_FEATURE_GET_SEAMLESS_SCENARIOS 1 255
+[   13.449084][T201730] mot_ov50a[get_default_framerate_by_scenario 1842] scenario_id = 2
+[   13.449093][T201730] mot_ov50a[feature_control 2322] SENSOR_FEATURE_GET_SEAMLESS_SCENARIOS 2 8
+[   13.449111][T201730] mot_ov50a[get_default_framerate_by_scenario 1842] scenario_id = 3
+[   13.449120][T201730] mot_ov50a[feature_control 2322] SENSOR_FEATURE_GET_SEAMLESS_SCENARIOS 3 255
+[   13.449138][T201730] mot_ov50a[get_default_framerate_by_scenario 1842] scenario_id = 4
+[   13.449147][T201730] mot_ov50a[feature_control 2322] SENSOR_FEATURE_GET_SEAMLESS_SCENARIOS 4 255
+[   13.449164][T201730] mot_ov50a[get_default_framerate_by_scenario 1842] scenario_id = 5
+[   13.449173][T201730] mot_ov50a[feature_control 2322] SENSOR_FEATURE_GET_SEAMLESS_SCENARIOS 5 255
+[   13.449191][T201730] mot_ov50a[get_default_framerate_by_scenario 1842] scenario_id = 6
+[   13.449200][T201730] mot_ov50a[feature_control 2322] SENSOR_FEATURE_GET_SEAMLESS_SCENARIOS 6 255
+[   13.449220][T201730] mot_ov50a[get_default_framerate_by_scenario 1842] scenario_id = 7
+[   13.449229][T201730] mot_ov50a[feature_control 2322] SENSOR_FEATURE_GET_SEAMLESS_SCENARIOS 7 255
+[   13.449246][T201730] mot_ov50a[get_default_framerate_by_scenario 1842] scenario_id = 8
+[   13.449255][T201730] mot_ov50a[feature_control 2322] SENSOR_FEATURE_GET_SEAMLESS_SCENARIOS 8 2
+[   13.449272][T201730] mot_ov50a[get_default_framerate_by_scenario 1842] scenario_id = 9
+[   13.449281][T201730] mot_ov50a[feature_control 2322] SENSOR_FEATURE_GET_SEAMLESS_SCENARIOS 9 11
+[   13.449298][T201730] mot_ov50a[get_default_framerate_by_scenario 1842] scenario_id = 10
+[   13.449307][T201730] mot_ov50a[feature_control 2322] SENSOR_FEATURE_GET_SEAMLESS_SCENARIOS 10 255
+[   13.449324][T201730] mot_ov50a[get_default_framerate_by_scenario 1842] scenario_id = 11
+[   13.449332][T201730] mot_ov50a[feature_control 2322] SENSOR_FEATURE_GET_SEAMLESS_SCENARIOS 11 9
+[   13.449350][T201730] mot_ov50a[get_default_framerate_by_scenario 1842] scenario_id = 12
+[   13.449359][T201730] mot_ov50a[feature_control 2322] SENSOR_FEATURE_GET_SEAMLESS_SCENARIOS 12 255
+[   13.449376][T201730] mot_ov50a[get_default_framerate_by_scenario 1842] scenario_id = 13
+[   13.449385][T201730] mot_ov50a[feature_control 2322] SENSOR_FEATURE_GET_SEAMLESS_SCENARIOS 13 255
+[   13.449402][T201730] mot_ov50a[get_default_framerate_by_scenario 1842] scenario_id = 14
+[   13.449411][T201730] mot_ov50a[feature_control 2322] SENSOR_FEATURE_GET_SEAMLESS_SCENARIOS 14 255
+[   13.449429][T201730] mot_ov50a[get_default_framerate_by_scenario 1842] scenario_id = 15
+[   13.449437][T201730] mot_ov50a[feature_control 2322] SENSOR_FEATURE_GET_SEAMLESS_SCENARIOS 15 255
+[   13.449454][T201730] mot_ov50a[get_default_framerate_by_scenario 1842] scenario_id = 16
+[   13.449463][T201730] mot_ov50a[feature_control 2322] SENSOR_FEATURE_GET_SEAMLESS_SCENARIOS 16 255
+[   13.449480][T201730] mot_ov50a[get_default_framerate_by_scenario 1842] scenario_id = 17
+[   13.449489][T201730] mot_ov50a[feature_control 2322] SENSOR_FEATURE_GET_SEAMLESS_SCENARIOS 17 255
+[   13.449507][T201730] mot_ov50a[get_default_framerate_by_scenario 1842] scenario_id = 18
+[   13.449516][T201730] mot_ov50a[feature_control 2322] SENSOR_FEATURE_GET_SEAMLESS_SCENARIOS 18 255
+[   13.449534][T201730] mot_ov50a[get_default_framerate_by_scenario 1842] scenario_id = 19
+[   13.449543][T201730] mot_ov50a[feature_control 2322] SENSOR_FEATURE_GET_SEAMLESS_SCENARIOS 19 255
+[   13.479958][T501730] mot_manaus_ov32b[get_info 822] scenario_id = 0
+[   13.572845][T200862] SELinux: avc:  denied  { find } for pid=1943 uid=1000 name=com.motorola.hardware.display.panel.IDisplayPanel/default scontext=u:r:system_server:s0 tcontext=u:object_r:default_android_service:s0 tclass=service_manager permissive=0
+[   13.660288][T100327] init: NtQ Control message: Could not find 'aidl/activity' for ctl.interface_start from pid: 862 (/system/bin/servicemanager)
+[   14.200024][T401730] mot_manaus_ov32b[get_info 822] scenario_id = 0
+[   14.599753][T100327] init: Unable to set property 'vendor.sms.md.ready' from uid:1001 gid:1001 pid:1668: SELinux permission check failed
+[   14.653003][T100327] init: Unable to set property 'vendor.sms.md.ready' from uid:1001 gid:1001 pid:1668: SELinux permission check failed
+[   14.687640][T100327] init: NtQ Control message: Could not find 'aidl/activity' for ctl.interface_start from pid: 862 (/system/bin/servicemanager)
+[   14.700255][T402250] mot_ov50a[feature_control 2759] SENSOR_FEATURE_GET_PDAF_INFO, scenarioId:0
+[   15.678355][T300327] init: NtQ Control message: Could not find 'aidl/activity' for ctl.interface_start from pid: 862 (/system/bin/servicemanager)
+[   16.669396][T200327] init: NtQ Control message: Could not find 'aidl/activity' for ctl.interface_start from pid: 862 (/system/bin/servicemanager)
+[   17.684829][T200327] init: NtQ Control message: Could not find 'aidl/activity' for ctl.interface_start from pid: 862 (/system/bin/servicemanager)
+[   18.672917][T300327] init: NtQ Control message: Could not find 'aidl/activity' for ctl.interface_start from pid: 862 (/system/bin/servicemanager)
+[   19.673415][T200327] init: NtQ Control message: Could not find 'aidl/activity' for ctl.interface_start from pid: 862 (/system/bin/servicemanager)
+[   20.050769][T400327] init: NtQ Control message: Could not find 'aidl/sensor_privacy' for ctl.interface_start from pid: 862 (/system/bin/servicemanager)
+[   21.808675][T702775] [Awinic][6-0034]aw882xx_dev_init_cali_re: out range re value: 0
+[   21.808685][T702775] [Awinic][6-0035]aw882xx_dev_init_cali_re: out range re value: 0
+[   22.389136][T200862] SELinux: avc:  denied  { find } for pid=1943 uid=1000 name=motorola.hardware.audio.radar2.IAudioRadar/default scontext=u:r:system_server:s0 tcontext=u:object_r:default_android_service:s0 tclass=service_manager permissive=0
+[   22.703842][T300862] SELinux: avc:  denied  { find } for pid=1390 uid=1000 name=com.motorola.hardware.display.panel.IDisplayPanel/default scontext=u:r:surfaceflinger:s0 tcontext=u:object_r:default_android_service:s0 tclass=service_manager permissive=0
+[   22.707529][T600862] SELinux: avc:  denied  { find } for pid=1943 uid=1000 name=com.motorola.hardware.display.panel.IDisplayPanel/default scontext=u:r:system_server:s0 tcontext=u:object_r:default_android_service:s0 tclass=service_manager permissive=0
+[   22.708050][T700862] SELinux: avc:  denied  { find } for pid=1943 uid=1000 name=com.motorola.hardware.display.panel.IDisplayPanel/default scontext=u:r:system_server:s0 tcontext=u:object_r:default_android_service:s0 tclass=service_manager permissive=0
+[   22.768973][T100284] [mmi_get_battery_age]psy is not rdy
+[   23.683423][T200862] SELinux: avc:  denied  { find } for pid=1943 uid=1000 name=com.motorola.hardware.display.panel.IDisplayPanel/default scontext=u:r:system_server:s0 tcontext=u:object_r:default_android_service:s0 tclass=service_manager permissive=0
+[   23.953812][T100862] SELinux: avc:  denied  { find } for pid=1943 uid=1000 name=com.motorola.hardware.display.panel.IDisplayPanel/default scontext=u:r:system_server:s0 tcontext=u:object_r:default_android_service:s0 tclass=service_manager permissive=0
+[   24.729808][T500862] SELinux: avc:  denied  { find } for pid=1943 uid=1000 name=motorola.hardware.health.IMotoHealth/default scontext=u:r:system_server:s0 tcontext=u:object_r:default_android_service:s0 tclass=service_manager permissive=0
+[   26.041897][T400862] SELinux: avc:  denied  { find } for pid=1943 uid=1000 name=vendor.mediatek.hardware.gpuserv.IGpuService/default scontext=u:r:system_server:s0 tcontext=u:object_r:default_android_service:s0 tclass=service_manager permissive=0
+[   26.654918][  T862] SELinux: avc:  denied  { find } for pid=1943 uid=1000 name=vendor.mediatek.hardware.mtkpower.IMtkPowerService/default scontext=u:r:system_server:s0 tcontext=u:object_r:default_android_service:s0 tclass=service_manager permissive=0
+[   27.279083][T100862] SELinux: avc:  denied  { find } for pid=3250 uid=10327 name=vendor.dolby.dms.IDms/default scontext=u:r:platform_app:s0:c512,c768 tcontext=u:object_r:default_android_service:s0 tclass=service_manager permissive=0
+[   30.467067][T100862] SELinux: avc:  denied  { find } for pid=1943 uid=1000 name=com.motorola.hardware.display.panel.IDisplayPanel/default scontext=u:r:system_server:s0 tcontext=u:object_r:default_android_service:s0 tclass=service_manager permissive=0
+[   32.435671][T100862] SELinux: avc:  denied  { find } for pid=1390 uid=1000 name=com.motorola.hardware.display.panel.IDisplayPanel/default scontext=u:r:surfaceflinger:s0 tcontext=u:object_r:default_android_service:s0 tclass=service_manager permissive=0
+[   32.448075][T100862] SELinux: avc:  denied  { find } for pid=1943 uid=1000 name=com.motorola.hardware.display.panel.IDisplayPanel/default scontext=u:r:system_server:s0 tcontext=u:object_r:default_android_service:s0 tclass=service_manager permissive=0
+[   32.451230][T100862] SELinux: avc:  denied  { find } for pid=1943 uid=1000 name=com.motorola.hardware.display.panel.IDisplayPanel/default scontext=u:r:system_server:s0 tcontext=u:object_r:default_android_service:s0 tclass=service_manager permissive=0
+[   32.800227][  T284] [mmi_get_battery_age]psy is not rdy
+[   32.975441][T200001] libprocessgroup: Failed to open /sys/fs/cgroup/uid_0/pid_1572/cgroup.procs: No such file or directory
+[   33.561852][T500001] selinux: SELinux: Could not get canonical path for /sys/kernel/debug/tracing/instances/wifi restorecon: No such file or directory.
+[   33.602018][T604150] audit: rate limit exceeded
+[   33.769254][T200327] init: Unable to set property 'ro.vendor.build.version.sdk' from uid:0 gid:0 pid:329: Read-only property was already set
+[   33.785546][T300327] init: Unable to set property 'ro.vendor.boot.secure_hardware' from uid:0 gid:0 pid:329: Read-only property was already set
+[   33.787008][T300327] init: Unable to set property 'ro.vendor.sys.adb_reset_protected' from uid:0 gid:0 pid:329: Read-only property was already set
+[   33.789659][T300327] init: Unable to set property 'ro.vendor.boot.hwrev' from uid:0 gid:0 pid:329: Read-only property was already set
+[   33.790836][T300327] init: Unable to set property 'ro.vendor.carrier' from uid:0 gid:0 pid:329: Read-only property was already set
+[   33.792014][T300327] init: Unable to set property 'ro.vendor.build.version.sdk' from uid:0 gid:0 pid:329: Read-only property was already set
+[   33.793304][T300327] init: Unable to set property 'ro.vendor.sys.adb_reset_protected' from uid:0 gid:0 pid:329: Read-only property was already set
+[   33.794416][T300327] init: Unable to set property 'ro.vendor.telephony.default_network' from uid:0 gid:0 pid:329: Read-only property was already set
+[   33.795510][T300327] init: Unable to set property 'ro.vendor.boot.radio' from uid:0 gid:0 pid:329: Read-only property was already set
+[   33.796705][T300327] init: Unable to set property 'ro.vendor.build.description' from uid:0 gid:0 pid:329: Read-only property was already set
+[   33.798703][T300327] init: Unable to set property 'ro.vendor.boot.secure_hardware' from uid:0 gid:0 pid:329: Read-only property was already set
+[   33.799890][T300327] init: Unable to set property 'ro.vendor.sys.adb_reset_protected' from uid:0 gid:0 pid:329: Read-only property was already set
+[   33.949943][C300001] blk_update_request: I/O error, dev loop43, sector 0 op 0x0:(READ) flags 0x0 phys_seg 1 prio class 0
+[   33.949970][C300001] Buffer I/O error on dev loop43, logical block 0, async page read
+[   33.950098][C300001] blk_update_request: I/O error, dev loop43, sector 0 op 0x0:(READ) flags 0x0 phys_seg 1 prio class 0
+[   33.950109][C300001] Buffer I/O error on dev loop43, logical block 0, async page read
+[   34.231136][T600001] moto_swap: [HYB_INFO][init_obj_list_table]:hybridswap obj list table init OK.
+[   34.231334][T600001] moto_swap: [HYB_INFO][init_eswap_list_table]:hybridswap eswap list table init OK.
+[   34.231341][T600001] moto_swap: [HYB_INFO][alloc_hyb_info]:infos 00000000f6ae5b9f size 715816960 nr_es 21845 memcg_num 65535 total_objects 1428609
+[   34.231344][T600001] moto_swap: [HYB_INFO][alloc_hyb_info]:hyb_info init OK.
+[   34.761752][T704360] audit: rate limit exceeded
+[   35.029595][T700327] init: Unable to set property 'vendor.sms.md.ready' from uid:1001 gid:1001 pid:1668: SELinux permission check failed
+[   35.189550][T700327] init: Unable to set property 'vendor.sms.md.ready' from uid:1001 gid:1001 pid:1668: SELinux permission check failed
+[   35.988055][T701692] audit: rate limit exceeded
+[   36.660722][T204987] [Awinic][6-0034]aw882xx_dev_init_cali_re: out range re value: 0
+[   36.660738][T204987] [Awinic][6-0035]aw882xx_dev_init_cali_re: out range re value: 0
+[   36.996553][T701692] audit: rate limit exceeded
+[   37.971336][T702283] mtk-charger-cooling charger-cooler: charger-cooler: set lv = 1 done
+[   37.976729][T700261] power_supply mtk-master-charger: driver failed to report `input_power_limit' property: -22
+[   38.088016][T100284] [mmi_get_battery_age]psy is not rdy
+[   38.182322][T701692] audit: rate limit exceeded
+[   39.302053][T301692] audit: rate limit exceeded
+[   40.385893][T701692] audit: rate limit exceeded
+[   41.411561][T201692] audit: rate limit exceeded
+[   42.453314][T701692] audit: rate limit exceeded
+[   42.852631][T600862] SELinux: avc:  denied  { find } for pid=1943 uid=1000 name=vendor.mediatek.hardware.lbs.ILbs/mtk_lppe_socket_wlan scontext=u:r:system_server:s0 tcontext=u:object_r:default_android_service:s0 tclass=service_manager permissive=0
+[   42.868834][T600862] SELinux: avc:  denied  { find } for pid=1943 uid=1000 name=vendor.mediatek.hardware.lbs.ILbs/mtk_agps2framework scontext=u:r:system_server:s0 tcontext=u:object_r:default_android_service:s0 tclass=service_manager permissive=0
+[   42.897271][T600862] SELinux: avc:  denied  { find } for pid=1943 uid=1000 name=vendor.mediatek.hardware.lbs.ILbs/mtk_lppe_socket_bt scontext=u:r:system_server:s0 tcontext=u:object_r:default_android_service:s0 tclass=service_manager permissive=0
+[   42.913025][T600862] SELinux: avc:  denied  { find } for pid=1943 uid=1000 name=vendor.mediatek.hardware.lbs.ILbs/mtk_lppe_socket_sensor scontext=u:r:system_server:s0 tcontext=u:object_r:default_android_service:s0 tclass=service_manager permissive=0
+[   42.926193][T600862] SELinux: avc:  denied  { find } for pid=1943 uid=1000 name=vendor.mediatek.hardware.lbs.ILbs/mtk_lppe_socket_network scontext=u:r:system_server:s0 tcontext=u:object_r:default_android_service:s0 tclass=service_manager permissive=0
+[   42.938692][T600862] SELinux: avc:  denied  { find } for pid=1943 uid=1000 name=vendor.mediatek.hardware.lbs.ILbs/mtk_lppe_socket_ipaddr scontext=u:r:system_server:s0 tcontext=u:object_r:default_android_service:s0 tclass=service_manager permissive=0
+[   42.946959][T600862] SELinux: avc:  denied  { find } for pid=1943 uid=1000 name=vendor.mediatek.hardware.lbs.ILbs/mtk_lppe_socket_lbs scontext=u:r:system_server:s0 tcontext=u:object_r:default_android_service:s0 tclass=service_manager permissive=0
+[   42.965585][T300862] SELinux: avc:  denied  { find } for pid=1943 uid=1000 name=vendor.mediatek.hardware.lbs.ILbs/mtk_lppe_socket_agps scontext=u:r:system_server:s0 tcontext=u:object_r:default_android_service:s0 tclass=service_manager permissive=0
+[   42.995454][T702283] mtk-charger-cooling charger-cooler: charger-cooler: set lv = 2 done
+[   43.001814][T700261] power_supply mtk-master-charger: driver failed to report `input_power_limit' property: -22
+[   43.118945][T400284] [mmi_get_battery_age]psy is not rdy
+[   43.594392][T701692] audit: rate limit exceeded
+[   43.595577][T702286] mtk-charger-cooling charger-cooler: charger-cooler: set lv = 0 done
+[   43.604990][T700261] power_supply mtk-master-charger: driver failed to report `input_power_limit' property: -22
+[   43.605968][T200862] SELinux: avc:  denied  { find } for pid=1943 uid=1000 name=com.motorola.hardware.display.panel.IDisplayPanel/default scontext=u:r:system_server:s0 tcontext=u:object_r:default_android_service:s0 tclass=service_manager permissive=0
+[   43.715909][T700284] [mmi_get_battery_age]psy is not rdy
+[   43.813250][  T862] SELinux: avc:  denied  { find } for pid=1943 uid=1000 name=vendor.mediatek.hardware.mtkpower.IMtkPowerService/default scontext=u:r:system_server:s0 tcontext=u:object_r:default_android_service:s0 tclass=service_manager permissive=0
+[   43.818353][T200862] SELinux: avc:  denied  { find } for pid=1943 uid=1000 name=com.motorola.hardware.display.panel.IDisplayPanel/default scontext=u:r:system_server:s0 tcontext=u:object_r:default_android_service:s0 tclass=service_manager permissive=0
+[   44.020817][ T2283] mtk-charger-cooling charger-cooler: charger-cooler: set lv = 2 done
+[   44.028503][  T490] power_supply mtk-master-charger: driver failed to report `input_power_limit' property: -22
+[   44.143824][  T284] [mmi_get_battery_age]psy is not rdy
+[   44.690444][ T1692] audit: rate limit exceeded
+[   45.852573][ T1692] audit: rate limit exceeded
+[   46.458340][  T633] transceiver can't copy config 2 2 8 12 24 0
+[   46.458380][  T633] transceiver can't copy config 2 3 8 12 24 0
+[   46.924569][T501692] audit: rate limit exceeded
+[   48.007432][T501692] audit: rate limit exceeded
+[   49.008835][T501692] audit: rate limit exceeded
+[   50.072054][T401692] audit: rate limit exceeded
+[   50.738580][T400001] libprocessgroup: Failed to open /sys/fs/cgroup/uid_1000/pid_1677/cgroup.procs: No such file or directory
+[   51.075641][T401692] audit: rate limit exceeded
+[   53.011606][T501692] audit: rate limit exceeded
+[   54.012842][T401692] audit: rate limit exceeded
+[   54.171834][  T284] [mmi_get_battery_age]psy is not rdy
+[   55.905278][T401692] audit: rate limit exceeded
+[   56.932073][T401692] audit: rate limit exceeded
+[   58.017260][T401692] audit: rate limit exceeded
+[   59.421884][T501692] audit: rate limit exceeded
+[   60.909378][T401692] audit: rate limit exceeded
+[   63.024152][T401692] audit: rate limit exceeded
+[   64.024957][T401692] audit: rate limit exceeded
+[   64.204293][T500284] [mmi_get_battery_age]psy is not rdy
+[   65.247501][T401692] audit: rate limit exceeded
+[   66.376871][T101692] audit: rate limit exceeded
+[   67.459825][T401692] audit: rate limit exceeded
+[   68.540237][T401692] audit: rate limit exceeded
+[   69.928153][T501692] audit: rate limit exceeded
+[   70.934316][T401692] audit: rate limit exceeded
+[   71.936860][T501692] audit: rate limit exceeded
+[   72.978198][T401692] audit: rate limit exceeded
+[   74.039366][T501692] audit: rate limit exceeded
+[   74.244568][  T284] [mmi_get_battery_age]psy is not rdy
+[   75.040606][T401692] audit: rate limit exceeded
+[   75.245875][T302283] mtk-charger-cooling charger-cooler: charger-cooler: set lv = 1 done
+[   75.262867][T300066] power_supply mtk-master-charger: driver failed to report `input_power_limit' property: -22
+[   75.379941][T400284] [mmi_get_battery_age]psy is not rdy
+[   77.043332][T501692] audit: rate limit exceeded
+[   80.046395][T501692] audit: rate limit exceeded
+[   84.275543][T302283] mtk-charger-cooling charger-cooler: charger-cooler: set lv = 0 done
+[   84.286385][T300066] power_supply mtk-master-charger: driver failed to report `input_power_limit' property: -22
+[   84.421624][T100284] [mmi_get_battery_age]psy is not rdy
+[   85.055288][ T1692] audit: rate limit exceeded
+[   94.504741][  T284] [mmi_get_battery_age]psy is not rdy
+[   98.091725][T301692] audit: rate limit exceeded
+[  100.095876][T301692] audit: rate limit exceeded
+[  102.099762][T301692] audit: rate limit exceeded
+[  104.103817][T301692] audit: rate limit exceeded
+[  104.499524][  T284] [mmi_get_battery_age]psy is not rdy
+[  111.123853][T301692] audit: rate limit exceeded
+[  114.589968][T100284] [mmi_get_battery_age]psy is not rdy
+[  118.148039][T401692] audit: rate limit exceeded
+[  124.579896][T100284] [mmi_get_battery_age]psy is not rdy
+[  134.637455][T100284] [mmi_get_battery_age]psy is not rdy
+[  144.699932][T100284] [mmi_get_battery_age]psy is not rdy
+[  155.079053][T400284] [mmi_get_battery_age]psy is not rdy
+[  164.748720][  T284] [mmi_get_battery_age]psy is not rdy
+[  168.831474][T401692] audit: rate limit exceeded
+[  168.855785][T400227] [DISP][E]mtk_drm_idlemgr_monitor_thread mtk_crtc_wait_status fail-1
+[  168.982688][T600862] SELinux: avc:  denied  { find } for pid=1943 uid=1000 name=com.motorola.hardware.display.panel.IDisplayPanel/default scontext=u:r:system_server:s0 tcontext=u:object_r:default_android_service:s0 tclass=service_manager permissive=0
+[  169.007855][T500862] SELinux: avc:  denied  { find } for pid=1943 uid=1000 name=com.motorola.hardware.display.panel.IDisplayPanel/default scontext=u:r:system_server:s0 tcontext=u:object_r:default_android_service:s0 tclass=service_manager permissive=0
+[  169.140403][T600061] [GTP-ERR][goodix_ts_mmi_charger_mode:1025] Success to Enable charger mode
+[  169.140403][T600061] 
+[  170.318075][T301692] audit: rate limit exceeded
+[  170.743354][T200862] SELinux: avc:  denied  { find } for pid=4301 uid=10335 name=motorola.hardware.sensors.ISensorsCalibrate/default scontext=u:r:moto_app:s0:c512,c768 tcontext=u:object_r:default_android_service:s0 tclass=service_manager permissive=0
+[  170.748058][T200862] SELinux: avc:  denied  { find } for pid=1943 uid=1000 name=com.motorola.hardware.display.panel.IDisplayPanel/default scontext=u:r:system_server:s0 tcontext=u:object_r:default_android_service:s0 tclass=service_manager permissive=0
+[  170.851919][T109744] [Awinic][6-0034]aw882xx_dev_init_cali_re: out range re value: 0
+[  170.851936][T109744] [Awinic][6-0035]aw882xx_dev_init_cali_re: out range re value: 0
+[  171.320402][T501692] audit: rate limit exceeded
+[  174.161668][ T1692] audit: rate limit exceeded
+[  174.783953][T100284] [mmi_get_battery_age]psy is not rdy
+[  175.288115][T501692] audit: rate limit exceeded
+[  176.674482][T201692] audit: rate limit exceeded
+[  179.329996][ T1692] audit: rate limit exceeded
+[  181.331839][ T1692] audit: rate limit exceeded
+[  184.799877][  T284] [mmi_get_battery_age]psy is not rdy
+[  188.347085][ T1692] audit: rate limit exceeded
+[  194.923868][  T284] [mmi_get_battery_age]psy is not rdy
+[  196.468507][T609946] audit: rate limit exceeded
+[  199.374470][ T1692] audit: rate limit exceeded
+[  204.898238][  T284] [mmi_get_battery_age]psy is not rdy
+[  207.381824][ T1692] audit: rate limit exceeded
+[  209.383373][T101692] audit: rate limit exceeded
+[  210.385331][T710086] audit: rate limit exceeded
+[  211.467806][T709993] audit: rate limit exceeded
+[  211.821813][T710354] [DISP][E]motUtil failed to read from panel
+[  211.821824][T710354] [DISP][E]snprintf failed, blen 0
+[  211.845170][T710359] [DISP][E]motUtil failed to read from panel
+[  211.845180][T710359] [DISP][E]snprintf failed, blen 0
+[  211.912666][T710375] Unable to handle kernel paging request at virtual address 00000000000013b4
+[  211.912675][T710375] Mem abort info:
+[  211.912678][T710375]   ESR = 0x96000005
+[  211.912682][T710375]   EC = 0x25: DABT (current EL), IL = 32 bits
+[  211.912684][T710375]   SET = 0, FnV = 0
+[  211.912686][T710375]   EA = 0, S1PTW = 0
+[  211.912688][T710375] Data abort info:
+[  211.912691][T710375]   ISV = 0, ISS = 0x00000005
+[  211.912693][T710375]   CM = 0, WnR = 0
+[  211.912696][T710375] user pgtable: 4k pages, 39-bit VAs, pgdp=0000000169c60000
+[  211.912698][T710375] [00000000000013b4] pgd=0000000000000000
+[  211.912706][T710375] Internal error: Oops: 96000005 [#1] PREEMPT SMP
+[  211.912711][T710375] Modules linked in:
+[  211.912712][T710375]  wlan_drv_gen4m_6879(O)
+[  211.912715][T710375]  wmt_chrdev_wifi_connac2(O)
+[  211.912718][T710375]  gps_pwr(O)
+[  211.912720][T710375]  gps_drv_dl_v050(O)
+[  211.912722][T710375]  fmradio_drv_connac2x(O)
+[  211.912725][T710375]  goodix_mtk_fod(O)
+[  211.912727][T710375]  bt_drv_6879(O)
+[  211.912730][T710375]  nxp_i2c(O)
+[  211.912732][T710375]  conninfra(O)
+[  211.912734][T710375]  connfem(O)
+[  211.912745][C208834] [wlan][10178]statsParseARPInfo:(TX INFO) ARP RSP SRC MAC/IP[7a:4d:90:f1:35:7e]/[192.168.68.107], TAR MAC/IP[3c:52:a1:32:8e:4c]/[192.168.68.250], SeqNo: 128
+[  211.912750][T710375]  focaltech_v3(O)
+[  211.912751][T710375]  goodix_brl_mmi(O)
+[  211.912753][T710375]  touchscreen_mmi(O)
+[  211.912756][T710375]  mmi_relay(O)
+[  211.912758][T710375]  moto_sched(O)
+[  211.912760][T710375]  moto_binder(O)
+[  211.912763][T710375]  moto_swap(O)
+[  211.912765][T710375]  zsmalloc
+[  211.912768][T710375]  moto_mm(O)
+[  211.912770][T710375]  moto_mmap_fault(O)
+[  211.912773][T710375]  sx937x_sar(O)
+[  211.912775][T710375]  awinic_sar(O)
+[  211.912778][T710375]  leds_gpio(O)
+[  211.912780][T710375]  sensors_class(O)
+[  211.912782][T710375]  qpnp_adaptive_charge(O)
+[  211.912785][T710375]  smart_battery(O)
+[  211.912787][T710375]  nfg1000_fg_mmi(O)
+[  211.912790][T710375]  mmi_gauge_class(O)
+[  211.912792][T710375]  moto_f_mass_storage(O)
+[  211.912794][T710375]  mmi_info(O)
+[  211.912797][T710375]  mmqos_md
+[  211.912799][T710375]  emi_mpu_hook_v1
+[  211.912802][T710375]  sec
+[  211.912804][T710375]  widevine_driver
+[  211.912806][T710375]  camera_dpe_isp70
+[  211.912809][T710375]  vdec_fmt
+[  211.912811][T710375]  uload_ind
+[  211.912814][T710375]  load_track
+[  211.912816][T710375]  mtk_irtx_pwm
+[  211.912819][T710375]  mtk_pwm
+[  211.912821][T710375]  trace_mmstat
+[  211.912823][T710375]  frs
+[  211.912826][T710375]  fpsgo(PO)
+[  211.912828][T710375]  mtk_fpsgo
+[  211.912830][T710375]  mtk_perf_ioctl
+[  211.912832][T710375]  mtk_core_ctl
+[  211.912835][T710375]  task_turbo
+[  211.912837][T710375]  mtk_perf_common
+[  211.912839][T710375]  mtk_cm_mgr_mt6879
+[  211.912841][T710375]  mtk_cm_mgr
+[  211.912844][T710375]  mtk_cm_ipi
+[  211.912846][T710375]  mtk_dvfsrc_start
+[  211.912849][T710375]  mtk_swpm_dbg_v6879
+[  211.912851][T710375]  mtk_swpm_dbg_common_v1
+[  211.912854][T710375]  mtk_swpm
+[  211.912856][T710375]  cpuqos_v3
+[  211.912858][T710375]  scheduler
+[  211.912860][T710375]  cpufreq_sugov_ext
+[  211.912863][T710375]  cpudvfs
+[  211.912866][T710375]  mtk_pm_domain_disable_unused
+[  211.912868][T710375]  clk_disable_unused
+[  211.912870][T710375]  sensorhub
+[  211.912872][T710375]  hf_manager
+[  211.912874][T710375]  mtk_lpm_dbg_mt6879
+[  211.912877][T710375]  mtk_lpm_plat_v1
+[  211.912879][T710375]  mtk_lpm_dbg_common_v1
+[  211.912882][T710375]  mtk_lpm
+[  211.912884][T710375]  aw36518
+[  211.912886][T710375]  lm3644
+[  211.912889][T710375]  flashlight
+[  211.912891][T710375]  mtk_composite
+[  211.912893][T710375]  mtk_cam_isp
+[  211.912895][T710375]  mtk_cam_plat_mt6879
+[  211.912898][T710375]  mtk_cam_plat_util
+[  211.912900][T710375]  pda_drv_mt6879
+[  211.912903][T710375]  bu64253gwz
+[  211.912905][T710375]  mot_manaus_dw9800v
+[  211.912908][T710375]  mot_manaus_gt9764
+[  211.912910][T710375]  camera_af_media
+[  211.912912][T710375]  camera_eeprom
+[  211.912915][T710375]  imgsensor
+[  211.912917][T710375]  imgsensor_glue
+[  211.912919][T710375]  v4l2_fwnode
+[  211.912922][T710375]  mtk_ccd_remoteproc
+[  211.912924][T710375]  ccd_rpmsg
+[  211.912926][T710375]  mtk_aie
+[  211.912929][T710375]  mtk_imgsys_v4l2
+[  211.912931][T710375]  mtk_ipesys_me
+[  211.912933][T710375]  mtk_hcp
+[  211.912935][T710375]  cmdq_test
+[  211.912938][T710375]  mtk_scp_vow
+[  211.912940][T710375]  mtk_vow
+[  211.912942][T710375]  mtk_vmm_regulator
+[  211.912944][T710375]  pmsr
+[  211.912947][T710375]  fhctl
+[  211.912949][T710375]  mcupm
+[  211.912951][T710375]  mtk_cqdma
+[  211.912954][T710375]  mtk_heap_debug
+[  211.912956][T710375]  gz_virtio_mod
+[  211.912959][T710375]  gz_irq_mod
+[  211.912961][T710375]  gz_main_mod
+[  211.912963][T710375]  gz_log_mod
+[  211.912966][T710375]  mtk_vcodec_enc_v1
+[  211.912968][T710375]  mtk_vcodec_dec_v1
+[  211.912970][T710375]  mtk_vcodec_common
+[  211.912973][T710375]  vcp
+[  211.912975][T710375]  mtk_jpeg
+[  211.912977][T710375]  apusys
+[  211.912979][T710375]  apu_top
+[  211.912982][T710375]  mtk_vmm_dbg
+[  211.912984][T710375]  mtk_ccu
+[  211.912986][T710375]  mtk_ssc_dbg_v2
+[  211.912989][T710375]  atf_logger
+[  211.912991][T710375]  mddp
+[  211.912993][T710375]  aw882xx_dlkm(O)
+[  211.912995][T710375]  mt6879_mt6368
+[  211.912998][T710375]  mtk_soc_offload_common
+[  211.913000][T710375]  snd_soc_mt6368
+[  211.913002][T710375]  snd_soc_mt6879_afe
+[  211.913005][T710375]  snd_soc_mtk_scp_ultra
+[  211.913007][T710375]  mtk_scp_ultra
+[  211.913010][T710375]  snd_soc_mtk_common
+[  211.913012][T710375]  mtk_btcvsd
+[  211.913015][T710375]  snd_soc_tfa98xx
+[  211.913017][T710375]  snd_soc_rt5512
+[  211.913019][T710375]  richtek_spm_cls
+[  211.913022][T710375]  mtk_sp_spk_amp
+[  211.913024][T710375]  snd_soc_audiodsp_common
+[  211.913026][T710375]  mt6368_accdet
+[  211.913028][T710375]  fsa4480
+[  211.913031][T710375]  audio_ipi
+[  211.913033][T710375]  adsp_v2
+[  211.913035][T710375]  nvmem_mt635x_efuse
+[  211.913038][T710375]  connscp
+[  211.913040][T710375]  connadp
+[  211.913042][T710375]  btif_drv
+[  211.913045][T710375]  backlight_cooling
+[  211.913047][T710375]  charger_cooling
+[  211.913049][T710375]  md_cooling_all
+[  211.913051][T710375]  board_temp
+[  211.913054][T710375]  thermal_trace
+[  211.913056][T710375]  thermal_interface
+[  211.913058][T710375]  thermal_generic_adc
+[  211.913060][T710375]  pmic_temp
+[  211.913062][T710375]  soc_temp_lvts
+[  211.913064][T710375]  mali_kbase_mt6879(O)
+[  211.913067][T710375]  mali_mgm_mt6879(O)
+[  211.913069][T710375]  mali_prot_alloc_mt6879(O)
+[  211.913072][T710375]  ged
+[  211.913074][T710375]  mtk_gpu_qos
+[  211.913077][T710375]  mtk_qos
+[  211.913079][T710375]  sspm_v3
+[  211.913081][T710375]  mtk_gpufreq_mt6879
+[  211.913083][T710375]  mtk_gpufreq_wrapper
+[  211.913085][T710375]  mtk_gpu_hal
+[  211.913088][T710375]  gpueb
+[  211.913090][T710375]  mtk_ssc
+[  211.913092][T710375]  syscon_reboot_mode
+[  211.913095][T710375]  reboot_mode
+[  211.913098][T710375]  mtk_cpu_power_throttling
+[  211.913100][T710375]  mtk_md_power_throttling
+[  211.913102][T710375]  mtk_bp_thl
+[  211.913105][T710375]  mtk_battery_oc_throttling
+[  211.913107][T710375]  mtk_usb_f_rndis
+[  211.913110][T710375]  mtk_u_ether
+[  211.913112][T710375]  c2k_usb_f_via_pcv
+[  211.913114][T710375]  c2k_usb_f_via_modem
+[  211.913116][T710375]  c2k_usb_f_via_gps
+[  211.913118][T710375]  c2k_usb_f_via_ets
+[  211.913121][T710375]  c2k_usb_f_via_atc
+[  211.913123][T710375]  c2k_usb
+[  211.913125][T710375]  ccci_dpmaif
+[  211.913127][T710375]  ccci_ccif
+[  211.913129][T710375]  ccci_fsm_scp
+[  211.913132][T710375]  scp
+[  211.913134][T710375]  mtk_afe_external
+[  211.913137][T710375]  mtk_tinysys_ipi
+[  211.913139][T710375]  mtk_rpmsg_mbox
+[  211.913141][T710375]  ccci_md_all
+[  211.913144][T710375]  ccmni
+[  211.913146][T710375]  rps_perf
+[  211.913148][T710375]  mtk_pbm
+[  211.913150][T710375]  mtk_mdpm
+[  211.913152][T710375]  mtk_dynamic_loading_throttling
+[  211.913155][T710375]  mtk_low_battery_throttling
+[  211.913157][T710375]  ccci_rtc
+[  211.913159][T710375]  ccci_md_clk
+[  211.913161][T710375]  ccci_auxadc
+[  211.913164][T710375]  ccci_util_lib
+[  211.913166][T710375]  clk_dbg_mt6879
+[  211.913169][T710375]  mtk_disp_sec
+[  211.913171][T710375]  mtk_sec_heap
+[  211.913173][T710375]  trusted_mem
+[  211.913175][T710375]  iommu_gz
+[  211.913178][T710375]  cmdq_sec_drv
+[  211.913181][T710375]  gz_tz_system
+[  211.913183][T710375]  gz_ipc_mod
+[  211.913185][T710375]  gz_trusty_mod
+[  211.913187][T710375]  utags(O)
+[  211.913189][T710375]  cache_parity
+[  211.913191][T710375]  emi_slb
+[  211.913193][T710375]  emi_mpu_v2
+[  211.913195][T710375]  mtk_swpm_perf_arm_pmu
+[  211.913197][T710375]  arm_dsu_pmu
+[  211.913200][T710375]  mediatek_cpufreq_hw
+[  211.913202][T710375]  mac80211
+[  211.913204][T710375]  cfg80211
+[  211.913206][T710375]  mtk_mminfra_debug
+[  211.913208][T710375]  tinysys_scmi
+[  211.913210][T710375]  mtk_mbox_mailbox
+[  211.913212][T710375]  adsp
+[  211.913215][T710375]  mtk_mbox
+[  211.913217][T710375]  reset_ti_syscon
+[  211.913219][T710375]  meta
+[  211.913221][T710375]  tcpci_late_sync
+[  211.913223][T710375]  extcon_mtk_usb
+[  211.913225][T710375]  leds_mtk_pwm
+[  211.913227][T710375]  leds_mtk_disp
+[  211.913229][T710375]  pwm_mtk_disp
+[  211.913231][T710375]  mtk_socinfo
+[  211.913233][T710375]  mt6375_battery
+[  211.913235][T710375]  pmic_lbat_service
+[  211.913238][T710375]  rt_pd_manager
+[  211.913240][T710375]  mtk_pep50
+[  211.913242][T710375]  mtk_pep
+[  211.913244][T710375]  moto_wlc_alg
+[  211.913246][T710375]  mtk_pep20
+[  211.913248][T710375]  mtk_pd_charging
+[  211.913250][T710375]  mtk_pep40
+[  211.913252][T710375]  mtk_charger_framework
+[  211.913254][T710375]  moto_chg_tcmd
+[  211.913256][T710375]  mtk_pd_adapter
+[  211.913258][T710375]  mtk_chg_type_det
+[  211.913260][T710375]  tcpc_mt6375
+[  211.913262][T710375]  tcpc_class
+[  211.913265][T710375]  pd_dbg_info
+[  211.913267][T710375]  ps5169
+[  211.913269][T710375]  fusb304
+[  211.913272][T710375]  mux_switch
+[  211.913274][T710375]  mt6375_charger
+[  211.913276][T710375]  mtk_charger_algorithm_class
+[  211.913278][T710375]  adapter_class
+[  211.913280][T710375]  bq25980_mmi(O)
+[  211.913283][T710375]  charger_class
+[  211.913285][T710375]  rt6160_regulator
+[  211.913286][T710375]  rt5133_regulator
+[  211.913289][T710375]  mt6375_auxadc
+[  211.913291][T710375]  mt6375_adc
+[  211.913293][T710375]  industrialio_triggered_buffer
+[  211.913295][T710375]  kfifo_buf
+[  211.913298][T710375]  isee
+[  211.913300][T710375]  teeperf
+[  211.913302][T710375]  device_apc_mt6879
+[  211.913304][T710375]  extdev_io_class
+[  211.913306][T710375]  mt6685_audclk
+[  211.913309][T710375]  mt6685_core
+[  211.913311][T710375]  mt6375
+[  211.913313][T710375]  spi_mt65xx
+[  211.913316][T710375]  mtk_dvfsrc_devfreq
+[  211.913318][T710375]  mtk_dvfsrc_helper
+[  211.913320][T710375]  rtc_mt6685
+[  211.913323][T710375]  i2c_mt65xx
+[  211.913325][T710375]  regulator_vibrator
+[  211.913327][T710375]  mtk_kpd
+[  211.913330][T710375]  mtk_pmic_keys
+[  211.913332][T710375]  pidmap
+[  211.913335][T710375]  phy_mtk_ufs
+[  211.913338][T710375]  mtk_mmc
+[  211.913340][T710375]  rpmb_mtk
+[  211.913342][T710375]  ufs_mediatek_mod
+[  211.913345][T710375]  rpmb
+[  211.913347][T710375]  ufs_mediatek_dbg
+[  211.913349][T710375]  mtk_mmc_dbg
+[  211.913351][T710375]  mtk_mmc_autok
+[  211.913354][T710375]  cqhci
+[  211.913356][T710375]  mcDrvModule
+[  211.913358][T710375]  blocktag
+[  211.913361][T710375]  mtk_spmi_pmic_adc
+[  211.913363][T710375]  mt6368_regulator
+[  211.913366][T710375]  xhci_mtk_hcd
+[  211.913369][T710375]  usb_boost
+[  211.913371][T710375]  mtu3
+[  211.913373][T710375]  phy_mtk_tphy
+[  211.913375][T710375]  aee_rs
+[  211.913377][T710375]  mediatek_drm
+[  211.913380][T710375]  leds_mtk
+[  211.913382][T710375]  clkbuf
+[  211.913384][T710375]  dsi_panel_mot_dummy_vdo_60hz
+[  211.913386][T710375]  dsi_panel_mot_boe_nt37701a_655_fhdp_cmd_144hz
+[  211.913390][T710375]  dsi_panel_mot_tm_vtdr6115_655_fhdp_dphy_vdo_144hz_u8
+[  211.913392][T710375]  dsi_panel_mot_csot_vtdr6115_655_fhdp_dphy_vdo_144hz_c7
+[  211.913394][T710375]  dsi_panel_mot_tianma_vtdr6115_655_fhdp_dphy_vdo_144hz
+[  211.913397][T710375]  mtk_panel_ext
+[  211.913399][T710375]  mtk_mml_mt6879
+[  211.913402][T710375]  mtk_mml
+[  211.913405][T710375]  mtk_sync
+[  211.913407][T710375]  mtk_slbc
+[  211.913409][T710375]  mdp_drv_mt6879
+[  211.913411][T710375]  cmdq_helper_inf
+[  211.913413][T710375]  cmdq_platform_mt6879
+[  211.913415][T710375]  mtk_cmdq_drv_ext
+[  211.913418][T710375]  vcp_status
+[  211.913420][T710375]  system_heap
+[  211.913422][T710375]  mtk_mm_heap
+[  211.913423][T710375]  iommu_test
+[  211.913425][T710375]  mtk_iommu
+[  211.913427][T710375]  iommu_debug
+[  211.913429][T710375]  iommu_secure
+[  211.913431][T710375]  mmqos_mt6879
+[  211.913433][T710375]  mmqos_common
+[  211.913435][T710375]  mtk_mmdvfs_debug
+[  211.913437][T710375]  mtk_mmdvfs
+[  211.913439][T710375]  mmprofile
+[  211.913441][T710375]  mtk_icc_core
+[  211.913443][T710375]  mtk_smi_dbg
+[  211.913445][T710375]  emi
+[  211.913447][T710375]  emi_mpu
+[  211.913449][T710375]  mtk_smi
+[  211.913451][T710375]  clk_fmeter_mt6879
+[  211.913453][T710375]  pd_chk_mt6879
+[  211.913455][T710375]  clk_chk_mt6879
+[  211.913457][T710375]  device_apc_common
+[  211.913459][T710375]  clk_bringup
+[  211.913461][T710375]  mtk_scpsys_bringup
+[  211.913463][T710375]  mtk_scpsys_mt6879
+[  211.913465][T710375]  mtk_vmm_spm
+[  211.913468][T710375]  wl2864c_regulator
+[  211.913470][T710375]  mt6363_regulator
+[  211.913472][T710375]  mt6315_regulator
+[  211.913475][T710375]  spmi_mtk_pmif
+[  211.913477][T710375]  mtk_spmi_pmic
+[  211.913479][T710375]  regmap_spmi
+[  211.913482][T710375]  mtk_pmic_wrap
+[  211.913484][T710375]  tui_common
+[  211.913487][T710375]  mtk_emi
+[  211.913489][T710375]  mtk_dvfsrc_regulator
+[  211.913491][T710375]  mtk_dvfsrc
+[  211.913493][T710375]  mtk_scpsys
+[  211.913495][T710375]  mtk_dramc
+[  211.913497][T710375]  clk_mt6879_mdp
+[  211.913499][T710375]  clk_mt6879_ccu
+[  211.913501][T710375]  clk_mt6879_vcodec
+[  211.913503][T710375]  clk_mt6879_bus
+[  211.913506][T710375]  clk_mt6879_peri
+[  211.913508][T710375]  clk_mt6879_mmsys
+[  211.913510][T710375]  clk_mt6879_img
+[  211.913512][T710375]  clk_mt6879_cam
+[  211.913514][T710375]  clk_mt6879_adsp
+[  211.913516][T710375]  clk_mt6879
+[  211.913518][T710375]  clk_common
+[  211.913520][T710375]  mt6879_dcm
+[  211.913522][T710375]  mtk_dcm
+[  211.913524][T710375]  pinctrl_mtk_common_v2_debug
+[  211.913526][T710375]  pinctrl_mt6879
+[  211.913528][T710375]  pinctrl_mtk_v2
+[  211.913531][T710375]  sec_rng
+[  211.913533][T710375]  mtk_wdt
+[  211.913535][T710375]  nvmem_mtk_devinfo
+[  211.913537][T710375]  log_store
+[  211.913539][T710375]  mtk_printk_ctrl
+[  211.913541][T710375]  monitor_hang
+[  211.913543][T710375]  aee_hangdet
+[  211.913545][T710375]  aee_aed
+[  211.913547][T710375]  mtk_disp_notify
+[  211.913549][T710375]  mrdump
+[  211.913552][T710375]  irq_dbg
+[  211.913554][T710375]  dbgtop_drm
+[  211.913555][T710375]  8250_mtk
+[  211.913558][T710375]  mtk_uart_apdma
+[  211.913559][T710375]  bootprof
+[  211.913561][T710375]  mkp
+[  211.913563][T710375]  kernelsu(O)
+[  211.913566][T710375]  [last unloaded: zsmalloc]
+[  211.913567][T710375] 
+[  211.913572][T710375] CPU: 7 PID: 10375 Comm: cat Tainted: P        W  O      5.10.233-android12-9-00008-gf5ac1bdc50ed-ab13743812 #1
+[  211.913575][T710375] Hardware name: MT6879V_T/ZA (DT)
+[  211.913578][T710375] pstate: 80400005 (Nzcv daif +PAN -UAO -TCO BTYPE=--)
+[  211.913739][T710375] pc : mtk_dp_debug_read+0x84/0x1fc [mediatek_drm]
+[  211.913894][T710375] lr : mtk_dp_debug_read+0x48/0x1fc [mediatek_drm]
+[  211.913897][T710375] sp : ffffffc035083c70
+[  211.913899][T710375] x29: ffffffc035083c80 
+[  211.913901][T710375] x28: ffffff81466d1280 
+[  211.913903][T710375] 
+[  211.913906][T710375] x27: 0000000000000000 
+[  211.913907][T710375] x26: 0000000000000000 
+[  211.913908][T710375] 
+[  211.913911][T710375] x25: 0000000000000000 
+[  211.913912][T710375] x24: ffffff81427d8e38 
+[  211.913914][T710375] 
+[  211.913916][T710375] x23: ffffff81466d1280 
+[  211.913917][T710375] x22: 0000005ce2317078 
+[  211.913919][T710375] 
+[  211.913922][T710375] x21: 0000000000001000 
+[  211.913923][T710375] x20: ffffffc035083de0 
+[  211.913924][T710375] 
+[  211.913927][T710375] x19: ffffff813ed01600 
+[  211.913928][T710375] x18: ffffffc03235b040 
+[  211.913930][T710375] 
+[  211.913933][T710375] x17: 0000000000000000 
+[  211.913934][T710375] x16: 0000000000000000 
+[  211.913935][T710375] 
+[  211.913939][T710375] x15: 0000000000000000 
+[  211.913939][T710375] x14: 0000000000000000 
+[  211.913941][T710375] 
+[  211.913945][T710375] x13: ffffffdad7442b92 
+[  211.913946][T710375] x12: 0000000000007ffb 
+[  211.913947][T710375] 
+[  211.913950][T710375] x11: ffffffa6cdc89000 
+[  211.913951][T710375] x10: ffffffdacfab5f8d 
+[  211.913953][T710375] 
+[  211.913955][T710375] x9 : 00000000000013b4 
+[  211.913956][T710375] x8 : 0000000000000000 
+[  211.913958][T710375] 
+[  211.913961][T710375] x7 : 0000000000000000 
+[  211.913962][T710375] x6 : 000000000000003f 
+[  211.913963][T710375] 
+[  211.913966][T710375] x5 : 0000000000000040 
+[  211.913967][T710375] x4 : ffffffc035083c00 
+[  211.913969][T710375] 
+[  211.913972][T710375] x3 : 0000000000000001 
+[  211.913973][T710375] x2 : 0000000000000cc0 
+[  211.913975][T710375] 
+[  211.913978][T710375] x1 : 0000000000000000 
+[  211.913978][T710375] x0 : ffffff813ed01600 
+[  211.913980][T710375] 
+[  211.913984][T710375] Call trace:
+[  211.914126][T710375]  mtk_dp_debug_read+0x84/0x1fc [mediatek_drm]
+[  211.914134][T710375]  proc_reg_read+0x104/0x1fc
+[  211.914138][T710375]  vfs_read+0xf4/0x374
+[  211.914140][T710375]  ksys_read+0x7c/0xf0
+[  211.914144][T710375]  __arm64_sys_read+0x20/0x30
+[  211.914150][T710375]  el0_svc_common+0xd4/0x270
+[  211.914155][T710375]  el0_svc+0x28/0x98
+[  211.914158][T710375]  el0_sync_handler+0x8c/0xf0
+[  211.914161][T710375]  el0_sync+0x1b8/0x1c0
+[  211.914165][T710375] Code: f945c908 52827689 b000012a 913e354a (38696908) 
+[  211.914168][T710375] ---[ end trace 46846a3bf47796d4 ]---
+[  211.917886][T102979] [wlan][2979]wlanPktTxDone:(TX INFO) TX DONE, Type[ARP] Tag[0x81021100] WIDX:PID[6:85] Status[0], SeqNo: 128
+[  211.919872][T710375] Kernel panic - not syncing: Oops: Fatal exception
+[  211.919889][T710375] SMP: stopping secondary CPUs
+[  211.919905][T710375] Kernel Offset: 0x1acca00000 from 0xffffffc008000000
+[  211.919908][T710375] PHYS_OFFSET: 0x40000000
+[  211.919911][T710375] CPU features: 0x002,48040026,6a80a238
+[  211.919914][T710375] Memory Limit: none

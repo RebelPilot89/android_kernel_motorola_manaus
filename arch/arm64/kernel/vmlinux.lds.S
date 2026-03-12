@@ -180,15 +180,27 @@ PECOFF_FILE_ALIGNMENT = 0x200;
 
 /*
  * With recent LLD, EFI-enabled links may emit a small, fixed PLT/GOTPLT
- * even for the final kernel image. Keep assertions strict, but allow the
- * observed minimal linker-generated sizes.
+ * even for the final kernel image.  The exact count grows with LLD
+ * versions (LLD 14: 4 stubs → 0x38/0x60; LLD 23: potentially more).
+ * Use range-based assertions instead of exact-equality so that the
+ * accepted window automatically covers any minor LLD variation while
+ * still rejecting the large PLT sections that would indicate a real bug
+ * (e.g. kernel code compiled with -fPIC by mistake).
+ *   .got.plt: (3 base + N stubs) × 8 bytes  — allow N = 4..28
+ *   .plt    : (32 header  + N stubs × 16)   — allow N = 4..28
  */
-#define EFI_LLD_GOTPLT_SIZE	0x38
-#define EFI_LLD_PLT_SIZE	0x60
+#define EFI_LLD_GOTPLT_SIZE_MIN	0x38
+#define EFI_LLD_GOTPLT_SIZE_MAX	0x100
+#define EFI_LLD_PLT_SIZE_MIN	0x60
+#define EFI_LLD_PLT_SIZE_MAX	0x200
 #else
 #define PECOFF_EDATA_PADDING
-#define EFI_LLD_GOTPLT_SIZE	0
-#define EFI_LLD_PLT_SIZE	0
+/* Non-EFI: no PLT/GOTPLT allowed; use 0 for MIN and MAX to get an empty
+ * range (MAX == 0 makes the range condition "size < 0" always false). */
+#define EFI_LLD_GOTPLT_SIZE_MIN	0
+#define EFI_LLD_GOTPLT_SIZE_MAX	0
+#define EFI_LLD_PLT_SIZE_MIN	0
+#define EFI_LLD_PLT_SIZE_MAX	0
 #endif
 
 SECTIONS
@@ -236,7 +248,8 @@ SECTIONS
 	 */
 	.got.plt : { *(.got.plt) }
 	ASSERT(SIZEOF(.got.plt) == 0 || SIZEOF(.got.plt) == 0x18 ||
-		       SIZEOF(.got.plt) == EFI_LLD_GOTPLT_SIZE,
+		       (SIZEOF(.got.plt) >= EFI_LLD_GOTPLT_SIZE_MIN &&
+			SIZEOF(.got.plt) < EFI_LLD_GOTPLT_SIZE_MAX),
 	       "Unexpected GOT/PLT entries detected!")
 
 	. = ALIGN(SEGMENT_ALIGN);
@@ -400,8 +413,10 @@ SECTIONS
 	.plt : {
 		*(.plt) *(.plt.*) *(.iplt) *(.igot .igot.plt)
 	}
-	ASSERT(SIZEOF(.plt) == 0 || SIZEOF(.plt) == EFI_LLD_PLT_SIZE,
-		       "Unexpected run-time procedure linkages detected!")
+	ASSERT(SIZEOF(.plt) == 0 ||
+		       (SIZEOF(.plt) >= EFI_LLD_PLT_SIZE_MIN &&
+			SIZEOF(.plt) < EFI_LLD_PLT_SIZE_MAX),
+	       "Unexpected run-time procedure linkages detected!")
 }
 
 #include "image-vars.h"
