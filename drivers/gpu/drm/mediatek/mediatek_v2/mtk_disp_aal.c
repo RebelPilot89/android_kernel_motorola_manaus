@@ -22,7 +22,7 @@
 #include "mtk-cmdq-ext.h"
 #endif
 
-#ifdef CONFIG_LEDS_MTK_MODULE
+#if IS_ENABLED(CONFIG_LEDS_MTK)
 #define CONFIG_LEDS_BRIGHTNESS_CHANGED
 #include <linux/leds-mtk.h>
 #else
