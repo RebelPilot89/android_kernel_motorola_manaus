@@ -1,5 +1,10 @@
 config DRM_MEDIATEK_V2
 	tristate "Version 2 of DRM Support for Mediatek SoCs"
+	select MTK_CMDQ_MBOX_EXT
+	select MTK_MML
+	select MTK_SLBC
+	select MMPROFILE
+	select LEDS_MTK
 	help
 	  Choose this option if you have a phone Mediatek
 	  SoCs. The module will be called mediatek-drm v2
