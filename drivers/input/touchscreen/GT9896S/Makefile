@@ -5,6 +5,9 @@
 #For display ESD recovery
 
 ccflags-$(CONFIG_DRM_MEDIATEK_V2) += -I$(srctree)/drivers/gpu/drm/mediatek/mediatek_v2/
+ifeq ($(CONFIG_DRM_MEDIATEK_V2),m)
+ccflags-y += -I$(srctree)/drivers/gpu/drm/mediatek/mediatek_v2/
+endif
 
 obj-y += gt9896s.o
 gt9896s-y += goodix_ts_spi.o

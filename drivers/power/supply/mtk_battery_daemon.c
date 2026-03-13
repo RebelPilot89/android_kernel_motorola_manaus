@@ -2372,7 +2372,7 @@ static ssize_t BAT_HEALTH_store(
 	char *s = buf_str, *pch;
 	/* char *ori = buf_str; */
 	int chr_size = 0;
-	int i = 0, j = 0, count = 0, value[50];
+	int i = 0, j = 0, count = 0, ret, value[50];
 	struct mtk_battery *gm;
 
 	gm = get_mtk_battery();
@@ -2410,7 +2410,12 @@ static ssize_t BAT_HEALTH_store(
 			else
 				strncpy(copy_str, s+1, chr_size-1);
 
-			kstrtoint(copy_str, 10, &value[count]);
+			ret = kstrtoint(copy_str, 10, &value[count]);
+			if (ret < 0) {
+				bm_err("%s parse fail idx=%d str=%s ret=%d\n",
+					__func__, count, copy_str, ret);
+				value[count] = 0;
+			}
 			/* bm_err("::%s::count:%d,%d\n", copy_str, count, value[count]); */
 			s = pch;
 			pch = strchr(pch + 1, ',');

@@ -360,7 +360,9 @@ int tcpci_set_low_power_mode(
 	 * rx_buffer can't clear, try to reset protocol before disable bmc clock
 	 */
 	if (en) {
+#if IS_ENABLED(CONFIG_USB_POWER_DELIVERY)
 		rv = tcpci_protocol_reset(tcpc);
+#endif /* CONFIG_USB_POWER_DELIVERY */
 		for (i = 0; i < 2; i++) {
 			rv = tcpci_alert_status_clear(tcpc,
 				TCPC_REG_ALERT_RX_ALL_MASK);

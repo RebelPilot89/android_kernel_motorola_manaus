@@ -3724,6 +3724,7 @@ void fg_check_lk_swocv(struct device *dev,
 {
 	struct device_node *boot_node = NULL;
 	int len = 0;
+	int ret;
 	char temp[10];
 	int *prop;
 
@@ -3738,7 +3739,9 @@ void fg_check_lk_swocv(struct device *dev,
 			bm_err("fg_swocv_v prop == NULL, len=%d\n", len);
 		} else {
 			snprintf(temp, (len + 1), "%s", prop);
-			kstrtoint(temp, 10, &gm->ptim_lk_v);
+			ret = kstrtoint(temp, 10, &gm->ptim_lk_v);
+			if (ret < 0)
+				bm_err("failed to parse fg_swocv_v, ret=%d\n", ret);
 			bm_err("temp %s gm->ptim_lk_v=%d\n",
 				temp, gm->ptim_lk_v);
 		}
@@ -3750,7 +3753,9 @@ void fg_check_lk_swocv(struct device *dev,
 			bm_err("fg_swocv_i prop == NULL, len=%d\n", len);
 		} else {
 			snprintf(temp, (len + 1), "%s", prop);
-			kstrtoint(temp, 10, &gm->ptim_lk_i);
+			ret = kstrtoint(temp, 10, &gm->ptim_lk_i);
+			if (ret < 0)
+				bm_err("failed to parse fg_swocv_i, ret=%d\n", ret);
 			bm_err("temp %s gm->ptim_lk_i=%d\n",
 				temp, gm->ptim_lk_i);
 		}
@@ -3761,7 +3766,9 @@ void fg_check_lk_swocv(struct device *dev,
 			bm_err("shutdown_time prop == NULL, len=%d\n", len);
 		} else {
 			snprintf(temp, (len + 1), "%s", prop);
-			kstrtoint(temp, 10, &gm->pl_shutdown_time);
+			ret = kstrtoint(temp, 10, &gm->pl_shutdown_time);
+			if (ret < 0)
+				bm_err("failed to parse shutdown_time, ret=%d\n", ret);
 			bm_err("temp %s gm->pl_shutdown_time=%d\n",
 				temp, gm->pl_shutdown_time);
 		}

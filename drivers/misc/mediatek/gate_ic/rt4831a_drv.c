@@ -104,7 +104,7 @@ static void _gate_ic_backlight_enable(void)
 }
 
 #ifdef CONFIG_LEDS_BRIGHTNESS_CHANGED
-int _backlight_changed_event(struct notifier_block *nb, unsigned long event,
+static int _backlight_changed_event(struct notifier_block *nb, unsigned long event,
 	void *v)
 {
 	struct led_conf_info *led_conf;

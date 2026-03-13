@@ -42,7 +42,7 @@
 #include <linux/regulator/consumer.h>
 #endif
 
-#if IS_ENABLED(CONFIG_DRM_MEDIATEK)
+#if IS_ENABLED(CONFIG_DRM_MEDIATEK_V2)
 #include "mtk_disp_notify.h"
 #endif
 

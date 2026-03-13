@@ -462,6 +462,7 @@ struct tcpc_desc def_tcpc_desc = {
 	.en_fod = false,
 	.en_typec_otp = false,
 	.en_floatgnd = false,
+#if CONFIG_WATER_DETECTION
 	.wd_sbu_calib_init = CONFIG_WD_SBU_CALIB_INIT,
 	.wd_sbu_pl_bound = CONFIG_WD_SBU_PL_BOUND,
 	.wd_sbu_pl_lbound_c2c = CONFIG_WD_SBU_PL_LBOUND_C2C,
@@ -472,6 +473,7 @@ struct tcpc_desc def_tcpc_desc = {
 	.wd_sbu_ph_ubound1_c2c = CONFIG_WD_SBU_PH_UBOUND1_C2C,
 	.wd_sbu_ph_ubound2_c2c = CONFIG_WD_SBU_PH_UBOUND2_C2C,
 	.wd_sbu_aud_ubound = CONFIG_WD_SBU_AUD_UBOUND,
+#endif /* CONFIG_WATER_DETECTION */
 };
 
 static inline int mt6375_write8(struct mt6375_tcpc_data *ddata, u32 reg,
@@ -2815,7 +2817,12 @@ static int mt6375_tcpc_probe(struct platform_device *pdev)
 		return ret;
 	}
 
+	/* Keep retry initialized even when water-detect config macros are absent. */
+#if CONFIG_WATER_DETECTION
 	atomic_set(&ddata->wd_protect_retry, CONFIG_WD_PROTECT_RETRY_COUNT);
+#else
+	atomic_set(&ddata->wd_protect_retry, 0);
+#endif
 	atomic_set(&ddata->wd_one_min_cnt, 0);
 #if CONFIG_WATER_DETECTION
 #if CONFIG_WD_POLLING_ONLY

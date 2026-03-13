@@ -195,7 +195,7 @@ int scrn_netlink_init(void)
 	return 0;
 }
 
-int _backlight_changed_event(struct notifier_block *nb, unsigned long event,
+static int _backlight_changed_event(struct notifier_block *nb, unsigned long event,
 	void *v)
 {
 	struct led_conf_info *led_conf;
