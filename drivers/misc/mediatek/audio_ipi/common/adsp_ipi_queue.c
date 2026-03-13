@@ -439,7 +439,7 @@ int dsp_send_msg_to_queue(
 
 	uint32_t try_cnt = 0;
 	const uint32_t k_max_try_cnt = 300; /* retry 3 sec for -ERESTARTSYS */
-	const uint32_t k_restart_sleep_min_us = 10 * 1000; /* 10 ms */
+	const uint32_t k_restart_sleep_min_us = 2 * 1000; /* 2 ms - reduced for lower latency */
 	const uint32_t k_restart_sleep_max_us = (k_restart_sleep_min_us + 200);
 	struct ipi_msg_t *p_ipi_msg = NULL;
 
@@ -802,7 +802,7 @@ static int dsp_get_queue_element(
 
 	uint32_t try_cnt = 0;
 	const uint32_t k_max_try_cnt = 300; /* retry 3 sec for -ERESTARTSYS */
-	const uint32_t k_restart_sleep_min_us = 10 * 1000; /* 10 ms */
+	const uint32_t k_restart_sleep_min_us = 2 * 1000; /* 2 ms - reduced for lower latency */
 	const uint32_t k_restart_sleep_max_us = (k_restart_sleep_min_us + 200);
 
 	spin_lock_irqsave(&msg_queue->queue_lock, flags);

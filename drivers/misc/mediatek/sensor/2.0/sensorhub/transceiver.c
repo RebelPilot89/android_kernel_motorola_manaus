@@ -83,8 +83,8 @@ static void transceiver_notify_func(struct sensor_comm_notify *n,
 	uint64_t wait_spin_lock_end_time = 0, timesync_end_time = 0;
 	uint64_t kfifo_end_time = 0, complete_end_time = 0;
 
-	if (n->command != SENS_COMM_NOTIFY_DATA_CMD &&
-	    n->command != SENS_COMM_NOTIFY_FULL_CMD)
+	if (__builtin_expect((n->command != SENS_COMM_NOTIFY_DATA_CMD &&
+	    n->command != SENS_COMM_NOTIFY_FULL_CMD), 0))
 		return;
 
 	start_time = ktime_get_boottime_ns();
@@ -93,7 +93,7 @@ static void transceiver_notify_func(struct sensor_comm_notify *n,
 	timesync_filter_set(&dev->filter, dnotify->scp_timestamp,
 			    dnotify->scp_archcounter);
 	timesync_end_time = ktime_get_boottime_ns();
-	if (kfifo_is_full(&transceiver_fifo)) {
+	if (__builtin_expect(kfifo_is_full(&transceiver_fifo), 0)) {
 		if (kfifo_out(&transceiver_fifo, &wp, 1))
 			atomic_inc(&dev->normal_wp_dropped);
 	}
@@ -118,8 +118,8 @@ static void transceiver_super_notify_func(struct sensor_comm_notify *n,
 	struct transceiver_device *dev = private_data;
 	struct data_notify *dnotify = (struct data_notify *)n->value;
 
-	if (n->command != SENS_COMM_NOTIFY_SUPER_DATA_CMD &&
-	    n->command != SENS_COMM_NOTIFY_SUPER_FULL_CMD)
+	if (__builtin_expect((n->command != SENS_COMM_NOTIFY_SUPER_DATA_CMD &&
+	    n->command != SENS_COMM_NOTIFY_SUPER_FULL_CMD), 0))
 		return;
 
 	spin_lock(&transceiver_fifo_lock);

@@ -160,7 +160,7 @@ MINT32 _seninf_irq(MINT32 Irq, void *DeviceId, struct SENINF *pseninf)
 	ret = snprintf(str_prop_name, sizeof(str_prop_name),
 			"seninf crc/ecc erorr irq ");
 
-	if (ret < 0)
+	if (__builtin_expect(ret < 0, 0))
 		pr_info("ERROR: LOG encoding error, ret:%d\n", ret);
 
 
@@ -170,7 +170,7 @@ MINT32 _seninf_irq(MINT32 Irq, void *DeviceId, struct SENINF *pseninf)
 			"0x%08x ",
 			SENINF_RD32(pseninf->pseninf_base[i] + 0x0Ac8));
 
-		if (ret < 0)
+		if (__builtin_expect(ret < 0, 0))
 			pr_info("ERROR: LOG encoding error, ret:%d\n", ret);
 	}
 
