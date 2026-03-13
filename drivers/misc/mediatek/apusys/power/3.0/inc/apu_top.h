@@ -22,6 +22,16 @@
 
 extern const struct apupwr_plat_data *pwr_data;
 
+/*
+ * apu_set_perf_hint() - request / release NPU performance bias
+ *
+ * When @enable is true the APU power domain is held active (pm_runtime ref)
+ * preventing deep-idle during inference.  Pass false on completion to release.
+ * Safe to call from atomic context (uses atomic counter; pm_runtime ops are
+ * deferred to the caller's non-atomic context via get_sync / put_autosuspend).
+ */
+void apu_set_perf_hint(bool enable);
+
 enum aputop_func_id {
 	APUTOP_FUNC_PWR_OFF = 0,
 	APUTOP_FUNC_PWR_ON,

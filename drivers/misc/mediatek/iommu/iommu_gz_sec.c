@@ -213,7 +213,7 @@ struct m4u_gz_sec_context *m4u_gz_sec_ctx_get(void)
 
 	ctx = &m4u_gz_ta_ctx;
 	ty_ctx = ctx->imp;
-	if (!ty_ctx->init) {
+	if (__builtin_expect(!ty_ctx->init, 0)) {
 		pr_err("[MTEE]%s: before init\n", __func__);
 		return NULL;
 	}
@@ -221,12 +221,14 @@ struct m4u_gz_sec_context *m4u_gz_sec_ctx_get(void)
 
 	return ctx;
 }
+EXPORT_SYMBOL_GPL(m4u_gz_sec_ctx_get);
 
 void m4u_gz_sec_set_context(void)
 {
 	m4u_gz_ta_ctx.name = "m4u_ha";
 	m4u_gz_ta_ctx.imp = &m4u_ty_ctx;
 }
+EXPORT_SYMBOL_GPL(m4u_gz_sec_set_context);
 
 int m4u_gz_sec_ctx_put(struct m4u_gz_sec_context *ctx)
 {
@@ -236,6 +238,7 @@ int m4u_gz_sec_ctx_put(struct m4u_gz_sec_context *ctx)
 
 	return 0;
 }
+EXPORT_SYMBOL_GPL(m4u_gz_sec_ctx_put);
 
 static int m4u_gz_exec_session(struct m4u_gz_sec_context *ctx)
 {
@@ -283,5 +286,6 @@ int m4u_gz_exec_cmd(struct m4u_gz_sec_context *ctx)
 
 	return 0;
 }
+EXPORT_SYMBOL_GPL(m4u_gz_exec_cmd);
 
 MODULE_LICENSE("GPL v2");

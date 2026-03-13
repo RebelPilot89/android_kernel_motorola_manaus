@@ -3,6 +3,7 @@
  * Copyright (c) 2020 MediaTek Inc.
  */
 
+#include <linux/atomic.h>
 #include <linux/device.h>
 #include <linux/module.h>
 #include <linux/mutex.h>
@@ -28,6 +29,46 @@ static DEFINE_MUTEX(aputop_func_mtx);
 #if IS_ENABLED(CONFIG_PM_SLEEP)
 struct wakeup_source *ws;
 #endif
+
+/*
+ * Performance hint counter: when > 0 the APU power domain is held active and
+ * system-sleep suspend is suppressed.  Callers (e.g. mtk_aie) increment on
+ * inference start and decrement on completion via apu_set_perf_hint().
+ */
+static atomic_t apu_perf_hint_cnt = ATOMIC_INIT(0);
+
+/**
+ * apu_set_perf_hint() - request / release NPU performance bias
+ * @enable: true  = block deep-idle (caller is about to submit inference)
+ *          false = release constraint (inference finished)
+ *
+ * Holding a pm_runtime reference keeps the APU power domain out of deep-
+ * idle states so that the first IPI after a gap does not incur a cold-boot
+ * latency penalty.  This is intentionally lightweight: the counter is
+ * checked before every pm_runtime_put_autosuspend() so that the last
+ * user release is the one that actually allows the power domain to idle.
+ */
+void apu_set_perf_hint(bool enable)
+{
+	if (!this_pdev)
+		return;
+
+	if (enable) {
+		if (atomic_inc_return(&apu_perf_hint_cnt) == 1)
+			pm_runtime_get_sync(&this_pdev->dev);
+	} else {
+		int new_val = atomic_dec_return(&apu_perf_hint_cnt);
+
+		if (new_val == 0) {
+			/* Last reference released: allow power domain to idle */
+			pm_runtime_put_autosuspend(&this_pdev->dev);
+		} else if (unlikely(new_val < 0)) {
+			/* Underflow guard: clamp to zero */
+			atomic_set(&apu_perf_hint_cnt, 0);
+		}
+	}
+}
+EXPORT_SYMBOL_GPL(apu_set_perf_hint);
 
 int fpga_type;
 module_param (fpga_type, int, S_IRUGO);
