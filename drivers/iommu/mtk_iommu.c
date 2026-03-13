@@ -1739,14 +1739,21 @@ static struct iommu_domain *mtk_iommu_domain_alloc(unsigned type)
 {
 	struct mtk_iommu_domain *dom;
 
-	if (type != IOMMU_DOMAIN_DMA)
+	/*
+	 * Accept both DMA-managed domains (normal device DMA) and
+	 * UNMANAGED domains.  UNMANAGED is required by VFIO so that a KVM
+	 * guest can use Stage-2 IOMMU passthrough via VFIO_PLATFORM without
+	 * the kernel's DMA-API layer interfering with the guest's mappings.
+	 */
+	if (type != IOMMU_DOMAIN_DMA && type != IOMMU_DOMAIN_UNMANAGED)
 		return NULL;
 
 	dom = kzalloc(sizeof(*dom), GFP_KERNEL);
 	if (!dom)
 		return NULL;
 
-	if (iommu_get_dma_cookie(&dom->domain)) {
+	/* DMA cookie is only needed for kernel DMA-API managed domains. */
+	if (type == IOMMU_DOMAIN_DMA && iommu_get_dma_cookie(&dom->domain)) {
 		kfree(dom);
 		return NULL;
 	}
@@ -1756,7 +1763,9 @@ static struct iommu_domain *mtk_iommu_domain_alloc(unsigned type)
 
 static void mtk_iommu_domain_free(struct iommu_domain *domain)
 {
-	iommu_put_dma_cookie(domain);
+	/* Only DMA domains carry a DMA cookie; UNMANAGED domains do not. */
+	if (domain->type == IOMMU_DOMAIN_DMA)
+		iommu_put_dma_cookie(domain);
 	kfree(to_mtk_domain(domain));
 }
 

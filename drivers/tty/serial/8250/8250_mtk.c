@@ -55,8 +55,15 @@
 
 #define MTK_UART_ESCAPE_CHAR	0x77	/* Escape char added under sw fc */
 #define MTK_UART_RX_SIZE	0x8000
+/*
+ * RX DMA burst threshold: lowered from MTK_UART_RX_SIZE (32 KB) to 64 bytes
+ * so the DMA completion fires after every 64 bytes received rather than
+ * waiting for the entire 32 KB ring to fill.  This reduces worst-case RX
+ * latency from (32768 / baudrate) seconds to (64 / baudrate) — critical for
+ * interactive terminal sessions (adb shell, /dev/ttyGS0, SSH-over-USB).
+ */
+#define MTK_UART_RX_TRIGGER	64
 #define MTK_UART_TX_TRIGGER	1
-#define MTK_UART_RX_TRIGGER	MTK_UART_RX_SIZE
 
 #ifdef CONFIG_SERIAL_8250_DMA
 enum dma_rx_status {

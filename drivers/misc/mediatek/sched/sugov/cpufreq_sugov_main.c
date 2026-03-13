@@ -1052,7 +1052,19 @@ static int sugov_init(struct cpufreq_policy *policy)
 	tunables->up_rate_limit_us = cpufreq_policy_transition_delay_us(policy);
 	tunables->down_rate_limit_us =
 		cpufreq_policy_transition_delay_us(policy);
-	tunables->hispeed_load = 90;
+	/*
+	 * hispeed_load controls the utilisation threshold above which the
+	 * governor bypasses up_rate_limit and ramps to max frequency
+	 * immediately.  The MediaTek default is 90 (%), which adds up to
+	 * up_rate_limit_us of latency before a burst (e.g. an Ollama/MDLA
+	 * inference token) gets the CPU it needs.
+	 * Lowered to 75 % so that sustained-but-not-saturating AI workloads
+	 * trigger the hispeed boost earlier without compromising idle power
+	 * (the down_rate_limit still governs how fast frequency drops back).
+	 * This value is writable at runtime via:
+	 *   /sys/devices/system/cpu/cpufreq/policy0/schedutil/hispeed_load
+	 */
+	tunables->hispeed_load = 75;
 
 	policy->governor_data = sg_policy;
 	sg_policy->tunables = tunables;

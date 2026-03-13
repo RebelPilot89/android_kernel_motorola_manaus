@@ -29,7 +29,7 @@ config MOTO_SMART_BATTERY
 	  Enables Motorola smart battery integration used on manaus.
 
 config MOTO_BQ25980_MMI
-	bool "Motorola BQ25980 charger integration"
+	tristate "Motorola BQ25980 charger integration"
 	depends on POWER_SUPPLY && I2C
 	help
 	  Enables Motorola integration layer for BQ25980 charging path.
