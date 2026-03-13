@@ -173,6 +173,7 @@ void sspm_lock_emi_mpu(void)
 		sspm_set_emi_mpu(sspm_mem_base_phys, sspm_mem_size);
 #endif
 }
+EXPORT_SYMBOL_GPL(sspm_lock_emi_mpu);
 
 #ifdef SSPM_SHARE_BUFFER_SUPPORT
 void __iomem *sspm_base;

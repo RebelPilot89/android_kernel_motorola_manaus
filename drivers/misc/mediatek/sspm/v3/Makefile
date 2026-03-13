@@ -8,7 +8,11 @@ sspm_v3-y += sspm_timesync.o
 sspm_v3-y += sspm_compat_stub.o
 
 sspm_v3-$(CONFIG_OF_RESERVED_MEM) += sspm_reservedmem.o
-sspm_v3-$(CONFIG_MTK_EMI) += sspm_emi_mpu.o
+# CONFIG_MTK_EMI may be =m; use filter so sspm_emi_mpu.o is always included
+# when EMI support is present (both =y and =m cases).
+ifneq (,$(filter y m,$(CONFIG_MTK_EMI)))
+sspm_v3-y += sspm_emi_mpu.o
+endif
 
 ccflags-y += -I$(srctree)/drivers/misc/mediatek/sspm
 ccflags-y += -I$(srctree)/drivers/misc/mediatek/tinysys_scmi

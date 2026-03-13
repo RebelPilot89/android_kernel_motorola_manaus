@@ -8,8 +8,12 @@ mtk-vcodec-dec-$(CONFIG_VIDEO_MEDIATEK_VCU) += vdec/vdec_common_if.o \
 mtk-vcodec-enc-$(CONFIG_VIDEO_MEDIATEK_VCU) += venc/venc_common_if.o \
 		venc/venc_vcu_if.o
 
-mtk-vcodec-dec-$(CONFIG_MTK_TINYSYS_VCP_SUPPORT) += vdec/vdec_vcp_if.o
-mtk-vcodec-enc-$(CONFIG_MTK_TINYSYS_VCP_SUPPORT) += venc/venc_vcp_if.o
+# CONFIG_MTK_TINYSYS_VCP_SUPPORT may be =m; use ifneq so VCP-specific
+# codec files are always included when VCP support is present.
+ifneq (,$(filter y m,$(CONFIG_MTK_TINYSYS_VCP_SUPPORT)))
+mtk-vcodec-dec-y += vdec/vdec_vcp_if.o
+mtk-vcodec-enc-y += venc/venc_vcp_if.o
+endif
 
 mtk-vcodec-dec-$(CONFIG_VIDEO_MEDIATEK_VCODEC) += mtk_vcodec_dec_drv.o \
 		vdec_drv_if.o \

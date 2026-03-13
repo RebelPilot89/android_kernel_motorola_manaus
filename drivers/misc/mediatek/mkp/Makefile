@@ -23,15 +23,19 @@ ccflags-y += -I$(srctree)/drivers/misc/mediatek/geniezone/public
 ccflags-y += -I$(srctree)/drivers/misc/mediatek/mkp
 ccflags-y += -I$(srctree)/security/selinux/include/
 obj-$(CONFIG_MTK_MKP) += mkp.o
-mkp-$(CONFIG_MTK_MKP) := mkp_main.o
-mkp-$(CONFIG_MTK_MKP) += policy.o
-mkp-$(CONFIG_MTK_MKP) += mkp_hvc.o
-mkp-$(CONFIG_MTK_MKP) += mkp_api.o
-mkp-$(CONFIG_MTK_MKP) += ksym.o
+# CONFIG_MTK_MKP may be =m; use ifneq so source files are always
+# added to the composite object when MKP support is present.
+ifneq (,$(filter y m,$(CONFIG_MTK_MKP)))
+mkp-y += mkp_main.o
+mkp-y += policy.o
+mkp-y += mkp_hvc.o
+mkp-y += mkp_api.o
+mkp-y += ksym.o
 ifdef demo_mkp
-mkp-$(CONFIG_MTK_MKP) += mkp_demo.o
-mkp-$(CONFIG_MTK_MKP) += mkp_rbtree.o
-mkp-$(CONFIG_MTK_MKP) += helper.o
-mkp-$(CONFIG_MTK_MKP) += mkp_module.o
+mkp-y += mkp_demo.o
+mkp-y += mkp_rbtree.o
+mkp-y += helper.o
+mkp-y += mkp_module.o
 endif
-mkp-$(CONFIG_MTK_MKP) += ext/mkp_pcpu.o
+mkp-y += ext/mkp_pcpu.o
+endif

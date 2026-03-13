@@ -33,3 +33,4 @@ void sspm_set_emi_mpu(phys_addr_t base, phys_addr_t size)
 
 	mtk_emimpu_free_region(&rg_info);
 }
+EXPORT_SYMBOL_GPL(sspm_set_emi_mpu);
