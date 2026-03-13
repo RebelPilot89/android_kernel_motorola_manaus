@@ -3,7 +3,7 @@ $(info *GPU [mtk-Kbuild] building r49p1 DDK ...)
 MTK_TOP = $(srctree)/drivers/misc/mediatek/
 
 ifeq ($(MTK_PLATFORM),)
-ifeq ($(CONFIG_MTK_GPU_MT6879_SUPPORT),y)
+ifneq (,$(filter y m,$(CONFIG_MTK_GPU_MT6879_SUPPORT)))
 MTK_PLATFORM := mt6879
 endif
 endif

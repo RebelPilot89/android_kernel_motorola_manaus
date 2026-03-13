@@ -235,7 +235,7 @@ ifeq ($(MTK_PLATFORM_VERSION),mt6879)
     CONFIG_MALI_REAL_HW := y
 endif
 
-ifeq ($(CONFIG_MTK_GPU_MT6879_SUPPORT),y)
+ifneq (,$(filter y m,$(CONFIG_MTK_GPU_MT6879_SUPPORT)))
     CONFIG_MALI_REAL_HW := y
 endif
 

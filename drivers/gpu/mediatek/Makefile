@@ -24,7 +24,7 @@ else ifeq ($(CONFIG_MTK_GPU_MT6833_SUPPORT),y)
 export MTK_PLATFORM = mt6833
 else ifeq ($(CONFIG_MTK_GPU_MT6855_SUPPORT),y)
 export MTK_PLATFORM = mt6855
-else ifeq ($(CONFIG_MTK_GPU_MT6879_SUPPORT),y)
+else ifneq (,$(filter y m,$(CONFIG_MTK_GPU_MT6879_SUPPORT)))
 export MTK_PLATFORM = mt6879
 else ifeq ($(CONFIG_MTK_GPU_MT6893_SUPPORT),y)
 export MTK_PLATFORM = mt6893
