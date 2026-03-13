@@ -5,7 +5,11 @@ GCOV_PROFILE := y
 endif
 
 obj-$(CONFIG_DEVAPC_ARCH_MULTI) += device-apc-common.o
-device-apc-common-$(CONFIG_DEVAPC_ARCH_MULTI) += devapc-mtk-multi-ao.o
+# CONFIG_DEVAPC_ARCH_MULTI may be =m; use ifneq so the single source
+# file is always included in the composite module when the config is set.
+ifneq (,$(filter y m,$(CONFIG_DEVAPC_ARCH_MULTI)))
+device-apc-common-y += devapc-mtk-multi-ao.o
+endif
 
 ifneq ($(wildcard $(srctree)/$(src)/devapc-mt6789.c),)
 obj-$(CONFIG_DEVAPC_MT6789) += device-apc-mt6789.o
@@ -34,7 +38,9 @@ endif
 
 ifneq ($(wildcard $(srctree)/$(src)/devapc-mt6879.c),)
 obj-$(CONFIG_DEVAPC_MT6879) += device-apc-mt6879.o
-device-apc-mt6879-$(CONFIG_DEVAPC_MT6879) += devapc-mt6879.o
+ifneq (,$(filter y m,$(CONFIG_DEVAPC_MT6879)))
+device-apc-mt6879-y += devapc-mt6879.o
+endif
 endif
 
 ifneq ($(wildcard $(srctree)/$(src)/devapc-mt6893.c),)

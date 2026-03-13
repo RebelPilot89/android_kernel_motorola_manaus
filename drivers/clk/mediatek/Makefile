@@ -1,6 +1,10 @@
 # SPDX-License-Identifier: GPL-2.0
 obj-$(CONFIG_COMMON_CLK_MEDIATEK) += clk-common.o
-clk-common-$(CONFIG_COMMON_CLK_MEDIATEK) += clk-mtk.o clk-pll.o clk-gate.o clk-apmixed.o clk-cpumux.o reset.o clk-mux.o clkchk.o clk-fmeter.o mtk-pd-chk.o clkdbg.o
+# CONFIG_COMMON_CLK_MEDIATEK may be =m; use ifneq so all source files
+# are always added to the composite module when the config is present.
+ifneq (,$(filter y m,$(CONFIG_COMMON_CLK_MEDIATEK)))
+clk-common-y += clk-mtk.o clk-pll.o clk-gate.o clk-apmixed.o clk-cpumux.o reset.o clk-mux.o clkchk.o clk-fmeter.o mtk-pd-chk.o clkdbg.o
+endif
 obj-$(CONFIG_COMMON_CLK_MEDIATEK) += clk-disable-unused.o
 
 obj-$(CONFIG_COMMON_CLK_MT6765) += clk-mt6765.o
@@ -289,14 +293,23 @@ endif
 
 ifneq ($(wildcard $(srctree)/$(src)/clk-mt6879.c),)
 obj-$(CONFIG_COMMON_CLK_MT6879) += clk-chk-mt6879.o
-clk-chk-mt6879-$(CONFIG_COMMON_CLK_MT6879) += clkchk-mt6879.o
+# CONFIG_COMMON_CLK_MT6879 may be =m; use ifneq to include source files.
+ifneq (,$(filter y m,$(CONFIG_COMMON_CLK_MT6879)))
+clk-chk-mt6879-y += clkchk-mt6879.o
+endif
 obj-$(CONFIG_COMMON_CLK_MT6879) += clk-fmeter-mt6879.o
-clk-fmeter-mt6879-$(CONFIG_COMMON_CLK_MT6879) += clk-fmeter-mt6879.o
+ifneq (,$(filter y m,$(CONFIG_COMMON_CLK_MT6879)))
+clk-fmeter-mt6879-y += clk-fmeter-mt6879.o
+endif
 obj-$(CONFIG_COMMON_CLK_MT6879) += pd-chk-mt6879.o
-pd-chk-mt6879-$(CONFIG_COMMON_CLK_MT6879) += mtk-pd-chk-mt6879.o
+ifneq (,$(filter y m,$(CONFIG_COMMON_CLK_MT6879)))
+pd-chk-mt6879-y += mtk-pd-chk-mt6879.o
+endif
 ifeq ($(CONFIG_DEBUG_FS), y)
 obj-$(CONFIG_COMMON_CLK_MT6879) += clk-dbg-mt6879.o
-clk-dbg-mt6879-$(CONFIG_COMMON_CLK_MT6879) += clkdbg-mt6879.o
+ifneq (,$(filter y m,$(CONFIG_COMMON_CLK_MT6879)))
+clk-dbg-mt6879-y += clkdbg-mt6879.o
+endif
 endif
 endif
 
