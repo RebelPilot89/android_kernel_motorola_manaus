@@ -61,6 +61,7 @@ unsigned int is_sspm_ready(void)
 	else
 		return 0;
 }
+EXPORT_SYMBOL_GPL(is_sspm_ready);
 
 static int __init sspm_module_init(void)
 {

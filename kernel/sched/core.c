@@ -8921,6 +8921,8 @@ const u32 sched_prio_to_wmult[40] = {
  /*  10 */  39045157,  49367440,  61356676,  76695844,  95443717,
  /*  15 */ 119304647, 148102320, 186737708, 238609294, 286331153,
 };
+EXPORT_SYMBOL(sched_prio_to_weight);
+EXPORT_SYMBOL(sched_prio_to_wmult);
 
 void call_trace_sched_update_nr_running(struct rq *rq, int count)
 {
