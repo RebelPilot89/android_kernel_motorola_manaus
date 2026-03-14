@@ -6,6 +6,7 @@
 #ifndef AUDIO_MESSENGER_IPI_H
 #define AUDIO_MESSENGER_IPI_H
 
+#include <linux/errno.h>
 #include <linux/types.h>
 
 #include <audio_ipi_dma.h>

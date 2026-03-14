@@ -2288,7 +2288,9 @@ static int gt9896s_ts_probe(struct platform_device *pdev)
 	ts_info("core probe OUT");
 	/* wakeup ext module register work */
 	complete_all(&gt9896s_modules.core_comp);
-	#if IS_ENABLED(CONFIG_TOUCHSCREEN_MTK_TUI_COMMON_API)
+	#if (IS_ENABLED(CONFIG_TRUSTONIC_TRUSTED_UI) && \
+	     (IS_BUILTIN(CONFIG_TOUCHSCREEN_MTK_TUI_COMMON_API) || \
+	      (IS_MODULE(CONFIG_TOUCHSCREEN_MTK_TUI_COMMON_API) && defined(MODULE))))
 	if (of_find_compatible_node(NULL, NULL, "mediatek,tui_common")) {
 		ts_info("%s: %d set tui function\n", __func__, __LINE__);
 		register_tpd_tui_request(gt9896s_tpd_enter_tui, gt9896s_tpd_exit_tui);
