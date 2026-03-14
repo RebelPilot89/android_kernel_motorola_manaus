@@ -9,7 +9,9 @@ endif
 endif
 
 # build support for a ARM Mali Midgard GPU
-CONFIG_MALI_MIDGARD := y
+# Use =m to match CONFIG_MTK_GPU_SUPPORT=m; this prevents vmlinux link errors
+# from Mali calling gpufreq/gpu_hal symbols that live in modules.
+CONFIG_MALI_MIDGARD := m
 
 # use mtk platform
 CONFIG_MALI_PLATFORM_NAME := $(MTK_PLATFORM)
