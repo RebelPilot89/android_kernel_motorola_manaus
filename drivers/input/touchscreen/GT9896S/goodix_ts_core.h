@@ -772,7 +772,9 @@ int gt9896s_ts_core_init(void);
 void gt9896s_ts_report_finger(struct input_dev *dev,
 		struct gt9896s_touch_data *touch_data);
 
-#if (IS_ENABLED(CONFIG_TRUSTONIC_TRUSTED_UI) && IS_ENABLED(CONFIG_TOUCHSCREEN_MTK_TUI_COMMON_API))
+#if (IS_ENABLED(CONFIG_TRUSTONIC_TRUSTED_UI) && \
+     (IS_BUILTIN(CONFIG_TOUCHSCREEN_MTK_TUI_COMMON_API) || \
+      (IS_MODULE(CONFIG_TOUCHSCREEN_MTK_TUI_COMMON_API) && defined(MODULE))))
 extern void register_tpd_tui_request(int (*enter_func)(void), int (*exit_func)(void));
 extern int gt9896s_tpd_enter_tui(void);
 extern int gt9896s_tpd_exit_tui(void);

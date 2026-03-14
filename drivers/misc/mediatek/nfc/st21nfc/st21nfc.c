@@ -64,7 +64,13 @@ static char *I2CDMAReadBuf; /*= NULL;*/ /* unnecessary initialise */
 static unsigned int I2CDMAReadBuf_pa; /* = NULL; */
 #endif /* KRNMTKLEGACY_I2C */
 
+#include <linux/kconfig.h>
+#if IS_BUILTIN(CONFIG_MTK_CLKBUF) || (IS_MODULE(CONFIG_MTK_CLKBUF) && defined(MODULE))
 extern int clk_buf_hw_ctrl(const char *xo_name, bool onoff);
+#else
+static inline int clk_buf_hw_ctrl(const char *xo_name, bool onoff)
+{ return 0; }
+#endif
 
 static bool enable_debug_log;
 

@@ -69,8 +69,14 @@
 
 u32 gf_spi_speed = 1*1000000;
 /**********************function defination**********************/
+#include <linux/kconfig.h>
+#if IS_BUILTIN(CONFIG_SPI_MT65XX) || (IS_MODULE(CONFIG_SPI_MT65XX) && defined(MODULE))
 extern void mt_spi_enable_master_clk(struct spi_device *spidev);
 extern void mt_spi_disable_master_clk(struct spi_device *spidev);
+#else
+static inline void mt_spi_enable_master_clk(struct spi_device *spidev) {}
+static inline void mt_spi_disable_master_clk(struct spi_device *spidev) {}
+#endif
 #if LINUX_VERSION_CODE < KERNEL_VERSION(5, 10, 0)
 extern void set_tee_worker_threads_on_big_core(bool big_core);
 #endif

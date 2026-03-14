@@ -33,7 +33,8 @@ enum AEE_EXP_TYPE_NUM {
 	AEE_EXP_TYPE_MAX_NUM = 16,
 };
 
-#if IS_ENABLED(CONFIG_MTK_AEE_IPANIC)
+#if IS_BUILTIN(CONFIG_MTK_AEE_IPANIC) || \
+    (IS_MODULE(CONFIG_MTK_AEE_IPANIC) && defined(MODULE))
 extern void aee_rr_rec_clk(int id, u32 val);
 extern int aee_rr_reboot_reason_show(struct seq_file *m, void *v);
 extern int aee_rr_last_fiq_step(void);
