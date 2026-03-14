@@ -33,8 +33,18 @@ enum {
 #endif
 };
 
+#if IS_BUILTIN(CONFIG_DRM_MEDIATEK_V2)
 int mtk_disp_notifier_register(const char *source, struct notifier_block *nb);
 int mtk_disp_notifier_unregister(struct notifier_block *nb);
 int mtk_disp_notifier_call_chain(unsigned long val, void *v);
+#else
+static inline int mtk_disp_notifier_register(const char *source,
+					     struct notifier_block *nb)
+{ return 0; }
+static inline int mtk_disp_notifier_unregister(struct notifier_block *nb)
+{ return 0; }
+static inline int mtk_disp_notifier_call_chain(unsigned long val, void *v)
+{ return 0; }
+#endif
 
 #endif

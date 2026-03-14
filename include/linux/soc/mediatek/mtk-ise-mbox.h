@@ -61,8 +61,12 @@ typedef struct {
 	mailbox_payload_t payload;
 } mailbox_reply_t;
 
-mailbox_reply_t ise_mailbox_request(mailbox_request_t *request,
+static inline mailbox_reply_t ise_mailbox_request(mailbox_request_t *request,
 	mailbox_payload_t *payload, request_type_enum request_type,
-	uint8_t service_id, uint8_t service_version);
+	uint8_t service_id, uint8_t service_version)
+{
+	mailbox_reply_t reply = {{0}};
+	return reply;
+}
 
 #endif /* __MTK_ISE_MBOX_H__ */
