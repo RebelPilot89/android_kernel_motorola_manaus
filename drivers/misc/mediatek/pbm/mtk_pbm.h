@@ -29,7 +29,12 @@ enum PBM_PRIO_TAG {
 	PBM_PRIO_DLPT = 9
 };
 
+#include <linux/kconfig.h>
+#if IS_BUILTIN(CONFIG_MTK_PBM) || (IS_MODULE(CONFIG_MTK_PBM) && defined(MODULE))
 extern void kicker_pbm_by_md(enum pbm_kicker kicker, bool status);
+#else
+static inline void kicker_pbm_by_md(enum pbm_kicker kicker, bool status) {}
+#endif
 extern void kicker_pbm_by_flash(bool status);
 
 extern void register_pbm_notify(void *oc_cb, enum PBM_PRIO_TAG prio_val);

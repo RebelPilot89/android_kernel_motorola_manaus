@@ -229,7 +229,8 @@ void mrdump_save_per_cpu_reg(int cpu, struct pt_regs *regs);
 int mrdump_common_die(int reboot_reason, const char *msg, struct pt_regs *regs);
 void mrdump_mini_add_hang_raw(unsigned long vaddr, unsigned long size);
 void mrdump_mini_add_extra_misc(void);
-#if IS_ENABLED(CONFIG_MTK_AEE_IPANIC)
+#if IS_BUILTIN(CONFIG_MTK_AEE_IPANIC) || \
+    (IS_MODULE(CONFIG_MTK_AEE_IPANIC) && defined(MODULE))
 int mrdump_mini_add_extra_file(unsigned long vaddr, unsigned long paddr,
 	unsigned long size, const char *name);
 extern void mrdump_set_extra_dump(enum AEE_EXTRA_FILE_ID id,

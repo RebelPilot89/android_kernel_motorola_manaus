@@ -6,8 +6,16 @@
 #ifndef __CCCI_UTIL_LOG_H__
 #define __CCCI_UTIL_LOG_H__
 
+#include <linux/kconfig.h>
+#if IS_BUILTIN(CONFIG_MTK_AEE_IPANIC) || \
+    (IS_MODULE(CONFIG_MTK_AEE_IPANIC) && defined(MODULE))
 extern int mrdump_mini_add_extra_file(unsigned long vaddr, unsigned long paddr,
 	unsigned long size, const char *name);
+#else
+static inline int mrdump_mini_add_extra_file(unsigned long vaddr,
+	unsigned long paddr, unsigned long size, const char *name)
+{ return -1; }
+#endif
 
 /* #define BRING_UP_LOG_MODE */
 #ifndef BRING_UP_LOG_MODE

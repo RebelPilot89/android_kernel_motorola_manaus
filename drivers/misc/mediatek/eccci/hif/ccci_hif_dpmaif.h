@@ -519,7 +519,11 @@ extern struct regmap *syscon_regmap_lookup_by_phandle(struct device_node *np,
 extern int regmap_write(struct regmap *map, unsigned int reg, unsigned int val);
 extern int regmap_read(struct regmap *map, unsigned int reg, unsigned int *val);
 #ifdef CONFIG_MTK_GIC_V3_EXT
+#if IS_BUILTIN(CONFIG_MTK_IRQ_DBG) || (IS_MODULE(CONFIG_MTK_IRQ_DBG) && defined(MODULE))
 extern void mt_irq_dump_status(int irq);
+#else
+static inline void mt_irq_dump_status(int irq) {}
+#endif
 #endif
 
 #endif				/* __MODEM_DPMA_H__ */

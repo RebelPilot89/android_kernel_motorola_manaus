@@ -783,8 +783,14 @@ int gt9896s_fwu_module_init(void *data);
 #if IS_ENABLED(CONFIG_TRUSTONIC_TRUSTED_UI)
 extern atomic_t gt9896s_tui_flag;
 extern struct gt9896s_ts_core *ts_core_for_tui;
+#include <linux/kconfig.h>
+#if IS_BUILTIN(CONFIG_SPI_MT65XX) || (IS_MODULE(CONFIG_SPI_MT65XX) && defined(MODULE))
 extern void mt_spi_enable_master_clk(struct spi_device *spidev);
 extern void mt_spi_disable_master_clk(struct spi_device *spidev);
+#else
+static inline void mt_spi_enable_master_clk(struct spi_device *spidev) {}
+static inline void mt_spi_disable_master_clk(struct spi_device *spidev) {}
+#endif
 #endif
 
 #endif

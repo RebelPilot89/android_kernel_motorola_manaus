@@ -63,7 +63,13 @@ struct devapc_power_callbacks {
 uint32_t devapc_vio_check(void);
 void dump_dbg_info(void);
 void register_devapc_exception_callback(struct devapc_excep_callbacks *excepcb);
+#if IS_BUILTIN(CONFIG_DEVAPC_ARCH_MULTI) || \
+    (IS_MODULE(CONFIG_DEVAPC_ARCH_MULTI) && defined(MODULE))
 void register_devapc_vio_callback(struct devapc_vio_callbacks *viocb);
+#else
+static inline void register_devapc_vio_callback(
+	struct devapc_vio_callbacks *viocb) {}
+#endif
 void register_devapc_power_callback(struct devapc_power_callbacks *powercb);
 void devapc_catch_illegal_range(phys_addr_t phys_addr, size_t size);
 

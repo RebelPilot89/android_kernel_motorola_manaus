@@ -33,7 +33,13 @@ bool is_audio_scp_support(void);
 /* common */
 bool is_audio_dsp_support(const uint32_t dsp_id);
 bool is_audio_dsp_ready(const uint32_t dsp_id);
+#if IS_BUILTIN(CONFIG_MTK_AUDIO_IPI) || \
+    (IS_MODULE(CONFIG_MTK_AUDIO_IPI) && defined(MODULE))
 bool is_audio_task_dsp_ready(const uint8_t task);
+#else
+static inline bool is_audio_task_dsp_ready(const uint8_t task)
+{ return false; }
+#endif
 
 uint32_t audio_get_audio_ipi_id_by_dsp(const uint32_t dsp_id);
 uint32_t audio_get_audio_ipi_id(const uint8_t task);

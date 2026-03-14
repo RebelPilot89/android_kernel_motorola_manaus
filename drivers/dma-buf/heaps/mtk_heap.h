@@ -16,7 +16,13 @@
 extern atomic64_t dma_heap_normal_total;
 
 /* return 0 means error */
+#if IS_BUILTIN(CONFIG_MTK_TRUSTED_MEMORY_SUBSYSTEM) || \
+    (IS_MODULE(CONFIG_MTK_TRUSTED_MEMORY_SUBSYSTEM) && defined(MODULE))
 u32 dmabuf_to_secure_handle(const struct dma_buf *dmabuf);
+#else
+static inline u32 dmabuf_to_secure_handle(const struct dma_buf *dmabuf)
+{ return 0; }
+#endif
 
 int is_system_heap_dmabuf(const struct dma_buf *dmabuf);
 int is_mtk_mm_heap_dmabuf(const struct dma_buf *dmabuf);

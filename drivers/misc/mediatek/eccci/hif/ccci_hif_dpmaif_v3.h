@@ -507,8 +507,10 @@ extern struct regmap *syscon_regmap_lookup_by_phandle(struct device_node *np,
 extern int regmap_write(struct regmap *map, unsigned int reg, unsigned int val);
 extern int regmap_read(struct regmap *map, unsigned int reg, unsigned int *val);
 
-#if IS_ENABLED(CONFIG_MTK_IRQ_DBG)
+#if IS_BUILTIN(CONFIG_MTK_IRQ_DBG) || (IS_MODULE(CONFIG_MTK_IRQ_DBG) && defined(MODULE))
 extern void mt_irq_dump_status(unsigned int irq);
+#else
+static inline void mt_irq_dump_status(unsigned int irq) {}
 #endif
 
 extern void ccmni_set_cur_speed(u64 cur_dl_speed);

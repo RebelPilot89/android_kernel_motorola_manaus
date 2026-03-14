@@ -36,9 +36,16 @@ struct clkbuf_misc {
 };
 
 extern int clk_buf_ctrl(const char *xo_name, bool onoff);
+#if IS_BUILTIN(CONFIG_MTK_CLKBUF) || (IS_MODULE(CONFIG_MTK_CLKBUF) && defined(MODULE))
 extern int clk_buf_hw_ctrl(const char *xo_name, bool onoff);
-extern int clk_buf_dump_log(void);
 extern int clk_buf_get_xo_en_sta(const char *xo_name);
+#else
+static inline int clk_buf_hw_ctrl(const char *xo_name, bool onoff)
+{ return 0; }
+static inline int clk_buf_get_xo_en_sta(const char *xo_name)
+{ return 0; }
+#endif
+extern int clk_buf_dump_log(void);
 
 extern int srclken_dump_sta_log(void);
 extern int srclken_dump_cfg_log(void);

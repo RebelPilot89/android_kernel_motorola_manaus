@@ -34,7 +34,15 @@ static inline void mtk_leds_notify_brightness_hw_changed(
 	struct led_conf_info *led_conf, enum led_brightness brightness) { }
 #endif
 
+#include <linux/kconfig.h>
+#if IS_BUILTIN(CONFIG_LEDS_MTK) || (IS_MODULE(CONFIG_LEDS_MTK) && defined(MODULE))
 int mtk_leds_register_notifier(struct notifier_block *nb);
 int mtk_leds_unregister_notifier(struct notifier_block *nb);
+#else
+static inline int mtk_leds_register_notifier(struct notifier_block *nb)
+{ return 0; }
+static inline int mtk_leds_unregister_notifier(struct notifier_block *nb)
+{ return 0; }
+#endif
 int mtk_leds_brightness_set(char *name, int bl_1024);
 int setMaxBrightness(char *name, int percent, bool enable);

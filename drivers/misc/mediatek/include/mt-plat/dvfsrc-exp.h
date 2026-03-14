@@ -16,7 +16,7 @@
 #define MTK_DVFSRC_CURR_VCORE_UV	8
 #define MTK_DVFSRC_SW_REQ_VCORE_OPP	9
 
-#if IS_ENABLED(CONFIG_MTK_DVFSRC)
+#if IS_BUILTIN(CONFIG_MTK_DVFSRC) || (IS_MODULE(CONFIG_MTK_DVFSRC) && defined(MODULE))
 extern u32 dvfsrc_get_required_opp_peak_bw(struct device_node *np,
 					   int index);
 #else

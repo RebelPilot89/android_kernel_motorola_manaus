@@ -49,6 +49,13 @@ struct moto_chg_tcmd_client {
 	int (*wls_en)(void *input, bool val);
 };
 
+#include <linux/kconfig.h>
+#if IS_BUILTIN(CONFIG_MOTO_CHG_TCMD_SUPPORT) || \
+    (IS_MODULE(CONFIG_MOTO_CHG_TCMD_SUPPORT) && defined(MODULE))
 extern int moto_chg_tcmd_register(struct moto_chg_tcmd_client *client);
+#else
+static inline int moto_chg_tcmd_register(
+	struct moto_chg_tcmd_client *client) { return 0; }
+#endif
 
 #endif

@@ -64,11 +64,16 @@ enum {
 	BBLPM_EXT = (1 << XO_EXT),
 };
 
+#if IS_BUILTIN(CONFIG_MTK_CLKBUF) || (IS_MODULE(CONFIG_MTK_CLKBUF) && defined(MODULE))
 extern int clk_buf_hw_ctrl(u32 id, bool onoff);
+extern int clk_buf_get_xo_en_sta(u32 id);
+#else
+static inline int clk_buf_hw_ctrl(u32 id, bool onoff) { return 0; }
+static inline int clk_buf_get_xo_en_sta(u32 id) { return 0; }
+#endif
 extern int clk_buf_set_by_flightmode(bool on);
 extern int clk_buf_control_bblpm(bool on);
 extern int clk_buf_dump_log(void);
-extern int clk_buf_get_xo_en_sta(u32 id);
 extern int clk_buf_check_bblpm_enter_cond(void);
 extern int clk_buf_voter_ctrl_by_id(const uint8_t subsys_id, enum RC_CTRL_CMD rc_req);
 #endif

@@ -236,7 +236,8 @@ static inline void monitor_hang_regist_ldt(void (*fn)(void))
 	aed_common_exception_api(assert_type, log, log_size, phy, phy_size,    \
 				 detail, DB_OPT_DEFAULT)
 
-#if IS_ENABLED(CONFIG_MTK_AEE_AED)
+#if IS_BUILTIN(CONFIG_MTK_AEE_AED) || \
+    (IS_MODULE(CONFIG_MTK_AEE_AED) && defined(MODULE))
 void aee_kernel_exception_api_func(const char *file, const int line,
 				   const int db_opt, const char *module,
 				   const char *msg, ...);
