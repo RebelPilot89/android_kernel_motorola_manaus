@@ -9,8 +9,10 @@ ifneq ($(filter y m,$(CONFIG_MTK_USB_BOOST)),)
 ifeq ($(CONFIG_USB_MTU3),y)
 obj-$(CONFIG_MTK_USB_BOOST) += usb_boost.o
 usb_boost-y := usb_boost_common.o usb_boost_plat.o
-else ifneq (,$(filter y m,$(CONFIG_USB_MTK_HDRC)))
+else ifeq (,$(filter y m,$(CONFIG_USB_MUSB_HDRC)))
+ifneq (,$(filter y m,$(CONFIG_USB_MTK_HDRC)))
 obj-$(CONFIG_MTK_USB_BOOST) += musb_boost.o
 musb_boost-y := musb_boost_common.o usb_boost_plat.o
+endif
 endif
 endif
