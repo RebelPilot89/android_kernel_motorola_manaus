@@ -10,6 +10,15 @@
 #include <linux/slab.h>
 #include <trace/events/syscalls.h>
 
+/*
+ * Use wrappers exported from arch/arm64/kernel/ptrace.c instead of calling
+ * register_trace_sys_enter() directly.  Direct calls inline a reference to
+ * __tracepoint_sys_enter (a tracepoint data struct), which is unreliable to
+ * export under CONFIG_LTO_CLANG_THIN + CONFIG_CFI_CLANG.  Regular function
+ * exports always survive the LTO link.  The declarations live in
+ * syscall_hook_manager.h.
+ */
+
 #include "allowlist.h"
 #include "arch.h"
 #include "klog.h" // IWYU pragma: keep
@@ -345,7 +354,7 @@ void ksu_syscall_hook_manager_init(void)
 #endif
 
 #ifdef CONFIG_HAVE_SYSCALL_TRACEPOINTS
-    ret = register_trace_sys_enter(ksu_sys_enter_handler, NULL);
+    ret = ksu_register_sys_enter_trace(ksu_sys_enter_handler, NULL);
 #ifndef CONFIG_KRETPROBES
     ksu_mark_running_process_locked();
 #endif
@@ -366,7 +375,7 @@ void ksu_syscall_hook_manager_exit(void)
 {
     pr_info("hook_manager: ksu_hook_manager_exit called\n");
 #ifdef CONFIG_HAVE_SYSCALL_TRACEPOINTS
-    unregister_trace_sys_enter(ksu_sys_enter_handler, NULL);
+    ksu_unregister_sys_enter_trace(ksu_sys_enter_handler, NULL);
     tracepoint_synchronize_unregister();
     pr_info("hook_manager: sys_enter tracepoint unregistered\n");
 #endif

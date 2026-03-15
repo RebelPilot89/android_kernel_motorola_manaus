@@ -23,8 +23,39 @@ void musb_dbg(struct musb *musb, const char *fmt, ...)
 	va_end(args);
 }
 
-EXPORT_TRACEPOINT_SYMBOL_GPL(musb_gadget_enable);
-EXPORT_TRACEPOINT_SYMBOL_GPL(musb_gadget_disable);
-EXPORT_TRACEPOINT_SYMBOL_GPL(musb_g_giveback);
-EXPORT_TRACEPOINT_SYMBOL_GPL(musb_host_urb_giveback);
+/*
+ * Wrapper functions for musb_boost.ko to register/unregister MUSB tracepoint
+ * probes without referencing __tracepoint_musb_* data objects directly.
+ *
+ * Exporting the raw tracepoint structs via EXPORT_TRACEPOINT_SYMBOL_GPL() is
+ * unreliable under CONFIG_LTO_CLANG_THIN + CONFIG_CFI_CLANG.  Regular
+ * EXPORT_SYMBOL_GPL on a plain C function always survives LTO linking.
+ */
+int musb_trace_probe_gadget_enable(void (*fn)(void *, struct musb_ep *),
+				   void *data)
+{
+	return register_trace_musb_gadget_enable(fn, data);
+}
+EXPORT_SYMBOL_GPL(musb_trace_probe_gadget_enable);
+
+int musb_trace_probe_gadget_disable(void (*fn)(void *, struct musb_ep *),
+				    void *data)
+{
+	return register_trace_musb_gadget_disable(fn, data);
+}
+EXPORT_SYMBOL_GPL(musb_trace_probe_gadget_disable);
+
+int musb_trace_probe_g_giveback(void (*fn)(void *, struct musb_request *),
+				void *data)
+{
+	return register_trace_musb_g_giveback(fn, data);
+}
+EXPORT_SYMBOL_GPL(musb_trace_probe_g_giveback);
+
+int musb_trace_probe_host_urb_giveback(void (*fn)(void *, struct urb *),
+				       void *data)
+{
+	return register_trace_musb_host_urb_giveback(fn, data);
+}
+EXPORT_SYMBOL_GPL(musb_trace_probe_host_urb_giveback);
 

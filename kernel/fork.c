@@ -3114,6 +3114,7 @@ bad_unshare_cleanup_fs:
 bad_unshare_out:
 	return err;
 }
+EXPORT_SYMBOL(ksys_unshare);
 
 SYSCALL_DEFINE1(unshare, unsigned long, unshare_flags)
 {

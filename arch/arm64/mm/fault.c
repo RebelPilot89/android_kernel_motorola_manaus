@@ -228,6 +228,7 @@ int ptep_set_access_flags(struct vm_area_struct *vma,
 		flush_tlb_page(vma, address);
 	return 1;
 }
+EXPORT_SYMBOL(ptep_set_access_flags);
 
 static bool is_el1_instruction_abort(unsigned int esr)
 {

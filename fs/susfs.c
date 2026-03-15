@@ -1,6 +1,7 @@
 #include <linux/version.h>
 #include <linux/cred.h>
 #include <linux/fs.h>
+#include <linux/module.h>
 #include <linux/path.h>
 #include <linux/slab.h>
 #include <linux/seq_file.h>
@@ -1423,5 +1424,9 @@ void __init susfs_init(void) {
 	susfs_my_uname_init();
 }
 
-/* No module exit is needed becuase it should never be a loadable kernel module */
-//void __init susfs_exit(void)
+/* Module exit is not needed: the module is loaded at boot and stays resident
+ * for the lifetime of the kernel.  All cleanup (if any) is handled by the
+ * kernel on shutdown. */
+//void susfs_exit(void)
+
+MODULE_LICENSE("GPL");

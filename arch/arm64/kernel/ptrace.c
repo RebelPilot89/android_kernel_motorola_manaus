@@ -43,6 +43,34 @@
 
 #define CREATE_TRACE_POINTS
 #include <trace/events/syscalls.h>
+/*
+ * Wrapper functions for out-of-tree modules (e.g. kernelsu.ko) that need to
+ * register/unregister a sys_enter probe.
+ *
+ * On ARM64, CREATE_TRACE_POINTS for syscalls.h lives HERE (ptrace.c), not in
+ * kernel/entry/common.c (which requires CONFIG_GENERIC_ENTRY, not set on
+ * ARM64).  Exporting __tracepoint_sys_enter directly via
+ * EXPORT_TRACEPOINT_SYMBOL_GPL() is unreliable under
+ * CONFIG_LTO_CLANG_THIN + CONFIG_CFI_CLANG — the compound macro exports
+ * __traceiter_* and a static-call key that can be eliminated before the
+ * ksymtab entry is finalised.  Regular EXPORT_SYMBOL_GPL on a plain C
+ * function is always safe; the tracepoint struct stays internal to vmlinux.
+ */
+#ifdef CONFIG_HAVE_SYSCALL_TRACEPOINTS
+int ksu_register_sys_enter_trace(void (*fn)(void *, struct pt_regs *, long),
+				 void *data)
+{
+	return register_trace_sys_enter(fn, data);
+}
+EXPORT_SYMBOL_GPL(ksu_register_sys_enter_trace);
+
+void ksu_unregister_sys_enter_trace(void (*fn)(void *, struct pt_regs *, long),
+				    void *data)
+{
+	unregister_trace_sys_enter(fn, data);
+}
+EXPORT_SYMBOL_GPL(ksu_unregister_sys_enter_trace);
+#endif /* CONFIG_HAVE_SYSCALL_TRACEPOINTS */
 
 struct pt_regs_offset {
 	const char *name;

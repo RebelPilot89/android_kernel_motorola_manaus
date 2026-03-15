@@ -143,6 +143,7 @@ int ns_get_path(struct path *path, struct task_struct *task,
 
 	return ns_get_path_cb(path, ns_get_path_task, &args);
 }
+EXPORT_SYMBOL(ns_get_path);
 
 int open_related_ns(struct ns_common *ns,
 		   struct ns_common *(*get_ns)(struct ns_common *ns))

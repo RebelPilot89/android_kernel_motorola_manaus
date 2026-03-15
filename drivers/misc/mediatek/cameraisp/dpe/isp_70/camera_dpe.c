@@ -5741,8 +5741,8 @@ static int vidioc_qbuf(struct file *file, void *priv, struct v4l2_buffer *p)
 	struct DPE_USER_INFO_STRUCT *pUserInfo;
 	struct DPE_Request ureq;
 	struct DPE_Request kreq;
-	/* size of cfgs = 3 owing to call stact limitation*/
-	struct DPE_Config cfgs[3];//[MAX_FRAMES_PER_REQUEST];
+	/* Heap-allocate cfgs to stay within the 2048-byte stack limit */
+	struct DPE_Config *cfgs;
 	struct DPE_Config *pcfgs;
 	//unsigned long flags;
 	unsigned int m_real_ReqNum, f;
@@ -5751,6 +5751,10 @@ static int vidioc_qbuf(struct file *file, void *priv, struct v4l2_buffer *p)
 	//pid_t ProcessID;
 
 	//int tmep_cnt;
+	cfgs = kcalloc(3, sizeof(*cfgs), GFP_KERNEL);
+	if (!cfgs)
+		return -ENOMEM;
+
 	#ifdef DPE_debug_log_en
 	LOG_INF("[%s]buf address/len = 0x%lx/0x%x\n",
 		__func__, p->m.userptr,  p->length);
@@ -5833,6 +5837,7 @@ static int vidioc_qbuf(struct file *file, void *priv, struct v4l2_buffer *p)
 	mutex_unlock(&gDVSMutex);
 
 EXIT:
+	kfree(cfgs);
 	return ret;
 }
 static int vidioc_dqbuf(struct file *file, void *priv, struct v4l2_buffer *p)
@@ -5841,12 +5846,16 @@ static int vidioc_dqbuf(struct file *file, void *priv, struct v4l2_buffer *p)
 	signed int Ret = 0;
 	struct DPE_Request ureq;
 	struct DPE_Request kreq;
-	/* size of cfgs = 3 owing to call stact limitation*/
-	struct DPE_Config cfgs[3];//[MAX_FRAMES_PER_REQUEST];
+	/* Heap-allocate cfgs to stay within the 2048-byte stack limit */
+	struct DPE_Config *cfgs;
 	//unsigned long flags;
 	//unsigned int m_real_ReqNum;
 
 	//struct DPE_Config *pDpeConfig;
+	cfgs = kcalloc(3, sizeof(*cfgs), GFP_KERNEL);
+	if (!cfgs)
+		return -ENOMEM;
+
 	#ifdef DPE_debug_log_en
 	LOG_INF("DPE_DumpReg  star\n");
 	DPE_DumpReg();//!test
@@ -5855,11 +5864,16 @@ static int vidioc_dqbuf(struct file *file, void *priv, struct v4l2_buffer *p)
 	//LOG_INF("[%s]buf address/len = 0x%lx/0x%x, ureq =0x%x\n",
 	//__func__, p->m.userptr,  p->length, sizeof(ureq));
 
+	Ret = copy_from_user(&ureq, (void __user *)p->m.userptr, sizeof(ureq));
+	if (Ret != 0) {
+		LOG_ERR("vidioc_dqbuf: copy_from_user failed for ureq\n");
+		Ret = -EFAULT;
+		goto EXIT;
+	}
+
 	// MAX_FRAMES_PER_REQUEST = 3
 	if (ureq.m_ReqNum > 3)
 		goto EXIT;
-
-	Ret = copy_from_user(&ureq, (void __user *)p->m.userptr, sizeof(ureq));
 
 	Ret = copy_from_user(&cfgs[0], (void __user *)ureq.m_pDpeConfig,
 				ureq.m_ReqNum * sizeof(struct DPE_Config));
@@ -5916,7 +5930,8 @@ static int vidioc_dqbuf(struct file *file, void *priv, struct v4l2_buffer *p)
 	LOG_DBG("[%s]buf address/len = 0x%lx/0x%x\n",
 		__func__, p->m.userptr,  p->length);
 EXIT:
-	return 0;
+	kfree(cfgs);
+	return Ret;
 }
 static int vidioc_querycap(struct file *file, void  *priv,
 					struct v4l2_capability *cap)

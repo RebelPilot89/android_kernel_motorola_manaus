@@ -253,11 +253,8 @@ memcpy = __memcpy
 EXPORT_SYMBOL(memcpy)
 
 /*
- * __pi_memmove is an alias of __pi_memcpy because this implementation
- * handles overlapping regions.  It is used only by the EFI stub
- * (arch/arm64/kernel/image-vars.h), so no EXPORT_SYMBOL is needed here.
- * The canonical memmove/__memmove symbols and their exports live in
- * arch/arm64/lib/memmove.S.
+ * __pi_memmove is defined in arch/arm64/lib/memmove.S via
+ * SYM_FUNC_START_WEAK_PI(memmove) and is used by the EFI stub
+ * (arch/arm64/kernel/image-vars.h).  Do NOT alias it here; doing so
+ * creates a duplicate symbol when memmove.o is linked into lib.a.
  */
-.globl __pi_memmove
-__pi_memmove = __pi_memcpy

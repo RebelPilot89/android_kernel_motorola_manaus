@@ -24,6 +24,13 @@
 #if IS_ENABLED(CONFIG_USB_MTK_HDRC)
 #include "musb_core.h"
 #include "musb_trace.h"
+/*
+ * Use wrapper functions exported from musb_trace.c (part of musb_hdrc.ko)
+ * instead of calling register_trace_musb_*() directly.  Direct calls inline
+ * a reference to __tracepoint_musb_* data structs, which are unreliable to
+ * export under CONFIG_LTO_CLANG_THIN + CONFIG_CFI_CLANG.
+ */
+#include "musb_trace_export.h"
 #endif
 
 #define USB_BOOST_CLASS_NAME "usb_boost"
@@ -835,15 +842,15 @@ void musb_host_urb_giveback_dbg(void *unused, struct urb *urb)
 
 static int musb_trace_init(void)
 {
-	WARN_ON(register_trace_musb_gadget_enable(
+	WARN_ON(musb_trace_probe_gadget_enable(
 		boost_ep_enable, NULL));
-	WARN_ON(register_trace_musb_gadget_disable(
+	WARN_ON(musb_trace_probe_gadget_disable(
 		boost_ep_disable, NULL));
-	WARN_ON(register_trace_musb_g_giveback(
+	WARN_ON(musb_trace_probe_g_giveback(
 		musb_g_giveback_boost, NULL));
 	WARN_ON(register_trace_android_vh_sound_usb_support_cpu_suspend(
 		vh_sound_usb_support_cpu_suspend, NULL));
-	WARN_ON(register_trace_musb_host_urb_giveback(
+	WARN_ON(musb_trace_probe_host_urb_giveback(
 		musb_host_urb_giveback_dbg, NULL));
 	return 0;
 }

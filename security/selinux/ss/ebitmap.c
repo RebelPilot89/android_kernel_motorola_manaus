@@ -274,6 +274,7 @@ int ebitmap_get_bit(struct ebitmap *e, unsigned long bit)
 
 	return 0;
 }
+EXPORT_SYMBOL(ebitmap_get_bit);
 
 int ebitmap_set_bit(struct ebitmap *e, unsigned long bit, int value)
 {
@@ -342,6 +343,7 @@ int ebitmap_set_bit(struct ebitmap *e, unsigned long bit, int value)
 
 	return 0;
 }
+EXPORT_SYMBOL(ebitmap_set_bit);
 
 void ebitmap_destroy(struct ebitmap *e)
 {

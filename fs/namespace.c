@@ -1745,6 +1745,7 @@ int path_umount(struct path *path, int flags)
 	mntput_no_expire(mnt);
 	return ret;
 }
+EXPORT_SYMBOL(path_umount);
 
 static int ksys_umount(char __user *name, int flags)
 {
@@ -3229,6 +3230,7 @@ int path_mount(const char *dev_name, struct path *path,
 	return do_new_mount(path, type_page, sb_flags, mnt_flags, dev_name,
 			    data_page);
 }
+EXPORT_SYMBOL(path_mount);
 
 long do_mount(const char *dev_name, const char __user *dir_name,
 		const char *type_page, unsigned long flags, void *data_page)
@@ -4129,3 +4131,4 @@ const struct proc_ns_operations mntns_operations = {
 	.install	= mntns_install,
 	.owner		= mntns_owner,
 };
+EXPORT_SYMBOL(mntns_operations);
