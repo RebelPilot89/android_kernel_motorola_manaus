@@ -40,6 +40,18 @@ struct mtk_eint_ops {
 	void (*ack)(struct irq_data *d);
 };
 
+/*
+ * Legacy hardware descriptor used by old-style pinctrl drivers
+ * (pinctrl-mtk-common.c path, e.g. MT6397).  New drivers (PARIS/V2)
+ * embed this inside struct mtk_pin_soc instead.
+ */
+struct mtk_eint_hw {
+	u8 port_mask;		/* bit-mask of valid port bits per register */
+	u8 ports;		/* number of 32-pin ports */
+	unsigned long ap_num;	/* total number of AP EINT lines */
+	unsigned long db_cnt;	/* number of debounce sources */
+};
+
 struct mtk_eint_compatible {
 	struct mtk_eint_ops ops;
 	const struct mtk_eint_regs *regs;
@@ -85,6 +97,16 @@ struct mtk_eint {
 	unsigned int instance_number;
 	unsigned int dump_target_eint;
 	const struct mtk_eint_compatible *comp;
+
+	/*
+	 * Legacy fields used by old-style pinctrl drivers
+	 * (pinctrl-mtk-common.c path).  Not used by mtk_eint_do_init()
+	 * in the new multi-instance implementation.  Keeping them flat in
+	 * the struct avoids changes to pinctrl-mtk-common.c call sites.
+	 */
+	void __iomem *base;
+	const struct mtk_eint_regs *regs;
+	const struct mtk_eint_hw *hw;
 
 	/* Used to fit into various pinctrl device */
 	void *pctl;
