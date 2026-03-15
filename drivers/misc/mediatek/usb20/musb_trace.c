@@ -31,7 +31,7 @@ void musb_dbg(struct musb *musb, const char *fmt, ...)
  * compound EXPORT_TRACEPOINT_SYMBOL_GPL() macro.  The latter also calls
  * EXPORT_STATIC_CALL_GPL(tp_func_<name>) which, on ARM64 (no
  * CONFIG_HAVE_STATIC_CALL), has been observed to silently break under
- * Clang LTO — the __SCK__tp_func_* reference can be optimised away
+ * Clang LTO — the __SCK__tp_func_* reference can be optimized away
  * before the __ksymtab entry is emitted, leaving the tracepoint
  * invisible to modpost.  Exporting only the symbols that consumers
  * actually reference avoids the problem entirely.

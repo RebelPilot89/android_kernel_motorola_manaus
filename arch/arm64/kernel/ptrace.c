@@ -56,7 +56,7 @@
  * EXPORT_TRACEPOINT_SYMBOL_GPL() macro because the latter also calls
  * EXPORT_STATIC_CALL_GPL(tp_func_<name>) which, on ARM64 (no
  * CONFIG_HAVE_STATIC_CALL), can break under Clang LTO — the
- * __SCK__tp_func_* reference may be optimised away before the
+ * __SCK__tp_func_* reference may be optimized away before the
  * __ksymtab entry is emitted, leaving the tracepoint invisible to
  * modpost.
  */
