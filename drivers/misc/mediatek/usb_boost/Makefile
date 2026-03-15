@@ -6,7 +6,7 @@ ccflags-y += -I$(srctree)/drivers/usb/mtu3
 ccflags-y += -I$(srctree)/drivers/misc/mediatek/usb20
 
 ifneq ($(filter y m,$(CONFIG_MTK_USB_BOOST)),)
-ifeq ($(CONFIG_USB_MTU3),y)
+ifneq ($(filter y m,$(CONFIG_USB_MTU3)),)
 obj-$(CONFIG_MTK_USB_BOOST) += usb_boost.o
 usb_boost-y := usb_boost_common.o usb_boost_plat.o
 else ifeq (,$(filter y m,$(CONFIG_USB_MUSB_HDRC)))
