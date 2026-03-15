@@ -27,9 +27,12 @@ CONFIG_INIT_ENV_ARG_LIMIT=32
 # CONFIG_WERROR is not set
 CONFIG_UAPI_HEADER_TEST=y
 # Match stock vermagic prefix: 5.10.233-android12-9 SMP preempt mod_unload modversions aarch64
-# Forensic: stock vermagic = 5.10.233-android12-9-39248-gdd0980c7e7d6 (LOCALVERSION_AUTO adds git suffix)
+# Forensic: stock vermagic = 5.10.233-android12-9-39248-gdd0980c7e7d6 (their build uses
+# LOCALVERSION_AUTO=y which appends the git commit hash from their Android tree).
+# We set LOCALVERSION="-android12-9" and disable AUTO to produce a deterministic
+# 5.10.233-android12-9 vermagic that is self-consistent across all our compiled modules.
 CONFIG_LOCALVERSION="-android12-9"
-CONFIG_LOCALVERSION_AUTO=n
+# CONFIG_LOCALVERSION_AUTO is not set
 CONFIG_BUILD_SALT=""
 CONFIG_DEFAULT_INIT=""
 CONFIG_DEFAULT_HOSTNAME="(none)"
