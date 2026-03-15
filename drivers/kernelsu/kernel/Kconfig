@@ -20,59 +20,59 @@ config KSU_DEBUG
 menu "KernelSU - SUSFS"
 
 config KSU_SUSFS
-	bool "KernelSU addon - SUSFS"
+	tristate "KernelSU addon - SUSFS"
 	depends on KSU
 	default y
 	help
 	  Patch and enable SUSFS integration in kernel with KernelSU.
 
 config KSU_SUSFS_SUS_PATH
-	bool "Enable to hide suspicious path"
+	tristate "Enable to hide suspicious path"
 	depends on KSU_SUSFS
 	default y
 
 config KSU_SUSFS_SUS_MOUNT
-	bool "Enable to hide suspicious mounts"
+	tristate "Enable to hide suspicious mounts"
 	depends on KSU_SUSFS
 	default y
 
 config KSU_SUSFS_SUS_MOUNT_MNT_ID_REORDER
-	bool "Enable mount id reorder in mountinfo (experimental)"
+	tristate "Enable mount id reorder in mountinfo (experimental)"
 	depends on KSU_SUSFS_SUS_MOUNT
 	default n
 
 config KSU_SUSFS_SUS_KSTAT
-	bool "Enable to spoof suspicious kstat"
+	tristate "Enable to spoof suspicious kstat"
 	depends on KSU_SUSFS
 	default y
 
 config KSU_SUSFS_SUS_MAPS
-	bool "Enable to spoof suspicious maps"
+	tristate "Enable to spoof suspicious maps"
 	depends on KSU_SUSFS
 	default y
 
 config KSU_SUSFS_SUS_PROC_FD_LINK
-	bool "Enable to spoof suspicious proc fd links (experimental)"
+	tristate "Enable to spoof suspicious proc fd links (experimental)"
 	depends on KSU_SUSFS
 	default n
 
 config KSU_SUSFS_SUS_MEMFD
-	bool "Enable to hide/spoof suspicious memfd (experimental)"
+	tristate "Enable to hide/spoof suspicious memfd (experimental)"
 	depends on KSU_SUSFS
 	default n
 
 config KSU_SUSFS_TRY_UMOUNT
-	bool "Enable to use ksu try_umount"
+	tristate "Enable to use ksu try_umount"
 	depends on KSU_SUSFS
 	default y
 
 config KSU_SUSFS_SPOOF_UNAME
-	bool "Enable to spoof uname"
+	tristate "Enable to spoof uname"
 	depends on KSU_SUSFS
 	default y
 
 config KSU_SUSFS_ENABLE_LOG
-	bool "Enable SUSFS logging"
+	tristate "Enable SUSFS logging"
 	depends on KSU_SUSFS
 	default y
 
