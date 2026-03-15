@@ -90,7 +90,10 @@ obj-$(CONFIG_DRM_PANEL_TIANMA_NT37701A_655_FHDP_DPHY_CMD_144HZ) += dsi-panel-mot
 obj-$(CONFIG_DRM_PANEL_TIANMA_NT37701A_655_FHDP_DPHY_CMD_144HZ_RODE) += dsi-panel-mot-tianma-nt37701a-655-fhdp-dphy-cmd-rode.o
 obj-$(CONFIG_DRM_PANEL_CSOT_NT37701A_655_FHDP_DPHY_CMD_144HZ) += dsi-panel-mot-csot-nt37701a-655-fhdp-dphy-cmd-144hz.o
 obj-$(CONFIG_DRM_PANEL_CSOT_NT37701A_655_FHDP_DPHY_CMD_144HZ_V1) += dsi-panel-mot-csot-nt37701a-655-fhdp-dphy-cmd-144hz-v1.o
-obj-$(CONFIG_DRM_PANEL_BOE_NT37701A_655_FHDP_DPHY_CMD_144HZ) += dsi-panel-mot-boe-nt37701a-655-fhdp-dphy-cmd-144hz.o
+# Forensic: stock vendor_boot has dsi-panel-mot-boe-nt37701a-655-fhdp-cmd-144hz.ko
+# (no "dphy" in module name). Rename .ko output to match; the .c source stays the same.
+obj-$(CONFIG_DRM_PANEL_BOE_NT37701A_655_FHDP_DPHY_CMD_144HZ) += dsi-panel-mot-boe-nt37701a-655-fhdp-cmd-144hz.o
+dsi-panel-mot-boe-nt37701a-655-fhdp-cmd-144hz-objs := dsi-panel-mot-boe-nt37701a-655-fhdp-dphy-cmd-144hz.o
 obj-$(CONFIG_DRM_PANEL_BOE_HX83102J_VDO) += panel-boe-hx83102j-vdo.o
 obj-$(CONFIG_DRM_PANEL_BOE_HX83102J_VDO) += ktz8866.o
 obj-$(CONFIG_DRM_PANEL_MOT_DUMMY_VDO_60HZ) += dsi-panel-mot-dummy-vdo-60hz.o
