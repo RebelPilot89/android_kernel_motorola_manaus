@@ -548,7 +548,7 @@ MODULE_NAME := wlan_$(shell echo $(strip $(WLAN_CHIP_ID)) | tr A-Z a-z)_$(MTK_WI
 endif
 
 ifeq ($(CONFIG_WLAN_DRV_BUILD_IN),)
-CONFIG_WLAN_DRV_BUILD_IN := y
+CONFIG_WLAN_DRV_BUILD_IN := m
 endif
 
 ccflags-y += -DDBG=0

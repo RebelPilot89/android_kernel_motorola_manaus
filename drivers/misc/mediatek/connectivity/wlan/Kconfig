@@ -3,9 +3,9 @@
 menuconfig MTK_WLAN_DEVICE
 	tristate "MediaTek MT6879 (Edge 40 Neo) Connectivity WLAN support"
 	depends on NET && INET && WIRELESS
+	depends on CFG80211
 	select WIRELESS_EXT
 	select WEXT_PRIV
-	select CFG80211
 	default y
 	help
 	  Este es el driver de Wi-Fi para el SoC MT6879 (Dimensity 7030).
