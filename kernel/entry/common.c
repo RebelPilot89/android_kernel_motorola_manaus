@@ -7,6 +7,11 @@
 
 #define CREATE_TRACE_POINTS
 #include <trace/events/syscalls.h>
+/* Export raw_syscalls sys_enter tracepoint struct so that out-of-tree
+ * consumers (e.g. kernelsu.ko) can register probe callbacks via
+ * register_trace_sys_enter() without requiring vmlinux at link time.
+ */
+EXPORT_TRACEPOINT_SYMBOL_GPL(__tracepoint_sys_enter);
 
 /**
  * enter_from_user_mode - Establish state when coming from user mode
