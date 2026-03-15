@@ -140,3 +140,4 @@ SYM_FUNC_END(__pi_memcmp)
 .globl memcmp
 .weak memcmp
 memcmp = __pi_memcmp
+EXPORT_SYMBOL(memcmp)
