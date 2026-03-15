@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: GPL-2.0
 
-ifeq (y, $(filter y, $(CONFIG_DRM_MEDIATEK_V2)))
+ifneq (,$(filter y m,$(CONFIG_DRM_MEDIATEK_V2)))
 obj-$(CONFIG_DRM_MEDIATEK_V2) += mediatek_v2/
 obj-$(CONFIG_DRM_MEDIATEK_V2) += mml/
 else
