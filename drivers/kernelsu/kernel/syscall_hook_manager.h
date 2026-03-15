@@ -42,4 +42,18 @@ static inline void ksu_clear_task_tracepoint_flag(struct task_struct *t)
 
 void ksu_clear_task_tracepoint_flag_if_needed(struct task_struct *t);
 
+/*
+ * Wrappers exported from arch/arm64/kernel/ptrace.c for registering
+ * sys_enter tracepoint probes.  Using these avoids a direct reference to
+ * __tracepoint_sys_enter, which is unreliable to export under
+ * CONFIG_LTO_CLANG_THIN + CONFIG_CFI_CLANG.
+ */
+#ifdef CONFIG_HAVE_SYSCALL_TRACEPOINTS
+#include <linux/ptrace.h>
+int ksu_register_sys_enter_trace(void (*fn)(void *, struct pt_regs *, long),
+				 void *data);
+void ksu_unregister_sys_enter_trace(void (*fn)(void *, struct pt_regs *, long),
+				    void *data);
+#endif
+
 #endif
