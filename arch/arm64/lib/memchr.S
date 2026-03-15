@@ -78,4 +78,9 @@ SYM_FUNC_END(__pi_memchr)
 .weak memchr
 memchr = __pi_memchr
 EXPORT_SYMBOL(memchr)
-EXPORT_SYMBOL(__pi_memchr)
+/*
+ * NOTE: DO NOT export __pi_memchr — no C prototype visible to genksyms.
+ * With CONFIG_MODVERSIONS+LTO (ThinLTO), the missing CRC causes an ABS32
+ * relocation error in LLD.  memchr (with a proper string.h declaration)
+ * is the only alias that should be exported.
+ */

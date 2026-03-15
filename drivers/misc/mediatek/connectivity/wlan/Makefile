@@ -998,6 +998,11 @@ $(MODULE_NAME)-objs  += $(CHIPS_OBJS)
 $(MODULE_NAME)-objs  += $(SYSDVT_OBJS)
 $(MODULE_NAME)-objs  += $(NAN_OBJS)
 $(MODULE_NAME)-objs  += $(NAN_SEC_OBJS)
+# wmt_cdev_wifi.c is compiled into this module alongside gl_init.c which already
+# provides module_init/module_exit.  Define MTK_WCN_BUILT_IN_DRIVER so that
+# wmt_cdev_wifi.c takes the EXPORT_SYMBOL path instead of registering a second
+# module_init/module_exit, which would cause duplicate-symbol link errors.
+ccflags-y += -DMTK_WCN_BUILT_IN_DRIVER
 $(MODULE_NAME)-objs  += adaptor/wmt_cdev_wifi.o
 $(MODULE_NAME)-objs  += adaptor/wifi_pwr_on.o
 

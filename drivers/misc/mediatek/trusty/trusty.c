@@ -25,7 +25,12 @@
 #include <linux/soc/mediatek/mtk_ise_lpm.h>
 #include <linux/soc/mediatek/mtk_sip_svc.h>
 
-#if IS_ENABLED(CONFIG_TRUSTONIC_TEE_SUPPORT)
+/*
+ * Use IS_BUILTIN (not IS_ENABLED) so that when CONFIG_TRUSTONIC_TEE_SUPPORT=m
+ * trusty-dci.o is NOT linked into the built-in ise-trusty, preventing
+ * an "undefined symbol: trusty_dci_init" linker error at vmlinux link time.
+ */
+#if IS_BUILTIN(CONFIG_TRUSTONIC_TEE_SUPPORT)
 #include "trusty-dci.h"
 #endif
 
@@ -681,7 +686,7 @@ static int trusty_probe(struct platform_device *pdev)
 	INIT_WORK(&ise_notif_call_work, ise_notif_call_work_func);
 	INIT_WORK(&ise_check_vqs_work, ise_check_vqs_work_func);
 
-#if IS_ENABLED(CONFIG_TRUSTONIC_TEE_SUPPORT)
+#if IS_BUILTIN(CONFIG_TRUSTONIC_TEE_SUPPORT)
 	ret = trusty_dci_init();
 	if (ret == 0)
 		dev_info(&pdev->dev, "trusty_dci_init done.\n");
