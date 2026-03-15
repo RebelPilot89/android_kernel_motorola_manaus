@@ -105,6 +105,7 @@
 #include "avc_ss.h"
 
 struct selinux_state selinux_state;
+EXPORT_SYMBOL(selinux_state);
 
 /* SECMARK reference count */
 static atomic_t selinux_secmark_refcount = ATOMIC_INIT(0);
@@ -6925,6 +6926,7 @@ struct lsm_blob_sizes selinux_blob_sizes __lsm_ro_after_init = {
 	.lbs_ipc = sizeof(struct ipc_security_struct),
 	.lbs_msg_msg = sizeof(struct msg_security_struct),
 };
+EXPORT_SYMBOL(selinux_blob_sizes);
 
 #ifdef CONFIG_PERF_EVENTS
 static int selinux_perf_event_open(struct perf_event_attr *attr, int type)

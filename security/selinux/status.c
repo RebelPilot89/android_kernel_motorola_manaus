@@ -122,3 +122,4 @@ void selinux_status_update_policyload(struct selinux_state *state,
 	}
 	mutex_unlock(&state->status_lock);
 }
+EXPORT_SYMBOL(selinux_status_update_policyload);

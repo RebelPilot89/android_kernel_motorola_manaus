@@ -289,6 +289,7 @@ long strncpy_from_user_nofault(char *dst, const void __user *unsafe_addr,
 
 	return ret;
 }
+EXPORT_SYMBOL(strncpy_from_user_nofault);
 
 /**
  * strnlen_user_nofault: - Get the size of a user string INCLUDING final NUL.

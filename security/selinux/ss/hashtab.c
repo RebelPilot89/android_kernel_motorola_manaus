@@ -62,6 +62,7 @@ int __hashtab_insert(struct hashtab *h, struct hashtab_node **dst,
 	h->nel++;
 	return 0;
 }
+EXPORT_SYMBOL(__hashtab_insert);
 
 void hashtab_destroy(struct hashtab *h)
 {

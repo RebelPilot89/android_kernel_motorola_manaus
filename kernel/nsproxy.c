@@ -570,6 +570,7 @@ out:
 	fput(file);
 	return err;
 }
+EXPORT_SYMBOL(__arm64_sys_setns);
 
 int __init nsproxy_cache_init(void)
 {

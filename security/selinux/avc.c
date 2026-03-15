@@ -1021,6 +1021,7 @@ int avc_ss_reset(struct selinux_avc *avc, u32 seqno)
 	avc_latest_notif_update(avc, seqno, 0);
 	return rc;
 }
+EXPORT_SYMBOL(avc_ss_reset);
 
 /*
  * Slow-path helper function for avc_has_perm_noaudit,

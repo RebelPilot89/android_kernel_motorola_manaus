@@ -454,6 +454,7 @@ struct filename_trans_datum *policydb_filenametr_search(
 {
 	return hashtab_search(&p->filename_trans, key, filenametr_key_params);
 }
+EXPORT_SYMBOL(policydb_filenametr_search);
 
 static u32 rangetr_hash(const void *k)
 {

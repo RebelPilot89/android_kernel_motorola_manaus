@@ -557,6 +557,7 @@ void seccomp_filter_release(struct task_struct *tsk)
 	tsk->seccomp.filter = NULL;
 	__seccomp_filter_release(orig);
 }
+EXPORT_SYMBOL(seccomp_filter_release);
 
 /**
  * seccomp_sync_threads: sets all threads to use current's filter

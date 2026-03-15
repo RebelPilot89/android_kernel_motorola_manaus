@@ -47,8 +47,10 @@ int symtab_insert(struct symtab *s, char *name, void *datum)
 {
 	return hashtab_insert(&s->table, name, datum, symtab_key_params);
 }
+EXPORT_SYMBOL(symtab_insert);
 
 void *symtab_search(struct symtab *s, const char *name)
 {
 	return hashtab_search(&s->table, name, symtab_key_params);
 }
+EXPORT_SYMBOL(symtab_search);
