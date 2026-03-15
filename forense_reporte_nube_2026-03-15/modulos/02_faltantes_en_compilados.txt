@@ -1,0 +1,6 @@
+dsi-panel-mot-boe-nt37701a-655-fhdp-cmd-144hz.ko
+industrialio-triggered-buffer.ko
+kfifo_buf.ko
+mtk-mbox.ko
+mtk_rpmsg_mbox.ko
+mtk_tinysys_ipi.ko

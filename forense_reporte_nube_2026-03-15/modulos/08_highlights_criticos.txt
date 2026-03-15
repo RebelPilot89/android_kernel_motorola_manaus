@@ -1,0 +1,29 @@
+Top 15 por growth ratio:
+mac80211.ko	30.873	2096232	64717944
+ufs-mediatek-mod.ko	25.666	278912	7158488
+tcpci_late_sync.ko	24.952	10664	266088
+mtk_pep.ko	23.950	56696	1357896
+moto_wlc_alg.ko	23.330	64176	1497224
+mtk-pm-domain-disable-unused.ko	22.114	11856	262184
+mtk-socinfo.ko	22.113	11888	262880
+mtk-mmdvfs-debug.ko	21.538	16152	347880
+teeperf.ko	21.066	24032	506264
+isee.ko	20.143	376888	7591480
+mtk-mml.ko	20.008	926776	18542584
+clk-mt6879-ccu.ko	19.982	13416	268072
+syscon-reboot-mode.ko	19.710	13696	269944
+mtk_pd_charging.ko	19.623	74176	1455584
+mt6685-core.ko	19.328	14064	271824
+
+Depends mismatch:
+adsp.ko | stock=aee_aed,mrdump,mtk_slbc,mtk-mbox,irq-dbg,emi-mpu | new=aee_aed,mrdump,mtk_slbc,irq-dbg,emi-mpu
+cqhci.ko | stock=mcDrvModule,blocktag | new=blocktag
+iommu_debug.ko | stock=aee_aed | new=iommu_secure,aee_aed
+leds-mtk-disp.ko | stock=leds-mtk,mediatek-drm,mediatek-drm-gateic,mtk_panel_ext | new=leds-mtk,mtk_panel_ext,mediatek-drm
+leds-mtk-pwm.ko | stock=leds-mtk,mediatek-drm | new=leds-mtk
+mediatek-drm.ko | stock=mtk-cmdq-drv-ext,mmqos-common,mtk-icc-core,cmdq_helper_inf,mmprofile,mtk-mml,mrdump,clk-common,mtk_sync,mtk_disp_notify,mtk_panel_ext,iommu_debug,mtk-smi,mtk_slbc,mtk-smi-dbg,aee_aed,leds-mtk,clkbuf | new=mtk-cmdq-drv-ext,mmqos-common,mtk-icc-core,mmprofile,mtk-mml,mrdump,mtk_sync,mtk_disp_notify,mtk_panel_ext,iommu_debug,mtk-smi,mtk_slbc,mtk-smi-dbg,aee_aed,leds-mtk,clkbuf
+mt6375-adc.ko | stock=industrialio-triggered-buffer | new=
+mtk_charger_framework.ko | stock=charger_class,mtk_charger_algorithm_class,tcpc_class,moto_chg_tcmd,adapter_class,monitor_hang | new=charger_class,mtk_charger_algorithm_class,moto_chg_tcmd,adapter_class
+mtk-cmdq-drv-ext.ko | stock=device-apc-common,mtk-smi-dbg,vcp_status,aee_aed,mmprofile,iommu_debug,irq-dbg | new=vcp_status,aee_aed,device-apc-common,mtk-smi-dbg,mmprofile,iommu_debug,irq-dbg
+mtk-mmc-dbg.ko | stock=mrdump,blocktag,pinctrl-mtk-common-v2_debug | new=mrdump,blocktag
+rtc-mt6685.ko | stock=aee_aed | new=

@@ -1,0 +1,4 @@
+stock_vermagic_unique:
+5.10.233-android12-9-39248-gdd0980c7e7d6 SMP preempt mod_unload modversions aarch64
+compiled_vermagic_unique:
+5.10.233 SMP preempt mod_unload modversions aarch64

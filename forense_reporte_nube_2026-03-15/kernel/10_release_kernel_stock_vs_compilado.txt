@@ -1,0 +1,4 @@
+stock_release:
+5.10.233-android12-9-00008-gf5ac1bdc50ed-ab13743812
+compiled_release:
+5.10.233

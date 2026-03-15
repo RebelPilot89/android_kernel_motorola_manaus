@@ -1,0 +1,19 @@
+REPORTE FORENSE CONSOLIDADO
+Fecha: 2026-03-15
+Objetivo: comparar stock vs compilado para kernel y modulos de vendor_boot.
+
+HALLAZGOS CLAVE - MODULOS
+1) Cobertura por nombre: 186 con match, 6 faltantes.
+2) Vermagic: mismatch en todos los modulos reemplazables.
+3) modules.load: 3 faltantes en el set compilado.
+4) Cambios de depends en modulos criticos (adsp, mediatek-drm, mt6375-adc, etc.).
+5) Cambios amplios de undefined symbols y crecimiento fuerte de tamano.
+
+HALLAZGOS CLAVE - KERNEL
+1) Kernel stock y kernel compilado no son binariamente equivalentes.
+2) Release string diferente entre stock y compilado.
+3) Diferencias grandes de IKCONFIG (solo stock vs solo compilado).
+4) Flags criticos de subsistemas de modulos cambian entre ambos kernels.
+
+NOTA
+Este paquete omite deliberadamente analisis de toolchain en el resumen ejecutivo.

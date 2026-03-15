@@ -1,0 +1,9 @@
+== file ==
+/home/rebelpilot89/manaus-kernel/Firmware-stock/analysis_kernel/stock_kernel.raw:  Linux kernel ARM64 boot executable Image, little-endian, 4K pages
+/home/rebelpilot89/manaus-kernel/Firmware-stock/analysis_kernel/compiled_Image:    Linux kernel ARM64 boot executable Image, little-endian, 4K pages
+/home/rebelpilot89/manaus-kernel/Firmware-stock/analysis_kernel/compiled_Image.gz: gzip compressed data, max compression, from Unix, original size modulo 2^32 58002400
+
+== size ==
+/home/rebelpilot89/manaus-kernel/Firmware-stock/analysis_kernel/stock_kernel.raw\t46854172
+/home/rebelpilot89/manaus-kernel/Firmware-stock/analysis_kernel/compiled_Image\t58002400
+/home/rebelpilot89/manaus-kernel/Firmware-stock/analysis_kernel/compiled_Image.gz\t24232245

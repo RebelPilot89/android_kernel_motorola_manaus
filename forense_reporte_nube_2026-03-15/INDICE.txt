@@ -1,0 +1,30 @@
+forense_reporte_nube_2026-03-15
+
+[resumen]
+- 00_resumen_ejecutivo.txt
+
+[modulos]
+- 01_resumen_conteos.txt
+- 02_faltantes_en_compilados.txt
+- 03_vermagic_stock_vs_compilado.txt
+- 04_modules_load_presencia.tsv
+- 05_modules_load_huecos_dependencias.txt
+- 06_depends_mismatch.tsv
+- 07_cambios_undefined_symbols.tsv
+- 08_highlights_criticos.txt
+- 09_comparacion_par_a_par_modinfo.tsv
+- 10_modulos_con_match_nombre.txt
+- 11_lista_modulos_stock_vendor_boot.txt
+- 12_lista_modulos_compilados_nombre.txt
+
+[kernel]
+- 01_meta_archivos_kernel.txt
+- 02_sha256_kernels.txt
+- 03_comparacion_binaria_kernel.txt
+- 04_ikconfig_resumen.txt
+- 05_flags_criticos_ikconfig.txt
+- 06_ikconfig_solo_stock.txt
+- 07_ikconfig_solo_compilado.txt
+- 08_ikconfig_stock_completo.txt
+- 09_ikconfig_compilado_completo.txt
+- 10_release_kernel_stock_vs_compilado.txt

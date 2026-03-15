@@ -1,0 +1,3 @@
+70664573fb75d3c57140f58dcf4f2777d5d7f5ca9123ce3e13685bc7df65ea0b  /home/rebelpilot89/manaus-kernel/Firmware-stock/analysis_kernel/stock_kernel.raw
+f512e9d2b00beccc9a6b01d678e88e3c711cd8b0ec217b13ed3f08fc8ad9caf9  /home/rebelpilot89/manaus-kernel/Firmware-stock/analysis_kernel/compiled_Image
+24fb90bf09f08e929a70965f1b9285998d990d448d837f2fe94e39a277877534  /home/rebelpilot89/manaus-kernel/Firmware-stock/analysis_kernel/compiled_Image.gz
