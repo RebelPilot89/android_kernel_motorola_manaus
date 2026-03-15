@@ -1250,6 +1250,7 @@ pid_t task_numa_group_id(struct task_struct *p)
 
 	return gid;
 }
+EXPORT_SYMBOL(task_numa_group_id);
 
 /*
  * The averaged statistics, shared & private, memory & CPU,

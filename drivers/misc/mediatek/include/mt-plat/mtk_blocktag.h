@@ -12,7 +12,8 @@
 #include <linux/sched.h>
 #include "ufshcd.h"
 
-#if IS_ENABLED(CONFIG_MTK_BLOCK_IO_TRACER)
+#if IS_BUILTIN(CONFIG_MTK_BLOCK_IO_TRACER) || \
+    (IS_MODULE(CONFIG_MTK_BLOCK_IO_TRACER) && defined(MODULE))
 
 /*
  * MTK_BTAG_FEATURE_MICTX_IOSTAT

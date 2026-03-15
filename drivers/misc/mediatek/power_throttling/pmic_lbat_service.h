@@ -8,7 +8,9 @@
 
 struct lbat_user;
 
-/* extern function */
+#include <linux/kconfig.h>
+#if IS_BUILTIN(CONFIG_PMIC_LBAT_SERVICE) || \
+    (IS_MODULE(CONFIG_PMIC_LBAT_SERVICE) && defined(MODULE))
 struct lbat_user *lbat_user_register_ext(const char *name, unsigned int *thd_volt_arr,
 					 unsigned int thd_volt_size,
 					 void (*callback)(unsigned int thd_volt));
@@ -16,6 +18,15 @@ struct lbat_user *lbat_user_register(const char *name, unsigned int hv_thd_volt,
 				     unsigned int lv1_thd_volt,
 				     unsigned int lv2_thd_volt,
 				     void (*callback)(unsigned int thd_volt));
+#else
+static inline struct lbat_user *lbat_user_register_ext(const char *name,
+	unsigned int *thd_volt_arr, unsigned int thd_volt_size,
+	void (*callback)(unsigned int thd_volt)) { return NULL; }
+static inline struct lbat_user *lbat_user_register(const char *name,
+	unsigned int hv_thd_volt, unsigned int lv1_thd_volt,
+	unsigned int lv2_thd_volt,
+	void (*callback)(unsigned int thd_volt)) { return NULL; }
+#endif
 int lbat_user_set_debounce(struct lbat_user *user,
 			   unsigned int hv_deb_prd, unsigned int hv_deb_times,
 			   unsigned int lv_deb_prd, unsigned int lv_deb_times);

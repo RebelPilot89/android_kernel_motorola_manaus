@@ -49,6 +49,7 @@
 #include <linux/of_address.h>
 #include <linux/of_fdt.h>
 #include <mt-plat/aee.h>
+#include <mt-plat/mboot_params.h>
 #include "mtk_eemgpu_config.h"
 #include "mtk_eemgpu.h"
 #include "mtk_defeemgpu.h"

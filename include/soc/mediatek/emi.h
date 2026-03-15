@@ -81,6 +81,7 @@ unsigned int mtk_emicen_get_rk_cnt(void);
 unsigned int mtk_emicen_get_rk_size(unsigned int rk_id);
 int mtk_emicen_addr2dram(unsigned long addr, struct emi_addr_map *map);
 
+#if IS_BUILTIN(CONFIG_MTK_EMI) || (IS_MODULE(CONFIG_MTK_EMI) && defined(MODULE))
 /* mtk emidbg api */
 void mtk_emidbg_dump(void);
 
@@ -102,6 +103,35 @@ int mtk_emimpu_md_handling_register(emimpu_md_handler md_handling_func);
 int mtk_emimpu_debugdump_register(emimpu_debug_dump debug_func);
 int mtk_emimpu_iommu_handling_register(emimpu_iommu_handler iommu_handling_func);
 void mtk_clear_md_violation(void);
+#else
+static inline void mtk_emidbg_dump(void) {}
+static inline int emimpu_ap_region_init(void) { return 0; }
+static inline int mtk_emimpu_init_region(
+	struct emimpu_region_t *rg_info, unsigned int rg_num) { return 0; }
+static inline int mtk_emimpu_set_addr(struct emimpu_region_t *rg_info,
+	unsigned long long start, unsigned long long end) { return 0; }
+static inline int mtk_emimpu_set_apc(struct emimpu_region_t *rg_info,
+	unsigned int d_num, unsigned int apc) { return 0; }
+static inline int mtk_emimpu_lock_region(struct emimpu_region_t *rg_info,
+	bool lock) { return 0; }
+static inline int mtk_emimpu_set_protection(
+	struct emimpu_region_t *rg_info) { return 0; }
+static inline int mtk_emimpu_free_region(
+	struct emimpu_region_t *rg_info) { return 0; }
+static inline int mtk_emimpu_clear_protection(
+	struct emimpu_region_t *rg_info) { return 0; }
+static inline int mtk_emimpu_prehandle_register(
+	emimpu_pre_handler bypass_func) { return 0; }
+static inline int mtk_emimpu_postclear_register(
+	emimpu_post_clear clear_func) { return 0; }
+static inline int mtk_emimpu_md_handling_register(
+	emimpu_md_handler md_handling_func) { return 0; }
+static inline int mtk_emimpu_debugdump_register(
+	emimpu_debug_dump debug_func) { return 0; }
+static inline int mtk_emimpu_iommu_handling_register(
+	emimpu_iommu_handler iommu_handling_func) { return 0; }
+static inline void mtk_clear_md_violation(void) {}
+#endif
 
 #endif /* __EMI_H__ */
 

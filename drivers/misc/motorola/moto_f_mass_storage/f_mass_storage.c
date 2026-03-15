@@ -2556,6 +2556,7 @@ void fsg_common_set_sysfs(struct fsg_common *common, bool sysfs)
 {
 	common->sysfs = sysfs;
 }
+EXPORT_SYMBOL_GPL(fsg_common_set_sysfs);
 
 static void _fsg_common_free_buffers(struct fsg_buffhd *buffhds, unsigned n)
 {
@@ -2664,6 +2665,7 @@ int fsg_common_set_cdev(struct fsg_common *common,
 
 	return 0;
 }
+EXPORT_SYMBOL_GPL(fsg_common_set_cdev);
 
 static struct attribute *fsg_lun_dev_attrs[] = { &dev_attr_ro.attr,
 						 &dev_attr_file.attr,
@@ -2795,6 +2797,7 @@ fail:
 	_fsg_common_remove_luns(common, i);
 	return rc;
 }
+EXPORT_SYMBOL_GPL(fsg_common_create_luns);
 
 void fsg_common_set_inquiry_string(struct fsg_common *common, const char *vn,
 				   const char *pn)
@@ -2811,6 +2814,7 @@ void fsg_common_set_inquiry_string(struct fsg_common *common, const char *vn,
 						   "Motorola File-Stor Gadget"),
 		 i);
 }
+EXPORT_SYMBOL_GPL(fsg_common_set_inquiry_string);
 
 static void fsg_common_release(struct fsg_common *common)
 {
@@ -3414,3 +3418,4 @@ void fsg_config_from_params(struct fsg_config *cfg,
 	cfg->can_stall = params->stall;
 	cfg->fsg_num_buffers = fsg_num_buffers;
 }
+EXPORT_SYMBOL_GPL(fsg_config_from_params);

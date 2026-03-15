@@ -163,7 +163,9 @@ subdir-ccflags-y += $(ccflags-y)
 #
 # Kernel Modules
 #
-obj-y += mali_kbase.o
+# Use CONFIG_MTK_GPU_SUPPORT so mali_kbase.ko is a module when MTK_GPU_SUPPORT=m
+# and avoids vmlinux link errors (Mali calling gpufreq/gpu_hal symbols from modules).
+obj-$(CONFIG_MTK_GPU_SUPPORT) += mali_kbase.o
 obj-$(CONFIG_MALI_ARBITRATION) += ../arbitration/
 obj-$(CONFIG_MALI_KUTF)    += tests/
 

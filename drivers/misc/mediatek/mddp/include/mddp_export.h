@@ -63,10 +63,21 @@ struct mddp_drv_handle_t {
 //------------------------------------------------------------------------------
 // Public function definition - For driver
 // -----------------------------------------------------------------------------
+#include <linux/kconfig.h>
+#if IS_BUILTIN(CONFIG_MTK_MDDP_SUPPORT) || \
+    (IS_MODULE(CONFIG_MTK_MDDP_SUPPORT) && defined(MODULE))
 int32_t mddp_drv_attach(
 	struct mddp_drv_conf_t *conf, struct mddp_drv_handle_t *handle);
 void mddp_drv_detach(
 	struct mddp_drv_conf_t *conf, struct mddp_drv_handle_t *handle);
+#else
+static inline int32_t mddp_drv_attach(
+	struct mddp_drv_conf_t *conf, struct mddp_drv_handle_t *handle)
+{ return -ENODEV; }
+static inline void mddp_drv_detach(
+	struct mddp_drv_conf_t *conf, struct mddp_drv_handle_t *handle)
+{}
+#endif
 
 //------------------------------------------------------------------------------
 // Public function definition - For HIDL

@@ -607,7 +607,12 @@ int mtk_panel_ext_create(struct device *dev,
 			 struct mtk_panel_funcs *ext_funcs,
 			 struct drm_panel *panel);
 int mtk_panel_tch_handle_reg(struct drm_panel *panel);
+#if IS_BUILTIN(CONFIG_DRM_MEDIATEK_V2) || \
+    (IS_MODULE(CONFIG_DRM_MEDIATEK_V2) && defined(MODULE))
 void **mtk_panel_tch_handle_init(void);
+#else
+static inline void **mtk_panel_tch_handle_init(void) { return NULL; }
+#endif
 int mtk_panel_tch_rst(struct drm_panel *panel);
 enum mtk_lcm_version mtk_drm_get_lcm_version(void);
 

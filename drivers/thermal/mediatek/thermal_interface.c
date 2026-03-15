@@ -30,7 +30,7 @@
 #include <mtk_gpufreq.h>
 #endif
 #include "thermal_interface.h"
-#if IS_ENABLED(CONFIG_LEDS_MTK_MODULE)
+#if IS_ENABLED(CONFIG_LEDS_MTK)
 #define CONFIG_LEDS_BRIGHTNESS_CHANGED
 #include <net/genetlink.h>
 #include <linux/netlink.h>

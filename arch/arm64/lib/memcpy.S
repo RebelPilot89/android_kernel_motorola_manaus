@@ -242,20 +242,22 @@ L(copy64_from_start):
 	ret
 SYM_FUNC_END(__pi_memcpy)
 
-/* Sustitución manual de alias para compatibilidad con el linkador de Motorola */
+/* Aliases and module exports for memcpy/__memcpy/__pi_memcpy */
 .globl __memcpy
 __memcpy = __pi_memcpy
+EXPORT_SYMBOL(__memcpy)
 
 .globl memcpy
 .weak memcpy
 memcpy = __memcpy
+EXPORT_SYMBOL(memcpy)
 
+/*
+ * __pi_memmove is an alias of __pi_memcpy because this implementation
+ * handles overlapping regions.  It is used only by the EFI stub
+ * (arch/arm64/kernel/image-vars.h), so no EXPORT_SYMBOL is needed here.
+ * The canonical memmove/__memmove symbols and their exports live in
+ * arch/arm64/lib/memmove.S.
+ */
 .globl __pi_memmove
 __pi_memmove = __pi_memcpy
-
-.globl __memmove
-__memmove = __pi_memmove
-
-.globl memmove
-.weak memmove
-memmove = __memmove

@@ -108,8 +108,13 @@ struct mmi_smart_battery {
 #define INVALID_TEMP (-2730)
 #define SMART_BATT_SHOW_MAX_SIZE 64
 
+#include <linux/kconfig.h>
+#if IS_BUILTIN(CONFIG_MTK_CHARGER) || (IS_MODULE(CONFIG_MTK_CHARGER) && defined(MODULE))
 extern int mmi_batt_health_check(void);
-
 extern int mmi_charger_update_batt_status(void);
+#else
+static inline int mmi_batt_health_check(void) { return 0; }
+static inline int mmi_charger_update_batt_status(void) { return 0; }
+#endif
 
 #endif

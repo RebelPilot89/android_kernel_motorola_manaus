@@ -6,6 +6,7 @@
 #ifndef AUDIO_MESSENGER_IPI_H
 #define AUDIO_MESSENGER_IPI_H
 
+#include <linux/errno.h>
 #include <linux/types.h>
 
 #include <audio_ipi_dma.h>
@@ -209,8 +210,8 @@ void audio_messenger_ipi_init(void);
 
 void audio_reg_recv_message(uint8_t task_scene, recv_message_t recv_message);
 
-
-
+#if IS_BUILTIN(CONFIG_MTK_AUDIO_IPI) || \
+    (IS_MODULE(CONFIG_MTK_AUDIO_IPI) && defined(MODULE))
 int audio_send_ipi_msg(
 	struct ipi_msg_t *p_ipi_msg,
 	uint8_t task_scene, /* task_scene_t */
@@ -221,6 +222,14 @@ int audio_send_ipi_msg(
 	uint32_t param1, /* data_size for payload & dma */
 	uint32_t param2,
 	void    *data_buffer); /* buffer for payload & dma */
+#else
+static inline int audio_send_ipi_msg(
+	struct ipi_msg_t *p_ipi_msg,
+	uint8_t task_scene, uint8_t target_layer, uint8_t data_type,
+	uint8_t ack_type, uint16_t msg_id,
+	uint32_t param1, uint32_t param2, void *data_buffer)
+{ return -ENODEV; }
+#endif
 
 int audio_send_ipi_filled_msg(struct ipi_msg_t *p_ipi_msg);
 

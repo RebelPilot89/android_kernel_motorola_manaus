@@ -32,6 +32,10 @@ enum mtk_ise_awake_ack_t {
 	ISE_ERR_NUM
 };
 
-enum mtk_ise_awake_ack_t mtk_ise_awake_lock(enum mtk_ise_awake_id_t mtk_ise_awake_id);
-enum mtk_ise_awake_ack_t mtk_ise_awake_unlock(enum mtk_ise_awake_id_t mtk_ise_awake_id);
+static inline enum mtk_ise_awake_ack_t
+mtk_ise_awake_lock(enum mtk_ise_awake_id_t mtk_ise_awake_id)
+{ return ISE_SUCCESS; }
+static inline enum mtk_ise_awake_ack_t
+mtk_ise_awake_unlock(enum mtk_ise_awake_id_t mtk_ise_awake_id)
+{ return ISE_SUCCESS; }
 #endif

@@ -73,7 +73,9 @@ L(not_found):
 	ret
 SYM_FUNC_END(__pi_memchr)
 
-/* Alias manual para memchr */
+/* Alias and module export for memchr/__pi_memchr */
 .globl memchr
 .weak memchr
 memchr = __pi_memchr
+EXPORT_SYMBOL(memchr)
+EXPORT_SYMBOL(__pi_memchr)

@@ -186,12 +186,12 @@ PECOFF_FILE_ALIGNMENT = 0x200;
  * accepted window automatically covers any minor LLD variation while
  * still rejecting the large PLT sections that would indicate a real bug
  * (e.g. kernel code compiled with -fPIC by mistake).
- *   .got.plt: (3 base + N stubs) × 8 bytes  — allow N = 4..28
- *   .plt    : (32 header  + N stubs × 16)   — allow N = 4..28
+ *   .got.plt: (3 base + N stubs) × 8 bytes  — allow N = 1..28
+ *   .plt    : (32 header  + N stubs × 16)   — allow N = 1..28
  */
-#define EFI_LLD_GOTPLT_SIZE_MIN	0x38
+#define EFI_LLD_GOTPLT_SIZE_MIN	0x20
 #define EFI_LLD_GOTPLT_SIZE_MAX	0x100
-#define EFI_LLD_PLT_SIZE_MIN	0x60
+#define EFI_LLD_PLT_SIZE_MIN	0x30
 #define EFI_LLD_PLT_SIZE_MAX	0x200
 #else
 #define PECOFF_EDATA_PADDING

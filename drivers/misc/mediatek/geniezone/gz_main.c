@@ -397,6 +397,7 @@ int mtee_sdsp_enable(u32 on)
 			MTEE_SMCNR(MT_SMCF_SC_VPU, tz_system_dev->dev.parent),
 			on, 0, 0);
 }
+EXPORT_SYMBOL(mtee_sdsp_enable);
 
 int gz_get_cpuinfo_thread(void *data)
 {
