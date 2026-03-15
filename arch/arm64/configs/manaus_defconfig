@@ -785,7 +785,7 @@ CONFIG_HAS_LTO_CLANG=y
 CONFIG_LTO_CLANG_THIN=y
 CONFIG_CFI_CLANG=y
 CONFIG_CFI_CLANG_SHADOW=y
-CONFIG_CFI_PERMISSIVE=y
+# CONFIG_CFI_PERMISSIVE is not set
 CONFIG_HAVE_CONTEXT_TRACKING=y
 CONFIG_HAVE_VIRT_CPU_ACCOUNTING_GEN=y
 CONFIG_HAVE_IRQ_TIME_ACCOUNTING=y
@@ -835,9 +835,13 @@ CONFIG_MODULES=y
 # CONFIG_MODULE_FORCE_LOAD is not set
 CONFIG_MODULE_UNLOAD=y
 # CONFIG_MODULE_FORCE_UNLOAD is not set
-# CONFIG_MODVERSIONS is not set
+# Sync vermagic with IsaacThePoe/manaus-last-kernel: enables CRC symbol checking
+# ("modversions" flag in vermagic) required for loading vendor_dlkm/.ko modules
+# compiled against B's kernel. Also required for containers/KVM guest module loading.
+CONFIG_MODVERSIONS=y
+CONFIG_ASM_MODVERSIONS=y
 # CONFIG_MODULE_SRCVERSION_ALL is not set
-# CONFIG_MODULE_SCMVERSION is not set
+CONFIG_MODULE_SCMVERSION=y
 # CONFIG_MODULE_SIG is not set
 # CONFIG_MODULE_COMPRESS is not set
 # CONFIG_MODULE_ALLOW_MISSING_NAMESPACE_IMPORTS is not set
@@ -7875,7 +7879,9 @@ CONFIG_STRICT_DEVMEM=y
 #
 # CONFIG_KUNIT is not set
 # CONFIG_NOTIFIER_ERROR_INJECTION is not set
-# CONFIG_FUNCTION_ERROR_INJECTION is not set
+# Required for struct module ABI match with IsaacThePoe/manaus-last-kernel:
+# adds ei_funcs/num_ei_funcs fields to struct module so module_layout CRC matches B
+CONFIG_FUNCTION_ERROR_INJECTION=y
 # CONFIG_FAULT_INJECTION is not set
 CONFIG_ARCH_HAS_KCOV=y
 CONFIG_CC_HAS_SANCOV_TRACE_PC=y
