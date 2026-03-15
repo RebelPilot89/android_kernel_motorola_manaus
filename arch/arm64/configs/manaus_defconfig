@@ -26,8 +26,10 @@ CONFIG_INIT_ENV_ARG_LIMIT=32
 # CONFIG_COMPILE_TEST is not set
 # CONFIG_WERROR is not set
 CONFIG_UAPI_HEADER_TEST=y
-CONFIG_LOCALVERSION=""
-CONFIG_LOCALVERSION_AUTO=y
+# Match stock vermagic prefix: 5.10.233-android12-9 SMP preempt mod_unload modversions aarch64
+# Forensic: stock vermagic = 5.10.233-android12-9-39248-gdd0980c7e7d6 (LOCALVERSION_AUTO adds git suffix)
+CONFIG_LOCALVERSION="-android12-9"
+CONFIG_LOCALVERSION_AUTO=n
 CONFIG_BUILD_SALT=""
 CONFIG_DEFAULT_INIT=""
 CONFIG_DEFAULT_HOSTNAME="(none)"
@@ -781,8 +783,10 @@ CONFIG_ARCH_SUPPORTS_LTO_CLANG=y
 CONFIG_ARCH_SUPPORTS_LTO_CLANG_THIN=y
 CONFIG_HAS_LTO_CLANG=y
 # CONFIG_LTO_NONE is not set
-# CONFIG_LTO_CLANG_FULL is not set
-CONFIG_LTO_CLANG_THIN=y
+# Forensic: stock uses CONFIG_LTO_CLANG_FULL=y (not THIN). FullLTO produces smaller
+# modules closer in size to stock and matches stock ABI/inlining decisions.
+CONFIG_LTO_CLANG_FULL=y
+# CONFIG_LTO_CLANG_THIN is not set
 CONFIG_CFI_CLANG=y
 CONFIG_CFI_CLANG_SHADOW=y
 # CONFIG_CFI_PERMISSIVE is not set
@@ -4560,7 +4564,9 @@ CONFIG_DRM_PANEL_CSOT_VTDR6115_655_FHDP_DPHY_VDO_144HZ=m
 # CONFIG_DRM_PANEL_CSOT_FT8725_650_FHDP_DPHY_VDO_120HZ is not set
 # CONFIG_DRM_PANEL_TXD_ILI7807S_650_FHDP_DPHY_VDO_120HZ is not set
 CONFIG_DRM_PANEL_BOE_HX83102J_VDO=m
-# CONFIG_DRM_MEDIATEK_PANEL is not set
+# Forensic: leds-mtk-disp.ko stock depends on mediatek-drm-gateic; enable panel
+# common driver to produce mediatek-drm-gateic.ko and fix that module dependency.
+CONFIG_DRM_MEDIATEK_PANEL=m
 # CONFIG_GATEIC_OCP2138 is not set
 CONFIG_DRM_PANEL_CSOT_VTDR6115_655_FHDP_DPHY_VDO_144HZ_C7=m
 CONFIG_DRM_PANEL_TIANMA_VTDR6115_655_FHDP_DPHY_VDO_144HZ_U8=m
@@ -6243,7 +6249,10 @@ CONFIG_IIO_BUFFER=y
 # CONFIG_IIO_BUFFER_CB is not set
 CONFIG_IIO_BUFFER_DMA=y
 # CONFIG_IIO_BUFFER_DMAENGINE is not set
-CONFIG_IIO_BUFFER_HW_CONSUMER=y
+# Forensic: IIO_BUFFER_HW_CONSUMER=y selects IIO_TRIGGERED_BUFFER which forces it
+# from =m to =y, preventing kfifo_buf.ko and industrialio-triggered-buffer.ko from
+# being produced as loadable modules. Change to =m so those .ko files can exist.
+CONFIG_IIO_BUFFER_HW_CONSUMER=m
 CONFIG_IIO_KFIFO_BUF=m
 CONFIG_IIO_TRIGGERED_BUFFER=m
 # CONFIG_IIO_CONFIGFS is not set
@@ -6650,7 +6659,10 @@ CONFIG_HID_SENSOR_PRESS=m
 # CONFIG_ICP10100 is not set
 # CONFIG_MPL115_I2C is not set
 # CONFIG_MPL115_SPI is not set
-CONFIG_MPL3115=y
+# Forensic: MPL3115=y selects IIO_TRIGGERED_BUFFER, forcing kfifo_buf.ko and
+# industrialio-triggered-buffer.ko to be built-in. MPL3115 is an NXP pressure
+# sensor not present in MT6879/Motorola Edge 40 Neo hardware.
+CONFIG_MPL3115=m
 # CONFIG_MS5611 is not set
 # CONFIG_MS5637 is not set
 # CONFIG_IIO_ST_PRESS is not set
