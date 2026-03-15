@@ -69,7 +69,8 @@ struct mtk_dsi_lfr_sta {
  */
 /*interface with fpsgo*/
 typedef void (*FPS_CHG_CALLBACK)(unsigned int new_fps);
-#ifdef CONFIG_DRM_MEDIATEK_V2
+#if defined(CONFIG_DRM_MEDIATEK_V2) || \
+	(defined(CONFIG_DRM_MEDIATEK_V2_MODULE) && defined(MODULE))
 int drm_register_fps_chg_callback(FPS_CHG_CALLBACK fps_chg_cb);
 int drm_unregister_fps_chg_callback(FPS_CHG_CALLBACK fps_chg_cb);
 /*interface with primary_display*/
