@@ -5866,7 +5866,7 @@ static int vidioc_dqbuf(struct file *file, void *priv, struct v4l2_buffer *p)
 
 	Ret = copy_from_user(&ureq, (void __user *)p->m.userptr, sizeof(ureq));
 	if (Ret != 0) {
-		LOG_ERR("DPE_CMD_DPE_DEQUE_REQ copy_from_user failed\n");
+		LOG_ERR("vidioc_dqbuf: copy_from_user failed for ureq\n");
 		Ret = -EFAULT;
 		goto EXIT;
 	}
@@ -5931,7 +5931,7 @@ static int vidioc_dqbuf(struct file *file, void *priv, struct v4l2_buffer *p)
 		__func__, p->m.userptr,  p->length);
 EXIT:
 	kfree(cfgs);
-	return 0;
+	return Ret;
 }
 static int vidioc_querycap(struct file *file, void  *priv,
 					struct v4l2_capability *cap)
