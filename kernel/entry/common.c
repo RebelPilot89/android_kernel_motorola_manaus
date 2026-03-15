@@ -7,15 +7,6 @@
 
 #define CREATE_TRACE_POINTS
 #include <trace/events/syscalls.h>
-/* Export raw_syscalls sys_enter tracepoint so that out-of-tree
- * consumers (e.g. kernelsu.ko) can register probe callbacks via
- * register_trace_sys_enter().
- *
- * NOTE: EXPORT_TRACEPOINT_SYMBOL_GPL() takes the bare tracepoint name
- * — the macro prepends __tracepoint_ / __traceiter_ / tp_func_
- * automatically.  Pass "sys_enter", NOT "__tracepoint_sys_enter".
- */
-EXPORT_TRACEPOINT_SYMBOL_GPL(sys_enter);
 
 /**
  * enter_from_user_mode - Establish state when coming from user mode

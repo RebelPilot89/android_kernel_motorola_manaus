@@ -43,6 +43,24 @@
 
 #define CREATE_TRACE_POINTS
 #include <trace/events/syscalls.h>
+/*
+ * Export raw_syscalls tracepoint structs so that out-of-tree modules
+ * (e.g. kernelsu.ko) can call register_trace_sys_enter().
+ *
+ * On ARM64, CREATE_TRACE_POINTS for syscalls.h lives HERE (ptrace.c),
+ * not in kernel/entry/common.c (which requires CONFIG_GENERIC_ENTRY,
+ * not set on ARM64).  The export MUST be in the same translation unit
+ * as CREATE_TRACE_POINTS.
+ *
+ * We use per-symbol EXPORT_SYMBOL_GPL() instead of the compound
+ * EXPORT_TRACEPOINT_SYMBOL_GPL() macro because the latter also calls
+ * EXPORT_STATIC_CALL_GPL(tp_func_<name>) which, on ARM64 (no
+ * CONFIG_HAVE_STATIC_CALL), can break under Clang LTO — the
+ * __SCK__tp_func_* reference may be optimised away before the
+ * __ksymtab entry is emitted, leaving the tracepoint invisible to
+ * modpost.
+ */
+EXPORT_SYMBOL_GPL(__tracepoint_sys_enter);
 
 struct pt_regs_offset {
 	const char *name;
