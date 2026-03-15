@@ -37,7 +37,12 @@ SYM_FUNC_START(__arm_smccc_sve_check)
 
 2:	ret
 SYM_FUNC_END(__arm_smccc_sve_check)
-EXPORT_SYMBOL(__arm_smccc_sve_check)
+/*
+ * NOTE: DO NOT export __arm_smccc_sve_check — no C prototype visible to
+ * genksyms. With CONFIG_MODVERSIONS+LTO (ThinLTO), the missing CRC causes
+ * an ABS32 relocation error in LLD.  This is an internal alternative hook
+ * used only by the SMCCC macros in this file; no external module needs it.
+ */
 
 	.macro SMCCC instr
 	stp     x29, x30, [sp, #-16]!
